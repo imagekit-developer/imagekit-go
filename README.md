@@ -15,3 +15,24 @@ Table of contents -
  * [Utility Functions](#Utility-functions)
  * [Support](#Support)
  * [Links](#Links)
+
+
+## Version Support
+
+| SDK Version | Go > 1.13 |
+|-------------|-----------|
+| 1.x         | v         |
+
+
+## Installation
+```bash
+go get github.com/dhaval070/imagekit-go
+```
+
+## Initialization
+```go
+import "github.com/dhaval070/imagekit-go"
+
+imgkit, _ = ImageKit.New()
+```
+
