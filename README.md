@@ -30,9 +30,26 @@ go get github.com/dhaval070/imagekit-go
 ```
 
 ## Initialization
-```go
-import "github.com/dhaval070/imagekit-go"
 
-imgkit, _ = ImageKit.New()
+```go
+import (
+    "github.com/dhaval070/imagekit-go"
+    "github.com/dhaval070/imagekit-go/uploader"
+)
+
+// Using environment variables IMAGEKIT_PRIVATE_KEY and IMAGEKIT_URL_ENDPOINT
+imgkit, _ := ImageKit.New()
+
+// Using private key in params
+imgkit, _ := ImageKit.NewFromParams(privateKey, urlEndpoint)
+```
+
+## File-Upload
+```
+file, err := imgkit.Upload.Upload(ctx, uploader.UploadParams{
+    file: "htts://example.com/myimage.jpg",
+    fileName: "my image.jpg",
+})
+
 ```
 
