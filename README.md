@@ -96,10 +96,44 @@ import (
     "github.com/dhaval070/imagekit-go/assets"
 )
 
-files, err := imgkit.ListFiles(assets.ListParams{
-    Skip: 10,
-    Limit: 500,
-    SearchQuery: "createdAt >= "7d" AND size > \"2mb\"",
+files, err := imgkit.ListFiles(ctx, assets.ListParams{
+    Skip: 10, // int
+    Limit: 500, // int
+    SearchQuery: "createdAt >= "7d" AND size > \"2mb\"", // string
 })
 ```
 
+### 2. Get File Details
+Accepts the file ID and fetches the details as per the [API documentation here](https://docs.imagekit.io/api-reference/media-api/get-file-details).
+```
+file, err := imgkit.GetFileDetails(ctx, fileId)
+```
+### 3. Get File Metadata
+Accepts the file ID or URL and fetches the metadata as per the [API documentation here](https://docs.imagekit.io/api-reference/metadata-api/get-image-metadata-for-uploaded-media-files).
+```
+meta, err := imgkit.GetAssetMetadata(ctx, fileId)
+```
+### 4. Update File Details
+Update parameters associated with the file as per the [API documentation here](https://docs.imagekit.io/api-reference/media-api/update-file-details).
+
+```
+resp, err := imgkit.UpdateAsset(ctx, assets.AssetParams{
+    FileId: fileId, // string
+    Tags: tags, // strings slice
+})
+```
+### 5. Delete File
+Delete a file as per the [API documentation here](https://docs.imagekit.io/api-reference/media-api/delete-file).
+```
+resp, err := imgkit.DeleteAsset(ctx,
+    fileId, // string
+)
+```
+### 6. Bulk Delete Files
+Delete multiple files as per the [API documentation here](https://docs.imagekit.io/api-reference/media-api/delete-files-bulk).
+```
+resp, err := imgkit.BulkDeleteAssets(ctx,
+    fileIds, // strings slice
+)
+
+```
