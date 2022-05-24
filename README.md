@@ -80,8 +80,8 @@ The upload() method requires at least the ```file``` and the ```fileName``` para
 
 ```
 file, err := imgkit.Upload.Upload(ctx, uploader.UploadParams{
-    file: "htts://example.com/myimage.jpg",
-    fileName: "my image.jpg",
+    File: "htts://example.com/myimage.jpg",
+    FileName: "my image.jpg",
 })
 
 ```
@@ -97,9 +97,9 @@ import (
 )
 
 files, err := imgkit.ListFiles(ctx, assets.ListParams{
-    Skip: 10, // int
-    Limit: 500, // int
-    SearchQuery: "createdAt >= "7d" AND size > \"2mb\"", // string
+    Skip: 10,
+    Limit: 500,
+    SearchQuery: "createdAt >= "7d" AND size > \"2mb\"",
 })
 ```
 
@@ -108,32 +108,174 @@ Accepts the file ID and fetches the details as per the [API documentation here](
 ```
 file, err := imgkit.GetFileDetails(ctx, fileId)
 ```
-### 3. Get File Metadata
-Accepts the file ID or URL and fetches the metadata as per the [API documentation here](https://docs.imagekit.io/api-reference/metadata-api/get-image-metadata-for-uploaded-media-files).
+
+### 3. Get File Version Details
+Get all the details and attributes of any version of a file.
 ```
-meta, err := imgkit.GetAssetMetadata(ctx, fileId)
-```
-### 4. Update File Details
-Update parameters associated with the file as per the [API documentation here](https://docs.imagekit.io/api-reference/media-api/update-file-details).
+file, err := imgkit.GetFileVersionDetails(ctx, fileId)
 
 ```
+
+### 4. Get File Versions
+Get all the file version details and attributes of a file.
+```
+files, err := imgkit.GetFileAllVersionDetails(ctx, fileId)
+```
+
+### 5. Update File Details
+Update parameters associated with the file as per the [API documentation here](https://docs.imagekit.io/api-reference/media-api/update-file-details).
+```
 resp, err := imgkit.UpdateAsset(ctx, assets.AssetParams{
-    FileId: fileId, // string
-    Tags: tags, // strings slice
+    FileId: fileId,
+    Tags: []string{"tag1", "tag2"},
 })
 ```
-### 5. Delete File
-Delete a file as per the [API documentation here](https://docs.imagekit.io/api-reference/media-api/delete-file).
+
+### 6. Add Tags (bulk)
+Adds given tags to multiple files. Accepts slices of tags and file ids. Returns slice of file ids. [API documentation here](https://docs.imagekit.io/api-reference/media-api/add-tags-bulk)
 ```
-resp, err := imgkit.DeleteAsset(ctx,
+ids, err := imgkit.AddTags(ctx, assets.TagsParams{
+    FileIds: []string{"one", "two"},
+    Tags: []string{"tag1", "tag2"},
+})
+```
+
+### 7. Remove Tags (bulk)
+Remove tags in bulk API. Returns slice of file ids. [API documentation here](https://docs.imagekit.io/api-reference/media-api/remove-tags-bulk)
+```
+ids, err := imgkit.RemoveTags(ctx, assets.TagsParams{
+    FileIds: []string{"one", "two"},
+    Tags: []string{"tag1", "tag2"},
+})
+```
+### 8. Remove AITags (bulk)
+Remove AITags in bulk API. Returns slice of file ids. [API documentation here](https://docs.imagekit.io/api-reference/media-api/remove-aitags-bulk)
+```
+ids, err := imgkit.RemoveAITags(ctx, assets.AITagsParams{
+    FileIds: []string{"one", "two"},
+    AITags: []string{"tag1", "tag2"},
+})
+```
+
+### 9. Delete File
+Delete a file by fileId. [API documentation here](https://docs.imagekit.io/api-reference/media-api/delete-file).
+```
+ids, err := imgkit.DeleteAsset(ctx,
     fileId, // string
 )
 ```
-### 6. Bulk Delete Files
-Delete multiple files as per the [API documentation here](https://docs.imagekit.io/api-reference/media-api/delete-files-bulk).
-```
-resp, err := imgkit.BulkDeleteAssets(ctx,
-    fileIds, // strings slice
-)
 
+### 10. Delete File Version
+Deletes given version of the file. [API documentation here](https://docs.imagekit.io/api-reference/media-api/delete-file-version)
+```
+err := imgkit.DeleteFileVersion(ctx,
+    FileId, // string
+    VersionId, // string
+)
+```
+
+### 11. Delete Files (bulk)
+Deletes multiple files. [API documentation here](https://docs.imagekit.io/api-reference/media-api/delete-files-bulk).
+```
+ids, err := imgkit.DeleteAsset(ctx,
+    fileId1,
+    fileId2,
+)
+```
+
+### 12. Copy File
+This will copy a file from one location to another as per [API documentation here](https://docs.imagekit.io/api-reference/media-api/copy-file).
+Accepts the source file's path and destination folder path.
+```
+err := imgkit.CopyAsset(ctx, assets.CopyParams{
+    SourcePath: "/source/a.jpg",
+    DestinationPath: "/target/",
+    IncludeVersions: true,
+})
+```
+
+### 13. Move File
+This will move a file from one location to another as per [API documentation here](https://docs.imagekit.io/api-reference/media-api/move-file).
+Accepts the source file's path and destination folder path.
+```
+err := imgkit.MoveAsset(ctx, assets.MoveParams{
+    SourcePath: "/source/a.jpg",
+    DestinationPath: "/target/",
+})
+```
+
+### 14. Rename File
+Renames a file as per [API documentation here](https://docs.imagekit.io/api-reference/media-api/rename-file).
+Accepts file path, new name and purge cache option.
+```
+resp, err := imgkit.RenameAsset(ctx, assets.RenameParams{
+    FilePath: "/path/to/file.jpg",
+    NewFileName: "newname.jpg",
+    PurgeCache: true,
+})
+
+```
+resp is of type map[string]string in case response is 200 or 207.
+
+### 15. Restore File Version
+Restore file version to a different version of a file as per [API documentation here](https://docs.imagekit.io/api-reference/media-api/restore-file-version).
+Accepts string type file id and version id.
+```
+file, err := imgkit.RestoreAssetVersion(ctx, "xxxx", "33534")
+```
+
+### 16. Create Folder
+Creates a new folder as per [API documentation here](https://docs.imagekit.io/api-reference/media-api/create-folder). ```err``` is not nil when response is not 201.
+Accepts string type folder name and parent path.
+```
+err := imgkit.CreateFolder(ctx, "sample", "/some/parent/folder")
+```
+
+### 17. Delete Folder
+Deletes the specified folder and all nested files, their versions & folders. This action cannot be undone. Accepts string type folder name to delete. [API documentation here](https://docs.imagekit.io/api-reference/media-api/delete-folder).
+
+```
+err := imgkit.DeleteFolder(ctx, "sample")
+```
+
+### 18. Copy Folder
+Copies given folder to new location with or without versions info as per [API documentation here](https://docs.imagekit.io/api-reference/media-api/copy-folder).
+```
+err := imgkit.CopyFolder(ctx, "source/path", "destination/path", true)
+```
+
+### 19. Move Folder
+Movies given folder path to new location as per [API documentation here](https://docs.imagekit.io/api-reference/media-api/move-folder).
+```
+err := imgkit.MoveFolder(ctx, "source/path", "destination/path")
+```
+
+### 20. Bulk Job Status
+Get status of a bulk job operation by job id.  Accepts string type job id. [API documentation here](https://docs.imagekit.io/api-reference/media-api/copy-move-folder-status).
+
+```
+resp, err := imgkit.BulkJobStatus(ctx, "xxx")
+```
+
+### 21. Purge Cache
+This will purge given url's CDN and ImageKit.io's internal cache as per [API documentation here](https://docs.imagekit.io/api-reference/media-api/purge-cache).
+```
+reqId, err := imgkit.PurgeCache(
+    ctx,
+    "https://ik.imageki.io/your_imagekit_id/rest-of-the-file-path.jpg"
+)
+```
+
+### 22. Purge Cache Status
+Get the status of the submitted purge request. Accepts purge request id. [API documentation here](https://docs.imagekit.io/api-reference/media-api/purge-cache-status).
+
+```
+status, err := imgkit.PurgeCacheStatus(ctx, "xxxx")
+```
+
+## MetaData API
+### Get File Metadata
+Accepts the file ID or URL and fetches the metadata as per the [API documentation here](https://docs.imagekit.io/api-reference/metadata-api/get-image-metadata-for-uploaded-media-files).
+```
+meta, err := imgkit.GetAssetMetadata(ctx, fileId)
 ```
