@@ -29,7 +29,7 @@ func TestUrl(t *testing.T) {
 		Src:            "https://imagekit.io/343534/default-image.jpg",
 		Transformation: "w-100,rt-90",
 	}
-	expected = "https://imagekit.io/343534/default-image.jpg?tr=w-100%2Crt-90"
+	expected = "https://imagekit.io/343534/default-image.jpg?tr=w-100,rt-90"
 
 	url, err = Url(param)
 

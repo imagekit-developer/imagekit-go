@@ -65,10 +65,7 @@ func Url(params imgkiturl.UrlParams) (string, error) {
 		}
 
 		if params.Transformation != "" {
-			v := neturl.Values{}
-			v.Set("tr", params.Transformation)
-
-			return url.String() + "?" + v.Encode(), nil
+			return url.String() + "?tr=" + params.Transformation, nil
 		}
 	}
 
