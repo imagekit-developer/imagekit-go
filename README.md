@@ -42,7 +42,11 @@ import (
 imgkit, _ := ImageKit.New()
 
 // Using keys in argument
-imgkit, _ := ImageKit.NewFromParams(privateKey, publicKey, urlEndpoint)
+imgkit, _ := ImageKit.NewFromParams(imagekit.NewParams{
+    PrivateKey: privateKey,
+    PublicKey: publicKey,
+    UrlEndpoint: urlEndpoint
+})
 ```
 
 ## URL-generation
@@ -106,7 +110,7 @@ import (
 files, err := imgkit.Media.Assets(ctx, media.AssetsParams{
     Skip: 10,
     Limit: 500,
-    SearchQuery: "createdAt >= "7d" AND size > \"2mb\"",
+    SearchQuery: "createdAt >= \"7d\" AND size > \"2mb\"",
 })
 ```
 
