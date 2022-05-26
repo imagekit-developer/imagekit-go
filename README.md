@@ -69,7 +69,7 @@ https://ik.imagekit.io/your_imagekit_id/endpoint/tr:h-300,w-400:tr-90/default-im
 ### 2. This method allows you to add transformation parameters to an existing, complete URL that is already mapped to ImageKit using the ```src``` parameter. Use this method if you have the absolute image URL stored in your database.
 
 ```
-url, err := imgkit.Url(url.UrlOptions{
+url, err := imgkit.Url(url.UrlParams{
     Src: "https://ik.imagekit.io/your_imagekit_id/endpoint/default-image.jpg",
     Transformation: "w-400,h-300:rt-90",
 })
