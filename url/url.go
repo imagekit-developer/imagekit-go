@@ -6,5 +6,6 @@ type UrlParams struct {
 	UrlEndpoint    string
 	Transformation string
 	Signed         bool
-	ExpireSeconds  int
+	ExpireSeconds  int64
+	UnixTime       func() int64
 }

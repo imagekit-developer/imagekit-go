@@ -1,8 +1,13 @@
 package imagekit
 
 import (
+	"crypto/hmac"
+	"crypto/sha1"
+	"encoding/hex"
 	neturl "net/url"
+	"strconv"
 	"strings"
+	"time"
 
 	"github.com/dhaval070/imagekit-go/config"
 	"github.com/dhaval070/imagekit-go/logger"
@@ -44,7 +49,8 @@ func NewFromConfiguration(cfg *config.Configuration) *ImageKit {
 	}
 }
 
-func Url(params imgkiturl.UrlParams) (string, error) {
+func (ik *ImageKit) Url(params imgkiturl.UrlParams) (string, error) {
+	var resultUrl string
 	var url *neturl.URL
 	var err error
 
@@ -56,7 +62,11 @@ func Url(params imgkiturl.UrlParams) (string, error) {
 		}
 
 		if params.Transformation != "" {
-			url, err = neturl.Parse(url.String() + "/tr:" + params.Transformation + "/" + strings.TrimLeft(params.Path, "/"))
+			url, err = neturl.Parse(url.String() +
+				"/tr:" + params.Transformation +
+				"/" + strings.TrimLeft(params.Path, "/"))
+
+			resultUrl = url.String()
 		}
 
 	} else {
@@ -64,10 +74,32 @@ func Url(params imgkiturl.UrlParams) (string, error) {
 			return "", err
 		}
 
+		resultUrl = url.String()
+
 		if params.Transformation != "" {
-			return url.String() + "?tr=" + params.Transformation, nil
+			resultUrl = resultUrl + "?tr=" + params.Transformation
 		}
 	}
 
-	return url.String(), nil
+	//TODO: write test
+	if params.Signed {
+		var now int64
+
+		if params.UnixTime == nil {
+			now = time.Now().Unix()
+		} else {
+			now = params.UnixTime()
+		}
+
+		var expires = strconv.FormatInt(now+int64(params.ExpireSeconds), 10)
+		var path = strings.Replace(resultUrl, params.UrlEndpoint+"/", "", 1)
+
+		path = path + expires
+		mac := hmac.New(sha1.New, []byte(ik.Config.Cloud.PrivateKey))
+		mac.Write([]byte(path))
+		signature := hex.EncodeToString(mac.Sum(nil))
+		resultUrl = resultUrl + "?ik-t=" + expires + "&ik-s=" + signature
+	}
+
+	return resultUrl, nil
 }
