@@ -16,17 +16,20 @@ import (
 	ikurl "github.com/dhaval070/imagekit-go/url"
 )
 
+// ImageKit main struct
 type ImageKit struct {
 	Config config.Configuration
 	Logger *logger.Logger
 }
 
+// NewParams is struct to define parameters to imagekit
 type NewParams struct {
 	PrivateKey  string
 	PublicKey   string
 	EndpointUrl string
 }
 
+// New returns ImageKit object from environment variables
 func New() (*ImageKit, error) {
 	cfg, err := config.New()
 
@@ -36,12 +39,14 @@ func New() (*ImageKit, error) {
 	return NewFromConfiguration(cfg), nil
 }
 
+// NewFromParams return new ImageKit object from provided parameters
 func NewFromParams(params NewParams) *ImageKit {
 	return NewFromConfiguration(
 		config.NewFromParams(params.PrivateKey, params.PublicKey, params.EndpointUrl),
 	)
 }
 
+// NewFromConfiguration returns new ImageKit object from configuration object
 func NewFromConfiguration(cfg *config.Configuration) *ImageKit {
 	log := logger.New()
 
@@ -51,6 +56,7 @@ func NewFromConfiguration(cfg *config.Configuration) *ImageKit {
 	}
 }
 
+// Url generates url from UrlParams
 func (ik *ImageKit) Url(params ikurl.UrlParams) (string, error) {
 	var resultUrl string
 	var url *neturl.URL

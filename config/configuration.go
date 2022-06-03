@@ -40,6 +40,9 @@ func NewFromParams(privateKey string, publicKey string, endpointUrl string) *Con
 
 	return &Configuration{
 		Cloud: cloudConf,
-		API:   API{},
+		API: API{
+			UploadPrefix: "https://upload.imagekit.io/api/v1/",
+			Timeout:      60,
+		},
 	}
 }
