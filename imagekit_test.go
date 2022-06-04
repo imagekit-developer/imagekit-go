@@ -11,9 +11,9 @@ import (
 )
 
 var imgkit = NewFromParams(NewParams{
-	PrivateKey:  "private_XxZH+I8BfOoIsY0M9CQtS4nyNSk=",
-	PublicKey:   "public_fGfgv45RjwmkbzGMRy1gKTcHf4M=",
-	EndpointUrl: "https://ik.imagekit.io/dk1m7xkgi/",
+	PrivateKey:  "private_",
+	PublicKey:   "public_",
+	EndpointUrl: "https://ik.imagekit.io/test/",
 })
 
 func init() {
@@ -40,7 +40,7 @@ func TestUrl(t *testing.T) {
 			name: "signed",
 			params: ikurl.UrlParams{
 				Path:           "default-image.jpg",
-				EndpointUrl:    "https://ik.imagekit.io/dk1m7xkgi/",
+				EndpointUrl:    "https://ik.imagekit.io/test/",
 				Transformation: "w-200,rt-90",
 				Signed:         true,
 				ExpireSeconds:  100,
@@ -48,7 +48,7 @@ func TestUrl(t *testing.T) {
 					return 1653775828
 				},
 			},
-			url: "https://ik.imagekit.io/dk1m7xkgi/tr:w-200,rt-90/default-image.jpg?ik-t=1653775928&ik-s=889f3563d432c34a668f5b954f8887aec766c2ec",
+			url: "https://ik.imagekit.io/test/tr:w-200,rt-90/default-image.jpg?ik-t=1653775928&ik-s=6c74b32f5efc0cc39ab5c042718b36553d8a1606",
 		}, {
 			name: "src",
 			params: ikurl.UrlParams{

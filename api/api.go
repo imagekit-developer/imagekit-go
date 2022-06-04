@@ -17,22 +17,22 @@ type HttpClient interface {
 	Do(req *http.Request) (*http.Response, error)
 }
 
-type ResponseMeta struct {
+type ResponseMetaData struct {
 	Header     http.Header
 	Status     string
 	StatusCode int
 }
 
 type Response struct {
-	ResponseMeta ResponseMeta
+	ResponseMetaData
 }
 
-func (resp *Response) SetMeta(meta ResponseMeta) {
-	resp.ResponseMeta = meta
+func (resp *Response) SetMeta(meta ResponseMetaData) {
+	resp.ResponseMetaData = meta
 }
 
 type MetaSetter interface {
-	SetMeta(ResponseMeta)
+	SetMeta(ResponseMetaData)
 }
 
 // base64DataRegex is the regular expression for detecting base64 encoded strings.
@@ -151,7 +151,7 @@ func SetResponseMeta(httpResp *http.Response, respStruct MetaSetter) {
 		return
 	}
 
-	meta := ResponseMeta{
+	meta := ResponseMetaData{
 		Header:     httpResp.Header,
 		Status:     httpResp.Status,
 		StatusCode: httpResp.StatusCode,

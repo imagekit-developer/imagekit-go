@@ -11,7 +11,7 @@ import (
 // UploadParams defines upload parameters
 type UploadParams struct {
 	FileName                string `json:"fileName,omitempty"`
-	useUniqueFileName       string `json:"useUniqueFileName,omitempty"`
+	UseUniqueFileName       string `json:"useUniqueFileName,omitempty"`
 	Tags                    string `json:"tags,omitempty"`
 	Folder                  string `json:"folder,omitempty"`        // default value:  /
 	IsPrivateFile           *bool  `json:"isPrivateFile,omitempty"` // default: false
@@ -79,6 +79,7 @@ func (u *API) Upload(ctx context.Context, file interface{}, uploadParams UploadP
 	}
 
 	err = json.Unmarshal(data, upload)
+
 	// Unmarshal nullifies the previously set meta struct
 	api.SetResponseMeta(resp, upload)
 
