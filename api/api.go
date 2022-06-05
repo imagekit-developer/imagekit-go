@@ -13,24 +13,29 @@ import (
 	"strings"
 )
 
+// HttpClient interface to provide Do(req *http.Request) method
 type HttpClient interface {
 	Do(req *http.Request) (*http.Response, error)
 }
 
+// ResponseMetaData is used in response objects to provide metadata
 type ResponseMetaData struct {
 	Header     http.Header
 	Status     string
 	StatusCode int
 }
 
+// Response is promoted struct to response objects
 type Response struct {
 	ResponseMetaData
 }
 
+// SetMeta method assigns given metadata
 func (resp *Response) SetMeta(meta ResponseMetaData) {
 	resp.ResponseMetaData = meta
 }
 
+// MetaSetter is an interface to provide type safety to set meta
 type MetaSetter interface {
 	SetMeta(ResponseMetaData)
 }
@@ -146,6 +151,7 @@ func IsBase64Data(base64Candidate string) bool {
 	return base64DataRegex.MatchString(base64Candidate)
 }
 
+// SetResponseMeta assigns given http response data to response objects
 func SetResponseMeta(httpResp *http.Response, respStruct MetaSetter) {
 	if httpResp == nil {
 		return

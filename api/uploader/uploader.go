@@ -142,13 +142,19 @@ func (u *API) postBody(ctx context.Context, urlPath string, bodyBuf *bytes.Buffe
 func (u *API) postForm(ctx context.Context, urlPath string, formParams url.Values) (*http.Response, error) {
 
 	bodyBuf := new(bytes.Buffer)
-	_, err := bodyBuf.Write([]byte(formParams.Encode()))
+	writer := multipart.NewWriter(bodyBuf)
+
+	for k, _ := range formParams {
+		writer.WriteField(k, formParams.Get(k))
+	}
+	err := writer.Close()
 	if err != nil {
 		return nil, err
 	}
 
+	h := map[string]string{"Content-Type": writer.FormDataContentType()}
 	ctx, cancel := context.WithTimeout(ctx, time.Duration(u.Config.API.Timeout)*time.Second)
 	defer cancel()
 
-	return u.postBody(ctx, urlPath, bodyBuf, nil)
+	return u.postBody(ctx, urlPath, bodyBuf, h)
 }

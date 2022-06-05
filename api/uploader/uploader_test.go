@@ -4,9 +4,11 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 
 	"github.com/dhaval070/imagekit-go/api"
@@ -45,34 +47,126 @@ var file = &UploadResult{
 	},
 }
 
-func TestUploader_UploadLocalPath(t *testing.T) {
+func newUploader(url string) (*API, error) {
+	uploader, err := NewFromConfiguration(iktest.Cfg)
+
+	if err != nil {
+		return nil, err
+	}
+
+	uploader.Config.API.UploadPrefix = url
+	return uploader, nil
+
+}
+
+func TestUploader(t *testing.T) {
 	fileUploadResp, err := json.Marshal(file)
 	if err != nil {
 		t.Error(err)
 	}
 
-	uploader, err := NewFromConfiguration(iktest.Cfg)
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintln(w, string(fileUploadResp))
-	}))
-
-	defer ts.Close()
-
-	uploader.Config.API.UploadPrefix = ts.URL + "/"
-
-	resp, err := uploader.Upload(ctx, iktest.ImageFilePath, UploadParams{})
-
-	log.Println("resp: ", resp)
+	reader, err := os.Open(iktest.ImageFilePath)
 
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
-	if resp.Response.StatusCode != 200 {
-		t.Error("invalid status code")
+	var cases = map[string]struct {
+		file   interface{}
+		resp   string
+		param  UploadParams
+		result *UploadResult
+	}{
+		"local-filepath": {
+			file:   iktest.ImageFilePath,
+			resp:   string(fileUploadResp),
+			param:  UploadParams{},
+			result: file,
+		},
+		"base64file": {
+			file: iktest.Base64Image,
+			resp: string(fileUploadResp),
+			param: UploadParams{
+				FileName: "new-york-cityscape-buildings_A4zxKJbrL.jpg",
+			},
+			result: file,
+		},
+		"io-reader": {
+			file: reader,
+			resp: string(fileUploadResp),
+			param: UploadParams{
+				FileName: "new-york-cityscape-buildings_A4zxKJbrL.jpg",
+			},
+			result: file,
+		},
 	}
 
-	if !cmp.Equal(resp, file) {
-		t.Error("file upload response invalid")
+	for name, test := range cases {
+		t.Run(name, func(t *testing.T) {
+			submittedFile := []byte{}
+
+			handler := func(w http.ResponseWriter, r *http.Request) {
+				reader, _ := r.MultipartReader()
+
+				for {
+					part, err := reader.NextPart()
+					if err == io.EOF {
+						break
+					}
+
+					if part.FormName() == "file" {
+						log.Println("reading file")
+						submittedFile, _ = io.ReadAll(part)
+					}
+				}
+				fmt.Fprintln(w, test.resp)
+			}
+
+			ts := httptest.NewServer(http.HandlerFunc(handler))
+			defer ts.Close()
+
+			uploader, err := newUploader(ts.URL + "/")
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			resp, err := uploader.Upload(ctx, test.file, test.param)
+
+			if err != nil {
+				t.Error(err)
+			}
+
+			if resp.Response.StatusCode != 200 {
+				t.Error("status code:", resp.Response.StatusCode)
+			}
+
+			switch fv := test.file.(type) {
+			case string:
+				if api.IsLocalFilePath(test.file) {
+					fp, _ := os.Open(fv)
+					expectedFile, _ := io.ReadAll(fp)
+
+					if !cmp.Equal(expectedFile, submittedFile) {
+						log.Println(submittedFile)
+
+						t.Error("expected file not submitted")
+					}
+				} else {
+					if test.file != string(submittedFile) {
+						t.Error("unexpected file submitted")
+					}
+				}
+			default:
+				reader, _ := os.Open(iktest.ImageFilePath)
+				expected, _ := io.ReadAll(reader)
+				if !cmp.Equal(expected, submittedFile) {
+					t.Error("unexpected file submitted")
+				}
+			}
+
+			if !cmp.Equal(resp, test.result) {
+				t.Errorf("\n%v\n%v\n", file, resp)
+			}
+		})
 	}
 }
