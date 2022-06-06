@@ -23,7 +23,7 @@ type API struct {
 	Client api.HttpClient
 }
 
-// New creates a new Admin API instance from the environment variable.
+// New creates a new Uploader API instance from the environment variable.
 func New() (*API, error) {
 	c, err := config.New()
 	if err != nil {

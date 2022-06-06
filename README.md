@@ -84,14 +84,17 @@ https://ik.imagekit.io/your_imagekit_id/endpoint/default-image.jpg?tr=h-300,w=40
 
 The SDK uploader package provides a simple interface using the ```.upload()``` method to upload files to the ImageKit Media Library. It accepts all the parameters supported by the [ImageKit Upload API](https://docs.imagekit.io/api-reference/upload-file-api/server-side-file-upload).
 
-The upload() method requires at least the ```file``` and the ```fileName``` parameter to upload a file and returns ```file``` object and `err` if any.  You can pass other parameters supported by the ImageKit upload API using the same parameter name as specified in the upload API documentation. For example, to specify tags for a file at the time of upload, use the tags parameter as specified in the [documentation here](https://docs.imagekit.io/api-reference/upload-file-api/server-side-file-upload).
+The upload() method accepts file and UploadParams. File param can be local filepath, base64 encode image, url or io.Reader. If File is not local filepath then ```UploadParam``` requires the ```fileName``` parameter. This method returns ```UploadResponse``` object and `err` if any. You can pass other parameters supported by the ImageKit upload API using the same parameter name as specified in the upload API documentation. For example, to specify tags for a file at the time of upload, use the tags parameter as specified in the [documentation here](https://docs.imagekit.io/api-reference/upload-file-api/server-side-file-upload).
 
 ```
 import "github.com/dhaval070/imagekit-go/uploader"
 
-file, err := imgkit.Upload.Upload(ctx, uploader.UploadParams{
-    File: "htts://example.com/myimage.jpg",
-    FileName: "my image.jpg",
+filePath := "/my/local/file.jpg"
+resp, err := imgkit.Upload.Upload(ctx, file, uploader.UploadParams{})
+
+filePath := "http://mydomain/image.jpg"
+resp, err := imgkit.Upload.Upload(ctx, file, uploader.UploadParams{
+    FileName: "myimage.jpg"
 })
 
 ```
@@ -101,13 +104,14 @@ file, err := imgkit.Upload.Upload(ctx, uploader.UploadParams{
 The SDK provides a simple interface for all the [media APIs mentioned here](https://docs.imagekit.io/api-reference/media-api) to manage your files. 
 
 ### 1. List & Search Files
+List assets in media library, optionally filter and sort using ```AssetParams```.
 ```
 import (
     "github.com/dhaval070/imagekit-go"
     "github.com/dhaval070/imagekit-go/api/media"
 )
 
-files, err := imgkit.Media.Assets(ctx, media.AssetsParams{
+resp, err := imgkit.Media.Assets(ctx, media.AssetsParams{
     Skip: 10,
     Limit: 500,
     SearchQuery: "createdAt >= \"7d\" AND size > \"2mb\"",

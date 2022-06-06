@@ -3,6 +3,7 @@ module github.com/dhaval070/imagekit-go
 go 1.18
 
 require (
+	github.com/creasty/defaults v1.6.0
 	github.com/google/go-cmp v0.5.8
 	github.com/stretchr/testify v1.7.1
 )

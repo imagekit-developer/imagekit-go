@@ -77,7 +77,6 @@ func (u *API) Upload(ctx context.Context, file interface{}, uploadParams UploadP
 	if err != nil {
 		return upload, err
 	}
-	str := string(data)
 
 	err = json.Unmarshal(data, upload)
 
