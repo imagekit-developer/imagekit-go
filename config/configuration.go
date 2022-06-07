@@ -4,6 +4,8 @@ package config
 import (
 	"errors"
 	"os"
+
+	"github.com/creasty/defaults"
 )
 
 // Configuration is the main configuration struct.
@@ -38,11 +40,11 @@ func NewFromParams(privateKey string, publicKey string, endpointUrl string) *Con
 		EndpointUrl: endpointUrl,
 	}
 
+	var api = API{}
+	defaults.Set(&api)
+
 	return &Configuration{
 		Cloud: cloudConf,
-		API: API{
-			UploadPrefix: "https://upload.imagekit.io/api/v1/",
-			Timeout:      60,
-		},
+		API:   api,
 	}
 }

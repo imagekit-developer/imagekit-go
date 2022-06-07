@@ -58,15 +58,10 @@ func (u *API) Upload(ctx context.Context, file interface{}, uploadParams UploadP
 	}
 
 	resp, err := u.postFile(ctx, file, formParams)
+	defer api.DeferredBodyClose(resp)
 
 	upload := &UploadResult{}
 	api.SetResponseMeta(resp, upload)
-
-	defer (func() {
-		if resp != nil {
-			api.DeferredClose(resp.Body)
-		}
-	})()
 
 	if err != nil {
 		return upload, err

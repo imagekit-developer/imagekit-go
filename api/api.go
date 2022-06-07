@@ -126,6 +126,13 @@ func DeferredClose(c io.Closer) {
 	}
 }
 
+// DeferredBodyClose closes http response body
+func DeferredBodyClose(resp *http.Response) {
+	if resp != nil {
+		DeferredClose(resp.Body)
+	}
+}
+
 // IsLocalFilePath determines whether the provided path can be a local file.
 func IsLocalFilePath(path interface{}) bool {
 	switch pathV := path.(type) {
