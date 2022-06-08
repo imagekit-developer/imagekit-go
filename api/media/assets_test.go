@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -37,6 +38,41 @@ func TestAssets(t *testing.T) {
 	assets.Config.API.Prefix = ts.URL + "/"
 
 	resp, err := assets.Assets(ctx, AssetsParam{})
+
+	if err != nil {
+		t.Error(err)
+	}
+
+	if !cmp.Equal(resp.Data, expected) {
+		t.Errorf("\n%v\n%v\n", resp.Data, expected)
+	}
+}
+
+func TestAssetById(t *testing.T) {
+	var err error
+	assets, err := NewFromConfiguration(iktest.Cfg)
+
+	if err != nil {
+		t.Error(err)
+	}
+
+	var mockBody = respBody[1 : len(respBody)-1]
+	var expected Asset
+
+	err = json.Unmarshal([]byte(mockBody), &expected)
+
+	handler := func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintln(w, mockBody)
+	}
+
+	ts := httptest.NewServer(http.HandlerFunc(handler))
+	defer ts.Close()
+
+	assets.Config.API.Prefix = ts.URL + "/"
+
+	resp, err := assets.AssetById(ctx, AssetByIdParam{FileId: expected.FileId})
+
+	log.Println(resp)
 
 	if err != nil {
 		t.Error(err)

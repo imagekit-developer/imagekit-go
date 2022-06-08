@@ -6,11 +6,13 @@ import (
 	"encoding/hex"
 	"fmt"
 	"log"
+	"net/http"
 	neturl "net/url"
 	"strconv"
 	"strings"
 	"time"
 
+	"github.com/dhaval070/imagekit-go/api/media"
 	"github.com/dhaval070/imagekit-go/config"
 	"github.com/dhaval070/imagekit-go/logger"
 	ikurl "github.com/dhaval070/imagekit-go/url"
@@ -20,6 +22,7 @@ import (
 type ImageKit struct {
 	Config config.Configuration
 	Logger *logger.Logger
+	Media  *media.API
 }
 
 // NewParams is struct to define parameters to imagekit
@@ -53,6 +56,11 @@ func NewFromConfiguration(cfg *config.Configuration) *ImageKit {
 	return &ImageKit{
 		Config: *cfg,
 		Logger: log,
+		Media: &media.API{
+			Config: *cfg,
+			Logger: log,
+			Client: &http.Client{},
+		},
 	}
 }
 

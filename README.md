@@ -121,7 +121,7 @@ resp, err := imgkit.Media.Assets(ctx, media.AssetsParams{
 ### 2. Get File Details
 Accepts the file ID and fetches the details as per the [API documentation here](https://docs.imagekit.io/api-reference/media-api/get-file-details).
 ```
-file, err := imgkit.Media.AssetById(ctx, media.AssetParams{
+resp, err := imgkit.Media.AssetById(ctx, media.AssetParams{
     FileId: fileId
 })
 ```

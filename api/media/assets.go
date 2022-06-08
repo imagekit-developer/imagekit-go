@@ -3,6 +3,7 @@ package media
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"net/url"
@@ -13,6 +14,7 @@ import (
 	"gopkg.in/validator.v2"
 )
 
+// AssetType represents type of media library asset in request filter.
 type AssetType string
 
 const (
@@ -21,6 +23,7 @@ const (
 	Folder      AssetType = "folder"
 )
 
+// Sort specifies sort order for Assets results data.
 type Sort string
 
 const (
@@ -36,6 +39,7 @@ const (
 	DescSize    Sort = "DESC_SIZE"
 )
 
+// FileType represents all, image or non-image etc type in request filter.
 type FileType string
 
 const (
@@ -44,6 +48,7 @@ const (
 	NonImage FileType = "non-image"
 )
 
+// AssetParam struct is a parameter type to Assets() function to search / list media library assets.
 type AssetsParam struct {
 	Type        AssetType `default:"file" json:"type"`
 	Sort        Sort      `default:"ASC_CREATED" json:"sort"`
@@ -54,6 +59,12 @@ type AssetsParam struct {
 	Skip        int       `default:"0" validate:"min=0" json:"skip"`
 }
 
+// AssetByIdParam struct is a parameter type to AssetsById() function to retrieve single asset details.
+type AssetByIdParam struct {
+	FileId string `json:"fileId"`
+}
+
+// Asset represents media library asset details.
 type Asset struct {
 	FileId            string `json:"fileId"`
 	Name              string `json:"name"`
@@ -77,8 +88,15 @@ type Asset struct {
 	UpdatedAt         time.Time              `json:"updatedAt"`
 }
 
+// AssetsResponse represents response type of Assets().
 type AssetsResponse struct {
 	Data []Asset
+	api.Response
+}
+
+// AssetByIdResponse represents response type of AssetById().
+type AssetByIdResponse struct {
+	Data Asset
 	api.Response
 }
 
@@ -126,4 +144,33 @@ func (m *API) Assets(ctx context.Context, params AssetsParam) (*AssetsResponse, 
 	err = json.Unmarshal(body, &assetsResp.Data)
 
 	return assetsResp, err
+}
+
+// AssetById returns details of single asset by provided id
+func (m *API) AssetById(ctx context.Context, params AssetByIdParam) (*AssetByIdResponse, error) {
+	url, err := url.Parse(fmt.Sprintf(m.Config.API.Prefix+"files/%s/details", params.FileId))
+
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, url.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	req.SetBasicAuth(m.Config.Cloud.PrivateKey, "")
+
+	resp, err := m.Client.Do(req.WithContext(ctx))
+	defer api.DeferredBodyClose(resp)
+
+	response := &AssetByIdResponse{}
+	api.SetResponseMeta(resp, response)
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return response, err
+	}
+	err = json.Unmarshal(body, &response.Data)
+	return response, err
 }
