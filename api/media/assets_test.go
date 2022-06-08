@@ -42,7 +42,7 @@ func TestAssets(t *testing.T) {
 		t.Error(err)
 	}
 
-	if !cmp.Equal(resp.Items, expected) {
-		t.Errorf("\n%v\n%v\n", resp.Items, expected)
+	if !cmp.Equal(resp.Data, expected) {
+		t.Errorf("\n%v\n%v\n", resp.Data, expected)
 	}
 }

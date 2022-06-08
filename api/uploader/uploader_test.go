@@ -38,13 +38,6 @@ var file = &UploadResult{
 	VersionInfo: map[string]string{
 		"id": "6299dcfb124cdf0dffaf2dfd", "name": "Version 1",
 	},
-	Response: api.Response{
-		ResponseMetaData: api.ResponseMetaData{
-			StatusCode: 200,
-			Status:     "200 OK",
-			Header:     header,
-		},
-	},
 }
 
 func newUploader(url string) (*API, error) {
@@ -60,7 +53,7 @@ func newUploader(url string) (*API, error) {
 }
 
 func TestUploader(t *testing.T) {
-	fileUploadResp, err := json.Marshal(file)
+	resultJson, err := json.Marshal(file)
 	if err != nil {
 		t.Error(err)
 	}
@@ -79,13 +72,13 @@ func TestUploader(t *testing.T) {
 	}{
 		"local-filepath": {
 			file:   iktest.ImageFilePath,
-			resp:   string(fileUploadResp),
+			resp:   string(resultJson),
 			param:  UploadParams{},
 			result: file,
 		},
 		"base64file": {
 			file: iktest.Base64Image,
-			resp: string(fileUploadResp),
+			resp: string(resultJson),
 			param: UploadParams{
 				FileName: "new-york-cityscape-buildings_A4zxKJbrL.jpg",
 			},
@@ -93,7 +86,7 @@ func TestUploader(t *testing.T) {
 		},
 		"io-reader": {
 			file: reader,
-			resp: string(fileUploadResp),
+			resp: string(resultJson),
 			param: UploadParams{
 				FileName: "new-york-cityscape-buildings_A4zxKJbrL.jpg",
 			},
@@ -164,8 +157,8 @@ func TestUploader(t *testing.T) {
 				}
 			}
 
-			if !cmp.Equal(resp, test.result) {
-				t.Errorf("\n%v\n%v\n", file, resp)
+			if !cmp.Equal(resp.Data, *test.result) {
+				t.Errorf("\n%v\n%v\n", resp.Data, *test.result)
 			}
 		})
 	}

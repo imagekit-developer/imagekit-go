@@ -37,6 +37,10 @@ type UploadResult struct {
 	FilePath     string              `json:"filePath"`
 	AITags       []map[string]string `json:"AITags"`
 	VersionInfo  map[string]string   `json:"versionInfo"`
+}
+
+type UploadResponse struct {
+	Data UploadResult
 	api.Response
 }
 
@@ -49,7 +53,7 @@ type UploadResult struct {
 //   * the remote FTP, HTTP or HTTPS URL address of an existing file
 //
 // https://docs.imagekit.io/api-reference/upload-file-api/server-side-file-upload
-func (u *API) Upload(ctx context.Context, file interface{}, uploadParams UploadParams) (*UploadResult, error) {
+func (u *API) Upload(ctx context.Context, file interface{}, uploadParams UploadParams) (*UploadResponse, error) {
 	var err error
 	formParams, err := api.StructToParams(uploadParams)
 
@@ -57,26 +61,23 @@ func (u *API) Upload(ctx context.Context, file interface{}, uploadParams UploadP
 		return nil, err
 	}
 
+	response := &UploadResponse{}
+
 	resp, err := u.postFile(ctx, file, formParams)
 	defer api.DeferredBodyClose(resp)
 
-	upload := &UploadResult{}
-	api.SetResponseMeta(resp, upload)
+	api.SetResponseMeta(resp, response)
 
 	if err != nil {
-		return upload, err
+		return response, err
 	}
 
 	data, err := io.ReadAll(resp.Body)
-
 	if err != nil {
-		return upload, err
+		return response, err
 	}
 
-	err = json.Unmarshal(data, upload)
+	err = json.Unmarshal(data, &response.Data)
 
-	// Unmarshal nullifies the previously set meta struct
-	api.SetResponseMeta(resp, upload)
-
-	return upload, err
+	return response, err
 }

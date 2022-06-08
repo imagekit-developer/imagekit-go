@@ -78,7 +78,7 @@ type Asset struct {
 }
 
 type AssetsResponse struct {
-	Items []Asset
+	Data []Asset
 	api.Response
 }
 
@@ -123,7 +123,7 @@ func (m *API) Assets(ctx context.Context, params AssetsParam) (*AssetsResponse, 
 	if err != nil {
 		return assetsResp, err
 	}
-	err = json.Unmarshal(body, &assetsResp.Items)
+	err = json.Unmarshal(body, &assetsResp.Data)
 
 	return assetsResp, err
 }

@@ -21,7 +21,6 @@ type HttpClient interface {
 // ResponseMetaData is used in response objects to provide metadata
 type ResponseMetaData struct {
 	Header     http.Header
-	Status     string
 	StatusCode int
 }
 
@@ -166,7 +165,6 @@ func SetResponseMeta(httpResp *http.Response, respStruct MetaSetter) {
 
 	meta := ResponseMetaData{
 		Header:     httpResp.Header,
-		Status:     httpResp.Status,
 		StatusCode: httpResp.StatusCode,
 	}
 	respStruct.SetMeta(meta)
