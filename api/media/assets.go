@@ -119,8 +119,8 @@ type UpdateAssetParam struct {
 	CustomMetadata    map[string]interface{} `json:"customMetadata,omitempty"`
 }
 
-// AddTagsParam represents parameters to add tags to bulk assets
-type AddTagsParam struct {
+// TagsParam represents parameters to add tags to bulk assets
+type TagsParam struct {
 	FileIds []string `json:"fileIds"`
 	Tags    []string `json:"tags"`
 }
@@ -129,8 +129,8 @@ type UpdatedIds struct {
 	FileIds []string `json:"successfullyUpdatedFileIds"`
 }
 
-// AddTagsResponse represents response to add tags to bulk assets. Contains fileIds in Data
-type AddTagsResponse struct {
+// TagsResponse represents response to add tags to bulk assets. Contains fileIds in Data
+type TagsResponse struct {
 	Data UpdatedIds
 	api.Response
 }
@@ -305,8 +305,8 @@ func (m *API) UpdateAsset(ctx context.Context, fileId string, params UpdateAsset
 }
 
 // AddTags assigns tags to bulk files specified by FileIds
-func (m *API) AddTags(ctx context.Context, params AddTagsParam) (*AddTagsResponse, error) {
-	response := &AddTagsResponse{}
+func (m *API) AddTags(ctx context.Context, params TagsParam) (*TagsResponse, error) {
+	response := &TagsResponse{}
 	var err error
 
 	body, err := json.Marshal(&params)
@@ -339,5 +339,42 @@ func (m *API) AddTags(ctx context.Context, params AddTagsParam) (*AddTagsRespons
 		err = json.Unmarshal(response.Body(), &response.Data)
 	}
 	log.Println(response.ResponseMetaData.StatusCode)
+	return response, err
+}
+
+// RemoveTags removes tags from bulk files specified by FileIds
+func (m *API) RemoveTags(ctx context.Context, params TagsParam) (*TagsResponse, error) {
+	response := &TagsResponse{}
+	var err error
+
+	body, err := json.Marshal(&params)
+	if err != nil {
+		return nil, err
+	}
+
+	url := api.BuildPath(m.Config.API.Prefix, "files", "removeTags")
+	req, err := http.NewRequest(http.MethodPost, url, bytes.NewBuffer(body))
+	req.Header.Set("Content-Type", "application/json")
+
+	if err != nil {
+		return nil, err
+	}
+
+	req.SetBasicAuth(m.Config.Cloud.PrivateKey, "")
+	resp, err := m.Client.Do(req.WithContext(ctx))
+	defer api.DeferredBodyClose(resp)
+
+	api.SetResponseMeta(resp, response)
+
+	if err != nil {
+		return response, err
+	}
+
+	if resp.StatusCode != 200 {
+		err = response.ParseError()
+	} else {
+		err = json.Unmarshal(response.Body(), &response.Data)
+	}
+
 	return response, err
 }
