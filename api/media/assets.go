@@ -1,10 +1,11 @@
 package media
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
-	"log"
 	"net/http"
 	"net/url"
 	"strings"
@@ -62,7 +63,7 @@ type AssetsParam struct {
 
 // AssetByIdParam struct is a parameter type to AssetsById() function to retrieve single asset details.
 type AssetByIdParam struct {
-	FileId string `json:"fileId"`
+	FileId string `validate:"nonzero" json:"fileId"`
 }
 
 // AssetVersionsParam represents filter for getting asset version
@@ -105,6 +106,16 @@ type AssetsResponse struct {
 type AssetByIdResponse struct {
 	Data Asset
 	api.Response
+}
+
+// UpdateAssetParam represents asset attributes to update
+type UpdateAssetParam struct {
+	RemoveAITags      []string               `json:"removeAITags,omitempty"`
+	WebhookUrl        string                 `json:"webhookUrl,omitempty"`
+	Extensions        map[string]interface{} `json:"extensions,omitempty"`
+	Tags              []string               `json:"tags,omitempty"`
+	CustomCoordinates string                 `json:"customCoordinates,omitempty"`
+	CustomMetadata    map[string]interface{} `json:"customMetadata,omitempty"`
 }
 
 // Assets retrieves media library assets. Filter options can be supplied as AssetsParams.
@@ -155,6 +166,10 @@ func (m *API) Assets(ctx context.Context, params AssetsParam) (*AssetsResponse, 
 
 // AssetById returns details of single asset by provided id
 func (m *API) AssetById(ctx context.Context, params AssetByIdParam) (*AssetByIdResponse, error) {
+	if err := validator.Validate(params); err != nil {
+		return nil, err
+	}
+
 	url, err := url.Parse(fmt.Sprintf(m.Config.API.Prefix+"files/%s/details", params.FileId))
 
 	if err != nil {
@@ -187,6 +202,7 @@ func (m *API) AssetById(ctx context.Context, params AssetByIdParam) (*AssetByIdR
 	return response, err
 }
 
+// AssetVersions fetches given file version specified by version id or all versions if versionId not supplied
 func (m *API) AssetVersions(ctx context.Context, params AssetVersionsParam) (*AssetsResponse, error) {
 	parts := []string{"files", params.FileId, "versions"}
 	if params.VersionId != "" {
@@ -198,8 +214,6 @@ func (m *API) AssetVersions(ctx context.Context, params AssetVersionsParam) (*As
 	}
 
 	url := m.Config.API.Prefix + strings.Join(parts, "/")
-
-	log.Println(url)
 
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
@@ -229,6 +243,45 @@ func (m *API) AssetVersions(ctx context.Context, params AssetVersionsParam) (*As
 				response.Data = []Asset{asset}
 			}
 		}
+	}
+	return response, err
+}
+
+func (m *API) UpdateAsset(ctx context.Context, fileId string, params UpdateAssetParam) (*AssetByIdResponse, error) {
+	response := &AssetByIdResponse{}
+	var err error
+
+	if fileId == "" {
+		return nil, errors.New("fileId can not be empty")
+	}
+
+	body, err := json.Marshal(&params)
+	if err != nil {
+		return nil, err
+	}
+
+	url := api.BuildPath(m.Config.API.Prefix, "files", fileId, "details")
+	req, err := http.NewRequest(http.MethodPatch, url, bytes.NewBuffer(body))
+	req.Header.Set("Content-Type", "application/json")
+
+	if err != nil {
+		return nil, err
+	}
+
+	req.SetBasicAuth(m.Config.Cloud.PrivateKey, "")
+	resp, err := m.Client.Do(req.WithContext(ctx))
+	defer api.DeferredBodyClose(resp)
+
+	api.SetResponseMeta(resp, response)
+
+	if err != nil {
+		return response, err
+	}
+
+	if resp.StatusCode != 200 {
+		err = response.ParseError()
+	} else {
+		err = json.Unmarshal(response.Body(), &response.Data)
 	}
 	return response, err
 }

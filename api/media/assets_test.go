@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"net/http/httptest"
@@ -168,6 +169,81 @@ func TestMedia_AssetVersions(t *testing.T) {
 
 			if !cmp.Equal(resp.Data, tc.result) {
 				t.Errorf("\n%v\n%v\n", resp.Data, tc.result)
+			}
+		})
+	}
+}
+
+func TestMedia_UpdateAsset(t *testing.T) {
+	var expected = asset
+	var mockBody = respBody[1 : len(respBody)-1]
+
+	var cases = map[string]struct {
+		result     *Asset
+		fileId     string
+		body       string
+		params     UpdateAssetParam
+		statusCode int
+		shouldFail bool
+	}{
+		"update asset": {
+			result:     &expected,
+			fileId:     "xxx",
+			body:       mockBody,
+			statusCode: 200,
+			shouldFail: false,
+			params: UpdateAssetParam{
+				RemoveAITags:      []string{"one", "two"},
+				WebhookUrl:        "http://example.com/hook",
+				Tags:              []string{"abc", "def"},
+				CustomCoordinates: "12,11,22,22",
+			},
+		},
+		"require fileid": {
+			fileId:     "",
+			body:       "",
+			statusCode: 400,
+			shouldFail: true,
+		},
+	}
+
+	for name, tc := range cases {
+		t.Run(name, func(t *testing.T) {
+			var bodyReceived []byte
+			var receivedRequest *http.Request
+
+			handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				bodyReceived, _ = io.ReadAll(r.Body)
+				receivedRequest = r.Clone(ctx)
+				w.WriteHeader(tc.statusCode)
+				fmt.Fprintln(w, tc.body)
+			})
+
+			ts := httptest.NewServer(handler)
+			defer ts.Close()
+
+			mediaApi.Config.API.Prefix = ts.URL + "/"
+			expectedBody, err := json.Marshal(tc.params)
+			response, err := mediaApi.UpdateAsset(ctx, tc.fileId, tc.params)
+
+			if receivedRequest != nil {
+				iktest.JsonRequest(receivedRequest, t)
+			}
+
+			if tc.shouldFail == false && !cmp.Equal(bodyReceived, expectedBody) {
+				t.Error("incorrect request body")
+			}
+
+			if tc.shouldFail == true && err == nil {
+				t.Error("expected err")
+			}
+
+			if tc.shouldFail == false && err != nil {
+				t.Error(err)
+			}
+
+			if !tc.shouldFail && !cmp.Equal(tc.result, &response.Data) {
+				t.Errorf("unexpected response %v\n%v", tc.result, response.Data)
 			}
 		})
 	}

@@ -1,9 +1,11 @@
 package test
 
 import (
+	"net/http"
 	"path"
 	"path/filepath"
 	"runtime"
+	"testing"
 
 	"github.com/dhaval070/imagekit-go/config"
 )
@@ -35,4 +37,16 @@ func TestDataDir() string {
 	d := path.Join(path.Dir(b))
 
 	return filepath.Dir(d) + "/test/testdata/"
+}
+
+func JsonRequest(r *http.Request, t *testing.T) {
+	h := r.Header
+
+	if h.Get("Authorization") != "Basic cHJpdmF0ZV9YeFpIK0k4QmZPb0lzWTBNOUNRdFM0bnlOU2s9Og==" {
+		t.Error("invalid authorization header")
+	}
+
+	if h.Get("Content-Type") != "application/json" {
+		t.Error("content type not application/json")
+	}
 }

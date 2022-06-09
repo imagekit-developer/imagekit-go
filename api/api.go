@@ -122,7 +122,7 @@ func BuildPath(parts ...interface{}) string {
 			partRes = fmt.Sprintf("%v", partVal)
 		}
 		if len(partRes) > 0 {
-			partsSlice = append(partsSlice, partRes)
+			partsSlice = append(partsSlice, strings.Trim(partRes, "/"))
 		}
 	}
 
