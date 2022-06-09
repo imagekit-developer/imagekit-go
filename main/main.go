@@ -2,8 +2,6 @@ package main
 
 import (
 	"context"
-	"encoding/json"
-	"fmt"
 	"log"
 
 	"github.com/dhaval070/imagekit-go"
@@ -11,20 +9,14 @@ import (
 )
 
 var ctx = context.Background()
+var ik, _ = imagekit.New()
+
+func getall() {
+	resp, _ := ik.Media.Assets(ctx, media.AssetsParam{})
+	log.Println(resp.Data)
+}
 
 func main() {
-	ik, err := imagekit.New()
+	getall()
 
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	resp, err := ik.Media.AssetById(ctx, media.AssetByIdParam{FileId: "6283aed9f2f6a2ee87e1d6b5"})
-	s, err := json.Marshal(resp.Data)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Println(string(s), err)
 }

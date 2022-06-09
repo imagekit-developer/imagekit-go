@@ -248,3 +248,36 @@ func TestMedia_UpdateAsset(t *testing.T) {
 		})
 	}
 }
+
+func TestMedia_AddTags(t *testing.T) {
+	var err error
+	var ids = []string{"xxx", "yyy"}
+	var tags = []string{"tag1", "tag2"}
+	var resp = UpdatedIds{
+		FileIds: ids,
+	}
+
+	respBody, _ := json.Marshal(&resp)
+
+	handler := getHandler(200, string(respBody))
+
+	ts := httptest.NewServer(handler)
+	defer ts.Close()
+
+	mediaApi.Config.API.Prefix = ts.URL + "/"
+
+	params := AddTagsParam{
+		FileIds: ids,
+		Tags:    tags,
+	}
+
+	response, err := mediaApi.AddTags(ctx, params)
+
+	if err != nil {
+		t.Error(err)
+	}
+
+	if !cmp.Equal(response.Data, resp) {
+		t.Errorf("%v\n%v", response.Data, resp)
+	}
+}

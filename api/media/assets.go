@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log"
 	"net/http"
 	"net/url"
 	"strings"
@@ -116,6 +117,22 @@ type UpdateAssetParam struct {
 	Tags              []string               `json:"tags,omitempty"`
 	CustomCoordinates string                 `json:"customCoordinates,omitempty"`
 	CustomMetadata    map[string]interface{} `json:"customMetadata,omitempty"`
+}
+
+// AddTagsParam represents parameters to add tags to bulk assets
+type AddTagsParam struct {
+	FileIds []string `json:"fileIds"`
+	Tags    []string `json:"tags"`
+}
+
+type UpdatedIds struct {
+	FileIds []string `json:"successfullyUpdatedFileIds"`
+}
+
+// AddTagsResponse represents response to add tags to bulk assets. Contains fileIds in Data
+type AddTagsResponse struct {
+	Data UpdatedIds
+	api.Response
 }
 
 // Assets retrieves media library assets. Filter options can be supplied as AssetsParams.
@@ -247,6 +264,7 @@ func (m *API) AssetVersions(ctx context.Context, params AssetVersionsParam) (*As
 	return response, err
 }
 
+// UpdateAsset updates single asset properties specified by UpdateAssetParam
 func (m *API) UpdateAsset(ctx context.Context, fileId string, params UpdateAssetParam) (*AssetByIdResponse, error) {
 	response := &AssetByIdResponse{}
 	var err error
@@ -283,5 +301,43 @@ func (m *API) UpdateAsset(ctx context.Context, fileId string, params UpdateAsset
 	} else {
 		err = json.Unmarshal(response.Body(), &response.Data)
 	}
+	return response, err
+}
+
+// AddTags assigns tags to bulk files specified by FileIds
+func (m *API) AddTags(ctx context.Context, params AddTagsParam) (*AddTagsResponse, error) {
+	response := &AddTagsResponse{}
+	var err error
+
+	body, err := json.Marshal(&params)
+	if err != nil {
+		return nil, err
+	}
+
+	log.Println(string(body))
+	url := api.BuildPath(m.Config.API.Prefix, "files", "addTags")
+	req, err := http.NewRequest(http.MethodPost, url, bytes.NewBuffer(body))
+	req.Header.Set("Content-Type", "application/json")
+
+	if err != nil {
+		return nil, err
+	}
+
+	req.SetBasicAuth(m.Config.Cloud.PrivateKey, "")
+	resp, err := m.Client.Do(req.WithContext(ctx))
+	defer api.DeferredBodyClose(resp)
+
+	api.SetResponseMeta(resp, response)
+
+	if err != nil {
+		return response, err
+	}
+
+	if resp.StatusCode != 200 {
+		err = response.ParseError()
+	} else {
+		err = json.Unmarshal(response.Body(), &response.Data)
+	}
+	log.Println(response.ResponseMetaData.StatusCode)
 	return response, err
 }
