@@ -4,9 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io"
+	"log"
 	"net/http"
 	"net/url"
+	"strings"
 	"time"
 
 	"github.com/creasty/defaults"
@@ -62,6 +63,12 @@ type AssetsParam struct {
 // AssetByIdParam struct is a parameter type to AssetsById() function to retrieve single asset details.
 type AssetByIdParam struct {
 	FileId string `json:"fileId"`
+}
+
+// AssetVersionsParam represents filter for getting asset version
+type AssetVersionsParam struct {
+	FileId    string `validate:"nonzero" json:"fileId"`
+	VersionId string `json:"versionId,omitempty"`
 }
 
 // Asset represents media library asset details.
@@ -130,20 +137,20 @@ func (m *API) Assets(ctx context.Context, params AssetsParam) (*AssetsResponse, 
 	resp, err := m.Client.Do(req.WithContext(ctx))
 	defer api.DeferredBodyClose(resp)
 
-	assetsResp := &AssetsResponse{}
-	api.SetResponseMeta(resp, assetsResp)
+	response := &AssetsResponse{}
+	api.SetResponseMeta(resp, response)
 
 	if err != nil {
-		return assetsResp, err
+		return response, err
 	}
 
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return assetsResp, err
+	if resp.StatusCode != 200 {
+		err = response.ParseError()
+	} else {
+		err = json.Unmarshal(response.Body(), &response.Data)
 	}
-	err = json.Unmarshal(body, &assetsResp.Data)
 
-	return assetsResp, err
+	return response, err
 }
 
 // AssetById returns details of single asset by provided id
@@ -165,12 +172,63 @@ func (m *API) AssetById(ctx context.Context, params AssetByIdParam) (*AssetByIdR
 	defer api.DeferredBodyClose(resp)
 
 	response := &AssetByIdResponse{}
+
 	api.SetResponseMeta(resp, response)
 
-	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return response, err
 	}
-	err = json.Unmarshal(body, &response.Data)
+
+	if resp.StatusCode != 200 {
+		err = response.ParseError()
+	} else {
+		err = json.Unmarshal(response.Body(), &response.Data)
+	}
+	return response, err
+}
+
+func (m *API) AssetVersions(ctx context.Context, params AssetVersionsParam) (*AssetsResponse, error) {
+	parts := []string{"files", params.FileId, "versions"}
+	if params.VersionId != "" {
+		parts = append(parts, params.VersionId)
+	}
+
+	if err := validator.Validate(&params); err != nil {
+		return nil, err
+	}
+
+	url := m.Config.API.Prefix + strings.Join(parts, "/")
+
+	log.Println(url)
+
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	req.SetBasicAuth(m.Config.Cloud.PrivateKey, "")
+
+	resp, err := m.Client.Do(req.WithContext(ctx))
+	defer api.DeferredBodyClose(resp)
+
+	response := &AssetsResponse{}
+	api.SetResponseMeta(resp, response)
+
+	if err != nil {
+		return response, err
+	}
+
+	if resp.StatusCode != 200 {
+		err = response.ParseError()
+	} else {
+		if params.VersionId == "" {
+			err = json.Unmarshal(response.Body(), &response.Data)
+		} else {
+			var asset = Asset{}
+			if err = json.Unmarshal(response.Body(), &asset); err == nil {
+				response.Data = []Asset{asset}
+			}
+		}
+	}
 	return response, err
 }

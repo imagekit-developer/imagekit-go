@@ -22,6 +22,7 @@ type HttpClient interface {
 type ResponseMetaData struct {
 	Header     http.Header
 	StatusCode int
+	Body       []byte
 }
 
 // Response is promoted struct to response objects
@@ -34,8 +35,18 @@ func (resp *Response) SetMeta(meta ResponseMetaData) {
 	resp.ResponseMetaData = meta
 }
 
+func (resp *Response) ParseError() error {
+	err := ParseError(resp.ResponseMetaData.Body)
+	return err
+}
+
+func (resp *Response) Body() []byte {
+	return resp.ResponseMetaData.Body
+}
+
 // MetaSetter is an interface to provide type safety to set meta
 type MetaSetter interface {
+	ParseError() error
 	SetMeta(ResponseMetaData)
 }
 
@@ -167,5 +178,28 @@ func SetResponseMeta(httpResp *http.Response, respStruct MetaSetter) {
 		Header:     httpResp.Header,
 		StatusCode: httpResp.StatusCode,
 	}
+
+	if body, err := io.ReadAll(httpResp.Body); err == nil {
+		meta.Body = body
+	}
 	respStruct.SetMeta(meta)
+}
+
+type ApiError struct {
+	Message string
+}
+
+func (err ApiError) Error() string {
+	return err.Message
+}
+
+func ParseError(body []byte) error {
+	var ikError = ApiError{}
+
+	err := json.Unmarshal(body, &ikError)
+	if err != nil {
+		return err
+	}
+
+	return ikError
 }

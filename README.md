@@ -121,7 +121,7 @@ resp, err := imgkit.Media.Assets(ctx, media.AssetsParams{
 ### 2. Get File Details
 Accepts the file ID and fetches the details as per the [API documentation here](https://docs.imagekit.io/api-reference/media-api/get-file-details).
 ```
-resp, err := imgkit.Media.AssetById(ctx, media.AssetParams{
+resp, err := imgkit.Media.AssetById(ctx, media.AssetByIdParams{
     FileId: fileId
 })
 ```
@@ -129,8 +129,9 @@ resp, err := imgkit.Media.AssetById(ctx, media.AssetParams{
 ### 3. Get File Version Details
 Get all the details and attributes of any version of a file as per the [API documentation here](https://docs.imagekit.io/api-reference/media-api/get-file-version-details).
 ```
-file, err := imgkit.Media.AssetVersionDetails(ctx, media.AssetParams{
-    FileId: fileId
+resp, err := imgkit.Media.AssetVersions(ctx, media.AssetVersionsParam{
+    FileId: fileId,
+    VersionId: "version-id",
 })
 
 ```
@@ -138,8 +139,8 @@ file, err := imgkit.Media.AssetVersionDetails(ctx, media.AssetParams{
 ### 4. Get File Versions
 Get all the file version details and attributes of a file as per the [API documentation here](https://docs.imagekit.io/api-reference/media-api/get-file-versions).
 ```
-files, err := imgkit.Media.AssetAllVersionDetails(ctx, media.AssetParams{
-    FileId: fileId
+resp, err := imgkit.Media.AssetVersions(ctx, media.AssetVersionsParam{
+    FileId: fileId,
 })
 ```
 

@@ -3,7 +3,6 @@ package uploader
 import (
 	"context"
 	"encoding/json"
-	"io"
 
 	"github.com/dhaval070/imagekit-go/api"
 )
@@ -72,12 +71,10 @@ func (u *API) Upload(ctx context.Context, file interface{}, uploadParams UploadP
 		return response, err
 	}
 
-	data, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return response, err
+	if resp.StatusCode != 200 {
+		err = response.ParseError()
+	} else {
+		err = json.Unmarshal(response.Body(), &response.Data)
 	}
-
-	err = json.Unmarshal(data, &response.Data)
-
 	return response, err
 }
