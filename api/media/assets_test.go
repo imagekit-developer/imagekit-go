@@ -314,3 +314,53 @@ func TestMedia_RemoveTags(t *testing.T) {
 		t.Errorf("%v\n%v", response.Data, resp)
 	}
 }
+
+func TestMedia_RemoveAITags(t *testing.T) {
+	var err error
+	var ids = []string{"xxx", "yyy"}
+	var tags = []string{"tag1", "tag2"}
+	var resp = UpdatedIds{
+		FileIds: ids,
+	}
+
+	respBody, _ := json.Marshal(&resp)
+
+	handler := getHandler(200, string(respBody))
+
+	ts := httptest.NewServer(handler)
+	defer ts.Close()
+
+	mediaApi.Config.API.Prefix = ts.URL + "/"
+
+	params := AITagsParam{
+		FileIds: ids,
+		AITags:  tags,
+	}
+
+	response, err := mediaApi.RemoveAITags(ctx, params)
+
+	if err != nil {
+		t.Error(err)
+	}
+
+	if !cmp.Equal(response.Data, resp) {
+		t.Errorf("%v\n%v", response.Data, resp)
+	}
+}
+
+func TestMedia_DeleteAsset(t *testing.T) {
+	var err error
+
+	handler := getHandler(204, string("1"))
+
+	ts := httptest.NewServer(handler)
+	defer ts.Close()
+
+	mediaApi.Config.API.Prefix = ts.URL + "/"
+	_, err = mediaApi.DeleteAsset(ctx, "xxx")
+
+	if err != nil {
+		t.Error(err)
+	}
+
+}

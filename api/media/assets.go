@@ -1,14 +1,11 @@
 package media
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
-	"net/http"
-	"net/url"
 	"strings"
 	"time"
 
@@ -125,6 +122,13 @@ type TagsParam struct {
 	Tags    []string `json:"tags"`
 }
 
+// AITagsParam represents parameters to add AI tags to bulk assets
+type AITagsParam struct {
+	FileIds []string `json:"fileIds"`
+	AITags  []string `json:"AITags"`
+}
+
+// UpdatedIds represents response to tags update calls
 type UpdatedIds struct {
 	FileIds []string `json:"successfullyUpdatedFileIds"`
 }
@@ -150,19 +154,7 @@ func (m *API) Assets(ctx context.Context, params AssetsParam) (*AssetsResponse, 
 		return nil, err
 	}
 
-	url, err := url.Parse(m.Config.API.Prefix + "files?" + values.Encode())
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest(http.MethodGet, url.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-
-	req.SetBasicAuth(m.Config.Cloud.PrivateKey, "")
-
-	resp, err := m.Client.Do(req.WithContext(ctx))
+	resp, err := m.Get(ctx, "files?"+values.Encode())
 	defer api.DeferredBodyClose(resp)
 
 	response := &AssetsResponse{}
@@ -187,20 +179,8 @@ func (m *API) AssetById(ctx context.Context, params AssetByIdParam) (*AssetByIdR
 		return nil, err
 	}
 
-	url, err := url.Parse(fmt.Sprintf(m.Config.API.Prefix+"files/%s/details", params.FileId))
+	resp, err := m.Get(ctx, fmt.Sprintf("files/%s/details", params.FileId))
 
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest(http.MethodGet, url.String(), nil)
-	if err != nil {
-		return nil, err
-	}
-
-	req.SetBasicAuth(m.Config.Cloud.PrivateKey, "")
-
-	resp, err := m.Client.Do(req.WithContext(ctx))
 	defer api.DeferredBodyClose(resp)
 
 	response := &AssetByIdResponse{}
@@ -230,16 +210,7 @@ func (m *API) AssetVersions(ctx context.Context, params AssetVersionsParam) (*As
 		return nil, err
 	}
 
-	url := m.Config.API.Prefix + strings.Join(parts, "/")
-
-	req, err := http.NewRequest(http.MethodGet, url, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	req.SetBasicAuth(m.Config.Cloud.PrivateKey, "")
-
-	resp, err := m.Client.Do(req.WithContext(ctx))
+	resp, err := m.Get(ctx, strings.Join(parts, "/"))
 	defer api.DeferredBodyClose(resp)
 
 	response := &AssetsResponse{}
@@ -278,16 +249,8 @@ func (m *API) UpdateAsset(ctx context.Context, fileId string, params UpdateAsset
 		return nil, err
 	}
 
-	url := api.BuildPath(m.Config.API.Prefix, "files", fileId, "details")
-	req, err := http.NewRequest(http.MethodPatch, url, bytes.NewBuffer(body))
-	req.Header.Set("Content-Type", "application/json")
+	resp, err := m.Patch(ctx, fmt.Sprintf("files/%s/details", fileId), body)
 
-	if err != nil {
-		return nil, err
-	}
-
-	req.SetBasicAuth(m.Config.Cloud.PrivateKey, "")
-	resp, err := m.Client.Do(req.WithContext(ctx))
 	defer api.DeferredBodyClose(resp)
 
 	api.SetResponseMeta(resp, response)
@@ -314,17 +277,7 @@ func (m *API) AddTags(ctx context.Context, params TagsParam) (*TagsResponse, err
 		return nil, err
 	}
 
-	log.Println(string(body))
-	url := api.BuildPath(m.Config.API.Prefix, "files", "addTags")
-	req, err := http.NewRequest(http.MethodPost, url, bytes.NewBuffer(body))
-	req.Header.Set("Content-Type", "application/json")
-
-	if err != nil {
-		return nil, err
-	}
-
-	req.SetBasicAuth(m.Config.Cloud.PrivateKey, "")
-	resp, err := m.Client.Do(req.WithContext(ctx))
+	resp, err := m.Post(ctx, "files/addTags", body)
 	defer api.DeferredBodyClose(resp)
 
 	api.SetResponseMeta(resp, response)
@@ -352,16 +305,7 @@ func (m *API) RemoveTags(ctx context.Context, params TagsParam) (*TagsResponse, 
 		return nil, err
 	}
 
-	url := api.BuildPath(m.Config.API.Prefix, "files", "removeTags")
-	req, err := http.NewRequest(http.MethodPost, url, bytes.NewBuffer(body))
-	req.Header.Set("Content-Type", "application/json")
-
-	if err != nil {
-		return nil, err
-	}
-
-	req.SetBasicAuth(m.Config.Cloud.PrivateKey, "")
-	resp, err := m.Client.Do(req.WithContext(ctx))
+	resp, err := m.Post(ctx, "files/removeTags", body)
 	defer api.DeferredBodyClose(resp)
 
 	api.SetResponseMeta(resp, response)
@@ -376,5 +320,57 @@ func (m *API) RemoveTags(ctx context.Context, params TagsParam) (*TagsResponse, 
 		err = json.Unmarshal(response.Body(), &response.Data)
 	}
 
+	return response, err
+}
+
+// RemoveAITags removes tags from bulk files specified by FileIds
+func (m *API) RemoveAITags(ctx context.Context, params AITagsParam) (*TagsResponse, error) {
+	response := &TagsResponse{}
+	var err error
+
+	body, err := json.Marshal(&params)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := m.Post(ctx, "files/removeAITags", body)
+	defer api.DeferredBodyClose(resp)
+
+	api.SetResponseMeta(resp, response)
+
+	if err != nil {
+		return response, err
+	}
+
+	if resp.StatusCode != 200 {
+		err = response.ParseError()
+	} else {
+		err = json.Unmarshal(response.Body(), &response.Data)
+	}
+
+	return response, err
+}
+
+// DeleteAsset removes an asset by FileId from media library
+func (m *API) DeleteAsset(ctx context.Context, fileId string) (*api.Response, error) {
+	var err error
+	response := &api.Response{}
+
+	if fileId == "" {
+		return nil, errors.New("fileId can not be empty")
+	}
+
+	resp, err := m.Delete(ctx, "files/"+fileId)
+	defer api.DeferredBodyClose(resp)
+
+	api.SetResponseMeta(resp, response)
+
+	if err != nil {
+		return response, err
+	}
+
+	if resp.StatusCode != 204 {
+		err = response.ParseError()
+	}
 	return response, err
 }

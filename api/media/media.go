@@ -1,6 +1,8 @@
 package media
 
 import (
+	"bytes"
+	"context"
 	"net/http"
 
 	"github.com/dhaval070/imagekit-go/api"
@@ -32,4 +34,58 @@ func NewFromConfiguration(c *config.Configuration) (*API, error) {
 		Client: &http.Client{},
 		Logger: logger.New(),
 	}, nil
+}
+
+func (m *API) Post(ctx context.Context, url string, body []byte) (*http.Response, error) {
+	url = api.BuildPath(m.Config.API.Prefix, url)
+	req, err := http.NewRequest(http.MethodPost, url, bytes.NewBuffer(body))
+
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+	req.SetBasicAuth(m.Config.Cloud.PrivateKey, "")
+
+	return m.Client.Do(req.WithContext(ctx))
+}
+
+func (m *API) Get(ctx context.Context, url string) (*http.Response, error) {
+	url = api.BuildPath(m.Config.API.Prefix, url)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+
+	if err != nil {
+		return nil, err
+	}
+
+	req.SetBasicAuth(m.Config.Cloud.PrivateKey, "")
+
+	return m.Client.Do(req.WithContext(ctx))
+}
+
+func (m *API) Delete(ctx context.Context, url string) (*http.Response, error) {
+	url = api.BuildPath(m.Config.API.Prefix, url)
+	req, err := http.NewRequest(http.MethodDelete, url, nil)
+
+	if err != nil {
+		return nil, err
+	}
+
+	req.SetBasicAuth(m.Config.Cloud.PrivateKey, "")
+
+	return m.Client.Do(req.WithContext(ctx))
+}
+
+func (m *API) Patch(ctx context.Context, url string, body []byte) (*http.Response, error) {
+	url = api.BuildPath(m.Config.API.Prefix, url)
+	req, err := http.NewRequest(http.MethodPatch, url, bytes.NewBuffer(body))
+
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+	req.SetBasicAuth(m.Config.Cloud.PrivateKey, "")
+
+	return m.Client.Do(req.WithContext(ctx))
 }

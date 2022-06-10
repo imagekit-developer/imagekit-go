@@ -147,8 +147,7 @@ resp, err := imgkit.Media.AssetVersions(ctx, media.AssetVersionsParam{
 ### 5. Update File Details
 Update parameters associated with the file as per the [API documentation here](https://docs.imagekit.io/api-reference/media-api/update-file-details).
 ```
-resp, err := imgkit.Media.UpdateAsset(ctx, media.UpdateAssetParams{
-    FileId: fileId,
+resp, err := imgkit.Media.UpdateAsset(ctx, fileId, media.UpdateAssetParam{
     Tags: []string{"tag1", "tag2"},
     RemoveAITags: []string{"car", "suv"},
 })
@@ -157,16 +156,16 @@ resp, err := imgkit.Media.UpdateAsset(ctx, media.UpdateAssetParams{
 ### 6. Add Tags (bulk)
 Adds given tags to multiple files. Accepts slices of tags and file ids. Returns slice of file ids. [API documentation here](https://docs.imagekit.io/api-reference/media-api/add-tags-bulk)
 ```
-ids, err := imgkit.Media.AddTags(ctx, media.TagsParams{
+resp, err := imgkit.Media.AddTags(ctx, media.TagsParam{
     FileIds: []string{"one", "two"},
     Tags: []string{"tag1", "tag2"},
 })
 ```
 
 ### 7. Remove Tags (bulk)
-Remove tags in bulk API. Returns slice of file ids. [API documentation here](https://docs.imagekit.io/api-reference/media-api/remove-tags-bulk)
+Removes tags from multiple assets. Returns slice of file ids updated. [API documentation here](https://docs.imagekit.io/api-reference/media-api/remove-tags-bulk)
 ```
-ids, err := imgkit.Media.RemoveTags(ctx, media.TagsParams{
+resp, err := imgkit.Media.RemoveTags(ctx, media.TagsParam{
     FileIds: []string{"one", "two"},
     Tags: []string{"tag1", "tag2"},
 })
@@ -174,7 +173,7 @@ ids, err := imgkit.Media.RemoveTags(ctx, media.TagsParams{
 ### 8. Remove AITags (bulk)
 Remove AITags in bulk API. Returns slice of file ids. [API documentation here](https://docs.imagekit.io/api-reference/media-api/remove-aitags-bulk)
 ```
-ids, err := imgkit.Media.RemoveAITags(ctx, media.AITagsParams{
+resp, err := imgkit.Media.RemoveAITags(ctx, media.AITagsParam{
     FileIds: []string{"one", "two"},
     AITags: []string{"tag1", "tag2"},
 })
@@ -183,9 +182,7 @@ ids, err := imgkit.Media.RemoveAITags(ctx, media.AITagsParams{
 ### 9. Delete File
 Delete a file by fileId. [API documentation here](https://docs.imagekit.io/api-reference/media-api/delete-file).
 ```
-ids, err := imgkit.Media.DeleteAsset(ctx, media.AssetParams{
-    FileId: "xxx",
-)
+resp, err := imgkit.Media.DeleteAsset(ctx, fileId)
 ```
 
 ### 10. Delete File Version
