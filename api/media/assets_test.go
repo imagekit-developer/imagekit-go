@@ -381,3 +381,31 @@ func TestMedia_DeleteAssetVersion(t *testing.T) {
 	}
 
 }
+
+func TestMedia_DeleteBulkAssets(t *testing.T) {
+	var err error
+	var param = FileIdsParam{
+		FileIds: []string{
+			"62a35f6b0997a21767376af8", "62a35f6b0997a28e21376af5",
+		},
+	}
+
+	var respBody = `{"successfullyDeletedFileIds":["62a35f6b0997a21767376af8","62a35f6b0997a28e21376af5"]}`
+
+	handler := getHandler(200, respBody)
+
+	ts := httptest.NewServer(handler)
+	defer ts.Close()
+
+	mediaApi.Config.API.Prefix = ts.URL + "/"
+
+	resp, err := mediaApi.DeleteBulkAssets(ctx, param)
+
+	if err != nil {
+		t.Error(err)
+	}
+
+	if !cmp.Equal(resp.Data.FileIds, param.FileIds) {
+		t.Errorf("expected: %v, got: %v", param.FileIds, resp.Data.FileIds)
+	}
+}

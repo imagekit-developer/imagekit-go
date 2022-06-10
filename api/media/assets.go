@@ -139,6 +139,22 @@ type TagsResponse struct {
 	api.Response
 }
 
+// FileIdsParam is a struct to hold slice of file ids to pass as a parameter.
+type FileIdsParam struct {
+	FileIds []string `validate:"nonzero" json:"fileIds"`
+}
+
+// DeletedIds is a struct to hold slice of successfully deleted assets ids.
+type DeletedIds struct {
+	FileIds []string `json:"successfullyDeletedFileIds"`
+}
+
+// DeleteAssetsResponse represents response to delete assets api which includes ids of deleted assets.
+type DeleteAssetsResponse struct {
+	Data DeletedIds
+	api.Response
+}
+
 // Assets retrieves media library assets. Filter options can be supplied as AssetsParams.
 func (m *API) Assets(ctx context.Context, params AssetsParam) (*AssetsResponse, error) {
 	if err := defaults.Set(&params); err != nil {
@@ -399,6 +415,37 @@ func (m *API) DeleteAssetVersion(ctx context.Context, fileId string, versionId s
 
 	if resp.StatusCode != 204 {
 		err = response.ParseError()
+	}
+	return response, err
+}
+
+// DeleteBulkAssets deletes multiple assets from media library
+func (m *API) DeleteBulkAssets(ctx context.Context, param FileIdsParam) (*DeleteAssetsResponse, error) {
+	var err error
+	response := &DeleteAssetsResponse{}
+
+	if err = validator.Validate(&param); err != nil {
+		return nil, err
+	}
+
+	body, err := json.Marshal(&param)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := m.Post(ctx, "files/batch/deleteByFileIds", body)
+	defer api.DeferredBodyClose(resp)
+
+	api.SetResponseMeta(resp, response)
+
+	if err != nil {
+		return response, err
+	}
+
+	if resp.StatusCode != 200 {
+		err = response.ParseError()
+	} else {
+		err = json.Unmarshal(response.Body(), &response.Data)
 	}
 	return response, err
 }

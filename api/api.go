@@ -25,6 +25,11 @@ type ResponseMetaData struct {
 	Body       []byte
 }
 
+// Stringer to get prntable metadata
+func (rm ResponseMetaData) String() string {
+	return fmt.Sprintf("%d\n%s\n%v", rm.StatusCode, string(rm.Body), rm.Header)
+}
+
 // Response is promoted struct to response objects
 type Response struct {
 	ResponseMetaData
