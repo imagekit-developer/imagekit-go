@@ -374,3 +374,31 @@ func (m *API) DeleteAsset(ctx context.Context, fileId string) (*api.Response, er
 	}
 	return response, err
 }
+
+// DeleteAssetVersion removes given asset version
+func (m *API) DeleteAssetVersion(ctx context.Context, fileId string, versionId string) (*api.Response, error) {
+	var err error
+	response := &api.Response{}
+
+	if fileId == "" {
+		return nil, errors.New("fileId can not be empty")
+	}
+
+	if versionId == "" {
+		return nil, errors.New("versionId can not be empty")
+	}
+
+	resp, err := m.Delete(ctx, fmt.Sprintf("files/%s/versions/%s", fileId, versionId))
+	defer api.DeferredBodyClose(resp)
+
+	api.SetResponseMeta(resp, response)
+
+	if err != nil {
+		return response, err
+	}
+
+	if resp.StatusCode != 204 {
+		err = response.ParseError()
+	}
+	return response, err
+}

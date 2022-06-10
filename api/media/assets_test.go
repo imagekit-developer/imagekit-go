@@ -364,3 +364,20 @@ func TestMedia_DeleteAsset(t *testing.T) {
 	}
 
 }
+
+func TestMedia_DeleteAssetVersion(t *testing.T) {
+	var err error
+
+	handler := getHandler(204, string("1"))
+
+	ts := httptest.NewServer(handler)
+	defer ts.Close()
+
+	mediaApi.Config.API.Prefix = ts.URL + "/"
+	_, err = mediaApi.DeleteAssetVersion(ctx, "xxx", "v2")
+
+	if err != nil {
+		t.Error(err)
+	}
+
+}
