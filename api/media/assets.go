@@ -100,8 +100,8 @@ type AssetsResponse struct {
 	api.Response
 }
 
-// AssetByIdResponse represents response type of AssetById().
-type AssetByIdResponse struct {
+// AssetResponse represents response type of AssetById().
+type AssetResponse struct {
 	Data Asset
 	api.Response
 }
@@ -221,7 +221,7 @@ func (m *API) Assets(ctx context.Context, params AssetsParam) (*AssetsResponse, 
 }
 
 // AssetById returns details of single asset by provided id
-func (m *API) AssetById(ctx context.Context, params AssetByIdParam) (*AssetByIdResponse, error) {
+func (m *API) AssetById(ctx context.Context, params AssetByIdParam) (*AssetResponse, error) {
 	if err := validator.Validate(params); err != nil {
 		return nil, err
 	}
@@ -230,7 +230,7 @@ func (m *API) AssetById(ctx context.Context, params AssetByIdParam) (*AssetByIdR
 
 	defer api.DeferredBodyClose(resp)
 
-	response := &AssetByIdResponse{}
+	response := &AssetResponse{}
 
 	api.SetResponseMeta(resp, response)
 
@@ -283,8 +283,8 @@ func (m *API) AssetVersions(ctx context.Context, params AssetVersionsParam) (*As
 }
 
 // UpdateAsset updates single asset properties specified by UpdateAssetParam
-func (m *API) UpdateAsset(ctx context.Context, fileId string, params UpdateAssetParam) (*AssetByIdResponse, error) {
-	response := &AssetByIdResponse{}
+func (m *API) UpdateAsset(ctx context.Context, fileId string, params UpdateAssetParam) (*AssetResponse, error) {
+	response := &AssetResponse{}
 	var err error
 
 	if fileId == "" {
@@ -530,5 +530,27 @@ func (m *API) RenameAsset(ctx context.Context, param RenameAssetParam) (*RenameA
 		err = json.Unmarshal(response.Body(), &response.Data)
 	}
 
+	return response, err
+}
+
+// RestoreVersion sets specified verison of the asset as current version
+func (m *API) RestoreVersion(ctx context.Context, param AssetVersionsParam) (*AssetResponse, error) {
+	var err error
+	var response = &AssetResponse{}
+
+	if err = validator.Validate(&param); err != nil {
+		return nil, err
+	}
+
+	resp, err := m.Put(ctx, fmt.Sprintf("files/%s/versions/%s/restore",
+		param.FileId, param.VersionId), nil)
+
+	api.SetResponseMeta(resp, response)
+
+	if resp.StatusCode != 200 {
+		err = response.ParseError()
+	} else {
+		err = json.Unmarshal(response.Body(), &response.Data)
+	}
 	return response, err
 }

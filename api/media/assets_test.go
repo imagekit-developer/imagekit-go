@@ -476,3 +476,29 @@ func TestMedia_RenameAsset(t *testing.T) {
 		t.Error("unexpected request id returned")
 	}
 }
+
+func TestMedia_RestoreVersion(t *testing.T) {
+	var err error
+
+	var param = AssetVersionsParam{
+		FileId:    "62a35f6b1c95a03491132a5f",
+		VersionId: "62a46fd4eb9c261a3d4a9aa8",
+	}
+	var mockBody = respBody[1 : len(respBody)-1]
+
+	handler := getHandler(200, mockBody)
+
+	ts := httptest.NewServer(handler)
+	defer ts.Close()
+
+	mediaApi.Config.API.Prefix = ts.URL + "/"
+
+	resp, err := mediaApi.RestoreVersion(ctx, param)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if !cmp.Equal(resp.Data, asset) {
+		t.Error("unexpected response")
+	}
+}
