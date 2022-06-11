@@ -409,3 +409,46 @@ func TestMedia_DeleteBulkAssets(t *testing.T) {
 		t.Errorf("expected: %v, got: %v", param.FileIds, resp.Data.FileIds)
 	}
 }
+
+func TestMedia_CopyAsset(t *testing.T) {
+	var err error
+	var param = CopyAssetParam{
+		SourcePath:      "/file.jpg",
+		DestinationPath: "/natural/file.jpg",
+		IncludeVersions: true,
+	}
+
+	handler := getHandler(204, "")
+
+	ts := httptest.NewServer(handler)
+	defer ts.Close()
+
+	mediaApi.Config.API.Prefix = ts.URL + "/"
+
+	_, err = mediaApi.CopyAsset(ctx, param)
+	if err != nil {
+		t.Error(err)
+	}
+
+}
+
+func TestMedia_MoveAsset(t *testing.T) {
+	var err error
+	var param = MoveAssetParam{
+		SourcePath:      "/file.jpg",
+		DestinationPath: "/natural/",
+	}
+
+	handler := getHandler(204, "")
+
+	ts := httptest.NewServer(handler)
+	defer ts.Close()
+
+	mediaApi.Config.API.Prefix = ts.URL + "/"
+
+	_, err = mediaApi.MoveAsset(ctx, param)
+	if err != nil {
+		t.Error(err)
+	}
+
+}

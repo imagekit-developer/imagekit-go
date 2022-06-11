@@ -3,6 +3,7 @@ package media
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"net/http"
 
 	"github.com/dhaval070/imagekit-go/api"
@@ -36,8 +37,17 @@ func NewFromConfiguration(c *config.Configuration) (*API, error) {
 	}, nil
 }
 
-func (m *API) Post(ctx context.Context, url string, body []byte) (*http.Response, error) {
+func (m *API) Post(ctx context.Context, url string, data interface{}) (*http.Response, error) {
 	url = api.BuildPath(m.Config.API.Prefix, url)
+	var err error
+	var body []byte
+
+	if data != nil {
+		if body, err = json.Marshal(data); err != nil {
+			return nil, err
+		}
+	}
+
 	req, err := http.NewRequest(http.MethodPost, url, bytes.NewBuffer(body))
 
 	if err != nil {
@@ -76,8 +86,16 @@ func (m *API) Delete(ctx context.Context, url string) (*http.Response, error) {
 	return m.Client.Do(req.WithContext(ctx))
 }
 
-func (m *API) Patch(ctx context.Context, url string, body []byte) (*http.Response, error) {
+func (m *API) Patch(ctx context.Context, url string, data interface{}) (*http.Response, error) {
 	url = api.BuildPath(m.Config.API.Prefix, url)
+	var err error
+	var body []byte
+
+	if data != nil {
+		if body, err = json.Marshal(data); err != nil {
+			return nil, err
+		}
+	}
 	req, err := http.NewRequest(http.MethodPatch, url, bytes.NewBuffer(body))
 
 	if err != nil {

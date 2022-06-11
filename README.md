@@ -188,16 +188,13 @@ resp, err := imgkit.Media.DeleteAsset(ctx, fileId)
 ### 10. Delete File Version
 Deletes given version of the file. [API documentation here](https://docs.imagekit.io/api-reference/media-api/delete-file-version)
 ```
-err := imgkit.Media.DeleteAssetVersion(ctx, media.AssetParams{
-    FileId: "xxx",
-    VersionId: "xxx",
-)
+resp, err := imgkit.Media.DeleteAssetVersion(ctx, "fileId", "version-1")
 ```
 
 ### 11. Delete Files (bulk)
 Deletes multiple files. [API documentation here](https://docs.imagekit.io/api-reference/media-api/delete-files-bulk).
 ```
-ids, err := imgkit.Media.DeleteAssets(ctx, media.DeleteAssetsParams{
+resp, err := imgkit.Media.DeleteBulkAssets(ctx, media.FileIdsParam{
     FileIds: []string{"fileId1", "fileId2"},
 )
 ```
@@ -206,7 +203,7 @@ ids, err := imgkit.Media.DeleteAssets(ctx, media.DeleteAssetsParams{
 This will copy a file from one location to another as per [API documentation here](https://docs.imagekit.io/api-reference/media-api/copy-file).
 Accepts the source file's path and destination folder path.
 ```
-err := imgkit.Media.CopyAsset(ctx, media.CopyAssetParams{
+resp, err := imgkit.Media.CopyAsset(ctx, media.CopyAssetParam{
     SourcePath: "/source/a.jpg",
     DestinationPath: "/target/",
     IncludeVersions: true,

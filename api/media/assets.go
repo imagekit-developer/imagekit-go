@@ -155,6 +155,19 @@ type DeleteAssetsResponse struct {
 	api.Response
 }
 
+// CopyAssetParam represents parameters to copy asset api
+type CopyAssetParam struct {
+	SourcePath      string `validate:"nonzero" json:"sourceFilePath"`
+	DestinationPath string `validate:"nonzero" json:"destinationPath"`
+	IncludeVersions bool   `json:"includeVersions"`
+}
+
+// MoveAssetParam represents parameters to move asset api
+type MoveAssetParam struct {
+	SourcePath      string `validate:"nonzero" json:"sourceFilePath"`
+	DestinationPath string `validate:"nonzero" json:"destinationPath"`
+}
+
 // Assets retrieves media library assets. Filter options can be supplied as AssetsParams.
 func (m *API) Assets(ctx context.Context, params AssetsParam) (*AssetsResponse, error) {
 	if err := defaults.Set(&params); err != nil {
@@ -260,12 +273,7 @@ func (m *API) UpdateAsset(ctx context.Context, fileId string, params UpdateAsset
 		return nil, errors.New("fileId can not be empty")
 	}
 
-	body, err := json.Marshal(&params)
-	if err != nil {
-		return nil, err
-	}
-
-	resp, err := m.Patch(ctx, fmt.Sprintf("files/%s/details", fileId), body)
+	resp, err := m.Patch(ctx, fmt.Sprintf("files/%s/details", fileId), params)
 
 	defer api.DeferredBodyClose(resp)
 
@@ -288,12 +296,7 @@ func (m *API) AddTags(ctx context.Context, params TagsParam) (*TagsResponse, err
 	response := &TagsResponse{}
 	var err error
 
-	body, err := json.Marshal(&params)
-	if err != nil {
-		return nil, err
-	}
-
-	resp, err := m.Post(ctx, "files/addTags", body)
+	resp, err := m.Post(ctx, "files/addTags", params)
 	defer api.DeferredBodyClose(resp)
 
 	api.SetResponseMeta(resp, response)
@@ -316,12 +319,7 @@ func (m *API) RemoveTags(ctx context.Context, params TagsParam) (*TagsResponse, 
 	response := &TagsResponse{}
 	var err error
 
-	body, err := json.Marshal(&params)
-	if err != nil {
-		return nil, err
-	}
-
-	resp, err := m.Post(ctx, "files/removeTags", body)
+	resp, err := m.Post(ctx, "files/removeTags", params)
 	defer api.DeferredBodyClose(resp)
 
 	api.SetResponseMeta(resp, response)
@@ -344,12 +342,7 @@ func (m *API) RemoveAITags(ctx context.Context, params AITagsParam) (*TagsRespon
 	response := &TagsResponse{}
 	var err error
 
-	body, err := json.Marshal(&params)
-	if err != nil {
-		return nil, err
-	}
-
-	resp, err := m.Post(ctx, "files/removeAITags", body)
+	resp, err := m.Post(ctx, "files/removeAITags", params)
 	defer api.DeferredBodyClose(resp)
 
 	api.SetResponseMeta(resp, response)
@@ -428,12 +421,7 @@ func (m *API) DeleteBulkAssets(ctx context.Context, param FileIdsParam) (*Delete
 		return nil, err
 	}
 
-	body, err := json.Marshal(&param)
-	if err != nil {
-		return nil, err
-	}
-
-	resp, err := m.Post(ctx, "files/batch/deleteByFileIds", body)
+	resp, err := m.Post(ctx, "files/batch/deleteByFileIds", param)
 	defer api.DeferredBodyClose(resp)
 
 	api.SetResponseMeta(resp, response)
@@ -448,4 +436,58 @@ func (m *API) DeleteBulkAssets(ctx context.Context, param FileIdsParam) (*Delete
 		err = json.Unmarshal(response.Body(), &response.Data)
 	}
 	return response, err
+}
+
+// CopyAsset copies an asset to target path
+func (m *API) CopyAsset(ctx context.Context, param CopyAssetParam) (*api.Response, error) {
+	var err error
+
+	response := &api.Response{}
+
+	if err = validator.Validate(&param); err != nil {
+		return nil, err
+	}
+
+	resp, err := m.Post(ctx, "files/copy", &param)
+	defer api.DeferredBodyClose(resp)
+
+	api.SetResponseMeta(resp, response)
+
+	if err != nil {
+		return response, err
+	}
+
+	if resp.StatusCode != 204 {
+		err = response.ParseError()
+	}
+	return response, err
+}
+
+// MoveAsset moves an asset to target path
+func (m *API) MoveAsset(ctx context.Context, param MoveAssetParam) (*api.Response, error) {
+	var err error
+
+	response := &api.Response{}
+
+	if err = validator.Validate(&param); err != nil {
+		return nil, err
+	}
+
+	resp, err := m.Post(ctx, "files/move", &param)
+	defer api.DeferredBodyClose(resp)
+
+	api.SetResponseMeta(resp, response)
+
+	if err != nil {
+		return response, err
+	}
+
+	if resp.StatusCode != 204 {
+		err = response.ParseError()
+	}
+	return response, err
+}
+
+func (m *API) RenameAsset(ctx context.Context, param RenameAssetParam) {
+
 }
