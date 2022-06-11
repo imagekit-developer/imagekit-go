@@ -22,7 +22,7 @@ type DeleteFolderParam struct {
 // CopyFolderParam represents parameter to copy folder api
 type CopyFolderParam struct {
 	SourceFolderPath string `validate:"nonzero" json:"sourceFolderPath"`
-	destinationPath  string `validate:"nonzero" json:"destinationPath"`
+	DestinationPath  string `validate:"nonzero" json:"destinationPath"`
 	IncludeVersions  bool   `json:"includeVersions"`
 }
 
@@ -37,8 +37,8 @@ type JobIdResponse struct {
 	JobId string `json:"jobId"`
 }
 
-//MoveFolderResponse respresents struct for response to move folder api.
-type MoveFolderResponse struct {
+//FolderResponse respresents struct for response to move folder api.
+type FolderResponse struct {
 	Data JobIdResponse
 	api.Response
 }
@@ -93,15 +93,39 @@ func (m *API) DeleteFolder(ctx context.Context, param DeleteFolderParam) (*api.R
 }
 
 // MoveFolder moves given folder to new path in media library
-func (m *API) MoveFolder(ctx context.Context, param MoveFolderParam) (*MoveFolderResponse, error) {
+func (m *API) MoveFolder(ctx context.Context, param MoveFolderParam) (*FolderResponse, error) {
 	var err error
-	var response = &MoveFolderResponse{}
+	var response = &FolderResponse{}
 
 	if err = validator.Validate(&param); err != nil {
 		return nil, err
 	}
 
 	resp, err := m.Post(ctx, "bulkJobs/moveFolder", &param)
+	defer api.DeferredBodyClose(resp)
+	api.SetResponseMeta(resp, response)
+
+	if err != nil {
+		return response, err
+	}
+
+	if resp.StatusCode != 200 {
+		err = response.ParseError()
+	} else {
+		err = json.Unmarshal(response.Body(), &response.Data)
+	}
+	return response, err
+}
+
+func (m *API) CopyFolder(ctx context.Context, param CopyFolderParam) (*FolderResponse, error) {
+	var err error
+	var response = &FolderResponse{}
+
+	if err = validator.Validate(&param); err != nil {
+		return nil, err
+	}
+
+	resp, err := m.Post(ctx, "bulkJobs/copyFolder", &param)
 	defer api.DeferredBodyClose(resp)
 	api.SetResponseMeta(resp, response)
 

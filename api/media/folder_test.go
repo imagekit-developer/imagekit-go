@@ -1,6 +1,7 @@
 package media
 
 import (
+	"encoding/json"
 	"net/http/httptest"
 	"testing"
 
@@ -65,6 +66,36 @@ func TestMedia_MoveFolder(t *testing.T) {
 
 	mediaApi.Config.API.Prefix = ts.URL + "/"
 	response, err := mediaApi.MoveFolder(ctx, param)
+
+	if err != nil {
+		t.Error(err)
+	}
+	if !cmp.Equal(response.Data.JobId, "xxx") {
+		t.Error(response.Data)
+	}
+}
+
+func TestMedia_CopyFolder(t *testing.T) {
+	var err error
+
+	var param = CopyFolderParam{
+		SourceFolderPath: "/src",
+		DestinationPath:  "dest",
+	}
+
+	rs := FolderResponse{
+		Data: JobIdResponse{
+			JobId: "xxx",
+		},
+	}
+	respBody, _ := json.Marshal(&rs.Data)
+
+	handler := getHandler(200, string(respBody))
+	ts := httptest.NewServer(handler)
+	defer ts.Close()
+
+	mediaApi.Config.API.Prefix = ts.URL + "/"
+	response, err := mediaApi.CopyFolder(ctx, param)
 
 	if err != nil {
 		t.Error(err)

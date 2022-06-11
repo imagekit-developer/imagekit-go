@@ -257,7 +257,7 @@ resp, err := imgkit.Media.CreateFolder(ctx, media.CreateFolderParams{
 Deletes the specified folder and all nested files, their versions & folders. This action cannot be undone. Accepts string type folder name to delete. [API documentation here](https://docs.imagekit.io/api-reference/media-api/delete-folder).
 
 ```
-resp, err := imgkit.Media.DeleteFolder(ctx, media.DeleteFolderParams{
+resp, err := imgkit.Media.DeleteFolder(ctx, media.DeleteFolderParam{
     FolderPath: "/some/pics/nature",
 })
 ```
@@ -265,17 +265,17 @@ resp, err := imgkit.Media.DeleteFolder(ctx, media.DeleteFolderParams{
 ### 18. Copy Folder
 Copies given folder to new location with or without versions info as per [API documentation here](https://docs.imagekit.io/api-reference/media-api/copy-folder).
 ```
-err := imgkit.Media.CopyFolder(ctx, media.CopyFolderParams{
+err := imgkit.Media.CopyFolder(ctx, media.CopyFolderParam{
     SourceFolderPath: "source/path",
-    DestinationPath: "destination/path",
+    DestinationPath: "destination/",
     IncludeVersions: true
 })
 ```
 
 ### 19. Move Folder
-Movies given folder path to new location as per [API documentation here](https://docs.imagekit.io/api-reference/media-api/move-folder).
+Moves given folder path to new location as per [API documentation here](https://docs.imagekit.io/api-reference/media-api/move-folder).
 ```
-err := imgkit.Media.MoveFolder(ctx, media.MoveFolderParams{
+err := imgkit.Media.MoveFolder(ctx, media.MoveFolderParam{
     SourceFolderPath: "source/path",
     DestinationPath: "destination/path",
 })
@@ -285,9 +285,7 @@ err := imgkit.Media.MoveFolder(ctx, media.MoveFolderParams{
 Get status of a bulk job operation by job id.  Accepts string type job id. [API documentation here](https://docs.imagekit.io/api-reference/media-api/copy-move-folder-status).
 
 ```
-resp, err := imgkit.BulkJobStatus(ctx, imagekit.BulkJobStatusParams{
-    JobId: "xxx",
-})
+resp, err := imgkit.BulkJobStatus(ctx, "jobid")
 ```
 
 ### 21. Purge Cache
