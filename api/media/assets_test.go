@@ -502,3 +502,25 @@ func TestMedia_RestoreVersion(t *testing.T) {
 		t.Error("unexpected response")
 	}
 }
+
+func TestMedia_CreateFolder(t *testing.T) {
+	var err error
+
+	var param = CreateFolderParam{
+		FolderName:       "testing",
+		ParentFolderPath: "/",
+	}
+
+	handler := getHandler(201, "{}")
+
+	ts := httptest.NewServer(handler)
+	defer ts.Close()
+
+	mediaApi.Config.API.Prefix = ts.URL + "/"
+
+	_, err = mediaApi.CreateFolder(ctx, param)
+
+	if err != nil {
+		t.Error(err)
+	}
+}

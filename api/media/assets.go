@@ -186,6 +186,12 @@ type RenameAssetResponse struct {
 	api.Response
 }
 
+// CreateFolderParam represents parameter to create folder api
+type CreateFolderParam struct {
+	FolderName       string `validate:"nonzero" json:"folderName"`
+	ParentFolderPath string `validate:"nonzero" json:"parentFolderPath"`
+}
+
 // Assets retrieves media library assets. Filter options can be supplied as AssetsParams.
 func (m *API) Assets(ctx context.Context, params AssetsParam) (*AssetsResponse, error) {
 	if err := defaults.Set(&params); err != nil {
