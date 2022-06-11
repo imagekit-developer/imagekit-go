@@ -186,14 +186,17 @@ type RenameAssetResponse struct {
 	api.Response
 }
 
-// CreateFolderParam represents parameter to create folder api
-type CreateFolderParam struct {
-	FolderName       string `validate:"nonzero" json:"folderName"`
-	ParentFolderPath string `validate:"nonzero" json:"parentFolderPath"`
+// JobStatus represents response Data to job status api
+type JobStatus struct {
+	JobId  string `json:"jobId"`
+	Type   string `json:"type"`
+	Status string `json:"status"`
 }
 
-type DeleteFolderParam struct {
-	FolderPath string `validate:"nonzero" json:"folderPath"`
+// JobStatusResponse represents response to job status api
+type JobStatusResponse struct {
+	Data JobStatus
+	api.Response
 }
 
 // Assets retrieves media library assets. Filter options can be supplied as AssetsParams.
@@ -556,6 +559,30 @@ func (m *API) RestoreVersion(ctx context.Context, param AssetVersionsParam) (*As
 		param.FileId, param.VersionId), nil)
 
 	api.SetResponseMeta(resp, response)
+
+	if resp.StatusCode != 200 {
+		err = response.ParseError()
+	} else {
+		err = json.Unmarshal(response.Body(), &response.Data)
+	}
+	return response, err
+}
+
+func (m *API) BulkJobStatus(ctx context.Context, jobId string) (*JobStatusResponse, error) {
+	var err error
+	var response = &JobStatusResponse{}
+
+	if jobId == "" {
+		return nil, errors.New("jobId can not be blank")
+	}
+
+	resp, err := m.Get(ctx, "bulkJobs/"+jobId)
+	defer api.DeferredBodyClose(resp)
+	api.SetResponseMeta(resp, response)
+
+	if err != nil {
+		return response, err
+	}
 
 	if resp.StatusCode != 200 {
 		err = response.ParseError()

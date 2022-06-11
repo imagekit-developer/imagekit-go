@@ -503,45 +503,27 @@ func TestMedia_RestoreVersion(t *testing.T) {
 	}
 }
 
-func TestMedia_CreateFolder(t *testing.T) {
+func TestMedia_BulkJobStatus(t *testing.T) {
 	var err error
-
-	var param = CreateFolderParam{
-		FolderName:       "testing",
-		ParentFolderPath: "/",
+	var mockBody = `{"jobId":"62a49236eb9c2685504ded7e","type":"MOVE_FOLDER","status":"Completed"}`
+	var res = JobStatusResponse{
+		Data: JobStatus{"62a49236eb9c2685504ded7e", "MOVE_FOLDER", "Completed"},
 	}
-
-	handler := getHandler(201, "{}")
+	_ = json.Unmarshal([]byte(mockBody), &res)
+	var jobId = "62a49236eb9c2685504ded7e"
+	handler := getHandler(200, mockBody)
 
 	ts := httptest.NewServer(handler)
 	defer ts.Close()
 
 	mediaApi.Config.API.Prefix = ts.URL + "/"
 
-	_, err = mediaApi.CreateFolder(ctx, param)
-
+	resp, err := mediaApi.BulkJobStatus(ctx, jobId)
 	if err != nil {
 		t.Error(err)
 	}
-}
 
-func TestMedia_DeleteFolder(t *testing.T) {
-	var err error
-
-	var param = DeleteFolderParam{
-		FolderPath: "testing",
-	}
-
-	handler := getHandler(204, "{}")
-
-	ts := httptest.NewServer(handler)
-	defer ts.Close()
-
-	mediaApi.Config.API.Prefix = ts.URL + "/"
-
-	_, err = mediaApi.DeleteFolder(ctx, param)
-
-	if err != nil {
-		t.Error(err)
+	if !cmp.Equal(resp.Data, res.Data) {
+		t.Error("unexpected response")
 	}
 }
