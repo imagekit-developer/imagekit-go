@@ -107,3 +107,25 @@ func (m *API) Patch(ctx context.Context, url string, data interface{}) (*http.Re
 
 	return m.Client.Do(req.WithContext(ctx))
 }
+
+func (m *API) Put(ctx context.Context, url string, data interface{}) (*http.Response, error) {
+	url = api.BuildPath(m.Config.API.Prefix, url)
+	var err error
+	var body []byte
+
+	if data != nil {
+		if body, err = json.Marshal(data); err != nil {
+			return nil, err
+		}
+	}
+	req, err := http.NewRequest(http.MethodPut, url, bytes.NewBuffer(body))
+
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+	req.SetBasicAuth(m.Config.Cloud.PrivateKey, "")
+
+	return m.Client.Do(req.WithContext(ctx))
+}

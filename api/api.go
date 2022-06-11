@@ -192,6 +192,7 @@ func SetResponseMeta(httpResp *http.Response, respStruct MetaSetter) {
 
 type ApiError struct {
 	Message string
+	Reason  string
 }
 
 func (err ApiError) Error() string {

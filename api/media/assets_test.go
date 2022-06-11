@@ -452,3 +452,27 @@ func TestMedia_MoveAsset(t *testing.T) {
 	}
 
 }
+
+func TestMedia_RenameAsset(t *testing.T) {
+	var err error
+	var param = RenameAssetParam{
+		FilePath:    "/220501488.jpg",
+		NewFileName: "/default.jpg",
+		PurgeCache:  true,
+	}
+	handler := getHandler(200, `{"purgeRequestId":"62a44685eb9c264622464b89"}`)
+
+	ts := httptest.NewServer(handler)
+	defer ts.Close()
+
+	mediaApi.Config.API.Prefix = ts.URL + "/"
+
+	resp, err := mediaApi.RenameAsset(ctx, param)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if resp.Data.RequestId != "62a44685eb9c264622464b89" {
+		t.Error("unexpected request id returned")
+	}
+}

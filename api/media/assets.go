@@ -168,6 +168,24 @@ type MoveAssetParam struct {
 	DestinationPath string `validate:"nonzero" json:"destinationPath"`
 }
 
+// RenameAssetParam represents parameter to rename asset api
+type RenameAssetParam struct {
+	FilePath    string `validate:"nonzero" json:"filePath"`
+	NewFileName string `validate:"nonzero" json:"newFileName"`
+	PurgeCache  bool   `json:"purgeCache"`
+}
+
+// PurgeRequestId contains purge request ids
+type PurgeRequestId struct {
+	RequestId string `json:"purgeRequestId"`
+}
+
+// RenameAssetResponse represents response struct of rename asset api
+type RenameAssetResponse struct {
+	Data PurgeRequestId
+	api.Response
+}
+
 // Assets retrieves media library assets. Filter options can be supplied as AssetsParams.
 func (m *API) Assets(ctx context.Context, params AssetsParam) (*AssetsResponse, error) {
 	if err := defaults.Set(&params); err != nil {
@@ -488,6 +506,29 @@ func (m *API) MoveAsset(ctx context.Context, param MoveAssetParam) (*api.Respons
 	return response, err
 }
 
-func (m *API) RenameAsset(ctx context.Context, param RenameAssetParam) {
+// RenameAsset renames an asset to new name as specified in RenameAssetParam struct and optionally includes purge request id
+func (m *API) RenameAsset(ctx context.Context, param RenameAssetParam) (*RenameAssetResponse, error) {
+	var err error
+	var response = &RenameAssetResponse{}
 
+	if err = validator.Validate(&param); err != nil {
+		return nil, err
+	}
+
+	resp, err := m.Put(ctx, "files/rename", &param)
+	defer api.DeferredBodyClose(resp)
+
+	api.SetResponseMeta(resp, response)
+
+	if err != nil {
+		return response, err
+	}
+
+	if resp.StatusCode != 200 {
+		err = response.ParseError()
+	} else {
+		err = json.Unmarshal(response.Body(), &response.Data)
+	}
+
+	return response, err
 }
