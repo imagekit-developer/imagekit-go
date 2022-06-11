@@ -36,3 +36,28 @@ func TestMedia_PurgeCache(t *testing.T) {
 		t.Error(response.Data)
 	}
 }
+
+func TestMedia_PurgeCacheStatus(t *testing.T) {
+	reqId := "62a4b"
+	var rs = PurgeCacheStatusResponse{
+		Data: PurgeCacheStatus{
+			Status: "Pending",
+		},
+	}
+
+	respBody, _ := json.Marshal(&rs.Data)
+
+	handler := getHandler(200, string(respBody))
+	ts := httptest.NewServer(handler)
+	defer ts.Close()
+
+	mediaApi.Config.API.Prefix = ts.URL + "/"
+	response, err := mediaApi.PurgeCacheStatus(ctx, reqId)
+
+	if err != nil {
+		t.Error(err)
+	}
+	if !cmp.Equal(response.Data, rs.Data) {
+		t.Error(response.Data)
+	}
+}
