@@ -524,3 +524,24 @@ func TestMedia_CreateFolder(t *testing.T) {
 		t.Error(err)
 	}
 }
+
+func TestMedia_DeleteFolder(t *testing.T) {
+	var err error
+
+	var param = DeleteFolderParam{
+		FolderPath: "testing",
+	}
+
+	handler := getHandler(204, "{}")
+
+	ts := httptest.NewServer(handler)
+	defer ts.Close()
+
+	mediaApi.Config.API.Prefix = ts.URL + "/"
+
+	_, err = mediaApi.DeleteFolder(ctx, param)
+
+	if err != nil {
+		t.Error(err)
+	}
+}

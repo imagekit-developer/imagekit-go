@@ -192,6 +192,10 @@ type CreateFolderParam struct {
 	ParentFolderPath string `validate:"nonzero" json:"parentFolderPath"`
 }
 
+type DeleteFolderParam struct {
+	FolderPath string `validate:"nonzero" json:"folderPath"`
+}
+
 // Assets retrieves media library assets. Filter options can be supplied as AssetsParams.
 func (m *API) Assets(ctx context.Context, params AssetsParam) (*AssetsResponse, error) {
 	if err := defaults.Set(&params); err != nil {
@@ -393,7 +397,7 @@ func (m *API) DeleteAsset(ctx context.Context, fileId string) (*api.Response, er
 		return nil, errors.New("fileId can not be empty")
 	}
 
-	resp, err := m.Delete(ctx, "files/"+fileId)
+	resp, err := m.Delete(ctx, "files/"+fileId, nil)
 	defer api.DeferredBodyClose(resp)
 
 	api.SetResponseMeta(resp, response)
@@ -421,7 +425,7 @@ func (m *API) DeleteAssetVersion(ctx context.Context, fileId string, versionId s
 		return nil, errors.New("versionId can not be empty")
 	}
 
-	resp, err := m.Delete(ctx, fmt.Sprintf("files/%s/versions/%s", fileId, versionId))
+	resp, err := m.Delete(ctx, fmt.Sprintf("files/%s/versions/%s", fileId, versionId), nil)
 	defer api.DeferredBodyClose(resp)
 
 	api.SetResponseMeta(resp, response)
@@ -548,7 +552,7 @@ func (m *API) RestoreVersion(ctx context.Context, param AssetVersionsParam) (*As
 		return nil, err
 	}
 
-	resp, err := m.Put(ctx, fmt.Sprintf("files/%s/versions/%s/restore",
+	resp, err := m.Delete(ctx, fmt.Sprintf("files/%s/versions/%s/restore",
 		param.FileId, param.VersionId), nil)
 
 	api.SetResponseMeta(resp, response)

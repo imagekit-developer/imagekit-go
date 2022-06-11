@@ -247,7 +247,7 @@ file, err := imgkit.Media.RestoreAssetVersion(ctx, media.AssetParams{
 Creates a new folder as per [API documentation here](https://docs.imagekit.io/api-reference/media-api/create-folder). ```err``` is not nil when response is not 201.
 Accepts string type folder name and parent path.
 ```
-err := imgkit.Media.CreateFolder(ctx, media.CreateFolderParams{
+resp, err := imgkit.Media.CreateFolder(ctx, media.CreateFolderParams{
    FolderName: "nature",
    ParentFolderPath: "/some/pics"
 }
@@ -257,7 +257,7 @@ err := imgkit.Media.CreateFolder(ctx, media.CreateFolderParams{
 Deletes the specified folder and all nested files, their versions & folders. This action cannot be undone. Accepts string type folder name to delete. [API documentation here](https://docs.imagekit.io/api-reference/media-api/delete-folder).
 
 ```
-err := imgkit.Media.DeleteFolder(ctx, media.DeleteFolderParams{
+resp, err := imgkit.Media.DeleteFolder(ctx, media.DeleteFolderParams{
     FolderPath: "/some/pics/nature",
 })
 ```

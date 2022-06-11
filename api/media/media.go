@@ -73,9 +73,20 @@ func (m *API) Get(ctx context.Context, url string) (*http.Response, error) {
 	return m.Client.Do(req.WithContext(ctx))
 }
 
-func (m *API) Delete(ctx context.Context, url string) (*http.Response, error) {
+func (m *API) Delete(ctx context.Context, url string, data interface{}) (*http.Response, error) {
+	var err error
 	url = api.BuildPath(m.Config.API.Prefix, url)
-	req, err := http.NewRequest(http.MethodDelete, url, nil)
+	var body []byte
+
+	if data != nil {
+		if body, err = json.Marshal(data); err != nil {
+			return nil, err
+		}
+	}
+	req, err := http.NewRequest(http.MethodDelete, url, bytes.NewBuffer(body))
+	if data != nil {
+		req.Header.Set("Content-Type", "application/json")
+	}
 
 	if err != nil {
 		return nil, err
