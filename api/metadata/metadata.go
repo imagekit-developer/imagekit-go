@@ -8,6 +8,8 @@ import (
 	"net/http"
 	"time"
 
+	neturl "net/url"
+
 	"github.com/dhaval070/imagekit-go/api"
 	"github.com/dhaval070/imagekit-go/config"
 	"github.com/dhaval070/imagekit-go/logger"
@@ -130,9 +132,20 @@ type Interoperability struct {
 	InteropVersion string
 }
 
-func (m *API) get(ctx context.Context, url string) (*http.Response, error) {
-	url = api.BuildPath(m.Config.API.Prefix, url)
-	req, err := http.NewRequest(http.MethodGet, url, nil)
+func (m *API) get(ctx context.Context, url string, query map[string]string) (*http.Response, error) {
+	var err error
+	urlObj, err := neturl.Parse(api.BuildPath(m.Config.API.Prefix, url))
+	if err != nil {
+		return nil, err
+	}
+
+	values := urlObj.Query()
+	for k, v := range query {
+		values.Set(k, v)
+	}
+
+	sUrl := urlObj.String() + "?" + values.Encode()
+	req, err := http.NewRequest(http.MethodGet, sUrl, nil)
 
 	if err != nil {
 		return nil, err
@@ -151,7 +164,37 @@ func (m *API) FromAsset(ctx context.Context, fileId string) (*MetadataResponse, 
 
 	var response = &MetadataResponse{}
 
-	resp, err := m.get(ctx, fmt.Sprintf("files/%s/metadata", fileId))
+	resp, err := m.get(ctx, fmt.Sprintf("files/%s/metadata", fileId), nil)
+	defer api.DeferredBodyClose(resp)
+
+	api.SetResponseMeta(resp, response)
+
+	if err != nil {
+		return response, err
+	}
+
+	if resp.StatusCode != 200 {
+		err = response.ParseError()
+	} else {
+		err = json.Unmarshal(response.Body(), &response.Data)
+	}
+
+	return response, err
+}
+
+func (m *API) FromUrl(ctx context.Context, url string) (*MetadataResponse, error) {
+	var err error
+	if url == "" {
+		return nil, errors.New("url can not be blank")
+	}
+
+	var response = &MetadataResponse{}
+
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := m.get(ctx, "metadata", map[string]string{"url": url})
 	defer api.DeferredBodyClose(resp)
 
 	api.SetResponseMeta(resp, response)

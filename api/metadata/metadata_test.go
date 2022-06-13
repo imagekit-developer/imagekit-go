@@ -60,3 +60,30 @@ func TestMetadata_FromFile(t *testing.T) {
 		t.Errorf("\n%v\n%v\n", resp.Data, *respObj)
 	}
 }
+
+func TestMetadata_FromUrl(t *testing.T) {
+	var respBody = `{"height":801,"width":597,"size":59718,"format":"jpg","hasColorProfile":true,"quality":0,"density":72,"hasTransparency":false,"exif":{},"pHash":"85d07f1fe4ae8be2"}`
+
+	var err error
+	var respObj = &Metadata{}
+
+	if err = json.Unmarshal([]byte(respBody), respObj); err != nil {
+		t.Error(err)
+	}
+
+	handler := getHandler(200, respBody)
+	ts := httptest.NewServer(handler)
+	defer ts.Close()
+
+	metadataApi.Config.API.Prefix = ts.URL + "/"
+
+	resp, err := metadataApi.FromUrl(ctx, "https://ik.imagekit.io/xk1m7xkgi/default-image.jpg")
+
+	if err != nil {
+		t.Error(err)
+	}
+
+	if !cmp.Equal(resp.Data, *respObj) {
+		t.Errorf("\n%v\n%v\n", resp.Data, *respObj)
+	}
+}
