@@ -132,6 +132,17 @@ type Interoperability struct {
 	InteropVersion string
 }
 
+type Schema struct {
+	Type            string        `json:"type"`
+	SelectOptions   []interface{} `json:"selectOptions"`
+	DefaultValue    string        `json:"defaultValue"`
+	IsValueRequired bool          `json:"isValueRequired"`
+	MinValue        string        `json:"minValue"`
+	MaxValue        string        `json:"maxValue"`
+	MinLength       int           `json:"minLength"`
+	MaxLength       int           `json:"maxLength"`
+}
+
 func (m *API) get(ctx context.Context, url string, query map[string]string) (*http.Response, error) {
 	var err error
 	urlObj, err := neturl.Parse(api.BuildPath(m.Config.API.Prefix, url))
