@@ -310,17 +310,14 @@ status, err := imgkit.Media.PurgeCacheStatus(ctx, media.PurgeCacheStatusParams{
 ### 1. Get File Metadata for uploaded media files
 Accepts the file ID or URL and fetches the metadata as per the [API documentation here](https://docs.imagekit.io/api-reference/metadata-api/get-image-metadata-for-uploaded-media-files).
 ```
-resp, err := imgkit.Media.AssetMetadata(ctx, media.AssetParams{
-    FileId: "xxx",
-})
+fileId := "32432523432433335"
+resp, err := imgkit.Metadata.FromAsset(ctx, fileId)
 ```
 
 ### 2. Get File Metadata from remote url
 Get image EXIF, pHash, and other metadata from ImageKit.io powered remote URL using this API as per the [API documentation here](https://docs.imagekit.io/api-reference/metadata-api/get-image-metadata-from-remote-url).
 ```
-resp, err := imgkit.Media.UrlMetadata(ctx, media.UrlParams{
-    Url: "http://domian/a.jpg",
-})
+resp, err := imgkit.Metadata.FromUrl(ctx, "http://domian/a.jpg")
 ```
 
 ## Custom Metadata fields API
