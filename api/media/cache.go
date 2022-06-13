@@ -49,7 +49,7 @@ func (m *API) PurgeCache(ctx context.Context, param PurgeCacheParam) (*PurgeCach
 		return response, err
 	}
 
-	if resp.StatusCode != 201 {
+	if resp.StatusCode < 200 || resp.StatusCode > 299 {
 		err = response.ParseError()
 	} else {
 		err = json.Unmarshal(response.Body(), &response.Data)

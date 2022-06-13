@@ -5,6 +5,7 @@ ImageKit.io Go SDK
 
 ImageKit Go SDK allows you to use [image resizing](https://docs.imagekit.io/features/image-transformations), [optimization](https://docs.imagekit.io/features/image-optimization), [file uploading](https://docs.imagekit.io/api-reference/upload-file-api) and other [ImageKit APIs](https://docs.imagekit.io/api-reference/api-introduction) from applications written in the Go language.
 
+All features except url generation and utility functions return response with ```ResponseMetaData``` which holds raw response Header, StatusCode and Body. The Response object also contains ```Data``` attribtue except when underlying api call is not supposed to return any data(such as DeleteAsset).
 
 Table of contents -
  * [Installation](#installation)
@@ -39,10 +40,10 @@ import (
 )
 
 // Using environment variables IMAGEKIT_PRIVATE_KEY, IMAGEKIT_PUBLIC_KEY and IMAGEKIT_URL_ENDPOINT
-imgkit, _ := ImageKit.New()
+imgkit, err := ImageKit.New()
 
 // Using keys in argument
-imgkit, _ := ImageKit.NewFromParams(imagekit.NewParams{
+imgkit, err := ImageKit.NewFromParams(imagekit.NewParams{
     PrivateKey: privateKey,
     PublicKey: publicKey,
     UrlEndpoint: urlEndpoint
@@ -111,7 +112,7 @@ import (
     "github.com/dhaval070/imagekit-go/api/media"
 )
 
-resp, err := imgkit.Media.Assets(ctx, media.AssetsParams{
+resp, err := imgkit.Media.Assets(ctx, media.AssetsParam{
     Skip: 10,
     Limit: 500,
     SearchQuery: "createdAt >= \"7d\" AND size > \"2mb\"",

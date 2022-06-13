@@ -25,7 +25,7 @@ type ResponseMetaData struct {
 	Body       []byte
 }
 
-// Stringer to get prntable metadata
+// Stringer to get printable metadata
 func (rm ResponseMetaData) String() string {
 	return fmt.Sprintf("%d\n%s\n%v", rm.StatusCode, string(rm.Body), rm.Header)
 }
@@ -40,11 +40,13 @@ func (resp *Response) SetMeta(meta ResponseMetaData) {
 	resp.ResponseMetaData = meta
 }
 
+// ParseError returns error object by parsing the http response body
 func (resp *Response) ParseError() error {
 	err := ParseError(resp.ResponseMetaData.Body)
 	return err
 }
 
+// Body returns raw http response body
 func (resp *Response) Body() []byte {
 	return resp.ResponseMetaData.Body
 }
