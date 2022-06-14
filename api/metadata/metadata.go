@@ -1,6 +1,7 @@
 package metadata
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
@@ -132,15 +133,37 @@ type Interoperability struct {
 	InteropVersion string
 }
 
+type DD[T any] []T
+
+type SelectOptions []int
+
 type Schema struct {
-	Type            string        `json:"type"`
-	SelectOptions   []interface{} `json:"selectOptions"`
-	DefaultValue    string        `json:"defaultValue"`
-	IsValueRequired bool          `json:"isValueRequired"`
-	MinValue        string        `json:"minValue"`
-	MaxValue        string        `json:"maxValue"`
-	MinLength       int           `json:"minLength"`
-	MaxLength       int           `json:"maxLength"`
+	Type            string      `json:"type"`
+	SelectOptions   DD          `json:"selectOptions"`
+	DefaultValue    interface{} `json:"defaultValue"`
+	IsValueRequired bool        `json:"isValueRequired"`
+	MinValue        interface{} `json:"minValue"`
+	MaxValue        interface{} `json:"maxValue"`
+	MinLength       int         `json:"minLength"`
+	MaxLength       int         `json:"maxLength"`
+}
+
+type CreateFieldParam struct {
+	Name   string
+	Label  string
+	Schema Schema
+}
+
+type CustomField struct {
+	Id     string
+	Name   string
+	Label  string
+	Schema Schema
+}
+
+type CreateFieldResponse struct {
+	Data CustomField
+	api.Response
 }
 
 func (m *API) get(ctx context.Context, url string, query map[string]string) (*http.Response, error) {
@@ -162,6 +185,29 @@ func (m *API) get(ctx context.Context, url string, query map[string]string) (*ht
 		return nil, err
 	}
 
+	req.SetBasicAuth(m.Config.Cloud.PrivateKey, "")
+
+	return m.Client.Do(req.WithContext(ctx))
+}
+
+func (m *API) post(ctx context.Context, url string, data interface{}) (*http.Response, error) {
+	url = api.BuildPath(m.Config.API.Prefix, url)
+	var err error
+	var body []byte
+
+	if data != nil {
+		if body, err = json.Marshal(data); err != nil {
+			return nil, err
+		}
+	}
+
+	req, err := http.NewRequest(http.MethodPost, url, bytes.NewBuffer(body))
+
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Set("Content-Type", "application/json")
 	req.SetBasicAuth(m.Config.Cloud.PrivateKey, "")
 
 	return m.Client.Do(req.WithContext(ctx))
@@ -206,6 +252,28 @@ func (m *API) FromUrl(ctx context.Context, url string) (*MetadataResponse, error
 	}
 
 	resp, err := m.get(ctx, "metadata", map[string]string{"url": url})
+	defer api.DeferredBodyClose(resp)
+
+	api.SetResponseMeta(resp, response)
+
+	if err != nil {
+		return response, err
+	}
+
+	if resp.StatusCode != 200 {
+		err = response.ParseError()
+	} else {
+		err = json.Unmarshal(response.Body(), &response.Data)
+	}
+
+	return response, err
+}
+
+func (m *API) CreateField(ctx context.Context, param CreateFieldParam) (*CreateFieldResponse, error) {
+	var err error
+	var response = &CreateFieldResponse{}
+
+	resp, err := m.post(ctx, "customMetadataFields", param)
 	defer api.DeferredBodyClose(resp)
 
 	api.SetResponseMeta(resp, response)
