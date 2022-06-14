@@ -133,25 +133,21 @@ type Interoperability struct {
 	InteropVersion string
 }
 
-type DD[T any] []T
-
-type SelectOptions []int
-
 type Schema struct {
 	Type            string      `json:"type"`
-	SelectOptions   DD          `json:"selectOptions"`
-	DefaultValue    interface{} `json:"defaultValue"`
-	IsValueRequired bool        `json:"isValueRequired"`
-	MinValue        interface{} `json:"minValue"`
-	MaxValue        interface{} `json:"maxValue"`
-	MinLength       int         `json:"minLength"`
-	MaxLength       int         `json:"maxLength"`
+	SelectOptions   interface{} `json:"selectOptions,omitempty"`
+	DefaultValue    interface{} `json:"defaultValue,omitempty"`
+	IsValueRequired bool        `json:"isValueRequired,omitempty"`
+	MinValue        interface{} `json:"minValue,omitempty"`
+	MaxValue        interface{} `json:"maxValue,omitempty"`
+	MinLength       int         `json:"minLength,omitempty"`
+	MaxLength       int         `json:"maxLength,omitempty"`
 }
 
 type CreateFieldParam struct {
-	Name   string
-	Label  string
-	Schema Schema
+	Name   string `json:"name"`
+	Label  string `json:"label"`
+	Schema Schema `json:"schema"`
 }
 
 type CustomField struct {
@@ -163,6 +159,16 @@ type CustomField struct {
 
 type CreateFieldResponse struct {
 	Data CustomField
+	api.Response
+}
+
+type UpdateCustomFieldResponse struct {
+	Data CustomField
+	api.Response
+}
+
+type CustomFieldsResponse struct {
+	Data []CustomField
 	api.Response
 }
 
@@ -269,11 +275,42 @@ func (m *API) FromUrl(ctx context.Context, url string) (*MetadataResponse, error
 	return response, err
 }
 
-func (m *API) CreateField(ctx context.Context, param CreateFieldParam) (*CreateFieldResponse, error) {
+// CreateField creates new custom metadata field
+func (m *API) CreateCustomField(ctx context.Context, param CreateFieldParam) (*CreateFieldResponse, error) {
 	var err error
 	var response = &CreateFieldResponse{}
 
 	resp, err := m.post(ctx, "customMetadataFields", param)
+	defer api.DeferredBodyClose(resp)
+
+	api.SetResponseMeta(resp, response)
+
+	if err != nil {
+		return response, err
+	}
+
+	if resp.StatusCode != 201 {
+		err = response.ParseError()
+	} else {
+		err = json.Unmarshal(response.Body(), &response.Data)
+	}
+
+	return response, err
+}
+
+// CustomFields returns all existing custom metadata fields
+func (m *API) CustomFields(ctx context.Context, includeDeleted bool) (*CustomFieldsResponse, error) {
+	var err error
+	var response = &CustomFieldsResponse{}
+	var flag string
+
+	if includeDeleted == true {
+		flag = "true"
+	} else {
+		flag = "false"
+	}
+
+	resp, err := m.get(ctx, "customMetadataFields", map[string]string{"includeDeleted": flag})
 	defer api.DeferredBodyClose(resp)
 
 	api.SetResponseMeta(resp, response)
@@ -289,4 +326,32 @@ func (m *API) CreateField(ctx context.Context, param CreateFieldParam) (*CreateF
 	}
 
 	return response, err
+
+}
+
+func (m *API) UpdateCustomField(ctx context.Context, fieldId string, param UpdateCustomFieldParam) (*UpdateCustomFieldResponse, error) {
+	var err error
+	var response = &UpdateCustomFieldResponse{}
+
+	if fieldId == "" {
+		return nil, errors.New("fieldId can not be blank")
+	}
+
+	resp, err := m.patch(ctx, "customMetadataFields/"+fieldId, param)
+	defer api.DeferredBodyClose(resp)
+
+	api.SetResponseMeta(resp, response)
+
+	if err != nil {
+		return response, err
+	}
+
+	if resp.StatusCode != 200 {
+		err = response.ParseError()
+	} else {
+		err = json.Unmarshal(response.Body(), &response.Data)
+	}
+
+	return response, err
+
 }

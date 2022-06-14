@@ -87,3 +87,64 @@ func TestMetadata_FromUrl(t *testing.T) {
 		t.Errorf("\n%v\n%v\n", resp.Data, *respObj)
 	}
 }
+
+func TestMetadata_CreateCustomField(t *testing.T) {
+	var respBody = `{"id":"62a8966b663ef736f841fe28","name":"speed","label":"Speed","schema":{"type":"Number","defaultValue":100,"minValue":1,"maxValue":120}}`
+
+	var err error
+	var expected = &CustomField{}
+
+	if err = json.Unmarshal([]byte(respBody), expected); err != nil {
+		t.Error(err)
+	}
+
+	handler := getHandler(201, respBody)
+	ts := httptest.NewServer(handler)
+	defer ts.Close()
+
+	metadataApi.Config.API.Prefix = ts.URL + "/"
+
+	resp, err := metadataApi.CreateCustomField(ctx, CreateFieldParam{
+		Name:  "speed",
+		Label: "Speed",
+		Schema: Schema{
+			Type:         "Number",
+			DefaultValue: 100,
+			MinValue:     1,
+			MaxValue:     120,
+		},
+	})
+
+	if err != nil {
+		t.Error(err)
+	}
+
+	if !cmp.Equal(resp.Data, *expected) {
+		t.Errorf("\n%v\n%v\n", resp.Data, *expected)
+	}
+}
+
+func TestMetadata_CustomFields(t *testing.T) {
+	var respBody = `[{"id":"629f6b437eb0fe6f1b66d864","name":"price","label":"Price","schema":{"type":"Number","isValueRequired":false,"minValue":1,"maxValue":1000}},{"id":"629f6b6d7eb0fe344f66e1b6","name":"country","label":"Country","schema":{"type":"SingleSelect","isValueRequired":false,"selectOptions":["USA","Canada"]}},{"id":"62a8764d663ef721e93f4ea9","name":"clearance","label":"Clearance","schema":{"type":"MultiSelect","selectOptions":["one","two"]}},{"id":"62a876b1663ef7728f3f5348","name":"mileage","label":"Mileage","schema":{"type":"Number"}},{"id":"62a8966b663ef736f841fe28","name":"speed","label":"Speed","schema":{"type":"Number","defaultValue":100,"minValue":1,"maxValue":120}}]`
+
+	var err error
+	var expected = []CustomField{}
+
+	if err = json.Unmarshal([]byte(respBody), &expected); err != nil {
+		t.Error(err)
+	}
+
+	handler := getHandler(200, respBody)
+	ts := httptest.NewServer(handler)
+	defer ts.Close()
+
+	metadataApi.Config.API.Prefix = ts.URL + "/"
+	resp, err := metadataApi.CustomFields(ctx, false)
+
+	if err != nil {
+		t.Error(err)
+	}
+	if !cmp.Equal(resp.Data, expected) {
+		t.Errorf("%v\n%v", resp.Data, expected)
+	}
+}

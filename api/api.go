@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -40,15 +41,62 @@ func (resp *Response) SetMeta(meta ResponseMetaData) {
 	resp.ResponseMetaData = meta
 }
 
-// ParseError returns error object by parsing the http response body
-func (resp *Response) ParseError() error {
-	err := ParseError(resp.ResponseMetaData.Body)
-	return err
-}
-
 // Body returns raw http response body
 func (resp *Response) Body() []byte {
 	return resp.ResponseMetaData.Body
+}
+
+// ParseError returns error object by parsing the http response body if applicable otherwise returns core error such as ErrUnauthorized, ErrServerError etc.
+func (resp *Response) ParseError() error {
+	var err error
+	var code = resp.ResponseMetaData.StatusCode
+
+	if code > 199 && code < 300 {
+		return nil
+	}
+
+	switch code {
+	case 400:
+		err = ParseError(resp.ResponseMetaData.Body, ErrBadRequest)
+	case 401:
+		return ErrUnauthorized
+	case 403:
+		err = ParseError(resp.ResponseMetaData.Body, ErrForbidden)
+	case 429:
+		err = ErrTooManyRequests
+	case 500, 502, 503, 504:
+		err = ErrServerError
+	default:
+		err = errors.New("Undefined Error")
+	}
+	return err
+}
+
+type ApiError struct {
+	Message string            `json:"message"`
+	Reason  string            `json:"reason"`
+	Errors  map[string]string `json:"errors"`
+	err     error             `json:"-"`
+}
+
+func (e ApiError) Error() string {
+	return e.Message
+}
+
+func (e ApiError) Unwrap() error {
+	return e.err
+}
+
+func ParseError(body []byte, embed error) error {
+	var ikError = &ApiError{}
+
+	err := json.Unmarshal(body, ikError)
+	if err != nil {
+		return err
+	}
+
+	ikError.err = embed
+	return ikError
 }
 
 // MetaSetter is an interface to provide type safety to set meta
@@ -190,24 +238,4 @@ func SetResponseMeta(httpResp *http.Response, respStruct MetaSetter) {
 		meta.Body = body
 	}
 	respStruct.SetMeta(meta)
-}
-
-type ApiError struct {
-	Message string
-	Reason  string
-}
-
-func (err ApiError) Error() string {
-	return err.Message
-}
-
-func ParseError(body []byte) error {
-	var ikError = ApiError{}
-
-	err := json.Unmarshal(body, &ikError)
-	if err != nil {
-		return err
-	}
-
-	return ikError
 }
