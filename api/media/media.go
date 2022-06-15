@@ -37,7 +37,7 @@ func NewFromConfiguration(c *config.Configuration) (*API, error) {
 	}, nil
 }
 
-func (m *API) Post(ctx context.Context, url string, data interface{}) (*http.Response, error) {
+func (m *API) post(ctx context.Context, url string, data interface{}) (*http.Response, error) {
 	url = api.BuildPath(m.Config.API.Prefix, url)
 	var err error
 	var body []byte
@@ -60,7 +60,7 @@ func (m *API) Post(ctx context.Context, url string, data interface{}) (*http.Res
 	return m.Client.Do(req.WithContext(ctx))
 }
 
-func (m *API) Get(ctx context.Context, url string) (*http.Response, error) {
+func (m *API) get(ctx context.Context, url string) (*http.Response, error) {
 	url = api.BuildPath(m.Config.API.Prefix, url)
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 
@@ -73,7 +73,7 @@ func (m *API) Get(ctx context.Context, url string) (*http.Response, error) {
 	return m.Client.Do(req.WithContext(ctx))
 }
 
-func (m *API) Delete(ctx context.Context, url string, data interface{}) (*http.Response, error) {
+func (m *API) delete(ctx context.Context, url string, data interface{}) (*http.Response, error) {
 	var err error
 	url = api.BuildPath(m.Config.API.Prefix, url)
 	var body []byte
@@ -97,7 +97,7 @@ func (m *API) Delete(ctx context.Context, url string, data interface{}) (*http.R
 	return m.Client.Do(req.WithContext(ctx))
 }
 
-func (m *API) Patch(ctx context.Context, url string, data interface{}) (*http.Response, error) {
+func (m *API) patch(ctx context.Context, url string, data interface{}) (*http.Response, error) {
 	url = api.BuildPath(m.Config.API.Prefix, url)
 	var err error
 	var body []byte
@@ -119,7 +119,7 @@ func (m *API) Patch(ctx context.Context, url string, data interface{}) (*http.Re
 	return m.Client.Do(req.WithContext(ctx))
 }
 
-func (m *API) Put(ctx context.Context, url string, data interface{}) (*http.Response, error) {
+func (m *API) put(ctx context.Context, url string, data interface{}) (*http.Response, error) {
 	url = api.BuildPath(m.Config.API.Prefix, url)
 	var err error
 	var body []byte

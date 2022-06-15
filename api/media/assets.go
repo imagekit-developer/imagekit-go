@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"log"
 	"strings"
 	"time"
 
@@ -214,7 +213,7 @@ func (m *API) Assets(ctx context.Context, params AssetsParam) (*AssetsResponse, 
 		return nil, err
 	}
 
-	resp, err := m.Get(ctx, "files?"+values.Encode())
+	resp, err := m.get(ctx, "files?"+values.Encode())
 	defer api.DeferredBodyClose(resp)
 
 	response := &AssetsResponse{}
@@ -239,7 +238,7 @@ func (m *API) AssetById(ctx context.Context, params AssetByIdParam) (*AssetRespo
 		return nil, err
 	}
 
-	resp, err := m.Get(ctx, fmt.Sprintf("files/%s/details", params.FileId))
+	resp, err := m.get(ctx, fmt.Sprintf("files/%s/details", params.FileId))
 
 	defer api.DeferredBodyClose(resp)
 
@@ -270,7 +269,7 @@ func (m *API) AssetVersions(ctx context.Context, params AssetVersionsParam) (*As
 		return nil, err
 	}
 
-	resp, err := m.Get(ctx, strings.Join(parts, "/"))
+	resp, err := m.get(ctx, strings.Join(parts, "/"))
 	defer api.DeferredBodyClose(resp)
 
 	response := &AssetsResponse{}
@@ -304,7 +303,7 @@ func (m *API) UpdateAsset(ctx context.Context, fileId string, params UpdateAsset
 		return nil, errors.New("fileId can not be empty")
 	}
 
-	resp, err := m.Patch(ctx, fmt.Sprintf("files/%s/details", fileId), params)
+	resp, err := m.patch(ctx, fmt.Sprintf("files/%s/details", fileId), params)
 
 	defer api.DeferredBodyClose(resp)
 
@@ -327,7 +326,7 @@ func (m *API) AddTags(ctx context.Context, params TagsParam) (*TagsResponse, err
 	response := &TagsResponse{}
 	var err error
 
-	resp, err := m.Post(ctx, "files/addTags", params)
+	resp, err := m.post(ctx, "files/addTags", params)
 	defer api.DeferredBodyClose(resp)
 
 	api.SetResponseMeta(resp, response)
@@ -341,7 +340,6 @@ func (m *API) AddTags(ctx context.Context, params TagsParam) (*TagsResponse, err
 	} else {
 		err = json.Unmarshal(response.Body(), &response.Data)
 	}
-	log.Println(response.ResponseMetaData.StatusCode)
 	return response, err
 }
 
@@ -350,7 +348,7 @@ func (m *API) RemoveTags(ctx context.Context, params TagsParam) (*TagsResponse, 
 	response := &TagsResponse{}
 	var err error
 
-	resp, err := m.Post(ctx, "files/removeTags", params)
+	resp, err := m.post(ctx, "files/removeTags", params)
 	defer api.DeferredBodyClose(resp)
 
 	api.SetResponseMeta(resp, response)
@@ -373,7 +371,7 @@ func (m *API) RemoveAITags(ctx context.Context, params AITagsParam) (*TagsRespon
 	response := &TagsResponse{}
 	var err error
 
-	resp, err := m.Post(ctx, "files/removeAITags", params)
+	resp, err := m.post(ctx, "files/removeAITags", params)
 	defer api.DeferredBodyClose(resp)
 
 	api.SetResponseMeta(resp, response)
@@ -400,7 +398,7 @@ func (m *API) DeleteAsset(ctx context.Context, fileId string) (*api.Response, er
 		return nil, errors.New("fileId can not be empty")
 	}
 
-	resp, err := m.Delete(ctx, "files/"+fileId, nil)
+	resp, err := m.delete(ctx, "files/"+fileId, nil)
 	defer api.DeferredBodyClose(resp)
 
 	api.SetResponseMeta(resp, response)
@@ -428,7 +426,7 @@ func (m *API) DeleteAssetVersion(ctx context.Context, fileId string, versionId s
 		return nil, errors.New("versionId can not be empty")
 	}
 
-	resp, err := m.Delete(ctx, fmt.Sprintf("files/%s/versions/%s", fileId, versionId), nil)
+	resp, err := m.delete(ctx, fmt.Sprintf("files/%s/versions/%s", fileId, versionId), nil)
 	defer api.DeferredBodyClose(resp)
 
 	api.SetResponseMeta(resp, response)
@@ -452,7 +450,7 @@ func (m *API) DeleteBulkAssets(ctx context.Context, param FileIdsParam) (*Delete
 		return nil, err
 	}
 
-	resp, err := m.Post(ctx, "files/batch/deleteByFileIds", param)
+	resp, err := m.post(ctx, "files/batch/deleteByFileIds", param)
 	defer api.DeferredBodyClose(resp)
 
 	api.SetResponseMeta(resp, response)
@@ -479,7 +477,7 @@ func (m *API) CopyAsset(ctx context.Context, param CopyAssetParam) (*api.Respons
 		return nil, err
 	}
 
-	resp, err := m.Post(ctx, "files/copy", &param)
+	resp, err := m.post(ctx, "files/copy", &param)
 	defer api.DeferredBodyClose(resp)
 
 	api.SetResponseMeta(resp, response)
@@ -504,7 +502,7 @@ func (m *API) MoveAsset(ctx context.Context, param MoveAssetParam) (*api.Respons
 		return nil, err
 	}
 
-	resp, err := m.Post(ctx, "files/move", &param)
+	resp, err := m.post(ctx, "files/move", &param)
 	defer api.DeferredBodyClose(resp)
 
 	api.SetResponseMeta(resp, response)
@@ -528,7 +526,7 @@ func (m *API) RenameAsset(ctx context.Context, param RenameAssetParam) (*RenameA
 		return nil, err
 	}
 
-	resp, err := m.Put(ctx, "files/rename", &param)
+	resp, err := m.put(ctx, "files/rename", &param)
 	defer api.DeferredBodyClose(resp)
 
 	api.SetResponseMeta(resp, response)
@@ -555,7 +553,7 @@ func (m *API) RestoreVersion(ctx context.Context, param AssetVersionsParam) (*As
 		return nil, err
 	}
 
-	resp, err := m.Delete(ctx, fmt.Sprintf("files/%s/versions/%s/restore",
+	resp, err := m.delete(ctx, fmt.Sprintf("files/%s/versions/%s/restore",
 		param.FileId, param.VersionId), nil)
 
 	api.SetResponseMeta(resp, response)
@@ -576,7 +574,7 @@ func (m *API) BulkJobStatus(ctx context.Context, jobId string) (*JobStatusRespon
 		return nil, errors.New("jobId can not be blank")
 	}
 
-	resp, err := m.Get(ctx, "bulkJobs/"+jobId)
+	resp, err := m.get(ctx, "bulkJobs/"+jobId)
 	defer api.DeferredBodyClose(resp)
 	api.SetResponseMeta(resp, response)
 
