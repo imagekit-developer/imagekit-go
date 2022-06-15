@@ -148,3 +148,31 @@ func TestMetadata_CustomFields(t *testing.T) {
 		t.Errorf("%v\n%v", resp.Data, expected)
 	}
 }
+
+func TestMetadata_UpdateCustomField(t *testing.T) {
+	var respBody = `{"id":"629f6b437eb0fe6f1b66d864","name":"price","label":"Cost","schema":{"type":"Number"}}`
+
+	var err error
+	var expected = CustomField{}
+
+	if err = json.Unmarshal([]byte(respBody), &expected); err != nil {
+		t.Error(err)
+	}
+
+	handler := getHandler(200, respBody)
+	ts := httptest.NewServer(handler)
+	defer ts.Close()
+
+	metadataApi.Config.API.Prefix = ts.URL + "/"
+	resp, err := metadataApi.UpdateCustomField(ctx, UpdateCustomFieldParam{
+		FieldId: "629f6b437eb0fe6f1b66d864",
+		Label:   "Cost",
+	})
+
+	if err != nil {
+		t.Error(err)
+	}
+	if !cmp.Equal(resp.Data, expected) {
+		t.Errorf("%v\n%v", resp.Data, expected)
+	}
+}

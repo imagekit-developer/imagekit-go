@@ -14,6 +14,7 @@ import (
 	"github.com/dhaval070/imagekit-go/api"
 	"github.com/dhaval070/imagekit-go/config"
 	"github.com/dhaval070/imagekit-go/logger"
+	"gopkg.in/validator.v2"
 )
 
 // API is the main struct for media
@@ -162,9 +163,12 @@ type CreateFieldResponse struct {
 	api.Response
 }
 
-type UpdateCustomFieldResponse struct {
-	Data CustomField
-	api.Response
+type UpdateCustomFieldResponse CreateFieldResponse
+
+type UpdateCustomFieldParam struct {
+	FieldId string `validate:"nonzero" json:"-"`
+	Label   string `json:"label"`
+	Schema  Schema `json:"schema"`
 }
 
 type CustomFieldsResponse struct {
@@ -208,6 +212,29 @@ func (m *API) post(ctx context.Context, url string, data interface{}) (*http.Res
 	}
 
 	req, err := http.NewRequest(http.MethodPost, url, bytes.NewBuffer(body))
+
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+	req.SetBasicAuth(m.Config.Cloud.PrivateKey, "")
+
+	return m.Client.Do(req.WithContext(ctx))
+}
+
+func (m *API) patch(ctx context.Context, url string, data interface{}) (*http.Response, error) {
+	url = api.BuildPath(m.Config.API.Prefix, url)
+	var err error
+	var body []byte
+
+	if data != nil {
+		if body, err = json.Marshal(data); err != nil {
+			return nil, err
+		}
+	}
+
+	req, err := http.NewRequest(http.MethodPatch, url, bytes.NewBuffer(body))
 
 	if err != nil {
 		return nil, err
@@ -326,18 +353,18 @@ func (m *API) CustomFields(ctx context.Context, includeDeleted bool) (*CustomFie
 	}
 
 	return response, err
-
 }
 
-func (m *API) UpdateCustomField(ctx context.Context, fieldId string, param UpdateCustomFieldParam) (*UpdateCustomFieldResponse, error) {
+// UpdateCustomField updates label or schema attributes of given custom field id
+func (m *API) UpdateCustomField(ctx context.Context, param UpdateCustomFieldParam) (*UpdateCustomFieldResponse, error) {
 	var err error
 	var response = &UpdateCustomFieldResponse{}
 
-	if fieldId == "" {
-		return nil, errors.New("fieldId can not be blank")
+	if err = validator.Validate(&param); err != nil {
+		return nil, err
 	}
 
-	resp, err := m.patch(ctx, "customMetadataFields/"+fieldId, param)
+	resp, err := m.patch(ctx, "customMetadataFields/"+param.FieldId, param)
 	defer api.DeferredBodyClose(resp)
 
 	api.SetResponseMeta(resp, response)
@@ -353,5 +380,4 @@ func (m *API) UpdateCustomField(ctx context.Context, fieldId string, param Updat
 	}
 
 	return response, err
-
 }

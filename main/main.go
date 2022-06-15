@@ -49,13 +49,17 @@ func main() {
 
 	var err error
 
-	resp, err := ik.Metadata.CustomFields(ctx, false)
-	log.Println(resp.Data, resp.ResponseMetaData)
+	//resp, err := ik.Metadata.CustomFields(ctx, false)
+	//log.Println(resp.Data, resp.ResponseMetaData)
 
+	resp, err := ik.Metadata.UpdateCustomField(ctx, metadata.UpdateCustomFieldParam{
+		FieldId: "629f6b437eb0fe6f1b66d864",
+		Label:   "Cost",
+	})
+	log.Println(resp.ResponseMetaData)
 	if err != nil {
-		log.Println("got error")
+		log.Println("got error", err)
 	}
-	log.Println(err)
 
 	//fileId := "62a2fa9121a9dc2869c8bcb0"
 	//	resp, err := ik.Media.AssetVersions(ctx, media.AssetVersionsParam{
