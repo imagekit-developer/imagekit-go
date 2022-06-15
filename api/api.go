@@ -62,6 +62,8 @@ func (resp *Response) ParseError() error {
 		return ErrUnauthorized
 	case 403:
 		err = ParseError(resp.ResponseMetaData.Body, ErrForbidden)
+	case 404:
+		err = ErrNotFound
 	case 429:
 		err = ErrTooManyRequests
 	case 500, 502, 503, 504:

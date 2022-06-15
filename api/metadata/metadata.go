@@ -246,6 +246,21 @@ func (m *API) patch(ctx context.Context, url string, data interface{}) (*http.Re
 	return m.Client.Do(req.WithContext(ctx))
 }
 
+func (m *API) delete(ctx context.Context, url string) (*http.Response, error) {
+	var err error
+	url = api.BuildPath(m.Config.API.Prefix, url)
+
+	req, err := http.NewRequest(http.MethodDelete, url, nil)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("Content-Type", "application/json")
+
+	req.SetBasicAuth(m.Config.Cloud.PrivateKey, "")
+
+	return m.Client.Do(req.WithContext(ctx))
+}
+
 // FromAsset fetches metadata of media library file
 func (m *API) FromAsset(ctx context.Context, fileId string) (*MetadataResponse, error) {
 	if fileId == "" {
@@ -377,6 +392,30 @@ func (m *API) UpdateCustomField(ctx context.Context, param UpdateCustomFieldPara
 		err = response.ParseError()
 	} else {
 		err = json.Unmarshal(response.Body(), &response.Data)
+	}
+
+	return response, err
+}
+
+// DeleteCustomField deletes custom metadata field by given fieldId
+func (m *API) DeleteCustomField(ctx context.Context, fieldId string) (*api.Response, error) {
+	if fieldId == "" {
+		return nil, errors.New("fieldId can not be blank")
+	}
+	var err error
+	var response = &api.Response{}
+
+	resp, err := m.delete(ctx, "customMetadataFields/"+fieldId)
+	defer api.DeferredBodyClose(resp)
+
+	api.SetResponseMeta(resp, response)
+
+	if err != nil {
+		return response, err
+	}
+
+	if resp.StatusCode != 204 {
+		err = response.ParseError()
 	}
 
 	return response, err

@@ -176,3 +176,19 @@ func TestMetadata_UpdateCustomField(t *testing.T) {
 		t.Errorf("%v\n%v", resp.Data, expected)
 	}
 }
+
+func TestMetadata_DeleteCustomField(t *testing.T) {
+	var respBody = ``
+	var err error
+
+	handler := getHandler(204, respBody)
+	ts := httptest.NewServer(handler)
+	defer ts.Close()
+
+	metadataApi.Config.API.Prefix = ts.URL + "/"
+	_, err = metadataApi.DeleteCustomField(ctx, "62a8966b663ef736f841fe28")
+	if err != nil {
+		log.Println("got error")
+		t.Error(err)
+	}
+}
