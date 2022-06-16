@@ -8,6 +8,7 @@ import (
 	"github.com/dhaval070/imagekit-go/logger"
 	"github.com/dhaval070/imagekit-go/url"
 	ikurl "github.com/dhaval070/imagekit-go/url"
+	"github.com/google/go-cmp/cmp"
 )
 
 var imgkit = NewFromParams(NewParams{
@@ -100,4 +101,34 @@ func urlsEquals(url1 string, url2 string) bool {
 	}
 
 	return reflect.DeepEqual(q1, q2)
+}
+
+func TestSignToken(t *testing.T) {
+	var expire int64 = 1655379249 + DefaultTokenExpire
+	var unix = func() int64 { return 1655379249 }
+
+	cases := map[string]struct {
+		param  SignTokenParam
+		result SignedToken
+	}{
+		"with param": {
+			param:  SignTokenParam{Token: "31c468de-520a-4dc1-8868-de1e0fb93a7b", Expires: 1655379249},
+			result: SignedToken{Token: "31c468de-520a-4dc1-8868-de1e0fb93a7b", Expires: 1655379249, Signature: "ed6f1aadeec33eb3509c0576e6a05100861c64c5"},
+		},
+		"use defaults": {
+			param:  SignTokenParam{Token: "31c468de-520a-4dc1-8868-de1e0fb93a7b", unix: unix},
+			result: SignedToken{Token: "31c468de-520a-4dc1-8868-de1e0fb93a7b", Expires: expire, Signature: "b3c708386f56dbcdac2a6e650ab00789ec37645e"},
+		},
+	}
+
+	for name, tc := range cases {
+		t.Run(name, func(t *testing.T) {
+			resp := imgkit.SignToken(tc.param)
+
+			if !cmp.Equal(resp, tc.result) {
+				t.Errorf("%v\n%v", resp, tc.result)
+			}
+		})
+	}
+
 }

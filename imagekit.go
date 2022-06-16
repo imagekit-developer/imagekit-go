@@ -17,6 +17,7 @@ import (
 	"github.com/dhaval070/imagekit-go/config"
 	"github.com/dhaval070/imagekit-go/logger"
 	ikurl "github.com/dhaval070/imagekit-go/url"
+	"github.com/google/uuid"
 )
 
 // ImageKit main struct
@@ -70,6 +71,20 @@ func NewFromConfiguration(cfg *config.Configuration) *ImageKit {
 		},
 	}
 }
+
+type SignTokenParam struct {
+	Token   string
+	Expires int64
+	unix    func() int64
+}
+
+type SignedToken struct {
+	Token     string
+	Expires   int64
+	Signature string
+}
+
+const DefaultTokenExpire = 60 * 30
 
 // Url generates url from UrlParams
 func (ik *ImageKit) Url(params ikurl.UrlParams) (string, error) {
@@ -156,4 +171,29 @@ func (ik *ImageKit) Url(params ikurl.UrlParams) (string, error) {
 	}
 
 	return resultUrl, nil
+}
+
+// SignToken signs given token and expiration timestamp with private key
+func (ik *ImageKit) SignToken(param SignTokenParam) SignedToken {
+	if param.Token == "" {
+		uuid := uuid.New()
+		param.Token = uuid.String()
+	}
+
+	if param.Expires == 0 {
+		var e int64
+
+		if param.unix == nil {
+			e = time.Now().Unix()
+		} else {
+			e = param.unix()
+		}
+		param.Expires = e + DefaultTokenExpire
+	}
+
+	log.Println(param)
+	mac := hmac.New(sha1.New, []byte(ik.Config.Cloud.PrivateKey))
+	mac.Write([]byte(param.Token + strconv.FormatInt(param.Expires, 10)))
+	signature := hex.EncodeToString(mac.Sum(nil))
+	return SignedToken{Token: param.Token, Expires: param.Expires, Signature: signature}
 }
