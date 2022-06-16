@@ -54,7 +54,7 @@ imgkit, err := ImageKit.NewFromParams(imagekit.NewParams{
 ```
 
 ## Response Format
-Results returned by functions which call backend api(such as media management, metadata, cache apis) embeds raw responsein ResponseMetaData structure, which can be used to get raw response ```StatusCode```, ```Header``` and ```Body```. The json resonse body is parsed to approprite sdk type and assigned to ```resp.Data```  attribute.
+Results returned by functions which call backend api(such as media management, metadata, cache apis) embeds raw response in ```ResponseMetaData```, which can be used to get raw response ```StatusCode```, ```Header``` and ```Body```. The json resonse body is parsed to approprite sdk type and assigned to ```resp.Data```  attribute.
 
 ```
 resp, err := imgkit.Metadata.FromAsset(ctx, fileId)
@@ -394,7 +394,7 @@ resp, err := imgkit.Metadata.DeleteCustomField(ctx, "3325343434")
     
 ## Utility Functions
 ### 1. SignToken
-This method generates a signature for given token and timestamp using the configured private key. It is useful for client side file upload to authenticate requests. ```Token``` is a random string. ```Expires``` is a unix timestamp by which token should expire.  ```Token``` and ```Expires``` both are optional parameters. Token defaults to auto generated uuid string. Expires defaults to a current time + 30 minutes value.
+This method generates a signature for given token and timestamp using the configured private key. It is useful for client side file upload to authenticate requests. ```Token``` is a random string. ```Expires``` is a unix timestamp by which token should expire.  ```Token``` and ```Expires``` both are optional parameters. ```Token``` defaults to auto generated UUID string. ```Expires``` defaults to a current time + 30 minutes value.
 ```
 // Using auto generated token and expiration
 resp := ik.SignToken(imagekit.SignTokenParam{})
