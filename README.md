@@ -10,6 +10,8 @@ All features except url generation and utility functions return response with ``
 Table of contents -
  * [Installation](#installation)
  * [Initialization](#initialization)
+ * [Response Format](#response-format)
+ * [Error Handling](#error-handling)
  * [URL Generation](#url-generation)
  * [File Upload](#file-upload)
  * [File Management](#file-management)
@@ -50,6 +52,39 @@ imgkit, err := ImageKit.NewFromParams(imagekit.NewParams{
     UrlEndpoint: urlEndpoint
 })
 ```
+
+## Response Format
+Results returned by functions which call backend api(such as media management, metadata, cache apis) embeds raw responsein ResponseMetaData structure, which can be used to get raw response ```StatusCode```, ```Header``` and ```Body```. The json resonse body is parsed to approprite sdk type and assigned to ```resp.Data```  attribute.
+
+```
+resp, err := imgkit.Metadata.FromAsset(ctx, fileId)
+log.Println(resp.ResponseMetaData.Header, resp.Data.Url)
+
+```
+Functions which do not get any response body from API, does not include ```Data``` attribute in response. Such responses are of type ```*api.Response``` and only ResponseMetaData is available.
+
+## Error Handling
+ImageKit API returns non 2xx status code upon error.
+SDK defines following errors in api package based on the status code returned:
+```
+imagekit-go/api:
+
+400: ErrBadRequest
+401: ErrUnauthorized
+403: ErrForbidden
+404: ErrNotFound
+429: ErrTooManyRequests
+500, 502, 503, 504: ErrServerError
+default: "Undefined Error"
+```
+```err``` can be tested using `errors.Is`
+```
+if errors.is(err, api.ErrForbidden) {
+    log.Println(err.Message)
+}
+```
+
+[See full documentation](https://docs.imagekit.io/api-reference/api-introduction) for further detail.
 
 ## URL-generation
 
@@ -238,7 +273,7 @@ resp, err := imgkit.Media.RenameAsset(ctx, media.RenameAssetParam{
 Restore file version to a different version of a file as per [API documentation here](https://docs.imagekit.io/api-reference/media-api/restore-file-version).
 Accepts string type file id and version id.
 ```
-file, err := imgkit.Media.RestoreVersion(ctx, media.AssetVersionsParam{
+resp, err := imgkit.Media.RestoreVersion(ctx, media.AssetVersionsParam{
     FileId: "324325334",
     VersionId: "243434",
 })
@@ -266,7 +301,7 @@ resp, err := imgkit.Media.DeleteFolder(ctx, media.DeleteFolderParam{
 ### 18. Copy Folder
 Copies given folder to new location with or without versions info as per [API documentation here](https://docs.imagekit.io/api-reference/media-api/copy-folder).
 ```
-err := imgkit.Media.CopyFolder(ctx, media.CopyFolderParam{
+resp, err := imgkit.Media.CopyFolder(ctx, media.CopyFolderParam{
     SourceFolderPath: "source/path",
     DestinationPath: "destination/",
     IncludeVersions: true
@@ -276,7 +311,7 @@ err := imgkit.Media.CopyFolder(ctx, media.CopyFolderParam{
 ### 19. Move Folder
 Moves given folder path to new location as per [API documentation here](https://docs.imagekit.io/api-reference/media-api/move-folder).
 ```
-err := imgkit.Media.MoveFolder(ctx, media.MoveFolderParam{
+resp, err := imgkit.Media.MoveFolder(ctx, media.MoveFolderParam{
     SourceFolderPath: "source/path",
     DestinationPath: "destination/path",
 })
