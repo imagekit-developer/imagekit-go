@@ -327,7 +327,7 @@ Create, Update, Read and Delete custom metadata rules as per the [API documentat
 ```
 import "github.com/dhaval070/imagekit-go/api/media/metadata"
 
-resp, err := imgkit.Media.AddMetadataField(ctx, metadata.Field{
+resp, err := imgkit.Metadata.CreateCustomField(ctx, metadata.CreateFieldParam{
     Name: "weight",
     Label: "Weight",
     Schema: metadata.Schema{
@@ -339,20 +339,37 @@ resp, err := imgkit.Media.AddMetadataField(ctx, metadata.Field{
 ```
 
 ### 2. List custom metadata fields
+Accepts context and boolean flag(true|false) to get deleted fields. 
 ```
-resp, err := imgkit.Media.ListMetadataFields(ctx, metadata.ListParams{
-   IncludeDeleted: true, 
-})
+resp, err := imgkit.Metadata.CustomFields(ctx, true)
 
 ```
 
 ### 3. Update custom metadata field
 ```
-#TODO
+resp, err := imgkit.Metadata.UpdateCustomField(ctx, UpdateCustomFieldParam{
+    FieldId: "3w3255433",
+    Label: "Cost",
+})
 ```
 
 ### 4. Delete custom metadata field
+Accepts context and fieldId to delete the custom metadata field.
 ```
-#TODO
+resp, err := imgkit.Metadata.DeleteCustomField(ctx, "3325343434")
 ```
     
+## Utility Functions
+### 1. SignToken
+This method generates a signature for given token and timestamp using the configured private key. It is useful for client side file upload to authenticate requests. ```Token``` is a random string. ```Expires``` is a unix timestamp by which token should expire.  ```Token``` and ```Expires``` both are optional parameters. Token defaults to auto generated uuid string. Expires defaults to a current time + 30 minutes value.
+```
+// Using auto generated token and expiration
+resp := ik.SignToken(imagekit.SignTokenParam{})
+
+// Using specific token and expiration
+resp := ik.SignToken(imagekit.SignTokenParam{
+    Token: "31c468de-520a-4dc1-8868-de1e0fb93a7b",
+    Expires: 1655379249
+})
+
+```
