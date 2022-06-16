@@ -15,13 +15,14 @@ Table of contents -
  * [File Management](#file-management)
  * [Metadata API](#metadata-api)
  * [Utility Functions](#utility-functions)
+ * [Rate Limits](#rate-limits)
  * [Support](#support)
  * [Links](#links)
 
 
 ## Version Support
 
-| SDK Version | Go > 1.13 |
+| SDK Version | Go > 1.18 |
 |-------------|-----------|
 | 1.x         | v         |
 
@@ -183,20 +184,20 @@ resp, err := imgkit.Media.RemoveAITags(ctx, media.AITagsParam{
 ### 9. Delete File
 Delete a file by fileId. [API documentation here](https://docs.imagekit.io/api-reference/media-api/delete-file).
 ```
-resp, err := imgkit.Media.DeleteAsset(ctx, fileId)
+resp, err := imgkit.Media.DeleteAsset(ctx, "32435343334")
 ```
 
 ### 10. Delete File Version
 Deletes given version of the file. [API documentation here](https://docs.imagekit.io/api-reference/media-api/delete-file-version)
 ```
-resp, err := imgkit.Media.DeleteAssetVersion(ctx, "fileId", "version-1")
+resp, err := imgkit.Media.DeleteAssetVersion(ctx, "32435343334", "version-1")
 ```
 
 ### 11. Delete Files (bulk)
 Deletes multiple files. [API documentation here](https://docs.imagekit.io/api-reference/media-api/delete-files-bulk).
 ```
 resp, err := imgkit.Media.DeleteBulkAssets(ctx, media.FileIdsParam{
-    FileIds: []string{"fileId1", "fileId2"},
+    FileIds: []string{"324353234", "354332432"},
 )
 ```
 
@@ -215,7 +216,7 @@ resp, err := imgkit.Media.CopyAsset(ctx, media.CopyAssetParam{
 This will move a file from one location to another as per [API documentation here](https://docs.imagekit.io/api-reference/media-api/move-file).
 Accepts the source file's path and destination folder path.
 ```
-err := imgkit.Media.MoveAsset(ctx, media.MoveAssetParams{
+resp, err := imgkit.Media.MoveAsset(ctx, media.MoveAssetParam{
     SourcePath: "/source/a.jpg",
     DestinationPath: "/target/",
 })
@@ -225,22 +226,21 @@ err := imgkit.Media.MoveAsset(ctx, media.MoveAssetParams{
 Renames a file as per [API documentation here](https://docs.imagekit.io/api-reference/media-api/rename-file).
 Accepts file path, new name and purge cache option.
 ```
-resp, err := imgkit.Media.RenameAsset(ctx, media.RenameAssetParams{
+resp, err := imgkit.Media.RenameAsset(ctx, media.RenameAssetParam{
     FilePath: "/path/to/file.jpg",
     NewFileName: "newname.jpg",
     PurgeCache: true,
 })
 
 ```
-```resp``` is of type map[string]string in case API response status code is 200 or 207.
 
 ### 15. Restore File Version
 Restore file version to a different version of a file as per [API documentation here](https://docs.imagekit.io/api-reference/media-api/restore-file-version).
 Accepts string type file id and version id.
 ```
-file, err := imgkit.Media.RestoreAssetVersion(ctx, media.AssetParams{
-    FileId: "xyz",
-    VersionId: "2434",
+file, err := imgkit.Media.RestoreVersion(ctx, media.AssetVersionsParam{
+    FileId: "324325334",
+    VersionId: "243434",
 })
 ```
 
@@ -248,7 +248,7 @@ file, err := imgkit.Media.RestoreAssetVersion(ctx, media.AssetParams{
 Creates a new folder as per [API documentation here](https://docs.imagekit.io/api-reference/media-api/create-folder). ```err``` is not nil when response is not 201.
 Accepts string type folder name and parent path.
 ```
-resp, err := imgkit.Media.CreateFolder(ctx, media.CreateFolderParams{
+resp, err := imgkit.Media.CreateFolder(ctx, media.CreateFolderParam{
    FolderName: "nature",
    ParentFolderPath: "/some/pics"
 }
@@ -286,13 +286,13 @@ err := imgkit.Media.MoveFolder(ctx, media.MoveFolderParam{
 Get status of a bulk job operation by job id.  Accepts string type job id. [API documentation here](https://docs.imagekit.io/api-reference/media-api/copy-move-folder-status).
 
 ```
-resp, err := imgkit.BulkJobStatus(ctx, "jobid")
+resp, err := imgkit.BulkJobStatus(ctx, "323235")
 ```
 
 ### 21. Purge Cache
 This will purge given url's CDN and ImageKit.io's internal cache as per [API documentation here](https://docs.imagekit.io/api-reference/media-api/purge-cache).
 ```
-reqId, err := imgkit.Media.PurgeCache(ctx, media.PurgeCacheParams{
+resp, err := imgkit.Media.PurgeCache(ctx, media.PurgeCacheParam{
     Url: "https://ik.imageki.io/your_imagekit_id/rest-of-the-file-path.jpg"
 })
 ```
@@ -301,9 +301,7 @@ reqId, err := imgkit.Media.PurgeCache(ctx, media.PurgeCacheParams{
 Get the status of the submitted purge request. Accepts purge request id. [API documentation here](https://docs.imagekit.io/api-reference/media-api/purge-cache-status).
 
 ```
-status, err := imgkit.Media.PurgeCacheStatus(ctx, media.PurgeCacheStatusParams{
-    RequestId: "xxx",
-})
+resp, err := imgkit.Media.PurgeCacheStatus(ctx, "35325532")
 ```
 
 ## Metadata API
@@ -371,5 +369,27 @@ resp := ik.SignToken(imagekit.SignTokenParam{
     Token: "31c468de-520a-4dc1-8868-de1e0fb93a7b",
     Expires: 1655379249
 })
+
+```
+
+## Rate Limits
+Except for upload API, all ImageKit APIs are rate limited to avoid excessive request rates. 
+
+Whenever backend api returns 429 status code, error of type ```ErrTooManyRequests``` is returned, which can be tested with ```errors.Is```. The rate limit detail can be retrieved from response metadata header. Please sleep/pause for the number of milliseconds specified by the value of ```resp.ResponseMetaData.Header["X-RateLimit-Reset"]``` property before making additional requests to that endpoint.
+
+```
+import (
+    "errors"
+
+    "github.com/dhaval070/imagekit-go"
+    "github.com/dhaval070/imagekit-go/metadata"
+    "github.com/dhaval070/imagekit-go/api"
+)
+imgkit, err := ImageKit.New()
+
+resp, err := ik.Metadata.CustomFields(ctx, true)
+if errors.Is(err, api.ErrTooManyRequests) {
+    log.Println("rate limit exceeded", resp.ResponseMetaData.Header["X-RateLimit-Limit"])
+}
 
 ```
