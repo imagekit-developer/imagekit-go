@@ -7,8 +7,8 @@ import (
 	"github.com/dhaval070/imagekit-go/api"
 )
 
-// UploadParams defines upload parameters
-type UploadParams struct {
+// UploadParam defines upload parameters
+type UploadParam struct {
 	FileName                string `json:"fileName,omitempty"`
 	UseUniqueFileName       string `json:"useUniqueFileName,omitempty"`
 	Tags                    string `json:"tags,omitempty"`
@@ -52,9 +52,9 @@ type UploadResponse struct {
 //   * the remote FTP, HTTP or HTTPS URL address of an existing file
 //
 // https://docs.imagekit.io/api-reference/upload-file-api/server-side-file-upload
-func (u *API) Upload(ctx context.Context, file interface{}, uploadParams UploadParams) (*UploadResponse, error) {
+func (u *API) Upload(ctx context.Context, file interface{}, param UploadParam) (*UploadResponse, error) {
 	var err error
-	formParams, err := api.StructToParams(uploadParams)
+	formParams, err := api.StructToParams(param)
 
 	if err != nil {
 		return nil, err

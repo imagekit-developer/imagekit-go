@@ -43,10 +43,10 @@ import (
 )
 
 // Using environment variables IMAGEKIT_PRIVATE_KEY, IMAGEKIT_PUBLIC_KEY and IMAGEKIT_URL_ENDPOINT
-imgkit, err := ImageKit.New()
+ik, err := ImageKit.New()
 
 // Using keys in argument
-imgkit, err := ImageKit.NewFromParams(imagekit.NewParams{
+ik, err := ImageKit.NewFromParams(imagekit.NewParams{
     PrivateKey: privateKey,
     PublicKey: publicKey,
     UrlEndpoint: urlEndpoint
@@ -57,7 +57,7 @@ imgkit, err := ImageKit.NewFromParams(imagekit.NewParams{
 Results returned by functions which call backend api(such as media management, metadata, cache apis) embeds raw response in ```ResponseMetaData```, which can be used to get raw response ```StatusCode```, ```Header``` and ```Body```. The json resonse body is parsed to approprite sdk type and assigned to ```resp.Data```  attribute.
 
 ```
-resp, err := imgkit.Metadata.FromAsset(ctx, fileId)
+resp, err := ik.Metadata.FromAsset(ctx, fileId)
 log.Println(resp.ResponseMetaData.Header, resp.Data.Url)
 
 ```
@@ -92,7 +92,7 @@ if errors.is(err, api.ErrForbidden) {
 This method allows you to create a URL using the ```path``` where the image exists and the URL endpoint (```urlEndpoint```) you want to use to access the image. You can refer to the documentation [here](https://docs.imagekit.io/integration/url-endpoints) to read more about URL endpoints in ImageKit and the section about [image origins](https://docs.imagekit.io/integration/configure-origin) to understand about paths with different kinds of origins.
 
 ```
-url, err := imgkit.Url(url.UrlOptions{
+url, err := ik.Url(url.UrlOptions{
     Path: "/default-image.jpg",
     UrlEndpoint: "https://ik.imagekit.io/your_imagekit_id/endpoint/",
     Transformation: "w-400,h-300:rt-90"
@@ -106,7 +106,7 @@ https://ik.imagekit.io/your_imagekit_id/endpoint/tr:h-300,w-400:tr-90/default-im
 ### 2. This method allows you to add transformation parameters to an existing, complete URL that is already mapped to ImageKit using the ```src``` parameter. Use this method if you have the absolute image URL stored in your database.
 
 ```
-url, err := imgkit.Url(url.UrlParams{
+url, err := ik.Url(url.UrlParams{
     Src: "https://ik.imagekit.io/your_imagekit_id/endpoint/default-image.jpg",
     Transformation: "w-400,h-300:rt-90",
 })
@@ -121,16 +121,16 @@ https://ik.imagekit.io/your_imagekit_id/endpoint/default-image.jpg?tr=h-300,w=40
 
 The SDK uploader package provides a simple interface using the ```.upload()``` method to upload files to the ImageKit Media Library. It accepts all the parameters supported by the [ImageKit Upload API](https://docs.imagekit.io/api-reference/upload-file-api/server-side-file-upload).
 
-The upload() method accepts file and UploadParams. File param can be local filepath, base64 encode image, url or io.Reader. If File is not local filepath then ```UploadParam``` requires the ```fileName``` parameter. This method returns ```UploadResponse``` object and `err` if any. You can pass other parameters supported by the ImageKit upload API using the same parameter name as specified in the upload API documentation. For example, to specify tags for a file at the time of upload, use the tags parameter as specified in the [documentation here](https://docs.imagekit.io/api-reference/upload-file-api/server-side-file-upload).
+The upload() method accepts file and UploadParam. File param can be local filepath, base64 encode image, url or io.Reader. If File is not local filepath then ```UploadParam``` requires the ```fileName``` parameter. This method returns ```UploadResponse``` object and `err` if any. You can pass other parameters supported by the ImageKit upload API using the same parameter name as specified in the upload API documentation. For example, to specify tags for a file at the time of upload, use the tags parameter as specified in the [documentation here](https://docs.imagekit.io/api-reference/upload-file-api/server-side-file-upload).
 
 ```
 import "github.com/dhaval070/imagekit-go/uploader"
 
 filePath := "/my/local/file.jpg"
-resp, err := imgkit.Upload.Upload(ctx, file, uploader.UploadParams{})
+resp, err := ik.Upload.Upload(ctx, filePath, uploader.UploadParam})
 
-filePath := "http://mydomain/image.jpg"
-resp, err := imgkit.Upload.Upload(ctx, file, uploader.UploadParams{
+const base64Image = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+resp, err := ik.Upload.Upload(ctx, base64Image, uploader.UploadParam{
     FileName: "myimage.jpg"
 })
 
@@ -148,7 +148,7 @@ import (
     "github.com/dhaval070/imagekit-go/api/media"
 )
 
-resp, err := imgkit.Media.Assets(ctx, media.AssetsParam{
+resp, err := ik.Media.Assets(ctx, media.AssetsParam{
     Skip: 10,
     Limit: 500,
     SearchQuery: "createdAt >= \"7d\" AND size > \"2mb\"",
@@ -158,7 +158,7 @@ resp, err := imgkit.Media.Assets(ctx, media.AssetsParam{
 ### 2. Get File Details
 Accepts the file ID and fetches the details as per the [API documentation here](https://docs.imagekit.io/api-reference/media-api/get-file-details).
 ```
-resp, err := imgkit.Media.AssetById(ctx, media.AssetByIdParams{
+resp, err := ik.Media.AssetById(ctx, media.AssetByIdParams{
     FileId: fileId
 })
 ```
@@ -166,7 +166,7 @@ resp, err := imgkit.Media.AssetById(ctx, media.AssetByIdParams{
 ### 3. Get File Version Details
 Get all the details and attributes of any version of a file as per the [API documentation here](https://docs.imagekit.io/api-reference/media-api/get-file-version-details).
 ```
-resp, err := imgkit.Media.AssetVersions(ctx, media.AssetVersionsParam{
+resp, err := ik.Media.AssetVersions(ctx, media.AssetVersionsParam{
     FileId: fileId,
     VersionId: "version-id",
 })
@@ -176,7 +176,7 @@ resp, err := imgkit.Media.AssetVersions(ctx, media.AssetVersionsParam{
 ### 4. Get File Versions
 Get all the file version details and attributes of a file as per the [API documentation here](https://docs.imagekit.io/api-reference/media-api/get-file-versions).
 ```
-resp, err := imgkit.Media.AssetVersions(ctx, media.AssetVersionsParam{
+resp, err := ik.Media.AssetVersions(ctx, media.AssetVersionsParam{
     FileId: fileId,
 })
 ```
@@ -184,7 +184,7 @@ resp, err := imgkit.Media.AssetVersions(ctx, media.AssetVersionsParam{
 ### 5. Update File Details
 Update parameters associated with the file as per the [API documentation here](https://docs.imagekit.io/api-reference/media-api/update-file-details).
 ```
-resp, err := imgkit.Media.UpdateAsset(ctx, fileId, media.UpdateAssetParam{
+resp, err := ik.Media.UpdateAsset(ctx, fileId, media.UpdateAssetParam{
     Tags: []string{"tag1", "tag2"},
     RemoveAITags: []string{"car", "suv"},
 })
@@ -193,7 +193,7 @@ resp, err := imgkit.Media.UpdateAsset(ctx, fileId, media.UpdateAssetParam{
 ### 6. Add Tags (bulk)
 Adds given tags to multiple files. Accepts slices of tags and file ids. Returns slice of file ids. [API documentation here](https://docs.imagekit.io/api-reference/media-api/add-tags-bulk)
 ```
-resp, err := imgkit.Media.AddTags(ctx, media.TagsParam{
+resp, err := ik.Media.AddTags(ctx, media.TagsParam{
     FileIds: []string{"one", "two"},
     Tags: []string{"tag1", "tag2"},
 })
@@ -202,7 +202,7 @@ resp, err := imgkit.Media.AddTags(ctx, media.TagsParam{
 ### 7. Remove Tags (bulk)
 Removes tags from multiple assets. Returns slice of file ids updated. [API documentation here](https://docs.imagekit.io/api-reference/media-api/remove-tags-bulk)
 ```
-resp, err := imgkit.Media.RemoveTags(ctx, media.TagsParam{
+resp, err := ik.Media.RemoveTags(ctx, media.TagsParam{
     FileIds: []string{"one", "two"},
     Tags: []string{"tag1", "tag2"},
 })
@@ -210,7 +210,7 @@ resp, err := imgkit.Media.RemoveTags(ctx, media.TagsParam{
 ### 8. Remove AITags (bulk)
 Remove AITags in bulk API. Returns slice of file ids. [API documentation here](https://docs.imagekit.io/api-reference/media-api/remove-aitags-bulk)
 ```
-resp, err := imgkit.Media.RemoveAITags(ctx, media.AITagsParam{
+resp, err := ik.Media.RemoveAITags(ctx, media.AITagsParam{
     FileIds: []string{"one", "two"},
     AITags: []string{"tag1", "tag2"},
 })
@@ -219,19 +219,19 @@ resp, err := imgkit.Media.RemoveAITags(ctx, media.AITagsParam{
 ### 9. Delete File
 Delete a file by fileId. [API documentation here](https://docs.imagekit.io/api-reference/media-api/delete-file).
 ```
-resp, err := imgkit.Media.DeleteAsset(ctx, "32435343334")
+resp, err := ik.Media.DeleteAsset(ctx, "32435343334")
 ```
 
 ### 10. Delete File Version
 Deletes given version of the file. [API documentation here](https://docs.imagekit.io/api-reference/media-api/delete-file-version)
 ```
-resp, err := imgkit.Media.DeleteAssetVersion(ctx, "32435343334", "version-1")
+resp, err := ik.Media.DeleteAssetVersion(ctx, "32435343334", "version-1")
 ```
 
 ### 11. Delete Files (bulk)
 Deletes multiple files. [API documentation here](https://docs.imagekit.io/api-reference/media-api/delete-files-bulk).
 ```
-resp, err := imgkit.Media.DeleteBulkAssets(ctx, media.FileIdsParam{
+resp, err := ik.Media.DeleteBulkAssets(ctx, media.FileIdsParam{
     FileIds: []string{"324353234", "354332432"},
 )
 ```
@@ -240,7 +240,7 @@ resp, err := imgkit.Media.DeleteBulkAssets(ctx, media.FileIdsParam{
 This will copy a file from one location to another as per [API documentation here](https://docs.imagekit.io/api-reference/media-api/copy-file).
 Accepts the source file's path and destination folder path.
 ```
-resp, err := imgkit.Media.CopyAsset(ctx, media.CopyAssetParam{
+resp, err := ik.Media.CopyAsset(ctx, media.CopyAssetParam{
     SourcePath: "/source/a.jpg",
     DestinationPath: "/target/",
     IncludeVersions: true,
@@ -251,7 +251,7 @@ resp, err := imgkit.Media.CopyAsset(ctx, media.CopyAssetParam{
 This will move a file from one location to another as per [API documentation here](https://docs.imagekit.io/api-reference/media-api/move-file).
 Accepts the source file's path and destination folder path.
 ```
-resp, err := imgkit.Media.MoveAsset(ctx, media.MoveAssetParam{
+resp, err := ik.Media.MoveAsset(ctx, media.MoveAssetParam{
     SourcePath: "/source/a.jpg",
     DestinationPath: "/target/",
 })
@@ -261,7 +261,7 @@ resp, err := imgkit.Media.MoveAsset(ctx, media.MoveAssetParam{
 Renames a file as per [API documentation here](https://docs.imagekit.io/api-reference/media-api/rename-file).
 Accepts file path, new name and purge cache option.
 ```
-resp, err := imgkit.Media.RenameAsset(ctx, media.RenameAssetParam{
+resp, err := ik.Media.RenameAsset(ctx, media.RenameAssetParam{
     FilePath: "/path/to/file.jpg",
     NewFileName: "newname.jpg",
     PurgeCache: true,
@@ -273,7 +273,7 @@ resp, err := imgkit.Media.RenameAsset(ctx, media.RenameAssetParam{
 Restore file version to a different version of a file as per [API documentation here](https://docs.imagekit.io/api-reference/media-api/restore-file-version).
 Accepts string type file id and version id.
 ```
-resp, err := imgkit.Media.RestoreVersion(ctx, media.AssetVersionsParam{
+resp, err := ik.Media.RestoreVersion(ctx, media.AssetVersionsParam{
     FileId: "324325334",
     VersionId: "243434",
 })
@@ -283,7 +283,7 @@ resp, err := imgkit.Media.RestoreVersion(ctx, media.AssetVersionsParam{
 Creates a new folder as per [API documentation here](https://docs.imagekit.io/api-reference/media-api/create-folder). ```err``` is not nil when response is not 201.
 Accepts string type folder name and parent path.
 ```
-resp, err := imgkit.Media.CreateFolder(ctx, media.CreateFolderParam{
+resp, err := ik.Media.CreateFolder(ctx, media.CreateFolderParam{
    FolderName: "nature",
    ParentFolderPath: "/some/pics"
 }
@@ -293,7 +293,7 @@ resp, err := imgkit.Media.CreateFolder(ctx, media.CreateFolderParam{
 Deletes the specified folder and all nested files, their versions & folders. This action cannot be undone. Accepts string type folder name to delete. [API documentation here](https://docs.imagekit.io/api-reference/media-api/delete-folder).
 
 ```
-resp, err := imgkit.Media.DeleteFolder(ctx, media.DeleteFolderParam{
+resp, err := ik.Media.DeleteFolder(ctx, media.DeleteFolderParam{
     FolderPath: "/some/pics/nature",
 })
 ```
@@ -301,7 +301,7 @@ resp, err := imgkit.Media.DeleteFolder(ctx, media.DeleteFolderParam{
 ### 18. Copy Folder
 Copies given folder to new location with or without versions info as per [API documentation here](https://docs.imagekit.io/api-reference/media-api/copy-folder).
 ```
-resp, err := imgkit.Media.CopyFolder(ctx, media.CopyFolderParam{
+resp, err := ik.Media.CopyFolder(ctx, media.CopyFolderParam{
     SourceFolderPath: "source/path",
     DestinationPath: "destination/",
     IncludeVersions: true
@@ -311,7 +311,7 @@ resp, err := imgkit.Media.CopyFolder(ctx, media.CopyFolderParam{
 ### 19. Move Folder
 Moves given folder path to new location as per [API documentation here](https://docs.imagekit.io/api-reference/media-api/move-folder).
 ```
-resp, err := imgkit.Media.MoveFolder(ctx, media.MoveFolderParam{
+resp, err := ik.Media.MoveFolder(ctx, media.MoveFolderParam{
     SourceFolderPath: "source/path",
     DestinationPath: "destination/path",
 })
@@ -321,13 +321,13 @@ resp, err := imgkit.Media.MoveFolder(ctx, media.MoveFolderParam{
 Get status of a bulk job operation by job id.  Accepts string type job id. [API documentation here](https://docs.imagekit.io/api-reference/media-api/copy-move-folder-status).
 
 ```
-resp, err := imgkit.BulkJobStatus(ctx, "323235")
+resp, err := ik.BulkJobStatus(ctx, "323235")
 ```
 
 ### 21. Purge Cache
 This will purge given url's CDN and ImageKit.io's internal cache as per [API documentation here](https://docs.imagekit.io/api-reference/media-api/purge-cache).
 ```
-resp, err := imgkit.Media.PurgeCache(ctx, media.PurgeCacheParam{
+resp, err := ik.Media.PurgeCache(ctx, media.PurgeCacheParam{
     Url: "https://ik.imageki.io/your_imagekit_id/rest-of-the-file-path.jpg"
 })
 ```
@@ -336,7 +336,7 @@ resp, err := imgkit.Media.PurgeCache(ctx, media.PurgeCacheParam{
 Get the status of the submitted purge request. Accepts purge request id. [API documentation here](https://docs.imagekit.io/api-reference/media-api/purge-cache-status).
 
 ```
-resp, err := imgkit.Media.PurgeCacheStatus(ctx, "35325532")
+resp, err := ik.Media.PurgeCacheStatus(ctx, "35325532")
 ```
 
 ## Metadata API
@@ -344,13 +344,13 @@ resp, err := imgkit.Media.PurgeCacheStatus(ctx, "35325532")
 Accepts the file ID or URL and fetches the metadata as per the [API documentation here](https://docs.imagekit.io/api-reference/metadata-api/get-image-metadata-for-uploaded-media-files).
 ```
 fileId := "32432523432433335"
-resp, err := imgkit.Metadata.FromAsset(ctx, fileId)
+resp, err := ik.Metadata.FromAsset(ctx, fileId)
 ```
 
 ### 2. Get File Metadata from remote url
 Get image EXIF, pHash, and other metadata from ImageKit.io powered remote URL using this API as per the [API documentation here](https://docs.imagekit.io/api-reference/metadata-api/get-image-metadata-from-remote-url).
 ```
-resp, err := imgkit.Metadata.FromUrl(ctx, "http://domian/a.jpg")
+resp, err := ik.Metadata.FromUrl(ctx, "http://domian/a.jpg")
 ```
 
 ## Custom Metadata fields API
@@ -360,7 +360,7 @@ Create, Update, Read and Delete custom metadata rules as per the [API documentat
 ```
 import "github.com/dhaval070/imagekit-go/api/media/metadata"
 
-resp, err := imgkit.Metadata.CreateCustomField(ctx, metadata.CreateFieldParam{
+resp, err := ik.Metadata.CreateCustomField(ctx, metadata.CreateFieldParam{
     Name: "weight",
     Label: "Weight",
     Schema: metadata.Schema{
@@ -374,13 +374,13 @@ resp, err := imgkit.Metadata.CreateCustomField(ctx, metadata.CreateFieldParam{
 ### 2. List custom metadata fields
 Accepts context and boolean flag(true|false) to get deleted fields. 
 ```
-resp, err := imgkit.Metadata.CustomFields(ctx, true)
+resp, err := ik.Metadata.CustomFields(ctx, true)
 
 ```
 
 ### 3. Update custom metadata field
 ```
-resp, err := imgkit.Metadata.UpdateCustomField(ctx, UpdateCustomFieldParam{
+resp, err := ik.Metadata.UpdateCustomField(ctx, UpdateCustomFieldParam{
     FieldId: "3w3255433",
     Label: "Cost",
 })
@@ -389,7 +389,7 @@ resp, err := imgkit.Metadata.UpdateCustomField(ctx, UpdateCustomFieldParam{
 ### 4. Delete custom metadata field
 Accepts context and fieldId to delete the custom metadata field.
 ```
-resp, err := imgkit.Metadata.DeleteCustomField(ctx, "3325343434")
+resp, err := ik.Metadata.DeleteCustomField(ctx, "3325343434")
 ```
     
 ## Utility Functions
@@ -420,7 +420,7 @@ import (
     "github.com/dhaval070/imagekit-go/metadata"
     "github.com/dhaval070/imagekit-go/api"
 )
-imgkit, err := ImageKit.New()
+ik, err := ImageKit.New()
 
 resp, err := ik.Metadata.CustomFields(ctx, true)
 if errors.Is(err, api.ErrTooManyRequests) {

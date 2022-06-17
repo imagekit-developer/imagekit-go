@@ -67,19 +67,19 @@ func TestUploader(t *testing.T) {
 	var cases = map[string]struct {
 		file   interface{}
 		resp   string
-		param  UploadParams
+		param  UploadParam
 		result *UploadResult
 	}{
 		"local-filepath": {
 			file:   iktest.ImageFilePath,
 			resp:   string(resultJson),
-			param:  UploadParams{},
+			param:  UploadParam{},
 			result: file,
 		},
 		"base64file": {
 			file: iktest.Base64Image,
 			resp: string(resultJson),
-			param: UploadParams{
+			param: UploadParam{
 				FileName: "new-york-cityscape-buildings_A4zxKJbrL.jpg",
 			},
 			result: file,
@@ -87,7 +87,7 @@ func TestUploader(t *testing.T) {
 		"io-reader": {
 			file: reader,
 			resp: string(resultJson),
-			param: UploadParams{
+			param: UploadParam{
 				FileName: "new-york-cityscape-buildings_A4zxKJbrL.jpg",
 			},
 			result: file,

@@ -54,6 +54,7 @@ type AssetsParam struct {
 	Path        string    `default:"/" json:"path"`
 	SearchQuery string    `default:"" json:"searchQuery"`
 	FileType    FileType  `default:"all" json:"fileType"`
+	Tags        string    `json:"tags,omitempty"`
 	Limit       int       `default:"1000" validate:"min=1,max=1000" json:"limit"`
 	Skip        int       `default:"0" validate:"min=0" json:"skip"`
 }
