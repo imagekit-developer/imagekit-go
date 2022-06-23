@@ -3,7 +3,7 @@ package config_test
 import (
 	"testing"
 
-	"github.com/dhaval070/imagekit-go/config"
+	"github.com/imagekit-developer/imagekit-go/config"
 	"github.com/stretchr/testify/assert"
 )
 

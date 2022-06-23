@@ -5,10 +5,13 @@ import (
 	"errors"
 	"log"
 
-	"github.com/dhaval070/imagekit-go"
-	"github.com/dhaval070/imagekit-go/api"
-	"github.com/dhaval070/imagekit-go/api/media"
-	"github.com/dhaval070/imagekit-go/api/metadata"
+	"github.com/imagekit-developer/imagekit-go"
+	"github.com/imagekit-developer/imagekit-go/api"
+	"github.com/imagekit-developer/imagekit-go/api/media"
+	"github.com/imagekit-developer/imagekit-go/api/metadata"
+	"github.com/imagekit-developer/imagekit-go/api/uploader"
+	"github.com/imagekit-developer/imagekit-go/extension"
+	"github.com/imagekit-developer/imagekit-go/logger"
 )
 
 var ctx = context.Background()
@@ -44,29 +47,43 @@ func createField() {
 	log.Println(err)
 
 }
-func main() {
-	//getall() return
 
-	var err error
+func updateFile() {
+	fileId := "62a35f6b168aaf1405abf71b"
 
-	//resp, err := ik.Metadata.CustomFields(ctx, false)
-	//log.Println(resp.Data, resp.ResponseMetaData)
-
-	resp, err := ik.Metadata.UpdateCustomField(ctx, metadata.UpdateCustomFieldParam{
-		FieldId: "629f6b437eb0fe6f1b66d864",
-		Label:   "Cost",
+	resp, err := ik.Media.UpdateAsset(ctx, fileId, media.UpdateAssetParam{
+		Extensions: []extension.IExtension{
+			extension.NewAutoTag(extension.AwsAutoTag, 0, 10),
+			extension.NewRemoveBg(extension.RemoveBgOption{
+				BgColor: "green",
+			}),
+		},
 	})
+
 	log.Println(resp.ResponseMetaData)
 	if err != nil {
 		log.Println("got error", err)
 	}
+}
 
-	//fileId := "62a2fa9121a9dc2869c8bcb0"
-	//	resp, err := ik.Media.AssetVersions(ctx, media.AssetVersionsParam{
-	//		FileId: fileId,
-	//	})
+func main() {
+	var err error
+	ik.Logger.SetLevel(logger.DEBUG)
+	// getall() return
 
-	//resp, err := ik.Media.DeleteAssetVersion(ctx, fileId, "62a2fa9121a9dc2869c8bcb0")
-	//resp, err := ik.Media.DeleteAssetVersion(ctx, fileId, "62a309984a5eb5d7b1f09cab")
+	filePath := "/home/dhaval/Pictures/mobile/IMG_20170402_101533.jpg"
+	resp, err := ik.Uploader.Upload(ctx, filePath, uploader.UploadParam{
+		Extensions: []extension.IExtension{
+			extension.NewAutoTag(extension.GoogleAutoTag, 0, 10),
+			extension.NewRemoveBg(extension.RemoveBgOption{
+				AddShadow: true,
+			}),
+		},
+	})
+
+	log.Println(resp.ResponseMetaData)
+	if err != nil {
+		log.Println("got error", err)
+	}
 
 }

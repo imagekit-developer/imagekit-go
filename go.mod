@@ -1,4 +1,4 @@
-module github.com/dhaval070/imagekit-go
+module github.com/imagekit-developer/imagekit-go
 
 go 1.18
 

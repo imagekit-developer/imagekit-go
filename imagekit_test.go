@@ -5,9 +5,9 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/dhaval070/imagekit-go/logger"
-	"github.com/dhaval070/imagekit-go/url"
-	ikurl "github.com/dhaval070/imagekit-go/url"
+	"github.com/imagekit-developer/imagekit-go/logger"
+	"github.com/imagekit-developer/imagekit-go/url"
+	ikurl "github.com/imagekit-developer/imagekit-go/url"
 	"github.com/google/go-cmp/cmp"
 )
 

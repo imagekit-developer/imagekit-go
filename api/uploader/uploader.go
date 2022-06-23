@@ -11,9 +11,9 @@ import (
 	"os"
 	"time"
 
-	"github.com/dhaval070/imagekit-go/api"
-	"github.com/dhaval070/imagekit-go/config"
-	"github.com/dhaval070/imagekit-go/logger"
+	"github.com/imagekit-developer/imagekit-go/api"
+	"github.com/imagekit-developer/imagekit-go/config"
+	"github.com/imagekit-developer/imagekit-go/logger"
 )
 
 // API is the upload feature main struct

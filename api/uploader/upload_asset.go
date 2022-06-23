@@ -4,38 +4,41 @@ import (
 	"context"
 	"encoding/json"
 
-	"github.com/dhaval070/imagekit-go/api"
+	"github.com/imagekit-developer/imagekit-go/api"
+	"github.com/imagekit-developer/imagekit-go/extension"
 )
 
 // UploadParam defines upload parameters
 type UploadParam struct {
-	FileName                string `json:"fileName,omitempty"`
-	UseUniqueFileName       string `json:"useUniqueFileName,omitempty"`
-	Tags                    string `json:"tags,omitempty"`
-	Folder                  string `json:"folder,omitempty"`        // default value:  /
-	IsPrivateFile           *bool  `json:"isPrivateFile,omitempty"` // default: false
-	CustomCoordinates       string `json:"customCoordinates,omitempty"`
-	ResponseFields          string `json:"responseFields,omitempty"`
-	Extensions              string `json:"extensions,omitempty"`
-	WebhookUrl              string `json:"webhookUrl,omitempty"`
-	OverwriteFile           *bool  `json:"overwriteFile,omitempty"`
-	OverwriteAITags         *bool  `json:"overwriteAITags,omitempty"`
-	OverwriteTags           *bool  `json:"overwriteTags,omitempty"`
-	OverwriteCustomMetadata *bool  `json:"overwriteCustomMetadata,omitempty"`
-	CustomMetadata          string `json:"customMetadata,omitempty"`
+	FileName          string `json:"fileName,omitempty"`
+	UseUniqueFileName string `json:"useUniqueFileName,omitempty"`
+	Tags              string `json:"tags,omitempty"`
+	Folder            string `json:"folder,omitempty"`        // default value:  /
+	IsPrivateFile     *bool  `json:"isPrivateFile,omitempty"` // default: false
+	CustomCoordinates string `json:"customCoordinates,omitempty"`
+	ResponseFields    string `json:"responseFields,omitempty"`
+	ExtensionsJson    string `json:"extensions,omitempty"`
+
+	Extensions              []extension.IExtension `json:"-"`
+	WebhookUrl              string                 `json:"webhookUrl,omitempty"`
+	OverwriteFile           *bool                  `json:"overwriteFile,omitempty"`
+	OverwriteAITags         *bool                  `json:"overwriteAITags,omitempty"`
+	OverwriteTags           *bool                  `json:"overwriteTags,omitempty"`
+	OverwriteCustomMetadata *bool                  `json:"overwriteCustomMetadata,omitempty"`
+	CustomMetadata          map[string]any         `json:"customMetadata,omitempty"`
 }
 
 type UploadResult struct {
-	FileId       string              `json:"fileId"`
-	Name         string              `json:"name"`
-	Url          string              `json:"url"`
-	ThumbnailUrl string              `json:"thumbnailUrl"`
-	Height       int                 `json:"height"`
-	Width        int                 `json:"Width"`
-	Size         uint64              `json:"size"`
-	FilePath     string              `json:"filePath"`
-	AITags       []map[string]string `json:"AITags"`
-	VersionInfo  map[string]string   `json:"versionInfo"`
+	FileId       string            `json:"fileId"`
+	Name         string            `json:"name"`
+	Url          string            `json:"url"`
+	ThumbnailUrl string            `json:"thumbnailUrl"`
+	Height       int               `json:"height"`
+	Width        int               `json:"Width"`
+	Size         uint64            `json:"size"`
+	FilePath     string            `json:"filePath"`
+	AITags       []map[string]any  `json:"AITags"`
+	VersionInfo  map[string]string `json:"versionInfo"`
 }
 
 type UploadResponse struct {
@@ -54,6 +57,15 @@ type UploadResponse struct {
 // https://docs.imagekit.io/api-reference/upload-file-api/server-side-file-upload
 func (u *API) Upload(ctx context.Context, file interface{}, param UploadParam) (*UploadResponse, error) {
 	var err error
+
+	if param.Extensions != nil {
+		bt, err := json.Marshal(param.Extensions)
+		if err != nil {
+			return nil, err
+		}
+		param.ExtensionsJson = string(bt)
+	}
+
 	formParams, err := api.StructToParams(param)
 
 	if err != nil {

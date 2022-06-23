@@ -32,14 +32,14 @@ Table of contents -
 ## Installation
 
 ```bash
-go get github.com/dhaval070/imagekit-go
+go get github.com/imagekit-developer/imagekit-go
 ```
 
 ## Initialization
 
 ```go
 import (
-    "github.com/dhaval070/imagekit-go"
+    "github.com/imagekit-developer/imagekit-go"
 )
 
 // Using environment variables IMAGEKIT_PRIVATE_KEY, IMAGEKIT_PUBLIC_KEY and IMAGEKIT_URL_ENDPOINT
@@ -124,7 +124,7 @@ The SDK uploader package provides a simple interface using the ```.upload()``` m
 The upload() method accepts file and UploadParam. File param can be local filepath, base64 encode image, url or io.Reader. If File is not local filepath then ```UploadParam``` requires the ```fileName``` parameter. This method returns ```UploadResponse``` object and `err` if any. You can pass other parameters supported by the ImageKit upload API using the same parameter name as specified in the upload API documentation. For example, to specify tags for a file at the time of upload, use the tags parameter as specified in the [documentation here](https://docs.imagekit.io/api-reference/upload-file-api/server-side-file-upload).
 
 ```
-import "github.com/dhaval070/imagekit-go/uploader"
+import "github.com/imagekit-developer/imagekit-go/uploader"
 
 filePath := "/my/local/file.jpg"
 resp, err := ik.Upload.Upload(ctx, filePath, uploader.UploadParam})
@@ -144,8 +144,8 @@ The SDK provides a simple interface for all the [media APIs mentioned here](http
 List assets in media library, optionally filter and sort using ```AssetParams```.
 ```
 import (
-    "github.com/dhaval070/imagekit-go"
-    "github.com/dhaval070/imagekit-go/api/media"
+    "github.com/imagekit-developer/imagekit-go"
+    "github.com/imagekit-developer/imagekit-go/api/media"
 )
 
 resp, err := ik.Media.Assets(ctx, media.AssetsParam{
@@ -358,7 +358,7 @@ Create, Update, Read and Delete custom metadata rules as per the [API documentat
 
 ### 1. Create custom metadata field
 ```
-import "github.com/dhaval070/imagekit-go/api/media/metadata"
+import "github.com/imagekit-developer/imagekit-go/api/media/metadata"
 
 resp, err := ik.Metadata.CreateCustomField(ctx, metadata.CreateFieldParam{
     Name: "weight",
@@ -416,9 +416,9 @@ Whenever backend api returns 429 status code, error of type ```ErrTooManyRequest
 import (
     "errors"
 
-    "github.com/dhaval070/imagekit-go"
-    "github.com/dhaval070/imagekit-go/metadata"
-    "github.com/dhaval070/imagekit-go/api"
+    "github.com/imagekit-developer/imagekit-go"
+    "github.com/imagekit-developer/imagekit-go/metadata"
+    "github.com/imagekit-developer/imagekit-go/api"
 )
 ik, err := ImageKit.New()
 

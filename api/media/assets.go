@@ -9,7 +9,8 @@ import (
 	"time"
 
 	"github.com/creasty/defaults"
-	"github.com/dhaval070/imagekit-go/api"
+	"github.com/imagekit-developer/imagekit-go/api"
+	"github.com/imagekit-developer/imagekit-go/extension"
 	"gopkg.in/validator.v2"
 )
 
@@ -76,22 +77,22 @@ type Asset struct {
 	Name              string `json:"name"`
 	FilePath          string `json:"filePath"`
 	Tags              []string
-	AITags            []map[string]string `json:"AITags"`
-	VersionInfo       map[string]string   `json:"versionInfo"`
-	IsPrivateFile     *bool               `json:"isPrivateFile"`
-	CustomCoordinates *string             `json:"customCoordinates"`
-	Url               string              `json:"url"`
-	Thumbnail         string              `json:"thumbnail"`
-	FileType          FileType            `json:"fileType"`
-	Mime              string              `json:"mime"`
-	Height            int                 `json:"height"`
-	Width             int                 `json:"Width"`
-	Size              uint64              `json:"size"`
-	HasAlpha          bool                `json:"hasAlpha"`
-	CustomMetadata    map[string]any      `json:"customMetadata,omitempty"`
-	EmbeddedMetadata  map[string]any      `json:"embeddedMetadata"`
-	CreatedAt         time.Time           `json:"createdAt"`
-	UpdatedAt         time.Time           `json:"updatedAt"`
+	AITags            []map[string]any  `json:"AITags"`
+	VersionInfo       map[string]string `json:"versionInfo"`
+	IsPrivateFile     *bool             `json:"isPrivateFile"`
+	CustomCoordinates *string           `json:"customCoordinates"`
+	Url               string            `json:"url"`
+	Thumbnail         string            `json:"thumbnail"`
+	FileType          FileType          `json:"fileType"`
+	Mime              string            `json:"mime"`
+	Height            int               `json:"height"`
+	Width             int               `json:"Width"`
+	Size              uint64            `json:"size"`
+	HasAlpha          bool              `json:"hasAlpha"`
+	CustomMetadata    map[string]any    `json:"customMetadata,omitempty"`
+	EmbeddedMetadata  map[string]any    `json:"embeddedMetadata"`
+	CreatedAt         time.Time         `json:"createdAt"`
+	UpdatedAt         time.Time         `json:"updatedAt"`
 }
 
 // AssetsResponse represents response type of Assets().
@@ -108,12 +109,12 @@ type AssetResponse struct {
 
 // UpdateAssetParam represents asset attributes to update
 type UpdateAssetParam struct {
-	RemoveAITags      []string       `json:"removeAITags,omitempty"`
-	WebhookUrl        string         `json:"webhookUrl,omitempty"`
-	Extensions        map[string]any `json:"extensions,omitempty"`
-	Tags              []string       `json:"tags,omitempty"`
-	CustomCoordinates string         `json:"customCoordinates,omitempty"`
-	CustomMetadata    map[string]any `json:"customMetadata,omitempty"`
+	RemoveAITags      []string               `json:"removeAITags,omitempty"`
+	WebhookUrl        string                 `json:"webhookUrl,omitempty"`
+	Extensions        []extension.IExtension `json:"extensions,omitempty"`
+	Tags              []string               `json:"tags,omitempty"`
+	CustomCoordinates string                 `json:"customCoordinates,omitempty"`
+	CustomMetadata    map[string]any         `json:"customMetadata,omitempty"`
 }
 
 // TagsParam represents parameters to add tags to bulk assets

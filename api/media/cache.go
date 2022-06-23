@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 
-	"github.com/dhaval070/imagekit-go/api"
+	"github.com/imagekit-developer/imagekit-go/api"
 	"gopkg.in/validator.v2"
 )
 

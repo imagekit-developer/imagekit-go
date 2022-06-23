@@ -12,12 +12,13 @@ import (
 	"strings"
 	"time"
 
-	"github.com/dhaval070/imagekit-go/api/media"
-	"github.com/dhaval070/imagekit-go/api/metadata"
-	"github.com/dhaval070/imagekit-go/config"
-	"github.com/dhaval070/imagekit-go/logger"
-	ikurl "github.com/dhaval070/imagekit-go/url"
 	"github.com/google/uuid"
+	"github.com/imagekit-developer/imagekit-go/api/media"
+	"github.com/imagekit-developer/imagekit-go/api/metadata"
+	"github.com/imagekit-developer/imagekit-go/api/uploader"
+	"github.com/imagekit-developer/imagekit-go/config"
+	"github.com/imagekit-developer/imagekit-go/logger"
+	ikurl "github.com/imagekit-developer/imagekit-go/url"
 )
 
 // ImageKit main struct
@@ -26,6 +27,7 @@ type ImageKit struct {
 	Logger   *logger.Logger
 	Media    *media.API
 	Metadata *metadata.API
+	Uploader *uploader.API
 }
 
 // NewParams is struct to define parameters to imagekit
@@ -55,6 +57,7 @@ func NewFromParams(params NewParams) *ImageKit {
 // NewFromConfiguration returns new ImageKit object from configuration object
 func NewFromConfiguration(cfg *config.Configuration) *ImageKit {
 	log := logger.New()
+	client := &http.Client{}
 
 	return &ImageKit{
 		Config: *cfg,
@@ -62,12 +65,17 @@ func NewFromConfiguration(cfg *config.Configuration) *ImageKit {
 		Media: &media.API{
 			Config: *cfg,
 			Logger: log,
-			Client: &http.Client{},
+			Client: client,
 		},
 		Metadata: &metadata.API{
 			Config: *cfg,
 			Logger: log,
-			Client: &http.Client{},
+			Client: client,
+		},
+		Uploader: &uploader.API{
+			Config: *cfg,
+			Logger: log,
+			Client: client,
 		},
 	}
 }

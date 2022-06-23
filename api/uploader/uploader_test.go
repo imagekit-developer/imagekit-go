@@ -11,8 +11,8 @@ import (
 	"os"
 	"testing"
 
-	"github.com/dhaval070/imagekit-go/api"
-	iktest "github.com/dhaval070/imagekit-go/test"
+	"github.com/imagekit-developer/imagekit-go/api"
+	iktest "github.com/imagekit-developer/imagekit-go/test"
 	"github.com/google/go-cmp/cmp"
 )
 
