@@ -21,9 +21,9 @@ type DeleteFolderParam struct {
 
 // CopyFolderParam represents parameter to copy folder api
 type CopyFolderParam struct {
-	SourceFolderPath string `validate:"nonzero" json:"sourceFolderPath"`
-	DestinationPath  string `validate:"nonzero" json:"destinationPath"`
-	IncludeVersions  bool   `json:"includeVersions"`
+	SourceFolderPath    string `validate:"nonzero" json:"sourceFolderPath"`
+	DestinationPath     string `validate:"nonzero" json:"destinationPath"`
+	IncludeFileVersions bool   `json:"IncludeFileVersions"`
 }
 
 // MoveFolderParam represents parameter to move folder api

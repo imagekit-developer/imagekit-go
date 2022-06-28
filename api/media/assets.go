@@ -158,9 +158,9 @@ type DeleteAssetsResponse struct {
 
 // CopyAssetParam represents parameters to copy asset api
 type CopyAssetParam struct {
-	SourcePath      string `validate:"nonzero" json:"sourceFilePath"`
-	DestinationPath string `validate:"nonzero" json:"destinationPath"`
-	IncludeVersions bool   `json:"includeVersions"`
+	SourcePath          string `validate:"nonzero" json:"sourceFilePath"`
+	DestinationPath     string `validate:"nonzero" json:"destinationPath"`
+	IncludeFileVersions bool   `json:"includeFileVersions"`
 }
 
 // MoveAssetParam represents parameters to move asset api

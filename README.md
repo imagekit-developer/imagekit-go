@@ -243,7 +243,7 @@ Accepts the source file's path and destination folder path.
 resp, err := ik.Media.CopyAsset(ctx, media.CopyAssetParam{
     SourcePath: "/source/a.jpg",
     DestinationPath: "/target/",
-    IncludeVersions: true,
+    IncludeFileVersions: true,
 })
 ```
 
