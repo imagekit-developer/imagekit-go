@@ -5,10 +5,9 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/imagekit-developer/imagekit-go/logger"
-	"github.com/imagekit-developer/imagekit-go/url"
-	ikurl "github.com/imagekit-developer/imagekit-go/url"
 	"github.com/google/go-cmp/cmp"
+	"github.com/imagekit-developer/imagekit-go/logger"
+	ikurl "github.com/imagekit-developer/imagekit-go/url"
 )
 
 var imgkit = NewFromParams(NewParams{
@@ -24,27 +23,37 @@ func init() {
 func TestUrl(t *testing.T) {
 	type tcase struct {
 		name   string
-		params ikurl.UrlParams
+		params ikurl.UrlParam
 		url    string
 	}
 
 	cases := []tcase{
 		{
 			name: "path",
-			params: ikurl.UrlParams{
-				Path:           "default-image.jpg",
-				EndpointUrl:    "https://imagekit.io/343534/",
-				Transformation: "w-100,rt-90",
+			params: ikurl.UrlParam{
+				Path:        "default-image.jpg",
+				EndpointUrl: "https://imagekit.io/343534/",
+				Transformations: []ikurl.Transformation{
+					{
+						Width:  100,
+						Rotate: 90,
+					},
+				},
 			},
 			url: "https://imagekit.io/343534/tr:w-100,rt-90/default-image.jpg",
 		}, {
 			name: "signed",
-			params: ikurl.UrlParams{
-				Path:           "default-image.jpg",
-				EndpointUrl:    "https://ik.imagekit.io/test/",
-				Transformation: "w-200,rt-90",
-				Signed:         true,
-				ExpireSeconds:  100,
+			params: ikurl.UrlParam{
+				Path:        "default-image.jpg",
+				EndpointUrl: "https://ik.imagekit.io/test/",
+				Transformations: []ikurl.Transformation{
+					{
+						Width:  200,
+						Rotate: 90,
+					},
+				},
+				Signed:        true,
+				ExpireSeconds: 100,
 				UnixTime: func() int64 {
 					return 1653775828
 				},
@@ -52,18 +61,28 @@ func TestUrl(t *testing.T) {
 			url: "https://ik.imagekit.io/test/tr:w-200,rt-90/default-image.jpg?ik-t=1653775928&ik-s=6c74b32f5efc0cc39ab5c042718b36553d8a1606",
 		}, {
 			name: "src",
-			params: ikurl.UrlParams{
-				Src:            "https://imagekit.io/343534/default-image.jpg",
-				Transformation: "w-100,rt-90",
+			params: ikurl.UrlParam{
+				Src: "https://imagekit.io/343534/default-image.jpg",
+				Transformations: []ikurl.Transformation{
+					{
+						Width:  100,
+						Rotate: 90,
+					},
+				},
 			},
 			url: "https://imagekit.io/343534/default-image.jpg?tr=w-100,rt-90",
 		}, {
 			name: "trquery",
-			params: ikurl.UrlParams{
-				Path:                   "default-image.jpg",
-				EndpointUrl:            "https://imagekit.io/343534/",
-				Transformation:         "w-100,rt-90",
-				TransformationPosition: url.QUERY,
+			params: ikurl.UrlParam{
+				Path:        "default-image.jpg",
+				EndpointUrl: "https://imagekit.io/343534/",
+				Transformations: []ikurl.Transformation{
+					{
+						Width:  100,
+						Rotate: 90,
+					},
+				},
+				TransformationPosition: ikurl.QUERY,
 			},
 			url: "https://imagekit.io/343534/default-image.jpg?tr=w-100%2crt-90",
 		},

@@ -13,9 +13,9 @@ import (
 var Cfg *config.Configuration
 
 const (
-	PrivateKey  = "private_XxZH+I8BfOoIsY0M9CQtS4nyNSk="
-	PublicKey   = "public_fGfgv45RjwmkbzGMRy1gKTcHf4M="
-	UrlEndpoint = "https://ik.imagekit.io/dk1m7xkgi/"
+	PrivateKey  = "private_"
+	PublicKey   = "public_"
+	UrlEndpoint = "https://ik.imagekit.io/tests/"
 )
 
 func init() {

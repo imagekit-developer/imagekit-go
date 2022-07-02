@@ -7,11 +7,13 @@ const (
 	QUERY trpos = "query"
 )
 
-type UrlParams struct {
-	Path                   string
-	Src                    string
-	EndpointUrl            string
-	Transformation         string
+type UrlParam struct {
+	Path                string
+	Src                 string
+	EndpointUrl         string
+	Transformations     []Transformation // tr:w-400,h-300
+	NamedTransformation string           // n-trname
+
 	Signed                 bool
 	ExpireSeconds          int64
 	TransformationPosition trpos

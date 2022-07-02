@@ -24,9 +24,9 @@ Table of contents -
 
 ## Version Support
 
-| SDK Version | Go > 1.18 |
+| SDK Version | Go        |
 |-------------|-----------|
-| 1.x         | v         |
+| 1.x         | >1.18     |
 
 
 ## Installation
@@ -92,23 +92,43 @@ if errors.is(err, api.ErrForbidden) {
 This method allows you to create a URL using the ```path``` where the image exists and the URL endpoint (```urlEndpoint```) you want to use to access the image. You can refer to the documentation [here](https://docs.imagekit.io/integration/url-endpoints) to read more about URL endpoints in ImageKit and the section about [image origins](https://docs.imagekit.io/integration/configure-origin) to understand about paths with different kinds of origins.
 
 ```
-url, err := ik.Url(url.UrlOptions{
+import (
+	ikurl "github.com/imagekit-developer/imagekit-go/url"
+)
+
+url, err := ik.Url(ikurl.UrlParam{
     Path: "/default-image.jpg",
     UrlEndpoint: "https://ik.imagekit.io/your_imagekit_id/endpoint/",
-    Transformation: "w-400,h-300:rt-90"
+    Transformations: []ikurl.Transformation{
+        {
+            Width:  400,
+            Height: 300,
+            Rotate: 90,
+        },
+    },
 })
 ```
 This results in a URL like:
 ```
-https://ik.imagekit.io/your_imagekit_id/endpoint/tr:h-300,w-400:tr-90/default-image.jpg
+https://ik.imagekit.io/your_imagekit_id/endpoint/tr:h-300,w-400:rt-90/default-image.jpg
 ```
 
 ### 2. This method allows you to add transformation parameters to an existing, complete URL that is already mapped to ImageKit using the ```src``` parameter. Use this method if you have the absolute image URL stored in your database.
 
 ```
-url, err := ik.Url(url.UrlParams{
+import (
+	ikurl "github.com/imagekit-developer/imagekit-go/url"
+)
+
+url, err := ik.Url(ikurl.UrlParam{
     Src: "https://ik.imagekit.io/your_imagekit_id/endpoint/default-image.jpg",
-    Transformation: "w-400,h-300:rt-90",
+    Transformations: []ikurl.Transformation{
+        {
+            Width:  400,
+            Height: 300,
+            Rotate: 90,
+        },
+    },
 })
 ```
 This results in a URL like:
