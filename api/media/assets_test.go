@@ -19,6 +19,8 @@ var ctx = context.Background()
 
 var respBody = `[{"fileId":"6283b04dc82abf6294aee010","name":"beauty_of_nature_12_6S7aNLP3-.jpg","filePath":"/beauty_of_nature_12_6S7aNLP3-.jpg","Tags":null,"AITags":null,"versionInfo":{"id":"6283b04dc82abf6294aee010","name":"Version 2"},"isPrivateFile":false,"customCoordinates":null,"url":"https://ik.imagekit.io/dk1m7xkgi/beauty_of_nature_12_6S7aNLP3-.jpg","thumbnail":"https://ik.imagekit.io/dk1m7xkgi/tr:n-ik_ml_thumbnail/beauty_of_nature_12_6S7aNLP3-.jpg","fileType":"image","mime":"image/png","height":133,"Width":200,"size":26509,"hasAlpha":true,"customMetadata":{"price":10},"embeddedMetadata":{"DateCreated":"2022-06-07T15:20:32.104Z","DateTimeCreated":"2022-06-07T15:20:32.105Z","ImageHeight":133,"ImageWidth":200},"createdAt":"2022-05-17T14:25:17.543Z","updatedAt":"2022-06-07T15:20:32.107Z"}]`
 
+var singleAssetResp string
+
 var assetsArr []Asset
 var asset Asset
 var mediaApi *API
@@ -42,8 +44,8 @@ func TestMain(m *testing.M) {
 		log.Fatal(err)
 	}
 
-	var mockBody = respBody[1 : len(respBody)-1]
-	err = json.Unmarshal([]byte(mockBody), &asset)
+	singleAssetResp = respBody[1 : len(respBody)-1]
+	err = json.Unmarshal([]byte(singleAssetResp), &asset)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -53,11 +55,15 @@ func TestMain(m *testing.M) {
 
 func TestMedia_Assets(t *testing.T) {
 	var err error
-
 	var expected = assetsArr
-	err = json.Unmarshal([]byte(respBody), &expected)
+	var url string
+	var expectedUrl = "/files?fileType=all&limit=1000&path=%2F&searchQuery=&skip=0&sort=ASC_CREATED&type=file"
 
-	handler := getHandler(200, respBody)
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		url = r.URL.String()
+		w.WriteHeader(200)
+		fmt.Fprintln(w, respBody)
+	})
 
 	ts := httptest.NewServer(handler)
 	defer ts.Close()
@@ -73,6 +79,10 @@ func TestMedia_Assets(t *testing.T) {
 	if !cmp.Equal(resp.Data, expected) {
 		t.Errorf("\n%v\n%v\n", resp.Data, expected)
 	}
+
+	if url != expectedUrl {
+		t.Errorf("expected url %s , got url %s", expectedUrl, url)
+	}
 }
 
 func TestMedia_AssetById(t *testing.T) {
@@ -80,18 +90,24 @@ func TestMedia_AssetById(t *testing.T) {
 	var mockBody = respBody[1 : len(respBody)-1]
 
 	var cases = map[string]struct {
+		fileId     string
+		url        string
 		result     Asset
 		body       string
 		statusCode int
 		shouldFail bool
 	}{
 		"get asset successfully": {
+			fileId:     "123",
+			url:        "/files/123/details",
 			body:       mockBody,
 			result:     expected,
 			statusCode: 200,
 			shouldFail: false,
 		},
 		"check failure": {
+			fileId:     "456",
+			url:        "/files/456/details",
 			body:       `{"message":"not found"}`,
 			result:     Asset{},
 			statusCode: 400,
@@ -101,13 +117,20 @@ func TestMedia_AssetById(t *testing.T) {
 
 	for name, tc := range cases {
 		t.Run(name, func(t *testing.T) {
-			handler := getHandler(tc.statusCode, tc.body)
+			var url string
+
+			handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				url = r.URL.String()
+				w.WriteHeader(tc.statusCode)
+				fmt.Fprintln(w, tc.body)
+			})
+
 			ts := httptest.NewServer(handler)
 			defer ts.Close()
 
 			mediaApi.Config.API.Prefix = ts.URL + "/"
 
-			resp, err := mediaApi.AssetById(ctx, AssetByIdParam{FileId: expected.FileId})
+			resp, err := mediaApi.AssetById(ctx, tc.fileId)
 
 			if tc.shouldFail && err == nil {
 				t.Error("expected error")
@@ -120,25 +143,33 @@ func TestMedia_AssetById(t *testing.T) {
 			if !cmp.Equal(resp.Data, tc.result) {
 				t.Errorf("\n%v\n%v\n", resp.Data, expected)
 			}
+
+			if url != tc.url {
+				t.Errorf("expected url: %s, got: %s", tc.url, url)
+			}
 		})
 	}
 }
 
 func TestMedia_AssetVersions(t *testing.T) {
+
+	log.Println(singleAssetResp)
 	var cases = map[string]struct {
-		result     []Asset
+		fileId     string
+		versionId  string
 		body       string
 		statusCode int
 		shouldFail bool
 	}{
 		"all versions": {
-			result:     assetsArr,
-			body:       respBody,
+			fileId:     "6283b04dc82abf6294aee010",
+			versionId:  "v123",
+			body:       singleAssetResp,
 			statusCode: 200,
 			shouldFail: false,
 		},
 		"should fail": {
-			result:     nil,
+			fileId:     "123",
 			body:       `{"message": "not found"}`,
 			statusCode: 400,
 			shouldFail: true,
@@ -147,7 +178,18 @@ func TestMedia_AssetVersions(t *testing.T) {
 
 	for name, tc := range cases {
 		t.Run(name, func(t *testing.T) {
-			handler := getHandler(tc.statusCode, tc.body)
+			var url string
+			var expectedUrl = "/files/" + tc.fileId + "/versions"
+
+			if tc.versionId != "" {
+				expectedUrl = expectedUrl + "/" + tc.versionId
+			}
+
+			handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				url = r.URL.String()
+				w.WriteHeader(tc.statusCode)
+				fmt.Fprintln(w, tc.body)
+			})
 
 			ts := httptest.NewServer(handler)
 			defer ts.Close()
@@ -155,9 +197,10 @@ func TestMedia_AssetVersions(t *testing.T) {
 			mediaApi.Config.API.Prefix = ts.URL + "/"
 
 			params := AssetVersionsParam{
-				FileId: "file_id",
+				FileId:    tc.fileId,
+				VersionId: tc.versionId,
 			}
-			resp, err := mediaApi.AssetVersions(ctx, params)
+			_, err := mediaApi.AssetVersions(ctx, params)
 
 			if tc.shouldFail && err == nil {
 				t.Error("expected error")
@@ -167,8 +210,8 @@ func TestMedia_AssetVersions(t *testing.T) {
 				t.Error(err)
 			}
 
-			if !cmp.Equal(resp.Data, tc.result) {
-				t.Errorf("\n%v\n%v\n", resp.Data, tc.result)
+			if url != expectedUrl {
+				t.Errorf("expected url: %s, got url: %s", expectedUrl, url)
 			}
 		})
 	}
@@ -259,7 +302,15 @@ func TestMedia_AddTags(t *testing.T) {
 
 	respBody, _ := json.Marshal(&resp)
 
-	handler := getHandler(200, string(respBody))
+	var bodyReceived []byte
+	var receivedRequest *http.Request
+
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		bodyReceived, _ = io.ReadAll(r.Body)
+		receivedRequest = r.Clone(ctx)
+		w.WriteHeader(200)
+		fmt.Fprintln(w, string(respBody))
+	})
 
 	ts := httptest.NewServer(handler)
 	defer ts.Close()
@@ -271,10 +322,21 @@ func TestMedia_AddTags(t *testing.T) {
 		Tags:    tags,
 	}
 
+	reqBody, _ := json.Marshal(params)
+
 	response, err := mediaApi.AddTags(ctx, params)
 
 	if err != nil {
-		t.Error(err)
+		log.Printf("%+v\n", err)
+		t.Errorf("%+v", err)
+	}
+
+	if !cmp.Equal(bodyReceived, reqBody) {
+		t.Error("incorrect request body")
+	}
+
+	if receivedRequest != nil {
+		iktest.JsonRequest(receivedRequest, t)
 	}
 
 	if !cmp.Equal(response.Data, resp) {

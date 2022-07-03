@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/imagekit-developer/imagekit-go/api"
@@ -44,20 +45,24 @@ func (m *API) post(ctx context.Context, url string, data interface{}) (*http.Res
 
 	if data != nil {
 		if body, err = json.Marshal(data); err != nil {
-			return nil, err
+			return nil, fmt.Errorf("post:marshal data: %w", err)
 		}
 	}
 
 	req, err := http.NewRequest(http.MethodPost, url, bytes.NewBuffer(body))
 
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("post:http request: %w", err)
 	}
 
 	req.Header.Set("Content-Type", "application/json")
 	req.SetBasicAuth(m.Config.Cloud.PrivateKey, "")
 
-	return m.Client.Do(req.WithContext(ctx))
+	resp, err := m.Client.Do(req.WithContext(ctx))
+	if err != nil {
+		err = fmt.Errorf("client.Do %w", err)
+	}
+	return resp, err
 }
 
 func (m *API) get(ctx context.Context, url string) (*http.Response, error) {

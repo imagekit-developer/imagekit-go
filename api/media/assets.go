@@ -60,11 +60,6 @@ type AssetsParam struct {
 	Skip        int       `default:"0" validate:"min=0" json:"skip"`
 }
 
-// AssetByIdParam struct is a parameter type to AssetsById() function to retrieve single asset details.
-type AssetByIdParam struct {
-	FileId string `validate:"nonzero" json:"fileId"`
-}
-
 // AssetVersionsParam represents filter for getting asset version
 type AssetVersionsParam struct {
 	FileId    string `validate:"nonzero" json:"fileId"`
@@ -235,12 +230,8 @@ func (m *API) Assets(ctx context.Context, params AssetsParam) (*AssetsResponse, 
 }
 
 // AssetById returns details of single asset by provided id
-func (m *API) AssetById(ctx context.Context, params AssetByIdParam) (*AssetResponse, error) {
-	if err := validator.Validate(params); err != nil {
-		return nil, err
-	}
-
-	resp, err := m.get(ctx, fmt.Sprintf("files/%s/details", params.FileId))
+func (m *API) AssetById(ctx context.Context, fileId string) (*AssetResponse, error) {
+	resp, err := m.get(ctx, fmt.Sprintf("files/%s/details", fileId))
 
 	defer api.DeferredBodyClose(resp)
 
