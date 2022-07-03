@@ -11,8 +11,8 @@ import (
 	"os"
 	"testing"
 
-	iktest "github.com/imagekit-developer/imagekit-go/test"
 	"github.com/google/go-cmp/cmp"
+	iktest "github.com/imagekit-developer/imagekit-go/test"
 )
 
 var ctx = context.Background()
@@ -413,9 +413,9 @@ func TestMedia_DeleteBulkAssets(t *testing.T) {
 func TestMedia_CopyAsset(t *testing.T) {
 	var err error
 	var param = CopyAssetParam{
-		SourcePath:      "/file.jpg",
-		DestinationPath: "/natural/file.jpg",
-		IncludeVersions: true,
+		SourcePath:          "/file.jpg",
+		DestinationPath:     "/natural/file.jpg",
+		IncludeFileVersions: true,
 	}
 
 	handler := getHandler(204, "")

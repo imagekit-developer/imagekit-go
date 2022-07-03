@@ -1,6 +1,7 @@
 package test
 
 import (
+	"log"
 	"net/http"
 	"path"
 	"path/filepath"
@@ -42,7 +43,9 @@ func TestDataDir() string {
 func JsonRequest(r *http.Request, t *testing.T) {
 	h := r.Header
 
-	if h.Get("Authorization") != "Basic cHJpdmF0ZV9YeFpIK0k4QmZPb0lzWTBNOUNRdFM0bnlOU2s9Og==" {
+	log.Println(h.Get("Authorization"))
+
+	if h.Get("Authorization") != "Basic cHJpdmF0ZV86" {
 		t.Error("invalid authorization header")
 	}
 

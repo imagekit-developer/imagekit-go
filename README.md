@@ -324,7 +324,7 @@ Copies given folder to new location with or without versions info as per [API do
 resp, err := ik.Media.CopyFolder(ctx, media.CopyFolderParam{
     SourceFolderPath: "source/path",
     DestinationPath: "destination/",
-    IncludeVersions: true
+    IncludeFileVersions: true
 })
 ```
 
