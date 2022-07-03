@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	iktest "github.com/imagekit-developer/imagekit-go/test"
 )
 
 func TestMedia_PurgeCache(t *testing.T) {
@@ -22,8 +23,9 @@ func TestMedia_PurgeCache(t *testing.T) {
 	}
 	respBody, _ := json.Marshal(&rs.Data)
 
-	handler := getHandler(201, string(respBody))
-	ts := httptest.NewServer(handler)
+	httpTest := iktest.NewHttp(t)
+
+	ts := httptest.NewServer(httpTest.Handler(201, string(respBody)))
 	defer ts.Close()
 
 	mediaApi.Config.API.Prefix = ts.URL + "/"
@@ -35,6 +37,7 @@ func TestMedia_PurgeCache(t *testing.T) {
 	if !cmp.Equal(response.Data.RequestId, "xxx") {
 		t.Error(response.Data)
 	}
+	httpTest.Test("/files/purge", "POST", param)
 }
 
 func TestMedia_PurgeCacheStatus(t *testing.T) {
@@ -47,8 +50,9 @@ func TestMedia_PurgeCacheStatus(t *testing.T) {
 
 	respBody, _ := json.Marshal(&rs.Data)
 
-	handler := getHandler(200, string(respBody))
-	ts := httptest.NewServer(handler)
+	httpTest := iktest.NewHttp(t)
+
+	ts := httptest.NewServer(httpTest.Handler(200, string(respBody)))
 	defer ts.Close()
 
 	mediaApi.Config.API.Prefix = ts.URL + "/"
@@ -60,4 +64,5 @@ func TestMedia_PurgeCacheStatus(t *testing.T) {
 	if !cmp.Equal(response.Data, rs.Data) {
 		t.Error(response.Data)
 	}
+	httpTest.Test("/files/purge/"+reqId, "GET", nil)
 }

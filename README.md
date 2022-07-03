@@ -178,9 +178,7 @@ resp, err := ik.Media.Assets(ctx, media.AssetsParam{
 ### 2. Get File Details
 Accepts the file ID and fetches the details as per the [API documentation here](https://docs.imagekit.io/api-reference/media-api/get-file-details).
 ```
-resp, err := ik.Media.AssetById(ctx, media.AssetByIdParams{
-    FileId: fileId
-})
+resp, err := ik.Media.AssetById(ctx, "file_id")
 ```
 
 ### 3. Get File Version Details

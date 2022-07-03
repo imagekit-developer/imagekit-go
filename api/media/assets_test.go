@@ -4,9 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io"
 	"log"
-	"net/http"
 	"net/http/httptest"
 	"os"
 	"testing"
@@ -24,13 +22,6 @@ var singleAssetResp string
 var assetsArr []Asset
 var asset Asset
 var mediaApi *API
-
-func getHandler(statusCode int, body string) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(statusCode)
-		fmt.Fprintln(w, body)
-	}
-}
 
 func TestMain(m *testing.M) {
 	var err error
@@ -56,16 +47,11 @@ func TestMain(m *testing.M) {
 func TestMedia_Assets(t *testing.T) {
 	var err error
 	var expected = assetsArr
-	var url string
 	var expectedUrl = "/files?fileType=all&limit=1000&path=%2F&searchQuery=&skip=0&sort=ASC_CREATED&type=file"
 
-	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		url = r.URL.String()
-		w.WriteHeader(200)
-		fmt.Fprintln(w, respBody)
-	})
+	httpTest := iktest.NewHttp(t)
 
-	ts := httptest.NewServer(handler)
+	ts := httptest.NewServer(httpTest.Handler(200, string(respBody)))
 	defer ts.Close()
 
 	mediaApi.Config.API.Prefix = ts.URL + "/"
@@ -80,9 +66,7 @@ func TestMedia_Assets(t *testing.T) {
 		t.Errorf("\n%v\n%v\n", resp.Data, expected)
 	}
 
-	if url != expectedUrl {
-		t.Errorf("expected url %s , got url %s", expectedUrl, url)
-	}
+	httpTest.Test(expectedUrl, "GET", nil)
 }
 
 func TestMedia_AssetById(t *testing.T) {
@@ -117,15 +101,9 @@ func TestMedia_AssetById(t *testing.T) {
 
 	for name, tc := range cases {
 		t.Run(name, func(t *testing.T) {
-			var url string
+			httpTest := iktest.NewHttp(t)
 
-			handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-				url = r.URL.String()
-				w.WriteHeader(tc.statusCode)
-				fmt.Fprintln(w, tc.body)
-			})
-
-			ts := httptest.NewServer(handler)
+			ts := httptest.NewServer(httpTest.Handler(tc.statusCode, tc.body))
 			defer ts.Close()
 
 			mediaApi.Config.API.Prefix = ts.URL + "/"
@@ -144,16 +122,12 @@ func TestMedia_AssetById(t *testing.T) {
 				t.Errorf("\n%v\n%v\n", resp.Data, expected)
 			}
 
-			if url != tc.url {
-				t.Errorf("expected url: %s, got: %s", tc.url, url)
-			}
+			httpTest.Test(tc.url, "GET", nil)
 		})
 	}
 }
 
 func TestMedia_AssetVersions(t *testing.T) {
-
-	log.Println(singleAssetResp)
 	var cases = map[string]struct {
 		fileId     string
 		versionId  string
@@ -178,20 +152,15 @@ func TestMedia_AssetVersions(t *testing.T) {
 
 	for name, tc := range cases {
 		t.Run(name, func(t *testing.T) {
-			var url string
 			var expectedUrl = "/files/" + tc.fileId + "/versions"
 
 			if tc.versionId != "" {
 				expectedUrl = expectedUrl + "/" + tc.versionId
 			}
 
-			handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-				url = r.URL.String()
-				w.WriteHeader(tc.statusCode)
-				fmt.Fprintln(w, tc.body)
-			})
+			httpTest := iktest.NewHttp(t)
 
-			ts := httptest.NewServer(handler)
+			ts := httptest.NewServer(httpTest.Handler(tc.statusCode, string(tc.body)))
 			defer ts.Close()
 
 			mediaApi.Config.API.Prefix = ts.URL + "/"
@@ -210,9 +179,7 @@ func TestMedia_AssetVersions(t *testing.T) {
 				t.Error(err)
 			}
 
-			if url != expectedUrl {
-				t.Errorf("expected url: %s, got url: %s", expectedUrl, url)
-			}
+			httpTest.Test(expectedUrl, "GET", nil)
 		})
 	}
 }
@@ -252,29 +219,19 @@ func TestMedia_UpdateAsset(t *testing.T) {
 
 	for name, tc := range cases {
 		t.Run(name, func(t *testing.T) {
-			var bodyReceived []byte
-			var receivedRequest *http.Request
-
-			handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-				bodyReceived, _ = io.ReadAll(r.Body)
-				receivedRequest = r.Clone(ctx)
-				w.WriteHeader(tc.statusCode)
-				fmt.Fprintln(w, tc.body)
-			})
-
-			ts := httptest.NewServer(handler)
+			httpTest := iktest.NewHttp(t)
+			ts := httptest.NewServer(httpTest.Handler(200, string(tc.body)))
 			defer ts.Close()
 
 			mediaApi.Config.API.Prefix = ts.URL + "/"
-			expectedBody, err := json.Marshal(tc.params)
+
 			response, err := mediaApi.UpdateAsset(ctx, tc.fileId, tc.params)
 
-			if receivedRequest != nil {
-				iktest.JsonRequest(receivedRequest, t)
-			}
+			var expectedUrl = "/files/" + tc.fileId + "/details"
 
-			if tc.shouldFail == false && !cmp.Equal(bodyReceived, expectedBody) {
-				t.Error("incorrect request body")
+			if tc.shouldFail == false {
+				httpTest.Test(expectedUrl, "PATCH", tc.params)
+				//t.Error("incorrect request body")
 			}
 
 			if tc.shouldFail == true && err == nil {
@@ -282,12 +239,13 @@ func TestMedia_UpdateAsset(t *testing.T) {
 			}
 
 			if tc.shouldFail == false && err != nil {
-				t.Error(err)
+				t.Error("err not nil" + err.Error())
 			}
 
 			if !tc.shouldFail && !cmp.Equal(tc.result, &response.Data) {
 				t.Errorf("unexpected response %v\n%v", tc.result, response.Data)
 			}
+
 		})
 	}
 }
@@ -302,17 +260,9 @@ func TestMedia_AddTags(t *testing.T) {
 
 	respBody, _ := json.Marshal(&resp)
 
-	var bodyReceived []byte
-	var receivedRequest *http.Request
+	httpTest := iktest.NewHttp(t)
 
-	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		bodyReceived, _ = io.ReadAll(r.Body)
-		receivedRequest = r.Clone(ctx)
-		w.WriteHeader(200)
-		fmt.Fprintln(w, string(respBody))
-	})
-
-	ts := httptest.NewServer(handler)
+	ts := httptest.NewServer(httpTest.Handler(200, string(respBody)))
 	defer ts.Close()
 
 	mediaApi.Config.API.Prefix = ts.URL + "/"
@@ -322,8 +272,6 @@ func TestMedia_AddTags(t *testing.T) {
 		Tags:    tags,
 	}
 
-	reqBody, _ := json.Marshal(params)
-
 	response, err := mediaApi.AddTags(ctx, params)
 
 	if err != nil {
@@ -331,17 +279,12 @@ func TestMedia_AddTags(t *testing.T) {
 		t.Errorf("%+v", err)
 	}
 
-	if !cmp.Equal(bodyReceived, reqBody) {
-		t.Error("incorrect request body")
-	}
-
-	if receivedRequest != nil {
-		iktest.JsonRequest(receivedRequest, t)
-	}
-
 	if !cmp.Equal(response.Data, resp) {
 		t.Errorf("%v\n%v", response.Data, resp)
 	}
+
+	var expectedUrl = "/files/addTags"
+	httpTest.Test(expectedUrl, "POST", params)
 }
 
 func TestMedia_RemoveTags(t *testing.T) {
@@ -354,9 +297,9 @@ func TestMedia_RemoveTags(t *testing.T) {
 
 	respBody, _ := json.Marshal(&resp)
 
-	handler := getHandler(200, string(respBody))
+	httpTest := iktest.NewHttp(t)
 
-	ts := httptest.NewServer(handler)
+	ts := httptest.NewServer(httpTest.Handler(200, string(respBody)))
 	defer ts.Close()
 
 	mediaApi.Config.API.Prefix = ts.URL + "/"
@@ -375,6 +318,9 @@ func TestMedia_RemoveTags(t *testing.T) {
 	if !cmp.Equal(response.Data, resp) {
 		t.Errorf("%v\n%v", response.Data, resp)
 	}
+
+	var expectedUrl = "/files/removeTags"
+	httpTest.Test(expectedUrl, "POST", params)
 }
 
 func TestMedia_RemoveAITags(t *testing.T) {
@@ -387,9 +333,9 @@ func TestMedia_RemoveAITags(t *testing.T) {
 
 	respBody, _ := json.Marshal(&resp)
 
-	handler := getHandler(200, string(respBody))
+	httpTest := iktest.NewHttp(t)
 
-	ts := httptest.NewServer(handler)
+	ts := httptest.NewServer(httpTest.Handler(200, string(respBody)))
 	defer ts.Close()
 
 	mediaApi.Config.API.Prefix = ts.URL + "/"
@@ -408,14 +354,15 @@ func TestMedia_RemoveAITags(t *testing.T) {
 	if !cmp.Equal(response.Data, resp) {
 		t.Errorf("%v\n%v", response.Data, resp)
 	}
+	httpTest.Test("/files/removeAITags", "POST", params)
 }
 
 func TestMedia_DeleteAsset(t *testing.T) {
 	var err error
 
-	handler := getHandler(204, string("1"))
+	httpTest := iktest.NewHttp(t)
 
-	ts := httptest.NewServer(handler)
+	ts := httptest.NewServer(httpTest.Handler(200, "1"))
 	defer ts.Close()
 
 	mediaApi.Config.API.Prefix = ts.URL + "/"
@@ -425,14 +372,15 @@ func TestMedia_DeleteAsset(t *testing.T) {
 		t.Error(err)
 	}
 
+	httpTest.Test("/files/file_id", "DELETE", nil)
 }
 
 func TestMedia_DeleteAssetVersion(t *testing.T) {
 	var err error
 
-	handler := getHandler(204, string("1"))
+	httpTest := iktest.NewHttp(t)
 
-	ts := httptest.NewServer(handler)
+	ts := httptest.NewServer(httpTest.Handler(204, "1"))
 	defer ts.Close()
 
 	mediaApi.Config.API.Prefix = ts.URL + "/"
@@ -442,6 +390,9 @@ func TestMedia_DeleteAssetVersion(t *testing.T) {
 		t.Error(err)
 	}
 
+	url := "/files/file_id/versions/v2"
+
+	httpTest.Test(url, "DELETE", nil)
 }
 
 func TestMedia_DeleteBulkAssets(t *testing.T) {
@@ -451,12 +402,11 @@ func TestMedia_DeleteBulkAssets(t *testing.T) {
 			"file_id1", "file_id2",
 		},
 	}
-
 	var respBody = `{"successfullyDeletedFileIds":["file_id1","file_id2"]}`
 
-	handler := getHandler(200, respBody)
+	httpTest := iktest.NewHttp(t)
 
-	ts := httptest.NewServer(handler)
+	ts := httptest.NewServer(httpTest.Handler(200, string(respBody)))
 	defer ts.Close()
 
 	mediaApi.Config.API.Prefix = ts.URL + "/"
@@ -470,6 +420,7 @@ func TestMedia_DeleteBulkAssets(t *testing.T) {
 	if !cmp.Equal(resp.Data.FileIds, param.FileIds) {
 		t.Errorf("expected: %v, got: %v", param.FileIds, resp.Data.FileIds)
 	}
+	httpTest.Test("/files/batch/deleteByFileIds", "POST", param)
 }
 
 func TestMedia_CopyAsset(t *testing.T) {
@@ -480,9 +431,9 @@ func TestMedia_CopyAsset(t *testing.T) {
 		IncludeFileVersions: true,
 	}
 
-	handler := getHandler(204, "")
+	httpTest := iktest.NewHttp(t)
 
-	ts := httptest.NewServer(handler)
+	ts := httptest.NewServer(httpTest.Handler(204, ""))
 	defer ts.Close()
 
 	mediaApi.Config.API.Prefix = ts.URL + "/"
@@ -501,9 +452,9 @@ func TestMedia_MoveAsset(t *testing.T) {
 		DestinationPath: "/natural/",
 	}
 
-	handler := getHandler(204, "")
+	httpTest := iktest.NewHttp(t)
 
-	ts := httptest.NewServer(handler)
+	ts := httptest.NewServer(httpTest.Handler(204, ""))
 	defer ts.Close()
 
 	mediaApi.Config.API.Prefix = ts.URL + "/"
@@ -513,6 +464,7 @@ func TestMedia_MoveAsset(t *testing.T) {
 		t.Error(err)
 	}
 
+	httpTest.Test("/files/move", "POST", param)
 }
 
 func TestMedia_RenameAsset(t *testing.T) {
@@ -522,9 +474,10 @@ func TestMedia_RenameAsset(t *testing.T) {
 		NewFileName: "/default.jpg",
 		PurgeCache:  true,
 	}
-	handler := getHandler(200, `{"purgeRequestId":"62a44685eb9c264622464b89"}`)
+	httpTest := iktest.NewHttp(t)
 
-	ts := httptest.NewServer(handler)
+	ts := httptest.NewServer(httpTest.Handler(200, `{"purgeRequestId":"123"}`))
+
 	defer ts.Close()
 
 	mediaApi.Config.API.Prefix = ts.URL + "/"
@@ -534,9 +487,11 @@ func TestMedia_RenameAsset(t *testing.T) {
 		t.Error(err)
 	}
 
-	if resp.Data.RequestId != "62a44685eb9c264622464b89" {
+	if resp.Data.RequestId != "123" {
 		t.Error("unexpected request id returned")
 	}
+
+	httpTest.Test("/files/rename", "PUT", param)
 }
 
 func TestMedia_RestoreVersion(t *testing.T) {
@@ -546,11 +501,10 @@ func TestMedia_RestoreVersion(t *testing.T) {
 		FileId:    "file_id",
 		VersionId: "v1",
 	}
-	var mockBody = respBody[1 : len(respBody)-1]
 
-	handler := getHandler(200, mockBody)
+	httpTest := iktest.NewHttp(t)
 
-	ts := httptest.NewServer(handler)
+	ts := httptest.NewServer(httpTest.Handler(200, singleAssetResp))
 	defer ts.Close()
 
 	mediaApi.Config.API.Prefix = ts.URL + "/"
@@ -563,6 +517,11 @@ func TestMedia_RestoreVersion(t *testing.T) {
 	if !cmp.Equal(resp.Data, asset) {
 		t.Error("unexpected response")
 	}
+
+	expectedUrl := fmt.Sprintf("/files/%s/versions/%s/restore",
+		param.FileId, param.VersionId)
+
+	httpTest.Test(expectedUrl, "DELETE", param)
 }
 
 func TestMedia_BulkJobStatus(t *testing.T) {
@@ -573,9 +532,9 @@ func TestMedia_BulkJobStatus(t *testing.T) {
 	}
 	_ = json.Unmarshal([]byte(mockBody), &res)
 	var jobId = "job_id"
-	handler := getHandler(200, mockBody)
+	httpTest := iktest.NewHttp(t)
 
-	ts := httptest.NewServer(handler)
+	ts := httptest.NewServer(httpTest.Handler(200, mockBody))
 	defer ts.Close()
 
 	mediaApi.Config.API.Prefix = ts.URL + "/"
@@ -588,4 +547,6 @@ func TestMedia_BulkJobStatus(t *testing.T) {
 	if !cmp.Equal(resp.Data, res.Data) {
 		t.Error("unexpected response")
 	}
+
+	httpTest.Test("/bulkJobs/"+jobId, "GET", nil)
 }

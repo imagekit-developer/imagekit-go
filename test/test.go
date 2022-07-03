@@ -1,6 +1,10 @@
 package test
 
 import (
+	"context"
+	"encoding/json"
+	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"path"
@@ -8,6 +12,7 @@ import (
 	"runtime"
 	"testing"
 
+	"github.com/google/go-cmp/cmp"
 	"github.com/imagekit-developer/imagekit-go/config"
 )
 
@@ -52,4 +57,58 @@ func JsonRequest(r *http.Request, t *testing.T) {
 	if h.Get("Content-Type") != "application/json" {
 		t.Error("content type not application/json")
 	}
+}
+
+type Http struct {
+	T      *testing.T
+	Url    string
+	Req    *http.Request
+	Body   []byte
+	Method string
+}
+
+func NewHttp(t *testing.T) *Http {
+	return &Http{T: t}
+}
+
+func (h *Http) Handler(statusCode int, body string) http.HandlerFunc {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		h.Url = r.URL.String()
+		h.Method = r.Method
+		h.Body, _ = io.ReadAll(r.Body)
+		h.Req = r.Clone(context.Background())
+		w.WriteHeader(statusCode)
+		fmt.Fprintln(w, body)
+	})
+}
+
+func (h *Http) Test(url string, method string, body any) {
+	if h.Url != url {
+		h.T.Errorf("expected url: %s, got: %s", url, h.Url)
+	}
+
+	if h.Method != method {
+		h.T.Errorf("expected method: %s, got: %s", method, h.Method)
+	}
+
+	if method == "GET" || method == "DELETE" {
+		return
+	}
+
+	var reqBody []byte
+
+	if d, ok := body.([]byte); ok {
+		reqBody = d
+	} else {
+		reqBody, _ = json.Marshal(body)
+	}
+
+	if !cmp.Equal(h.Body, reqBody) {
+		h.T.Errorf("expected body: %v, got: %v", body, h.Body)
+	}
+
+	if h.Req != nil {
+		JsonRequest(h.Req, h.T)
+	}
+
 }

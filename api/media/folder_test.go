@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	iktest "github.com/imagekit-developer/imagekit-go/test"
 )
 
 func TestMedia_CreateFolder(t *testing.T) {
@@ -16,9 +17,9 @@ func TestMedia_CreateFolder(t *testing.T) {
 		ParentFolderPath: "/",
 	}
 
-	handler := getHandler(201, "{}")
+	httpTest := iktest.NewHttp(t)
 
-	ts := httptest.NewServer(handler)
+	ts := httptest.NewServer(httpTest.Handler(201, "{}"))
 	defer ts.Close()
 
 	mediaApi.Config.API.Prefix = ts.URL + "/"
@@ -28,6 +29,7 @@ func TestMedia_CreateFolder(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
+	httpTest.Test("/folder", "POST", param)
 }
 
 func TestMedia_DeleteFolder(t *testing.T) {
@@ -37,9 +39,9 @@ func TestMedia_DeleteFolder(t *testing.T) {
 		FolderPath: "testing",
 	}
 
-	handler := getHandler(204, "{}")
+	httpTest := iktest.NewHttp(t)
 
-	ts := httptest.NewServer(handler)
+	ts := httptest.NewServer(httpTest.Handler(204, "{}"))
 	defer ts.Close()
 
 	mediaApi.Config.API.Prefix = ts.URL + "/"
@@ -49,6 +51,7 @@ func TestMedia_DeleteFolder(t *testing.T) {
 		t.Error(err)
 	}
 
+	httpTest.Test("/folder", "DELETE", nil)
 }
 
 func TestMedia_MoveFolder(t *testing.T) {
@@ -59,9 +62,9 @@ func TestMedia_MoveFolder(t *testing.T) {
 		DestinationPath:  "dest",
 	}
 
-	handler := getHandler(200, `{"jobId":"xxx"}`)
+	httpTest := iktest.NewHttp(t)
 
-	ts := httptest.NewServer(handler)
+	ts := httptest.NewServer(httpTest.Handler(200, `{"jobId":"xxx"}`))
 	defer ts.Close()
 
 	mediaApi.Config.API.Prefix = ts.URL + "/"
@@ -73,6 +76,7 @@ func TestMedia_MoveFolder(t *testing.T) {
 	if !cmp.Equal(response.Data.JobId, "xxx") {
 		t.Error(response.Data)
 	}
+	httpTest.Test("/bulkJobs/moveFolder", "POST", param)
 }
 
 func TestMedia_CopyFolder(t *testing.T) {
@@ -90,8 +94,9 @@ func TestMedia_CopyFolder(t *testing.T) {
 	}
 	respBody, _ := json.Marshal(&rs.Data)
 
-	handler := getHandler(200, string(respBody))
-	ts := httptest.NewServer(handler)
+	httpTest := iktest.NewHttp(t)
+
+	ts := httptest.NewServer(httpTest.Handler(200, string(respBody)))
 	defer ts.Close()
 
 	mediaApi.Config.API.Prefix = ts.URL + "/"
@@ -103,4 +108,5 @@ func TestMedia_CopyFolder(t *testing.T) {
 	if !cmp.Equal(response.Data.JobId, "xxx") {
 		t.Error(response.Data)
 	}
+	httpTest.Test("/bulkJobs/copyFolder", "POST", param)
 }
