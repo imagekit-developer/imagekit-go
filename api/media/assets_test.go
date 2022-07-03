@@ -155,7 +155,7 @@ func TestMedia_AssetVersions(t *testing.T) {
 			mediaApi.Config.API.Prefix = ts.URL + "/"
 
 			params := AssetVersionsParam{
-				FileId: "testxx",
+				FileId: "file_id",
 			}
 			resp, err := mediaApi.AssetVersions(ctx, params)
 
@@ -188,7 +188,7 @@ func TestMedia_UpdateAsset(t *testing.T) {
 	}{
 		"update asset": {
 			result:     &expected,
-			fileId:     "xxx",
+			fileId:     "file_id",
 			body:       mockBody,
 			statusCode: 200,
 			shouldFail: false,
@@ -357,7 +357,7 @@ func TestMedia_DeleteAsset(t *testing.T) {
 	defer ts.Close()
 
 	mediaApi.Config.API.Prefix = ts.URL + "/"
-	_, err = mediaApi.DeleteAsset(ctx, "xxx")
+	_, err = mediaApi.DeleteAsset(ctx, "file_id")
 
 	if err != nil {
 		t.Error(err)
@@ -374,7 +374,7 @@ func TestMedia_DeleteAssetVersion(t *testing.T) {
 	defer ts.Close()
 
 	mediaApi.Config.API.Prefix = ts.URL + "/"
-	_, err = mediaApi.DeleteAssetVersion(ctx, "xxx", "v2")
+	_, err = mediaApi.DeleteAssetVersion(ctx, "file_id", "v2")
 
 	if err != nil {
 		t.Error(err)
@@ -386,11 +386,11 @@ func TestMedia_DeleteBulkAssets(t *testing.T) {
 	var err error
 	var param = FileIdsParam{
 		FileIds: []string{
-			"62a35f6b0997a21767376af8", "62a35f6b0997a28e21376af5",
+			"file_id1", "file_id2",
 		},
 	}
 
-	var respBody = `{"successfullyDeletedFileIds":["62a35f6b0997a21767376af8","62a35f6b0997a28e21376af5"]}`
+	var respBody = `{"successfullyDeletedFileIds":["file_id1","file_id2"]}`
 
 	handler := getHandler(200, respBody)
 
@@ -456,7 +456,7 @@ func TestMedia_MoveAsset(t *testing.T) {
 func TestMedia_RenameAsset(t *testing.T) {
 	var err error
 	var param = RenameAssetParam{
-		FilePath:    "/220501488.jpg",
+		FilePath:    "/some/file.jpg",
 		NewFileName: "/default.jpg",
 		PurgeCache:  true,
 	}
@@ -481,8 +481,8 @@ func TestMedia_RestoreVersion(t *testing.T) {
 	var err error
 
 	var param = AssetVersionsParam{
-		FileId:    "62a35f6b1c95a03491132a5f",
-		VersionId: "62a46fd4eb9c261a3d4a9aa8",
+		FileId:    "file_id",
+		VersionId: "v1",
 	}
 	var mockBody = respBody[1 : len(respBody)-1]
 
@@ -505,12 +505,12 @@ func TestMedia_RestoreVersion(t *testing.T) {
 
 func TestMedia_BulkJobStatus(t *testing.T) {
 	var err error
-	var mockBody = `{"jobId":"62a49236eb9c2685504ded7e","type":"MOVE_FOLDER","status":"Completed"}`
+	var mockBody = `{"jobId":"job_id","type":"MOVE_FOLDER","status":"Completed"}`
 	var res = JobStatusResponse{
-		Data: JobStatus{"62a49236eb9c2685504ded7e", "MOVE_FOLDER", "Completed"},
+		Data: JobStatus{"job_id", "MOVE_FOLDER", "Completed"},
 	}
 	_ = json.Unmarshal([]byte(mockBody), &res)
-	var jobId = "62a49236eb9c2685504ded7e"
+	var jobId = "job_id"
 	handler := getHandler(200, mockBody)
 
 	ts := httptest.NewServer(handler)
