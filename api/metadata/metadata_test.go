@@ -10,8 +10,8 @@ import (
 	"os"
 	"testing"
 
-	iktest "github.com/imagekit-developer/imagekit-go/test"
 	"github.com/google/go-cmp/cmp"
+	iktest "github.com/imagekit-developer/imagekit-go/test"
 )
 
 var ctx = context.Background()
@@ -164,10 +164,13 @@ func TestMetadata_UpdateCustomField(t *testing.T) {
 	defer ts.Close()
 
 	metadataApi.Config.API.Prefix = ts.URL + "/"
-	resp, err := metadataApi.UpdateCustomField(ctx, UpdateCustomFieldParam{
-		FieldId: "629f6b437eb0fe6f1b66d864",
-		Label:   "Cost",
-	})
+	resp, err := metadataApi.UpdateCustomField(
+		ctx,
+		"629f6b437eb0fe6f1b66d864",
+		UpdateCustomFieldParam{
+			Label: "Cost",
+		},
+	)
 
 	if err != nil {
 		t.Error(err)

@@ -166,9 +166,8 @@ type CreateFieldResponse struct {
 type UpdateCustomFieldResponse CreateFieldResponse
 
 type UpdateCustomFieldParam struct {
-	FieldId string `validate:"nonzero" json:"-"`
-	Label   string `json:"label"`
-	Schema  Schema `json:"schema"`
+	Label  string `json:"label"`
+	Schema Schema `json:"schema"`
 }
 
 type CustomFieldsResponse struct {
@@ -371,7 +370,7 @@ func (m *API) CustomFields(ctx context.Context, includeDeleted bool) (*CustomFie
 }
 
 // UpdateCustomField updates label or schema attributes of given custom field id
-func (m *API) UpdateCustomField(ctx context.Context, param UpdateCustomFieldParam) (*UpdateCustomFieldResponse, error) {
+func (m *API) UpdateCustomField(ctx context.Context, fieldId string, param UpdateCustomFieldParam) (*UpdateCustomFieldResponse, error) {
 	var err error
 	var response = &UpdateCustomFieldResponse{}
 
@@ -379,7 +378,7 @@ func (m *API) UpdateCustomField(ctx context.Context, param UpdateCustomFieldPara
 		return nil, err
 	}
 
-	resp, err := m.patch(ctx, "customMetadataFields/"+param.FieldId, param)
+	resp, err := m.patch(ctx, "customMetadataFields/"+fieldId, param)
 	defer api.DeferredBodyClose(resp)
 
 	api.SetResponseMeta(resp, response)

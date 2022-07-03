@@ -263,7 +263,7 @@ Accepts the source file's path and destination folder path.
 resp, err := ik.Media.CopyAsset(ctx, media.CopyAssetParam{
     SourcePath: "/source/a.jpg",
     DestinationPath: "/target/",
-    IncludeFileVersions: true,
+    IncludeFileVersions: false,
 })
 ```
 
@@ -324,7 +324,7 @@ Copies given folder to new location with or without versions info as per [API do
 resp, err := ik.Media.CopyFolder(ctx, media.CopyFolderParam{
     SourceFolderPath: "source/path",
     DestinationPath: "destination/",
-    IncludeFileVersions: true
+    IncludeFileVersions: false
 })
 ```
 
@@ -400,8 +400,7 @@ resp, err := ik.Metadata.CustomFields(ctx, true)
 
 ### 3. Update custom metadata field
 ```
-resp, err := ik.Metadata.UpdateCustomField(ctx, UpdateCustomFieldParam{
-    FieldId: "3w3255433",
+resp, err := ik.Metadata.UpdateCustomField(ctx, "file_id", UpdateCustomFieldParam{
     Label: "Cost",
 })
 ```
