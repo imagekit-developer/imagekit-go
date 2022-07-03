@@ -11,9 +11,9 @@ import (
 	"os"
 	"testing"
 
+	"github.com/google/go-cmp/cmp"
 	"github.com/imagekit-developer/imagekit-go/api"
 	iktest "github.com/imagekit-developer/imagekit-go/test"
-	"github.com/google/go-cmp/cmp"
 )
 
 var ctx = context.Background()
@@ -70,12 +70,6 @@ func TestUploader(t *testing.T) {
 		param  UploadParam
 		result *UploadResult
 	}{
-		"local-filepath": {
-			file:   iktest.ImageFilePath,
-			resp:   string(resultJson),
-			param:  UploadParam{},
-			result: file,
-		},
 		"base64file": {
 			file: iktest.Base64Image,
 			resp: string(resultJson),

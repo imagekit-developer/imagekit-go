@@ -8,7 +8,6 @@ import (
 	"mime/multipart"
 	"net/http"
 	"net/url"
-	"os"
 	"time"
 
 	"github.com/imagekit-developer/imagekit-go/api"
@@ -48,40 +47,15 @@ func (u *API) postFile(ctx context.Context, file interface{}, formParams url.Val
 
 	switch fileValue := file.(type) {
 	case string:
-		if !api.IsLocalFilePath(file) {
-			// Can be URL, Base64 encoded string, etc.
-			formParams.Add("file", fileValue)
-
-			return u.postForm(ctx, uploadEndpoint, formParams)
-		}
-
-		return u.postLocalFile(ctx, uploadEndpoint, fileValue, formParams)
+		// Can be URL, Base64 encoded string, etc.
+		formParams.Add("file", fileValue)
+		return u.postForm(ctx, uploadEndpoint, formParams)
 	case io.Reader:
 		return u.postIOReader(ctx, uploadEndpoint, fileValue, formParams, map[string]string{})
 
 	default:
 		return nil, errors.New("unsupported file type")
 	}
-}
-
-// postLocalFile creates a new file upload http request with optional extra params.
-func (u *API) postLocalFile(ctx context.Context, urlPath string, filePath string, formParams url.Values) (*http.Response, error) {
-	file, err := os.Open(filePath)
-	if err != nil {
-		return nil, err
-	}
-
-	defer api.DeferredClose(file)
-
-	if _, ok := formParams["fileName"]; !ok {
-		st, err := file.Stat()
-		if err != nil {
-			return nil, err
-		}
-		formParams.Set("fileName", st.Name())
-	}
-
-	return u.postIOReader(ctx, urlPath, file, formParams, map[string]string{})
 }
 
 // postIOReader uploads file using io.Reader

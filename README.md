@@ -141,7 +141,7 @@ https://ik.imagekit.io/your_imagekit_id/endpoint/default-image.jpg?tr=h-300,w=40
 
 The SDK uploader package provides a simple interface using the ```.upload()``` method to upload files to the ImageKit Media Library. It accepts all the parameters supported by the [ImageKit Upload API](https://docs.imagekit.io/api-reference/upload-file-api/server-side-file-upload).
 
-The upload() method accepts file and UploadParam. File param can be local filepath, base64 encode image, url or io.Reader. If File is not local filepath then ```UploadParam``` requires the ```fileName``` parameter. This method returns ```UploadResponse``` object and `err` if any. You can pass other parameters supported by the ImageKit upload API using the same parameter name as specified in the upload API documentation. For example, to specify tags for a file at the time of upload, use the tags parameter as specified in the [documentation here](https://docs.imagekit.io/api-reference/upload-file-api/server-side-file-upload).
+The upload() method accepts file and UploadParam. File param can be base64 encode image, url or io.Reader. This method returns ```UploadResponse``` object and `err` if any. You can pass other parameters supported by the ImageKit upload API using the same parameter name as specified in the upload API documentation. For example, to specify tags for a file at the time of upload, use the tags parameter as specified in the [documentation here](https://docs.imagekit.io/api-reference/upload-file-api/server-side-file-upload).
 
 ```
 import "github.com/imagekit-developer/imagekit-go/uploader"

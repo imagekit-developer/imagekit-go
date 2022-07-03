@@ -49,7 +49,6 @@ type UploadResponse struct {
 // Upload uploads an asset to a imagekit account.
 //
 // The asset can be:
-//   * a local file path
 //   * the actual data (io.Reader)
 //   * the Data URI (Base64 encoded), max ~60 MB (62,910,000 chars)
 //   * the remote FTP, HTTP or HTTPS URL address of an existing file
