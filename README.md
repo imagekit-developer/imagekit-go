@@ -339,7 +339,7 @@ resp, err := ik.Media.MoveFolder(ctx, media.MoveFolderParam{
 Get status of a bulk job operation by job id.  Accepts string type job id. [API documentation here](https://docs.imagekit.io/api-reference/media-api/copy-move-folder-status).
 
 ```
-resp, err := ik.BulkJobStatus(ctx, "323235")
+resp, err := ik.BulkJobStatus(ctx, "job_id")
 ```
 
 ### 21. Purge Cache
@@ -354,7 +354,7 @@ resp, err := ik.Media.PurgeCache(ctx, media.PurgeCacheParam{
 Get the status of the submitted purge request. Accepts purge request id. [API documentation here](https://docs.imagekit.io/api-reference/media-api/purge-cache-status).
 
 ```
-resp, err := ik.Media.PurgeCacheStatus(ctx, "35325532")
+resp, err := ik.Media.PurgeCacheStatus(ctx, "request_id")
 ```
 
 ## Metadata API
