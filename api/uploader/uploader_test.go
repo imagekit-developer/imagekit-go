@@ -56,6 +56,16 @@ func newUploader(url string) (*API, error) {
 
 }
 
+/**
+REVIEW-COMMENT
+
+Multiple test scenearos missing. For example
+1. missing requried File and FileName param.
+2. passing all parameters that SDK supports and asserting correct conversion from arrays/map to string. For example, 
+Tags passsed as array should be converted to comma-seperated stirngs. Extensions passed as array of map should be converted to string. 
+CustomMetadata passed as map should be converted. All this needs to be asserted.
+
+*/
 func TestUploader(t *testing.T) {
 	resultJson, err := json.Marshal(file)
 	if err != nil {
@@ -119,6 +129,12 @@ func TestUploader(t *testing.T) {
 			}
 
 			if test.shouldFail {
+				/**
+				REVIEW-COMMENT
+
+				Also assert the content of err
+
+				*/
 				if err == nil {
 					t.Error("err is nil")
 				}

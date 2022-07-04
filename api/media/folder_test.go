@@ -9,6 +9,11 @@ import (
 	iktest "github.com/imagekit-developer/imagekit-go/test"
 )
 
+/**
+REVIEW-COMMENT
+
+Negative test case missing of invalid/missing params, including non 2xx response from backend.
+*/
 func TestMedia_CreateFolder(t *testing.T) {
 	var err error
 
@@ -32,6 +37,11 @@ func TestMedia_CreateFolder(t *testing.T) {
 	httpTest.Test("/folder", "POST", param)
 }
 
+/**
+REVIEW-COMMENT
+
+Negative test case missing of invalid/missing params, including non 2xx response from backend.
+*/
 func TestMedia_DeleteFolder(t *testing.T) {
 	var err error
 
@@ -54,6 +64,11 @@ func TestMedia_DeleteFolder(t *testing.T) {
 	httpTest.Test("/folder", "DELETE", nil)
 }
 
+/**
+REVIEW-COMMENT
+
+Negative test case missing of invalid/missing params, including non 2xx response from backend.
+*/
 func TestMedia_MoveFolder(t *testing.T) {
 	var err error
 
@@ -79,6 +94,11 @@ func TestMedia_MoveFolder(t *testing.T) {
 	httpTest.Test("/bulkJobs/moveFolder", "POST", param)
 }
 
+/**
+REVIEW-COMMENT
+
+Negative test case missing of invalid/missing params, including non 2xx response from backend.
+*/
 func TestMedia_CopyFolder(t *testing.T) {
 	var err error
 

@@ -40,6 +40,11 @@ func TestMedia_PurgeCache(t *testing.T) {
 	httpTest.Test("/files/purge", "POST", param)
 }
 
+/**
+REVIEW-COMMENT
+
+Negative test case missing of invalid/missing params, including non 2xx response from backend.
+*/
 func TestMedia_PurgeCacheStatus(t *testing.T) {
 	reqId := "62a4b"
 	var rs = PurgeCacheStatusResponse{

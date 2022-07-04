@@ -192,6 +192,11 @@ func TestMedia_AssetVersions(t *testing.T) {
 	}
 }
 
+/**
+REVIEW-COMMENT
+
+Pass all parameters that SDK supports e.g. extensions and customMetadata is missing. See all other as well.
+*/
 func TestMedia_UpdateAsset(t *testing.T) {
 	var expected = asset
 	var mockBody = respBody[1 : len(respBody)-1]
@@ -258,6 +263,11 @@ func TestMedia_UpdateAsset(t *testing.T) {
 	}
 }
 
+/**
+REVIEW-COMMENT
+
+Negative test case missing. Call AddTags with invalid params e.g. empty/missing FileIds and Tags.
+*/
 func TestMedia_AddTags(t *testing.T) {
 	var err error
 	var ids = []string{"xxx", "yyy"}
@@ -295,6 +305,11 @@ func TestMedia_AddTags(t *testing.T) {
 	httpTest.Test(expectedUrl, "POST", params)
 }
 
+/**
+REVIEW-COMMENT
+
+Negative test case missing. Call RemoveTags with invalid params e.g. empty/missing FileIds and Tags.
+*/
 func TestMedia_RemoveTags(t *testing.T) {
 	var err error
 	var ids = []string{"xxx", "yyy"}
@@ -331,6 +346,11 @@ func TestMedia_RemoveTags(t *testing.T) {
 	httpTest.Test(expectedUrl, "POST", params)
 }
 
+/**
+REVIEW-COMMENT
+
+Negative test case missing. Call RemoveAITags with invalid params e.g. empty/missing FileIds and AITags.
+*/
 func TestMedia_RemoveAITags(t *testing.T) {
 	var err error
 	var ids = []string{"xxx", "yyy"}
@@ -403,6 +423,11 @@ func TestMedia_DeleteAssetVersion(t *testing.T) {
 	httpTest.Test(url, "DELETE", nil)
 }
 
+/**
+REVIEW-COMMENT
+
+Negative test case missing. Call DeleteBulkAssets with invalid params e.g. empty/missing FileIds.
+*/
 func TestMedia_DeleteBulkAssets(t *testing.T) {
 	var err error
 	var param = FileIdsParam{
@@ -431,6 +456,11 @@ func TestMedia_DeleteBulkAssets(t *testing.T) {
 	httpTest.Test("/files/batch/deleteByFileIds", "POST", param)
 }
 
+/**
+REVIEW-COMMENT
+
+Negative test case missing of invalid/missing params, including non 2xx response from backend.
+*/
 func TestMedia_CopyAsset(t *testing.T) {
 	var err error
 	var param = CopyAssetParam{
@@ -446,6 +476,11 @@ func TestMedia_CopyAsset(t *testing.T) {
 
 	mediaApi.Config.API.Prefix = ts.URL + "/"
 
+	/**
+	REVIEW-COMMENT
+
+	Please rename CopyAsset to CopyFile, same feedback for moveAsset
+	*/
 	_, err = mediaApi.CopyAsset(ctx, param)
 	if err != nil {
 		t.Error(err)
@@ -453,6 +488,11 @@ func TestMedia_CopyAsset(t *testing.T) {
 
 }
 
+/**
+REVIEW-COMMENT
+
+Negative test case missing of invalid/missing params, including non 2xx response from backend.
+*/
 func TestMedia_MoveAsset(t *testing.T) {
 	var err error
 	var param = MoveAssetParam{
@@ -475,6 +515,12 @@ func TestMedia_MoveAsset(t *testing.T) {
 	httpTest.Test("/files/move", "POST", param)
 }
 
+/**
+REVIEW-COMMENT
+
+Negative test case missing of invalid/missing params, including non 2xx response from backend.
+Also cover calling RenameAsset without PurgeCache and ensure that this parameter is not being sent.
+*/
 func TestMedia_RenameAsset(t *testing.T) {
 	var err error
 	var param = RenameAssetParam{
@@ -502,6 +548,11 @@ func TestMedia_RenameAsset(t *testing.T) {
 	httpTest.Test("/files/rename", "PUT", param)
 }
 
+/**
+REVIEW-COMMENT
+
+Negative test case missing of invalid/missing params, including non 2xx response from backend.
+*/
 func TestMedia_RestoreVersion(t *testing.T) {
 	var err error
 
@@ -532,6 +583,11 @@ func TestMedia_RestoreVersion(t *testing.T) {
 	httpTest.Test(expectedUrl, "DELETE", param)
 }
 
+/**
+REVIEW-COMMENT
+
+Negative test case missing of invalid/missing params, including non 2xx response from backend.
+*/
 func TestMedia_BulkJobStatus(t *testing.T) {
 	var err error
 	var mockBody = `{"jobId":"job_id","type":"MOVE_FOLDER","status":"Completed"}`
