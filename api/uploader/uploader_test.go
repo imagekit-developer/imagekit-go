@@ -1,28 +1,32 @@
 package uploader
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
-	"fmt"
 	"io"
-	"log"
+	"mime"
+	"mime/multipart"
 	"net/http"
 	"net/http/httptest"
 	"os"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
-	"github.com/imagekit-developer/imagekit-go/api"
 	iktest "github.com/imagekit-developer/imagekit-go/test"
 )
 
 var ctx = context.Background()
 var header = http.Header{}
+var ImageFileData []byte
 
 func init() {
 	header.Add("Content-Type", "text/plain; charset=utf-8")
 	header.Add("Content-Length", "600")
 	header.Add("Date", "Sat, 04 Jun 2022 06:50:21 GMT")
+
+	file, _ := os.Open(iktest.ImageFilePath)
+	ImageFileData, _ = io.ReadAll(file)
 }
 
 var file = &UploadResult{
@@ -65,10 +69,11 @@ func TestUploader(t *testing.T) {
 	}
 
 	var cases = map[string]struct {
-		file   interface{}
-		resp   string
-		param  UploadParam
-		result *UploadResult
+		file       interface{}
+		resp       string
+		param      UploadParam
+		result     *UploadResult
+		shouldFail bool
 	}{
 		"base64file": {
 			file: iktest.Base64Image,
@@ -86,30 +91,20 @@ func TestUploader(t *testing.T) {
 			},
 			result: file,
 		},
+		"missing-filename": {
+			file:       reader,
+			resp:       string(resultJson),
+			param:      UploadParam{},
+			result:     file,
+			shouldFail: true,
+		},
 	}
 
 	for name, test := range cases {
 		t.Run(name, func(t *testing.T) {
-			submittedFile := []byte{}
+			httpTest := iktest.NewHttp(t)
 
-			handler := func(w http.ResponseWriter, r *http.Request) {
-				reader, _ := r.MultipartReader()
-
-				for {
-					part, err := reader.NextPart()
-					if err == io.EOF {
-						break
-					}
-
-					if part.FormName() == "file" {
-						log.Println("reading file")
-						submittedFile, _ = io.ReadAll(part)
-					}
-				}
-				fmt.Fprintln(w, test.resp)
-			}
-
-			ts := httptest.NewServer(http.HandlerFunc(handler))
+			ts := httptest.NewServer(httpTest.Handler(200, string(resultJson)))
 			defer ts.Close()
 
 			uploader, err := newUploader(ts.URL + "/")
@@ -119,35 +114,45 @@ func TestUploader(t *testing.T) {
 
 			resp, err := uploader.Upload(ctx, test.file, test.param)
 
-			if err != nil {
+			if !test.shouldFail && err != nil {
 				t.Error(err)
 			}
 
-			if resp.Response.StatusCode != 200 {
-				t.Error("status code:", resp.Response.StatusCode)
+			if test.shouldFail {
+				if err == nil {
+					t.Error("err is nil")
+				}
+				return
 			}
 
-			switch fv := test.file.(type) {
+			_, params, err := mime.ParseMediaType(httpTest.Req.Header.Get("Content-Type"))
+
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			mr := multipart.NewReader(bytes.NewReader(httpTest.Body), params["boundary"])
+
+			form, err := mr.ReadForm(1024 * 2)
+			if form.Value["fileName"][0] != test.param.FileName {
+				t.Error("invalid filename")
+			}
+
+			switch test.file.(type) {
 			case string:
-				if api.IsLocalFilePath(test.file) {
-					fp, _ := os.Open(fv)
-					expectedFile, _ := io.ReadAll(fp)
-
-					if !cmp.Equal(expectedFile, submittedFile) {
-						log.Println(submittedFile)
-
-						t.Error("expected file not submitted")
-					}
-				} else {
-					if test.file != string(submittedFile) {
-						t.Error("unexpected file submitted")
-					}
+				if test.file != form.Value["file"][0] {
+					t.Error("unexpected file value")
 				}
 			default:
-				reader, _ := os.Open(iktest.ImageFilePath)
-				expected, _ := io.ReadAll(reader)
-				if !cmp.Equal(expected, submittedFile) {
-					t.Error("unexpected file submitted")
+				file, err := form.File["file"][0].Open()
+
+				if err != nil {
+					t.Fatal(err)
+				}
+				data, _ := io.ReadAll(file)
+
+				if !cmp.Equal(data, ImageFileData) {
+					t.Error(name + ": unexpected file submitted")
 				}
 			}
 

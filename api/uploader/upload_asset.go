@@ -3,6 +3,7 @@ package uploader
 import (
 	"context"
 	"encoding/json"
+	"errors"
 
 	"github.com/imagekit-developer/imagekit-go/api"
 	"github.com/imagekit-developer/imagekit-go/extension"
@@ -56,6 +57,10 @@ type UploadResponse struct {
 // https://docs.imagekit.io/api-reference/upload-file-api/server-side-file-upload
 func (u *API) Upload(ctx context.Context, file interface{}, param UploadParam) (*UploadResponse, error) {
 	var err error
+
+	if param.FileName == "" {
+		return nil, errors.New("Upload: Filename is required")
+	}
 
 	if param.Extensions != nil {
 		bt, err := json.Marshal(param.Extensions)
