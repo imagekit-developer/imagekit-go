@@ -185,8 +185,8 @@ resp, err := ik.Media.AssetById(ctx, "file_id")
 Get all the details and attributes of any version of a file as per the [API documentation here](https://docs.imagekit.io/api-reference/media-api/get-file-version-details).
 ```
 resp, err := ik.Media.AssetVersions(ctx, media.AssetVersionsParam{
-    FileId: fileId,
-    VersionId: "version-id",
+    FileId: "file_id",
+    VersionId: "version_id",
 })
 
 ```
@@ -195,7 +195,7 @@ resp, err := ik.Media.AssetVersions(ctx, media.AssetVersionsParam{
 Get all the file version details and attributes of a file as per the [API documentation here](https://docs.imagekit.io/api-reference/media-api/get-file-versions).
 ```
 resp, err := ik.Media.AssetVersions(ctx, media.AssetVersionsParam{
-    FileId: fileId,
+    FileId: "file_id",
 })
 ```
 
@@ -203,7 +203,7 @@ resp, err := ik.Media.AssetVersions(ctx, media.AssetVersionsParam{
 Update parameters associated with the file as per the [API documentation here](https://docs.imagekit.io/api-reference/media-api/update-file-details).
 ```
 resp, err := ik.Media.UpdateAsset(ctx, fileId, media.UpdateAssetParam{
-    Tags: []string{"tag1", "tag2"},
+    Tags: []string{"tag_1", "tag_2"},
     RemoveAITags: []string{"car", "suv"},
 })
 ```
@@ -212,8 +212,8 @@ resp, err := ik.Media.UpdateAsset(ctx, fileId, media.UpdateAssetParam{
 Adds given tags to multiple files. Accepts slices of tags and file ids. Returns slice of file ids. [API documentation here](https://docs.imagekit.io/api-reference/media-api/add-tags-bulk)
 ```
 resp, err := ik.Media.AddTags(ctx, media.TagsParam{
-    FileIds: []string{"one", "two"},
-    Tags: []string{"tag1", "tag2"},
+    FileIds: []string{"file_id_1", "file_id_2"},
+    Tags: []string{"tag_1", "tag_2"},
 })
 ```
 
@@ -221,36 +221,36 @@ resp, err := ik.Media.AddTags(ctx, media.TagsParam{
 Removes tags from multiple assets. Returns slice of file ids updated. [API documentation here](https://docs.imagekit.io/api-reference/media-api/remove-tags-bulk)
 ```
 resp, err := ik.Media.RemoveTags(ctx, media.TagsParam{
-    FileIds: []string{"one", "two"},
-    Tags: []string{"tag1", "tag2"},
+    FileIds: []string{"file_id_1", "file_id_2"},
+    Tags: []string{"tag_1", "tag_2"},
 })
 ```
 ### 8. Remove AITags (bulk)
 Remove AITags in bulk API. Returns slice of file ids. [API documentation here](https://docs.imagekit.io/api-reference/media-api/remove-aitags-bulk)
 ```
 resp, err := ik.Media.RemoveAITags(ctx, media.AITagsParam{
-    FileIds: []string{"one", "two"},
-    AITags: []string{"tag1", "tag2"},
+    FileIds: []string{"file_id_1", "file_id_2"},
+    AITags: []string{"tag_1", "tag_2"},
 })
 ```
 
 ### 9. Delete File
 Delete a file by fileId. [API documentation here](https://docs.imagekit.io/api-reference/media-api/delete-file).
 ```
-resp, err := ik.Media.DeleteAsset(ctx, "32435343334")
+resp, err := ik.Media.DeleteAsset(ctx, "file_id")
 ```
 
 ### 10. Delete File Version
 Deletes given version of the file. [API documentation here](https://docs.imagekit.io/api-reference/media-api/delete-file-version)
 ```
-resp, err := ik.Media.DeleteAssetVersion(ctx, "32435343334", "version-1")
+resp, err := ik.Media.DeleteAssetVersion(ctx, "file_id", "version_1")
 ```
 
 ### 11. Delete Files (bulk)
 Deletes multiple files. [API documentation here](https://docs.imagekit.io/api-reference/media-api/delete-files-bulk).
 ```
 resp, err := ik.Media.DeleteBulkAssets(ctx, media.FileIdsParam{
-    FileIds: []string{"324353234", "354332432"},
+    FileIds: []string{"file_id1", "file_id2"},
 )
 ```
 
@@ -292,8 +292,8 @@ Restore file version to a different version of a file as per [API documentation 
 Accepts string type file id and version id.
 ```
 resp, err := ik.Media.RestoreVersion(ctx, media.AssetVersionsParam{
-    FileId: "324325334",
-    VersionId: "243434",
+    FileId: "file_id",
+    VersionId: "version_id",
 })
 ```
 
@@ -361,8 +361,7 @@ resp, err := ik.Media.PurgeCacheStatus(ctx, "35325532")
 ### 1. Get File Metadata for uploaded media files
 Accepts the file ID or URL and fetches the metadata as per the [API documentation here](https://docs.imagekit.io/api-reference/metadata-api/get-image-metadata-for-uploaded-media-files).
 ```
-fileId := "32432523432433335"
-resp, err := ik.Metadata.FromAsset(ctx, fileId)
+resp, err := ik.Metadata.FromAsset(ctx, "file_id")
 ```
 
 ### 2. Get File Metadata from remote url
@@ -406,7 +405,7 @@ resp, err := ik.Metadata.UpdateCustomField(ctx, "file_id", UpdateCustomFieldPara
 ### 4. Delete custom metadata field
 Accepts context and fieldId to delete the custom metadata field.
 ```
-resp, err := ik.Metadata.DeleteCustomField(ctx, "3325343434")
+resp, err := ik.Metadata.DeleteCustomField(ctx, "field_id")
 ```
     
 ## Utility Functions
@@ -418,8 +417,8 @@ resp := ik.SignToken(imagekit.SignTokenParam{})
 
 // Using specific token and expiration
 resp := ik.SignToken(imagekit.SignTokenParam{
-    Token: "31c468de-520a-4dc1-8868-de1e0fb93a7b",
-    Expires: 1655379249
+    Token: "token-string",
+    Expires: 1655379249,
 })
 
 ```
