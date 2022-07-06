@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"io"
+	"log"
 	"mime"
 	"mime/multipart"
 	"net/http"
@@ -13,6 +14,8 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/imagekit-developer/imagekit-go/api"
+	"github.com/imagekit-developer/imagekit-go/extension"
 	iktest "github.com/imagekit-developer/imagekit-go/test"
 )
 
@@ -61,8 +64,8 @@ REVIEW-COMMENT
 
 Multiple test scenearos missing. For example
 1. missing requried File and FileName param.
-2. passing all parameters that SDK supports and asserting correct conversion from arrays/map to string. For example, 
-Tags passsed as array should be converted to comma-seperated stirngs. Extensions passed as array of map should be converted to string. 
+2. passing all parameters that SDK supports and asserting correct conversion from arrays/map to string. For example,
+Tags passsed as array should be converted to comma-seperated stirngs. Extensions passed as array of map should be converted to string.
 CustomMetadata passed as map should be converted. All this needs to be asserted.
 
 */
@@ -78,28 +81,60 @@ func TestUploader(t *testing.T) {
 		t.Fatal(err)
 	}
 
+	var extensions = []extension.IExtension{
+		extension.NewAutoTag(extension.GoogleAutoTag, 50, 10),
+		extension.NewRemoveBg(extension.RemoveBgOption{
+			AddShadow:        true,
+			SemiTransparency: true,
+			BgColor:          "#553333",
+			BgImageUrl:       "http://test/test.jpg",
+		}),
+	}
+
+	param := UploadParam{
+		FileName:                "new-york-cityscape-buildings_A4zxKJbrL.jpg",
+		UseUniqueFileName:       api.Bool(false),
+		Tags:                    "tag_1,tag_2",
+		Folder:                  "/natural",
+		IsPrivateFile:           api.Bool(false),
+		CustomCoordinates:       "11,100,400,500",
+		ResponseFields:          "tags,customCoordinates,isPrivateFile",
+		Extensions:              extensions,
+		WebhookUrl:              "http://test/test",
+		OverwriteFile:           api.Bool(true),
+		OverwriteAITags:         api.Bool(true),
+		OverwriteTags:           api.Bool(true),
+		OverwriteCustomMetadata: api.Bool(true),
+		CustomMetadata: map[string]any{
+			"Cost": 100,
+		},
+	}
+
+	var formStr = `{"customCoordinates":"11,100,400,500","customMetadata":"{\"Cost\":100}","extensions":"[{\"name\":\"google-auto-tagging\",\"minConfidence\":50,\"maxTags\":10},{\"name\":\"remove-bg\",\"options\":{\"add_shadow\":true,\"semitransparency\":true,\"bg_color\":\"#553333\",\"bg_image_url\":\"http://test/test.jpg\"}}]","file":"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7","fileName":"new-york-cityscape-buildings_A4zxKJbrL.jpg","folder":"/natural","isPrivateFile":"false","overwriteAITags":"true","overwriteCustomMetadata":"true","overwriteFile":"true","overwriteTags":"true","responseFields":"tags,customCoordinates,isPrivateFile","tags":"tag_1,tag_2","useUniqueFileName":"false","webhookUrl":"http://test/test"}`
+
+	var readerForm = `{"customCoordinates":"11,100,400,500","customMetadata":"{\"Cost\":100}","extensions":"[{\"name\":\"google-auto-tagging\",\"minConfidence\":50,\"maxTags\":10},{\"name\":\"remove-bg\",\"options\":{\"add_shadow\":true,\"semitransparency\":true,\"bg_color\":\"#553333\",\"bg_image_url\":\"http://test/test.jpg\"}}]","fileName":"new-york-cityscape-buildings_A4zxKJbrL.jpg","folder":"/natural","isPrivateFile":"false","overwriteAITags":"true","overwriteCustomMetadata":"true","overwriteFile":"true","overwriteTags":"true","responseFields":"tags,customCoordinates,isPrivateFile","tags":"tag_1,tag_2","useUniqueFileName":"false","webhookUrl":"http://test/test"}`
+
 	var cases = map[string]struct {
 		file       interface{}
 		resp       string
 		param      UploadParam
 		result     *UploadResult
 		shouldFail bool
+		formStr    string
 	}{
 		"base64file": {
-			file: iktest.Base64Image,
-			resp: string(resultJson),
-			param: UploadParam{
-				FileName: "new-york-cityscape-buildings_A4zxKJbrL.jpg",
-			},
-			result: file,
+			file:    iktest.Base64Image,
+			resp:    string(resultJson),
+			param:   param,
+			result:  file,
+			formStr: formStr,
 		},
 		"io-reader": {
-			file: reader,
-			resp: string(resultJson),
-			param: UploadParam{
-				FileName: "new-york-cityscape-buildings_A4zxKJbrL.jpg",
-			},
-			result: file,
+			file:    reader,
+			resp:    string(resultJson),
+			param:   param,
+			result:  file,
+			formStr: readerForm,
 		},
 		"missing-filename": {
 			file:       reader,
@@ -137,6 +172,8 @@ func TestUploader(t *testing.T) {
 				*/
 				if err == nil {
 					t.Error("err is nil")
+				} else if err.Error() != "Upload: Filename is required" {
+					t.Error("wrong error message", err.Error())
 				}
 				return
 			}
@@ -150,6 +187,18 @@ func TestUploader(t *testing.T) {
 			mr := multipart.NewReader(bytes.NewReader(httpTest.Body), params["boundary"])
 
 			form, err := mr.ReadForm(1024 * 2)
+			var f = map[string]string{}
+
+			for k, v := range form.Value {
+				f[k] = v[0]
+			}
+			str, err := json.Marshal(f)
+
+			if !cmp.Equal(string(str), test.formStr) {
+				t.Error("invalid form values")
+				log.Println(test.formStr)
+				log.Println(string(str))
+			}
 			if form.Value["fileName"][0] != test.param.FileName {
 				t.Error("invalid filename")
 			}
@@ -177,4 +226,11 @@ func TestUploader(t *testing.T) {
 			}
 		})
 	}
+
+	errServer := iktest.NewErrorServer(t)
+	uploader, err := newUploader(errServer.Url() + "/")
+	errServer.TestErrors(func() error {
+		_, err := uploader.Upload(ctx, reader, param)
+		return err
+	})
 }

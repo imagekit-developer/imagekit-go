@@ -11,8 +11,8 @@ import (
 
 // UploadParam defines upload parameters
 type UploadParam struct {
-	FileName          string `json:"fileName,omitempty"`
-	UseUniqueFileName string `json:"useUniqueFileName,omitempty"`
+	FileName          string `json:"fileName"`
+	UseUniqueFileName *bool  `json:"useUniqueFileName,omitempty"`
 	Tags              string `json:"tags,omitempty"`
 	Folder            string `json:"folder,omitempty"`        // default value:  /
 	IsPrivateFile     *bool  `json:"isPrivateFile,omitempty"` // default: false

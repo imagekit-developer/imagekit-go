@@ -70,4 +70,12 @@ func TestMedia_PurgeCacheStatus(t *testing.T) {
 		t.Error(response.Data)
 	}
 	httpTest.Test("/files/purge/"+reqId, "GET", nil)
+
+	errServer := iktest.NewErrorServer(t)
+	mediaApi.Config.API.Prefix = errServer.Url() + "/"
+
+	errServer.TestErrors(func() error {
+		_, err := mediaApi.PurgeCacheStatus(ctx, reqId)
+		return err
+	})
 }

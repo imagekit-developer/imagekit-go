@@ -3,16 +3,19 @@ package test
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
+	"net/http/httptest"
 	"path"
 	"path/filepath"
 	"runtime"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/imagekit-developer/imagekit-go/api"
 	"github.com/imagekit-developer/imagekit-go/config"
 )
 
@@ -111,4 +114,48 @@ func (h *Http) Test(url string, method string, body any) {
 		JsonRequest(h.Req, h.T)
 	}
 
+}
+
+type ErrorServer struct {
+	t          *testing.T
+	statusCode int
+	ts         *httptest.Server
+}
+
+func NewErrorServer(t *testing.T) *ErrorServer {
+	srv := &ErrorServer{t: t}
+	srv.ts = httptest.NewServer(http.HandlerFunc(srv.handler))
+	return srv
+}
+
+func (srv *ErrorServer) Url() string {
+	return srv.ts.URL
+}
+
+func (srv *ErrorServer) handler(w http.ResponseWriter, r *http.Request) {
+	log.Println(srv.statusCode)
+	w.WriteHeader(srv.statusCode)
+	fmt.Fprintln(w, "{}")
+}
+
+func (srv *ErrorServer) TestErrors(fn func() error) {
+	var codesToErrors = map[int]error{
+		400: api.ErrBadRequest,
+		401: api.ErrUnauthorized,
+		403: api.ErrForbidden,
+		404: api.ErrNotFound,
+		429: api.ErrTooManyRequests,
+		500: api.ErrServerError,
+		502: api.ErrServerError,
+		503: api.ErrServerError,
+		504: api.ErrServerError,
+	}
+
+	for code, expectedErr := range codesToErrors {
+		srv.statusCode = code
+		err := fn()
+		if !errors.Is(err, expectedErr) {
+			srv.t.Errorf("code %d: expected error %v, got: %v", code, expectedErr, err)
+		}
+	}
 }

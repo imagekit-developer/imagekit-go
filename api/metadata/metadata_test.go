@@ -59,6 +59,14 @@ func TestMetadata_FromFile(t *testing.T) {
 	if !cmp.Equal(resp.Data, *respObj) {
 		t.Errorf("\n%v\n%v\n", resp.Data, *respObj)
 	}
+
+	errServer := iktest.NewErrorServer(t)
+	metadataApi.Config.API.Prefix = errServer.Url() + "/"
+
+	errServer.TestErrors(func() error {
+		_, err := metadataApi.FromAsset(ctx, "3325344545345")
+		return err
+	})
 }
 
 func TestMetadata_FromUrl(t *testing.T) {
@@ -86,6 +94,14 @@ func TestMetadata_FromUrl(t *testing.T) {
 	if !cmp.Equal(resp.Data, *respObj) {
 		t.Errorf("\n%v\n%v\n", resp.Data, *respObj)
 	}
+
+	errServer := iktest.NewErrorServer(t)
+	metadataApi.Config.API.Prefix = errServer.Url() + "/"
+
+	errServer.TestErrors(func() error {
+		_, err := metadataApi.FromUrl(ctx, "https://ik.imagekit.io/xk1m7xkgi/default-image.jpg")
+		return err
+	})
 }
 
 /**
@@ -109,7 +125,7 @@ func TestMetadata_CreateCustomField(t *testing.T) {
 
 	metadataApi.Config.API.Prefix = ts.URL + "/"
 
-	resp, err := metadataApi.CreateCustomField(ctx, CreateFieldParam{
+	param := CreateFieldParam{
 		Name:  "speed",
 		Label: "Speed",
 		Schema: Schema{
@@ -118,7 +134,8 @@ func TestMetadata_CreateCustomField(t *testing.T) {
 			MinValue:     1,
 			MaxValue:     120,
 		},
-	})
+	}
+	resp, err := metadataApi.CreateCustomField(ctx, param)
 
 	if err != nil {
 		t.Error(err)
@@ -127,6 +144,14 @@ func TestMetadata_CreateCustomField(t *testing.T) {
 	if !cmp.Equal(resp.Data, *expected) {
 		t.Errorf("\n%v\n%v\n", resp.Data, *expected)
 	}
+
+	errServer := iktest.NewErrorServer(t)
+	metadataApi.Config.API.Prefix = errServer.Url() + "/"
+
+	errServer.TestErrors(func() error {
+		_, err := metadataApi.CreateCustomField(ctx, param)
+		return err
+	})
 }
 
 /**
@@ -157,6 +182,14 @@ func TestMetadata_CustomFields(t *testing.T) {
 	if !cmp.Equal(resp.Data, expected) {
 		t.Errorf("%v\n%v", resp.Data, expected)
 	}
+
+	errServer := iktest.NewErrorServer(t)
+	metadataApi.Config.API.Prefix = errServer.Url() + "/"
+
+	errServer.TestErrors(func() error {
+		_, err := metadataApi.CustomFields(ctx, false)
+		return err
+	})
 }
 
 /**
@@ -193,6 +226,20 @@ func TestMetadata_UpdateCustomField(t *testing.T) {
 	if !cmp.Equal(resp.Data, expected) {
 		t.Errorf("%v\n%v", resp.Data, expected)
 	}
+
+	errServer := iktest.NewErrorServer(t)
+	metadataApi.Config.API.Prefix = errServer.Url() + "/"
+
+	errServer.TestErrors(func() error {
+		_, err := metadataApi.UpdateCustomField(
+			ctx,
+			"629f6b437eb0fe6f1b66d864",
+			UpdateCustomFieldParam{
+				Label: "Cost",
+			},
+		)
+		return err
+	})
 }
 
 /**
@@ -214,4 +261,12 @@ func TestMetadata_DeleteCustomField(t *testing.T) {
 		log.Println("got error")
 		t.Error(err)
 	}
+
+	errServer := iktest.NewErrorServer(t)
+	metadataApi.Config.API.Prefix = errServer.Url() + "/"
+
+	errServer.TestErrors(func() error {
+		_, err = metadataApi.DeleteCustomField(ctx, "62a8966b663ef736f841fe28")
+		return err
+	})
 }

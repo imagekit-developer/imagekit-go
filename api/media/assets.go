@@ -142,7 +142,8 @@ type FileIdsParam struct {
 
 // DeletedIds is a struct to hold slice of successfully deleted assets ids.
 type DeletedIds struct {
-	FileIds []string `json:"successfullyDeletedFileIds"`
+	FileIds []string            `json:"successfullyDeletedFileIds"`
+	Errors  []map[string]string `json:"errors"`
 }
 
 // DeleteAssetsResponse represents response to delete assets api which includes ids of deleted assets.
@@ -193,6 +194,28 @@ type JobStatus struct {
 type JobStatusResponse struct {
 	Data JobStatus
 	api.Response
+}
+
+type ErrorMissingFileIds struct {
+	Message        string   `json:"message"`
+	MissingFileIds []string `json:"missingFileIds"`
+	err            error
+}
+
+func (e *ErrorMissingFileIds) Error() string {
+	return fmt.Sprintf("%s, %s", e.Message, strings.Join(e.MissingFileIds, ","))
+}
+func (e *ErrorMissingFileIds) Unwrap() error {
+	return e.err
+}
+
+type ErrorPartialSuccess struct {
+	UpdatedFileIds []string            `json:"successfullyUpdatedFileIds"`
+	Errors         []map[string]string `json:"errors"`
+}
+
+func (e *ErrorPartialSuccess) Error() string {
+	return fmt.Sprintf("%v", e.Errors)
 }
 
 // Assets retrieves media library assets. Filter options can be supplied as AssetsParams.
@@ -328,10 +351,28 @@ func (m *API) AddTags(ctx context.Context, params TagsParam) (*TagsResponse, err
 		return response, err
 	}
 
-	if resp.StatusCode != 200 {
-		err = response.ParseError()
-	} else {
+	switch resp.StatusCode {
+	case 200:
 		err = json.Unmarshal(response.Body(), &response.Data)
+		break
+	case 404:
+		var errMissing = &ErrorMissingFileIds{err: api.ErrNotFound}
+		var err = json.Unmarshal(response.Body(), errMissing)
+		if err != nil {
+			return nil, err
+		}
+		//errMissing.err = api.ErrNotFound
+		return nil, errMissing
+	case 207:
+		var errPartial = &ErrorPartialSuccess{}
+		var err = json.Unmarshal(response.Body(), errPartial)
+		if err != nil {
+			return nil, err
+		}
+
+		return nil, errPartial
+	default:
+		err = response.ParseError()
 	}
 	return response, err
 }
@@ -350,12 +391,28 @@ func (m *API) RemoveTags(ctx context.Context, params TagsParam) (*TagsResponse, 
 		return response, err
 	}
 
-	if resp.StatusCode != 200 {
-		err = response.ParseError()
-	} else {
+	switch resp.StatusCode {
+	case 200:
 		err = json.Unmarshal(response.Body(), &response.Data)
-	}
+		break
+	case 404:
+		var errMissing = &ErrorMissingFileIds{err: api.ErrNotFound}
+		var err = json.Unmarshal(response.Body(), errMissing)
+		if err != nil {
+			return nil, err
+		}
+		return nil, errMissing
+	case 207:
+		var errPartial = &ErrorPartialSuccess{}
+		var err = json.Unmarshal(response.Body(), errPartial)
+		if err != nil {
+			return nil, err
+		}
 
+		return nil, errPartial
+	default:
+		err = response.ParseError()
+	}
 	return response, err
 }
 
@@ -452,10 +509,10 @@ func (m *API) DeleteBulkAssets(ctx context.Context, param FileIdsParam) (*Delete
 		return response, err
 	}
 
-	if resp.StatusCode != 200 {
-		err = response.ParseError()
-	} else {
+	if resp.StatusCode == 200 || resp.StatusCode == 207 {
 		err = json.Unmarshal(response.Body(), &response.Data)
+	} else {
+		err = response.ParseError()
 	}
 	return response, err
 }

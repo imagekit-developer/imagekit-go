@@ -3,6 +3,7 @@ package media
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"net/http/httptest"
@@ -10,6 +11,7 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/imagekit-developer/imagekit-go/extension"
 	iktest "github.com/imagekit-developer/imagekit-go/test"
 )
 
@@ -18,10 +20,46 @@ var ctx = context.Background()
 var respBody = `[{"fileId":"6283b04dc82abf6294aee010","name":"beauty_of_nature_12_6S7aNLP3-.jpg","filePath":"/beauty_of_nature_12_6S7aNLP3-.jpg","Tags":null,"AITags":null,"versionInfo":{"id":"6283b04dc82abf6294aee010","name":"Version 2"},"isPrivateFile":false,"customCoordinates":null,"url":"https://ik.imagekit.io/dk1m7xkgi/beauty_of_nature_12_6S7aNLP3-.jpg","thumbnail":"https://ik.imagekit.io/dk1m7xkgi/tr:n-ik_ml_thumbnail/beauty_of_nature_12_6S7aNLP3-.jpg","fileType":"image","mime":"image/png","height":133,"Width":200,"size":26509,"hasAlpha":true,"customMetadata":{"price":10},"embeddedMetadata":{"DateCreated":"2022-06-07T15:20:32.104Z","DateTimeCreated":"2022-06-07T15:20:32.105Z","ImageHeight":133,"ImageWidth":200},"createdAt":"2022-05-17T14:25:17.543Z","updatedAt":"2022-06-07T15:20:32.107Z"}]`
 
 var singleAssetResp string
+var missingFileIdsBody = `
+			{
+				"message": "The requested file(s) does not exist.",
+				"missingFileIds": [
+					"yyy"
+				]
+			}`
 
+var partialSuccessBody = `
+	{
+		"successfullyUpdatedFileIds": [
+			"xxx"
+		],
+		"errors": [
+			{
+				"fileId": "yyy",
+				"error": "Error in removing tags"
+			}
+		]
+	}`
 var assetsArr []Asset
 var asset Asset
 var mediaApi *API
+var testExtenstions = []extension.IExtension{
+	&extension.AutoTag{
+		Name:          extension.GoogleAutoTag,
+		MinConfidence: 50,
+		MaxTags:       10,
+	},
+	extension.NewRemoveBg(extension.RemoveBgOption{
+		AddShadow:        true,
+		SemiTransparency: true,
+		BgColor:          "#000000",
+		BgImageUrl:       "http://test/test.jpg",
+	}),
+}
+var customMetadata = map[string]any{
+	"brand": "nike",
+	"size":  10,
+}
 
 func TestMain(m *testing.M) {
 	var err error
@@ -75,6 +113,13 @@ func TestMedia_Assets(t *testing.T) {
 	}
 
 	httpTest.Test(expectedUrl, "GET", nil)
+
+	errServer := iktest.NewErrorServer(t)
+	mediaApi.Config.API.Prefix = errServer.Url() + "/"
+	errServer.TestErrors(func() error {
+		_, err := mediaApi.Assets(ctx, AssetsParam{})
+		return err
+	})
 }
 
 func TestMedia_AssetById(t *testing.T) {
@@ -96,14 +141,6 @@ func TestMedia_AssetById(t *testing.T) {
 			result:     expected,
 			statusCode: 200,
 			shouldFail: false,
-		},
-		"check failure": {
-			fileId:     "456",
-			url:        "/files/456/details",
-			body:       `{"message":"not found"}`,
-			result:     Asset{},
-			statusCode: 400,
-			shouldFail: true,
 		},
 	}
 
@@ -133,6 +170,13 @@ func TestMedia_AssetById(t *testing.T) {
 			httpTest.Test(tc.url, "GET", nil)
 		})
 	}
+	errServer := iktest.NewErrorServer(t)
+	mediaApi.Config.API.Prefix = errServer.Url() + "/"
+
+	errServer.TestErrors(func() error {
+		_, err := mediaApi.AssetById(ctx, "111")
+		return err
+	})
 }
 
 func TestMedia_AssetVersions(t *testing.T) {
@@ -149,12 +193,6 @@ func TestMedia_AssetVersions(t *testing.T) {
 			body:       singleAssetResp,
 			statusCode: 200,
 			shouldFail: false,
-		},
-		"should fail": {
-			fileId:     "123",
-			body:       `{"message": "not found"}`,
-			statusCode: 400,
-			shouldFail: true,
 		},
 	}
 
@@ -190,6 +228,13 @@ func TestMedia_AssetVersions(t *testing.T) {
 			httpTest.Test(expectedUrl, "GET", nil)
 		})
 	}
+	errServer := iktest.NewErrorServer(t)
+	mediaApi.Config.API.Prefix = errServer.Url() + "/"
+
+	errServer.TestErrors(func() error {
+		_, err := mediaApi.AssetVersions(ctx, AssetVersionsParam{FileId: "111", VersionId: "v1"})
+		return err
+	})
 }
 
 /**
@@ -220,13 +265,9 @@ func TestMedia_UpdateAsset(t *testing.T) {
 				WebhookUrl:        "http://example.com/hook",
 				Tags:              []string{"abc", "def"},
 				CustomCoordinates: "12,11,22,22",
+				Extensions:        testExtenstions,
+				CustomMetadata:    customMetadata,
 			},
-		},
-		"require fileid": {
-			fileId:     "",
-			body:       "",
-			statusCode: 400,
-			shouldFail: true,
 		},
 	}
 
@@ -244,7 +285,6 @@ func TestMedia_UpdateAsset(t *testing.T) {
 
 			if tc.shouldFail == false {
 				httpTest.Test(expectedUrl, "PATCH", tc.params)
-				//t.Error("incorrect request body")
 			}
 
 			if tc.shouldFail == true && err == nil {
@@ -261,6 +301,13 @@ func TestMedia_UpdateAsset(t *testing.T) {
 
 		})
 	}
+	errServer := iktest.NewErrorServer(t)
+	mediaApi.Config.API.Prefix = errServer.Url() + "/"
+
+	errServer.TestErrors(func() error {
+		_, err := mediaApi.UpdateAsset(ctx, "111", UpdateAssetParam{})
+		return err
+	})
 }
 
 /**
@@ -269,7 +316,6 @@ REVIEW-COMMENT
 Negative test case missing. Call AddTags with invalid params e.g. empty/missing FileIds and Tags.
 */
 func TestMedia_AddTags(t *testing.T) {
-	var err error
 	var ids = []string{"xxx", "yyy"}
 	var tags = []string{"tag1", "tag2"}
 	var resp = UpdatedIds{
@@ -278,31 +324,78 @@ func TestMedia_AddTags(t *testing.T) {
 
 	respBody, _ := json.Marshal(&resp)
 
-	httpTest := iktest.NewHttp(t)
-
-	ts := httptest.NewServer(httpTest.Handler(200, string(respBody)))
-	defer ts.Close()
-
-	mediaApi.Config.API.Prefix = ts.URL + "/"
-
 	params := TagsParam{
 		FileIds: ids,
 		Tags:    tags,
 	}
 
-	response, err := mediaApi.AddTags(ctx, params)
-
-	if err != nil {
-		log.Printf("%+v\n", err)
-		t.Errorf("%+v", err)
+	cases := map[string]struct {
+		params     TagsParam
+		body       string
+		statusCode int
+	}{
+		"add tags": {
+			body:       string(respBody),
+			statusCode: 200,
+		},
+		"partial success": {
+			body:       partialSuccessBody,
+			statusCode: 207,
+		},
+		"file id not found": {
+			body:       missingFileIdsBody,
+			statusCode: 404,
+		},
 	}
 
-	if !cmp.Equal(response.Data, resp) {
-		t.Errorf("%v\n%v", response.Data, resp)
+	for name, tc := range cases {
+		t.Run(name, func(t *testing.T) {
+			httpTest := iktest.NewHttp(t)
+
+			ts := httptest.NewServer(httpTest.Handler(tc.statusCode, tc.body))
+			defer ts.Close()
+
+			mediaApi.Config.API.Prefix = ts.URL + "/"
+
+			response, err := mediaApi.AddTags(ctx, params)
+
+			var url = "/files/addTags"
+
+			switch tc.statusCode {
+			case 200:
+				if err != nil {
+					t.Error("unexpected error", err)
+				} else {
+					httpTest.Test(url, "POST", params)
+					if !cmp.Equal(response.Data, resp) {
+						t.Errorf("%v\n%v", response.Data, resp)
+					}
+				}
+				break
+			case 207:
+				var errPartial *ErrorPartialSuccess
+				if !errors.As(err, &errPartial) {
+					log.Println(err)
+					t.Error("error is not type ErrorPartialSuccess")
+				}
+				break
+			case 404:
+				var e *ErrorMissingFileIds
+				if !errors.As(err, &e) {
+					log.Println(e)
+					t.Error("error is not type ErrorMissingFileIds")
+				}
+				break
+			}
+		})
 	}
 
-	var expectedUrl = "/files/addTags"
-	httpTest.Test(expectedUrl, "POST", params)
+	errServer := iktest.NewErrorServer(t)
+	mediaApi.Config.API.Prefix = errServer.Url() + "/"
+	errServer.TestErrors(func() error {
+		_, err := mediaApi.AddTags(ctx, TagsParam{})
+		return err
+	})
 }
 
 /**
@@ -311,39 +404,83 @@ REVIEW-COMMENT
 Negative test case missing. Call RemoveTags with invalid params e.g. empty/missing FileIds and Tags.
 */
 func TestMedia_RemoveTags(t *testing.T) {
-	var err error
 	var ids = []string{"xxx", "yyy"}
 	var tags = []string{"tag1", "tag2"}
 	var resp = UpdatedIds{
 		FileIds: ids,
 	}
-
-	respBody, _ := json.Marshal(&resp)
-
-	httpTest := iktest.NewHttp(t)
-
-	ts := httptest.NewServer(httpTest.Handler(200, string(respBody)))
-	defer ts.Close()
-
-	mediaApi.Config.API.Prefix = ts.URL + "/"
-
 	params := TagsParam{
 		FileIds: ids,
 		Tags:    tags,
 	}
 
-	response, err := mediaApi.RemoveTags(ctx, params)
+	respBody, _ := json.Marshal(&resp)
 
-	if err != nil {
-		t.Error(err)
+	var cases = map[string]struct {
+		params     TagsParam
+		body       string
+		statusCode int
+	}{
+		"remove tags": {
+			body:       string(respBody),
+			statusCode: 200,
+		},
+		"partial success": {
+			body:       partialSuccessBody,
+			statusCode: 207,
+		},
+		"missing file ids": {
+			body:       missingFileIdsBody,
+			statusCode: 404,
+		},
 	}
 
-	if !cmp.Equal(response.Data, resp) {
-		t.Errorf("%v\n%v", response.Data, resp)
-	}
+	for name, tc := range cases {
+		t.Run(name, func(t *testing.T) {
+			httpTest := iktest.NewHttp(t)
 
-	var expectedUrl = "/files/removeTags"
-	httpTest.Test(expectedUrl, "POST", params)
+			ts := httptest.NewServer(httpTest.Handler(tc.statusCode, tc.body))
+			defer ts.Close()
+
+			mediaApi.Config.API.Prefix = ts.URL + "/"
+
+			response, err := mediaApi.RemoveTags(ctx, params)
+			var url = "/files/removeTags"
+			switch tc.statusCode {
+			case 200:
+				if err != nil {
+					t.Error("unexpected error", err)
+				} else {
+					httpTest.Test(url, "POST", params)
+					if !cmp.Equal(response.Data, resp) {
+						t.Errorf("%v\n%v", response.Data, resp)
+					}
+				}
+				break
+			case 207:
+				var errPartial *ErrorPartialSuccess
+				if !errors.As(err, &errPartial) {
+					log.Println(err)
+					t.Error("error is not type ErrorPartialSuccess")
+				}
+				break
+			case 404:
+				var e *ErrorMissingFileIds
+				if !errors.As(err, &e) {
+					log.Println(e)
+					t.Error("error is not type ErrorMissingFileIds")
+				}
+				break
+			}
+		})
+	}
+	errServer := iktest.NewErrorServer(t)
+	mediaApi.Config.API.Prefix = errServer.Url() + "/"
+
+	errServer.TestErrors(func() error {
+		_, err := mediaApi.RemoveTags(ctx, params)
+		return err
+	})
 }
 
 /**
@@ -352,7 +489,6 @@ REVIEW-COMMENT
 Negative test case missing. Call RemoveAITags with invalid params e.g. empty/missing FileIds and AITags.
 */
 func TestMedia_RemoveAITags(t *testing.T) {
-	var err error
 	var ids = []string{"xxx", "yyy"}
 	var tags = []string{"tag1", "tag2"}
 	var resp = UpdatedIds{
@@ -360,29 +496,58 @@ func TestMedia_RemoveAITags(t *testing.T) {
 	}
 
 	respBody, _ := json.Marshal(&resp)
-
-	httpTest := iktest.NewHttp(t)
-
-	ts := httptest.NewServer(httpTest.Handler(200, string(respBody)))
-	defer ts.Close()
-
-	mediaApi.Config.API.Prefix = ts.URL + "/"
-
 	params := AITagsParam{
 		FileIds: ids,
 		AITags:  tags,
 	}
 
-	response, err := mediaApi.RemoveAITags(ctx, params)
-
-	if err != nil {
-		t.Error(err)
+	var cases = map[string]struct {
+		body       string
+		statusCode int
+	}{
+		"remove tags": {
+			body:       string(respBody),
+			statusCode: 200,
+		},
+		"partial success": {
+			body:       partialSuccessBody,
+			statusCode: 207,
+		},
+		"missing file ids": {
+			body:       missingFileIdsBody,
+			statusCode: 404,
+		},
 	}
 
-	if !cmp.Equal(response.Data, resp) {
-		t.Errorf("%v\n%v", response.Data, resp)
+	for name, tc := range cases {
+		t.Run(name, func(t *testing.T) {
+			httpTest := iktest.NewHttp(t)
+
+			ts := httptest.NewServer(httpTest.Handler(tc.statusCode, tc.body))
+			defer ts.Close()
+
+			mediaApi.Config.API.Prefix = ts.URL + "/"
+
+			response, err := mediaApi.RemoveAITags(ctx, params)
+
+			if tc.statusCode == 200 {
+				if err != nil {
+					t.Error(err)
+				} else if !cmp.Equal(response.Data, resp) {
+					t.Errorf("%v\n%v", response.Data, resp)
+				}
+			}
+
+			httpTest.Test("/files/removeAITags", "POST", params)
+		})
 	}
-	httpTest.Test("/files/removeAITags", "POST", params)
+	errServer := iktest.NewErrorServer(t)
+	mediaApi.Config.API.Prefix = errServer.Url() + "/"
+
+	errServer.TestErrors(func() error {
+		_, err := mediaApi.RemoveAITags(ctx, params)
+		return err
+	})
 }
 
 func TestMedia_DeleteAsset(t *testing.T) {
@@ -401,6 +566,14 @@ func TestMedia_DeleteAsset(t *testing.T) {
 	}
 
 	httpTest.Test("/files/file_id", "DELETE", nil)
+
+	errServer := iktest.NewErrorServer(t)
+	mediaApi.Config.API.Prefix = errServer.Url() + "/"
+
+	errServer.TestErrors(func() error {
+		_, err = mediaApi.DeleteAsset(ctx, "file_id")
+		return err
+	})
 }
 
 func TestMedia_DeleteAssetVersion(t *testing.T) {
@@ -421,6 +594,13 @@ func TestMedia_DeleteAssetVersion(t *testing.T) {
 	url := "/files/file_id/versions/v2"
 
 	httpTest.Test(url, "DELETE", nil)
+	errServer := iktest.NewErrorServer(t)
+	mediaApi.Config.API.Prefix = errServer.Url() + "/"
+
+	errServer.TestErrors(func() error {
+		_, err = mediaApi.DeleteAssetVersion(ctx, "file_id", "v2")
+		return err
+	})
 }
 
 /**
@@ -450,10 +630,20 @@ func TestMedia_DeleteBulkAssets(t *testing.T) {
 		t.Error(err)
 	}
 
+	log.Println("delete bulk assets test: ", resp.Data.Errors)
+
 	if !cmp.Equal(resp.Data.FileIds, param.FileIds) {
 		t.Errorf("expected: %v, got: %v", param.FileIds, resp.Data.FileIds)
 	}
 	httpTest.Test("/files/batch/deleteByFileIds", "POST", param)
+
+	errServer := iktest.NewErrorServer(t)
+	mediaApi.Config.API.Prefix = errServer.Url() + "/"
+
+	errServer.TestErrors(func() error {
+		_, err := mediaApi.DeleteBulkAssets(ctx, param)
+		return err
+	})
 }
 
 /**
@@ -485,7 +675,15 @@ func TestMedia_CopyAsset(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
+	httpTest.Test("/files/copy", "POST", param)
 
+	errServer := iktest.NewErrorServer(t)
+	mediaApi.Config.API.Prefix = errServer.Url() + "/"
+
+	errServer.TestErrors(func() error {
+		_, err = mediaApi.CopyAsset(ctx, param)
+		return err
+	})
 }
 
 /**
@@ -513,6 +711,14 @@ func TestMedia_MoveAsset(t *testing.T) {
 	}
 
 	httpTest.Test("/files/move", "POST", param)
+
+	errServer := iktest.NewErrorServer(t)
+	mediaApi.Config.API.Prefix = errServer.Url() + "/"
+
+	errServer.TestErrors(func() error {
+		_, err = mediaApi.MoveAsset(ctx, param)
+		return err
+	})
 }
 
 /**
@@ -522,30 +728,61 @@ Negative test case missing of invalid/missing params, including non 2xx response
 Also cover calling RenameAsset without PurgeCache and ensure that this parameter is not being sent.
 */
 func TestMedia_RenameAsset(t *testing.T) {
-	var err error
-	var param = RenameAssetParam{
-		FilePath:    "/some/file.jpg",
-		NewFileName: "/default.jpg",
-		PurgeCache:  true,
+	var cases = map[string]struct {
+		param      RenameAssetParam
+		body       string
+		statusCode int
+	}{
+		"rename asset": {
+			param: RenameAssetParam{
+				FilePath:    "/some/file.jpg",
+				NewFileName: "/default.jpg",
+				PurgeCache:  true,
+			},
+			body:       `{"purgeRequestId":"123"}`,
+			statusCode: 200,
+		},
+		"without purge": {
+			param: RenameAssetParam{
+				FilePath:    "/some/file.jpg",
+				NewFileName: "/default.jpg",
+			},
+			body:       `{}`,
+			statusCode: 200,
+		},
 	}
-	httpTest := iktest.NewHttp(t)
 
-	ts := httptest.NewServer(httpTest.Handler(200, `{"purgeRequestId":"123"}`))
+	for name, tc := range cases {
+		t.Run(name, func(t *testing.T) {
+			httpTest := iktest.NewHttp(t)
 
-	defer ts.Close()
+			ts := httptest.NewServer(httpTest.Handler(tc.statusCode, tc.body))
+			defer ts.Close()
 
-	mediaApi.Config.API.Prefix = ts.URL + "/"
+			mediaApi.Config.API.Prefix = ts.URL + "/"
 
-	resp, err := mediaApi.RenameAsset(ctx, param)
-	if err != nil {
-		t.Error(err)
+			resp, err := mediaApi.RenameAsset(ctx, tc.param)
+			if err != nil {
+				t.Error(err)
+			}
+
+			if tc.param.PurgeCache == true && resp.Data.RequestId != "123" {
+				t.Error("unexpected request id returned")
+			}
+
+			httpTest.Test("/files/rename", "PUT", tc.param)
+		})
 	}
+	errServer := iktest.NewErrorServer(t)
+	mediaApi.Config.API.Prefix = errServer.Url() + "/"
 
-	if resp.Data.RequestId != "123" {
-		t.Error("unexpected request id returned")
-	}
-
-	httpTest.Test("/files/rename", "PUT", param)
+	errServer.TestErrors(func() error {
+		_, err := mediaApi.RenameAsset(ctx, RenameAssetParam{
+			FilePath:    "/some/file.jpg",
+			NewFileName: "/default.jpg",
+		})
+		return err
+	})
 }
 
 /**
@@ -581,6 +818,14 @@ func TestMedia_RestoreVersion(t *testing.T) {
 		param.FileId, param.VersionId)
 
 	httpTest.Test(expectedUrl, "DELETE", param)
+
+	errServer := iktest.NewErrorServer(t)
+	mediaApi.Config.API.Prefix = errServer.Url() + "/"
+
+	errServer.TestErrors(func() error {
+		_, err := mediaApi.RestoreVersion(ctx, param)
+		return err
+	})
 }
 
 /**
@@ -613,4 +858,12 @@ func TestMedia_BulkJobStatus(t *testing.T) {
 	}
 
 	httpTest.Test("/bulkJobs/"+jobId, "GET", nil)
+
+	errServer := iktest.NewErrorServer(t)
+	mediaApi.Config.API.Prefix = errServer.Url() + "/"
+
+	errServer.TestErrors(func() error {
+		_, err := mediaApi.BulkJobStatus(ctx, jobId)
+		return err
+	})
 }

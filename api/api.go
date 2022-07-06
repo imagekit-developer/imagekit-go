@@ -241,3 +241,7 @@ func SetResponseMeta(httpResp *http.Response, respStruct MetaSetter) {
 	}
 	respStruct.SetMeta(meta)
 }
+
+func Bool(b bool) *bool {
+	return &b
+}
