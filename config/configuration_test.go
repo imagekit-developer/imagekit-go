@@ -7,9 +7,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var cldURL = "cloudinary://key:secret@test123"
-var fakeOAuthToken = "MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI4"
-
 func TestConfiguration_CreateInstance(t *testing.T) {
 	c, _ := config.New()
 
