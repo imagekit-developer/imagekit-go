@@ -441,3 +441,15 @@ if errors.Is(err, api.ErrTooManyRequests) {
 }
 
 ```
+
+## Support
+
+For any feedback or to report any issues or general implementation support, please reach out to [support@imagekit.io](mailto:support@imagekit.io)
+
+## Links
+* [Documentation](https://docs.imagekit.io)
+* [Main website](https://imagekit.io)
+
+## License
+
+Released under the MIT license.
