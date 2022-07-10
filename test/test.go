@@ -31,9 +31,6 @@ func init() {
 	Cfg = config.NewFromParams(PrivateKey, PublicKey, UrlEndpoint)
 }
 
-// LogoURL is the URL of the publicly available logo.
-const LogoURL = "https://cloudinary-res.cloudinary.com/image/upload/cloudinary_logo.png"
-
 // Base64Image us a base64 encoded test image.
 const Base64Image = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
 
