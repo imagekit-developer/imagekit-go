@@ -46,7 +46,7 @@ func (resp *Response) Body() []byte {
 	return resp.ResponseMetaData.Body
 }
 
-// ParseError returns error object by parsing the http response body if applicable otherwise returns core error such as ErrUnauthorized, ErrServerError etc.
+// ParseError returns error object by parsing the http response body if applicable otherwise returns core error such as ErrUnauthorized, ErrServer etc.
 func (resp *Response) ParseError() error {
 	var err error
 	var code = resp.ResponseMetaData.StatusCode
@@ -67,7 +67,7 @@ func (resp *Response) ParseError() error {
 	case 429:
 		err = ErrTooManyRequests
 	case 500, 502, 503, 504:
-		err = ErrServerError
+		err = ErrServer
 	default:
 		err = errors.New("Undefined Error")
 	}

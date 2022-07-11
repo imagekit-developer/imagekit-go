@@ -74,7 +74,7 @@ imagekit-go/api:
 403: ErrForbidden
 404: ErrNotFound
 429: ErrTooManyRequests
-500, 502, 503, 504: ErrServerError
+500, 502, 503, 504: ErrServer
 default: "Undefined Error"
 ```
 ```err``` can be tested using `errors.Is`

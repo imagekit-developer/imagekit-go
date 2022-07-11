@@ -142,10 +142,10 @@ func (srv *ErrorServer) TestErrors(fn func() error) {
 		403: api.ErrForbidden,
 		404: api.ErrNotFound,
 		429: api.ErrTooManyRequests,
-		500: api.ErrServerError,
-		502: api.ErrServerError,
-		503: api.ErrServerError,
-		504: api.ErrServerError,
+		500: api.ErrServer,
+		502: api.ErrServer,
+		503: api.ErrServer,
+		504: api.ErrServer,
 	}
 
 	for code, expectedErr := range codesToErrors {
