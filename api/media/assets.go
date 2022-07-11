@@ -27,8 +27,8 @@ const (
 type Sort string
 
 const (
-	AscNAME     Sort = "ASC_NAME"
-	DescNAME    Sort = "DESC_NAME"
+	AscName     Sort = "ASC_NAME"
+	DescName    Sort = "DESC_NAME"
 	AscCreated  Sort = "ASC_CREATED"
 	DescCreated Sort = "ASC_CREATED"
 	AscHeight   Sort = "ASC_HEIGHT"
@@ -50,14 +50,14 @@ const (
 
 // AssetParam struct is a parameter type to Assets() function to search / list media library assets.
 type AssetsParam struct {
-	Type        AssetType `default:"file" json:"type"`
-	Sort        Sort      `default:"ASC_CREATED" json:"sort"`
-	Path        string    `default:"/" json:"path"`
-	SearchQuery string    `default:"" json:"searchQuery"`
-	FileType    FileType  `default:"all" json:"fileType"`
+	Type        AssetType `json:"type,omitempty"`
+	Sort        Sort      `json:"sort,omitempty"`
+	Path        string    `json:"path,omitempty"`
+	SearchQuery string    `json:"searchQuery,omitempty"`
+	FileType    FileType  `json:"fileType,omitempty"`
 	Tags        string    `json:"tags,omitempty"`
-	Limit       int       `default:"1000" validate:"min=1,max=1000" json:"limit"`
-	Skip        int       `default:"0" validate:"min=0" json:"skip"`
+	Limit       int       `json:"limit,omitempty"`
+	Skip        int       `json:"skip,omitempty"`
 }
 
 // AssetVersionsParam represents filter for getting asset version
@@ -224,16 +224,18 @@ func (m *API) Assets(ctx context.Context, params AssetsParam) (*AssetsResponse, 
 		return nil, err
 	}
 
-	if err := validator.Validate(params); err != nil {
-		return nil, err
-	}
-
 	values, err := api.StructToParams(params)
 	if err != nil {
 		return nil, err
 	}
 
-	resp, err := m.get(ctx, "files?"+values.Encode())
+	var query = values.Encode()
+
+	if query != "" {
+		query = "?" + query
+	}
+
+	resp, err := m.get(ctx, "files"+query)
 	defer api.DeferredBodyClose(resp)
 
 	response := &AssetsResponse{}

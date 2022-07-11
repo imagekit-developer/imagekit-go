@@ -91,28 +91,52 @@ Pass Tags as an array in SDK and assert that SDK is converting it to comma seper
 I see searchQuery=, skip=0, sort=ASC_CREATED in expectedUrl, it is wrong. By default nothign should be passed if user didn't pass any param.
 */
 func TestMedia_Assets(t *testing.T) {
-	var err error
 	var expected = assetsArr
-	var expectedUrl = "/files?fileType=all&limit=1000&path=%2F&searchQuery=&skip=0&sort=ASC_CREATED&type=file"
-
-	httpTest := iktest.NewHttp(t)
-
-	ts := httptest.NewServer(httpTest.Handler(200, string(respBody)))
-	defer ts.Close()
-
-	mediaApi.Config.API.Prefix = ts.URL + "/"
-
-	resp, err := mediaApi.Assets(ctx, AssetsParam{})
-
-	if err != nil {
-		t.Error(err)
+	var cases = map[string]struct {
+		params AssetsParam
+		result string
+	}{
+		"default": {
+			params: AssetsParam{},
+			result: "/files",
+		},
+		"with-params": {
+			params: AssetsParam{
+				Type:        File,
+				Sort:        AscName,
+				Path:        "/test",
+				SearchQuery: `createdAt > "7d" AND name: "file-name"`,
+				FileType:    Image,
+				Tags:        "tag1,tag2",
+				Limit:       100,
+				Skip:        10,
+			},
+			result: "/files?fileType=image&limit=100&path=%2Ftest&searchQuery=createdAt+%3E+%227d%22+AND+name%3A+%22file-name%22&skip=10&sort=ASC_NAME&tags=tag1%2Ctag2&type=file",
+		},
 	}
 
-	if !cmp.Equal(resp.Data, expected) {
-		t.Errorf("\n%v\n%v\n", resp.Data, expected)
-	}
+	for name, tc := range cases {
+		t.Run(name, func(t *testing.T) {
+			httpTest := iktest.NewHttp(t)
 
-	httpTest.Test(expectedUrl, "GET", nil)
+			ts := httptest.NewServer(httpTest.Handler(200, string(respBody)))
+			defer ts.Close()
+
+			mediaApi.Config.API.Prefix = ts.URL + "/"
+
+			resp, err := mediaApi.Assets(ctx, tc.params)
+
+			if err != nil {
+				t.Error(err)
+			}
+
+			if !cmp.Equal(resp.Data, expected) {
+				t.Errorf("\n%v\n%v\n", resp.Data, expected)
+			}
+
+			httpTest.Test(tc.result, "GET", nil)
+		})
+	}
 
 	errServer := iktest.NewErrorServer(t)
 	mediaApi.Config.API.Prefix = errServer.Url() + "/"
