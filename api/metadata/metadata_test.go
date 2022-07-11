@@ -45,13 +45,13 @@ func TestMetadata_FromFile(t *testing.T) {
 		t.Error(err)
 	}
 
-	handler := getHandler(200, respBody)
-	ts := httptest.NewServer(handler)
+	httpTest := iktest.NewHttp(t)
+	ts := httptest.NewServer(httpTest.Handler(200, string(respBody)))
 	defer ts.Close()
 
 	metadataApi.Config.API.Prefix = ts.URL + "/"
 
-	resp, err := metadataApi.FromFile(ctx, "3325344545345")
+	resp, err := metadataApi.FromFile(ctx, "file_id")
 
 	if err != nil {
 		t.Error(err)
@@ -60,6 +60,8 @@ func TestMetadata_FromFile(t *testing.T) {
 	if !cmp.Equal(resp.Data, *respObj) {
 		t.Errorf("\n%v\n%v\n", resp.Data, *respObj)
 	}
+
+	httpTest.Test("/files/file_id/metadata", "GET", nil)
 
 	errServer := iktest.NewErrorServer(t)
 	metadataApi.Config.API.Prefix = errServer.Url() + "/"
@@ -80,8 +82,9 @@ func TestMetadata_FromUrl(t *testing.T) {
 		t.Error(err)
 	}
 
-	handler := getHandler(200, respBody)
-	ts := httptest.NewServer(handler)
+	httpTest := iktest.NewHttp(t)
+
+	ts := httptest.NewServer(httpTest.Handler(200, string(respBody)))
 	defer ts.Close()
 
 	metadataApi.Config.API.Prefix = ts.URL + "/"
@@ -95,6 +98,8 @@ func TestMetadata_FromUrl(t *testing.T) {
 	if !cmp.Equal(resp.Data, *respObj) {
 		t.Errorf("\n%v\n%v\n", resp.Data, *respObj)
 	}
+
+	httpTest.Test("/metadata?url=https%3A%2F%2Fik.imagekit.io%2Fxk1m7xkgi%2Fdefault-image.jpg", "GET", nil)
 
 	errServer := iktest.NewErrorServer(t)
 	metadataApi.Config.API.Prefix = errServer.Url() + "/"
@@ -115,8 +120,9 @@ func TestMetadata_CreateCustomField(t *testing.T) {
 		t.Error(err)
 	}
 
-	handler := getHandler(201, respBody)
-	ts := httptest.NewServer(handler)
+	httpTest := iktest.NewHttp(t)
+
+	ts := httptest.NewServer(httpTest.Handler(201, respBody))
 	defer ts.Close()
 
 	metadataApi.Config.API.Prefix = ts.URL + "/"
@@ -141,6 +147,8 @@ func TestMetadata_CreateCustomField(t *testing.T) {
 		t.Errorf("\n%v\n%v\n", resp.Data, *expected)
 	}
 
+	httpTest.Test("/customMetadataFields", "POST", param)
+
 	errServer := iktest.NewErrorServer(t)
 	metadataApi.Config.API.Prefix = errServer.Url() + "/"
 
@@ -160,8 +168,9 @@ func TestMetadata_CustomFields(t *testing.T) {
 		t.Error(err)
 	}
 
-	handler := getHandler(200, respBody)
-	ts := httptest.NewServer(handler)
+	httpTest := iktest.NewHttp(t)
+
+	ts := httptest.NewServer(httpTest.Handler(200, respBody))
 	defer ts.Close()
 
 	metadataApi.Config.API.Prefix = ts.URL + "/"
@@ -173,6 +182,8 @@ func TestMetadata_CustomFields(t *testing.T) {
 	if !cmp.Equal(resp.Data, expected) {
 		t.Errorf("%v\n%v", resp.Data, expected)
 	}
+
+	httpTest.Test("/customMetadataFields?includeDeleted=false", "GET", nil)
 
 	errServer := iktest.NewErrorServer(t)
 	metadataApi.Config.API.Prefix = errServer.Url() + "/"
@@ -193,17 +204,20 @@ func TestMetadata_UpdateCustomField(t *testing.T) {
 		t.Error(err)
 	}
 
-	handler := getHandler(200, respBody)
-	ts := httptest.NewServer(handler)
+	httpTest := iktest.NewHttp(t)
+	ts := httptest.NewServer(httpTest.Handler(200, respBody))
 	defer ts.Close()
 
 	metadataApi.Config.API.Prefix = ts.URL + "/"
+
+	param := UpdateCustomFieldParam{
+		Label: "Cost",
+	}
+
 	resp, err := metadataApi.UpdateCustomField(
 		ctx,
-		"629f6b437eb0fe6f1b66d864",
-		UpdateCustomFieldParam{
-			Label: "Cost",
-		},
+		"file_id",
+		param,
 	)
 
 	if err != nil {
@@ -212,6 +226,8 @@ func TestMetadata_UpdateCustomField(t *testing.T) {
 	if !cmp.Equal(resp.Data, expected) {
 		t.Errorf("%v\n%v", resp.Data, expected)
 	}
+
+	httpTest.Test("/customMetadataFields/file_id", "PATCH", param)
 
 	errServer := iktest.NewErrorServer(t)
 	metadataApi.Config.API.Prefix = errServer.Url() + "/"
@@ -232,16 +248,20 @@ func TestMetadata_DeleteCustomField(t *testing.T) {
 	var respBody = ``
 	var err error
 
-	handler := getHandler(204, respBody)
-	ts := httptest.NewServer(handler)
+	httpTest := iktest.NewHttp(t)
+
+	ts := httptest.NewServer(httpTest.Handler(204, respBody))
 	defer ts.Close()
 
 	metadataApi.Config.API.Prefix = ts.URL + "/"
-	_, err = metadataApi.DeleteCustomField(ctx, "62a8966b663ef736f841fe28")
+
+	_, err = metadataApi.DeleteCustomField(ctx, "file_id")
 	if err != nil {
 		log.Println("got error")
 		t.Error(err)
 	}
+
+	httpTest.Test("/customMetadataFields/file_id", "DELETE", nil)
 
 	errServer := iktest.NewErrorServer(t)
 	metadataApi.Config.API.Prefix = errServer.Url() + "/"

@@ -187,7 +187,13 @@ func (m *API) get(ctx context.Context, url string, query map[string]string) (*ht
 		values.Set(k, v)
 	}
 
-	sUrl := urlObj.String() + "?" + values.Encode()
+	q := values.Encode()
+
+	sUrl := urlObj.String()
+	if q != "" {
+		sUrl = sUrl + "?" + values.Encode()
+	}
+
 	req, err := http.NewRequest(http.MethodGet, sUrl, nil)
 
 	if err != nil {
