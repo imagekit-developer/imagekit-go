@@ -5,7 +5,7 @@ ImageKit.io Go SDK
 
 ImageKit Go SDK allows you to use [image resizing](https://docs.imagekit.io/features/image-transformations), [optimization](https://docs.imagekit.io/features/image-optimization), [file uploading](https://docs.imagekit.io/api-reference/upload-file-api) and other [ImageKit APIs](https://docs.imagekit.io/api-reference/api-introduction) from applications written in the Go language.
 
-All features except url generation and utility functions return response with ```ResponseMetaData``` which holds raw response Header, StatusCode and Body. The Response object also contains ```Data``` attribtue except when underlying api call is not supposed to return any data(such as DeleteAsset).
+All features except url generation and utility functions return response with ```ResponseMetaData``` which holds raw response Header, StatusCode and Body. The Response object also contains ```Data``` attribtue except when underlying api call is not supposed to return any data(such as DeleteFile).
 
 Table of contents -
  * [Installation](#installation)
@@ -57,7 +57,7 @@ ik, err := ImageKit.NewFromParams(imagekit.NewParams{
 Results returned by functions which call backend api(such as media management, metadata, cache apis) embeds raw response in ```ResponseMetaData```, which can be used to get raw response ```StatusCode```, ```Header``` and ```Body```. The json resonse body is parsed to approprite sdk type and assigned to ```resp.Data```  attribute.
 
 ```
-resp, err := ik.Metadata.FromAsset(ctx, fileId)
+resp, err := ik.Metadata.FromFile(ctx, fileId)
 log.Println(resp.ResponseMetaData.Header, resp.Data.Url)
 
 ```
@@ -158,14 +158,14 @@ resp, err := ik.Uploader.Upload(ctx, base64Image, uploader.UploadParam{
 The SDK provides a simple interface for all the [media APIs mentioned here](https://docs.imagekit.io/api-reference/media-api) to manage your files. 
 
 ### 1. List & Search Files
-List assets in media library, optionally filter and sort using ```AssetParams```.
+List files in media library, optionally filter and sort using ```FileParams```.
 ```
 import (
     "github.com/imagekit-developer/imagekit-go"
     "github.com/imagekit-developer/imagekit-go/api/media"
 )
 
-resp, err := ik.Media.Assets(ctx, media.AssetsParam{
+resp, err := ik.Media.Files(ctx, media.FilesParam{
     Skip: 10,
     Limit: 500,
     SearchQuery: "createdAt >= \"7d\" AND size > \"2mb\"",
@@ -175,13 +175,13 @@ resp, err := ik.Media.Assets(ctx, media.AssetsParam{
 ### 2. Get File Details
 Accepts the file ID and fetches the details as per the [API documentation here](https://docs.imagekit.io/api-reference/media-api/get-file-details).
 ```
-resp, err := ik.Media.AssetById(ctx, "file_id")
+resp, err := ik.Media.FileById(ctx, "file_id")
 ```
 
 ### 3. Get File Version Details
 Get all the details and attributes of any version of a file as per the [API documentation here](https://docs.imagekit.io/api-reference/media-api/get-file-version-details).
 ```
-resp, err := ik.Media.AssetVersions(ctx, media.AssetVersionsParam{
+resp, err := ik.Media.FileVersions(ctx, media.FileVersionsParam{
     FileId: "file_id",
     VersionId: "version_id",
 })
@@ -191,7 +191,7 @@ resp, err := ik.Media.AssetVersions(ctx, media.AssetVersionsParam{
 ### 4. Get File Versions
 Get all the file version details and attributes of a file as per the [API documentation here](https://docs.imagekit.io/api-reference/media-api/get-file-versions).
 ```
-resp, err := ik.Media.AssetVersions(ctx, media.AssetVersionsParam{
+resp, err := ik.Media.FileVersions(ctx, media.FileVersionsParam{
     FileId: "file_id",
 })
 ```
@@ -199,7 +199,7 @@ resp, err := ik.Media.AssetVersions(ctx, media.AssetVersionsParam{
 ### 5. Update File Details
 Update parameters associated with the file as per the [API documentation here](https://docs.imagekit.io/api-reference/media-api/update-file-details).
 ```
-resp, err := ik.Media.UpdateAsset(ctx, fileId, media.UpdateAssetParam{
+resp, err := ik.Media.UpdateFile(ctx, fileId, media.UpdateFileParam{
     Tags: []string{"tag_1", "tag_2"},
     RemoveAITags: []string{"car", "suv"},
 })
@@ -215,7 +215,7 @@ resp, err := ik.Media.AddTags(ctx, media.TagsParam{
 ```
 
 ### 7. Remove Tags (bulk)
-Removes tags from multiple assets. Returns slice of file ids updated. [API documentation here](https://docs.imagekit.io/api-reference/media-api/remove-tags-bulk)
+Removes tags from multiple files. Returns slice of file ids updated. [API documentation here](https://docs.imagekit.io/api-reference/media-api/remove-tags-bulk)
 ```
 resp, err := ik.Media.RemoveTags(ctx, media.TagsParam{
     FileIds: []string{"file_id_1", "file_id_2"},
@@ -234,19 +234,19 @@ resp, err := ik.Media.RemoveAITags(ctx, media.AITagsParam{
 ### 9. Delete File
 Delete a file by fileId. [API documentation here](https://docs.imagekit.io/api-reference/media-api/delete-file).
 ```
-resp, err := ik.Media.DeleteAsset(ctx, "file_id")
+resp, err := ik.Media.DeleteFile(ctx, "file_id")
 ```
 
 ### 10. Delete File Version
 Deletes given version of the file. [API documentation here](https://docs.imagekit.io/api-reference/media-api/delete-file-version)
 ```
-resp, err := ik.Media.DeleteAssetVersion(ctx, "file_id", "version_1")
+resp, err := ik.Media.DeleteFileVersion(ctx, "file_id", "version_1")
 ```
 
 ### 11. Delete Files (bulk)
 Deletes multiple files. [API documentation here](https://docs.imagekit.io/api-reference/media-api/delete-files-bulk).
 ```
-resp, err := ik.Media.DeleteBulkAssets(ctx, media.FileIdsParam{
+resp, err := ik.Media.DeleteBulkFiles(ctx, media.FileIdsParam{
     FileIds: []string{"file_id1", "file_id2"},
 )
 ```
@@ -255,7 +255,7 @@ resp, err := ik.Media.DeleteBulkAssets(ctx, media.FileIdsParam{
 This will copy a file from one location to another as per [API documentation here](https://docs.imagekit.io/api-reference/media-api/copy-file).
 Accepts the source file's path and destination folder path.
 ```
-resp, err := ik.Media.CopyAsset(ctx, media.CopyAssetParam{
+resp, err := ik.Media.CopyFile(ctx, media.CopyFileParam{
     SourcePath: "/source/a.jpg",
     DestinationPath: "/target/",
     IncludeFileVersions: false,
@@ -266,7 +266,7 @@ resp, err := ik.Media.CopyAsset(ctx, media.CopyAssetParam{
 This will move a file from one location to another as per [API documentation here](https://docs.imagekit.io/api-reference/media-api/move-file).
 Accepts the source file's path and destination folder path.
 ```
-resp, err := ik.Media.MoveAsset(ctx, media.MoveAssetParam{
+resp, err := ik.Media.MoveFile(ctx, media.MoveFileParam{
     SourcePath: "/source/a.jpg",
     DestinationPath: "/target/",
 })
@@ -276,7 +276,7 @@ resp, err := ik.Media.MoveAsset(ctx, media.MoveAssetParam{
 Renames a file as per [API documentation here](https://docs.imagekit.io/api-reference/media-api/rename-file).
 Accepts file path, new name and purge cache option.
 ```
-resp, err := ik.Media.RenameAsset(ctx, media.RenameAssetParam{
+resp, err := ik.Media.RenameFile(ctx, media.RenameFileParam{
     FilePath: "/path/to/file.jpg",
     NewFileName: "newname.jpg",
     PurgeCache: true,
@@ -288,7 +288,7 @@ resp, err := ik.Media.RenameAsset(ctx, media.RenameAssetParam{
 Restore file version to a different version of a file as per [API documentation here](https://docs.imagekit.io/api-reference/media-api/restore-file-version).
 Accepts string type file id and version id.
 ```
-resp, err := ik.Media.RestoreVersion(ctx, media.AssetVersionsParam{
+resp, err := ik.Media.RestoreVersion(ctx, media.FileVersionsParam{
     FileId: "file_id",
     VersionId: "version_id",
 })
@@ -358,7 +358,7 @@ resp, err := ik.Media.PurgeCacheStatus(ctx, "request_id")
 ### 1. Get File Metadata for uploaded media files
 Accepts the file ID or URL and fetches the metadata as per the [API documentation here](https://docs.imagekit.io/api-reference/metadata-api/get-image-metadata-for-uploaded-media-files).
 ```
-resp, err := ik.Metadata.FromAsset(ctx, "file_id")
+resp, err := ik.Metadata.FromFile(ctx, "file_id")
 ```
 
 ### 2. Get File Metadata from remote url

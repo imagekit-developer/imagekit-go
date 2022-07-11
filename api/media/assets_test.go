@@ -19,7 +19,7 @@ var ctx = context.Background()
 
 var respBody = `[{"fileId":"6283b04dc82abf6294aee010","name":"beauty_of_nature_12_6S7aNLP3-.jpg","filePath":"/beauty_of_nature_12_6S7aNLP3-.jpg","Tags":null,"AITags":null,"versionInfo":{"id":"6283b04dc82abf6294aee010","name":"Version 2"},"isPrivateFile":false,"customCoordinates":null,"url":"https://ik.imagekit.io/dk1m7xkgi/beauty_of_nature_12_6S7aNLP3-.jpg","thumbnail":"https://ik.imagekit.io/dk1m7xkgi/tr:n-ik_ml_thumbnail/beauty_of_nature_12_6S7aNLP3-.jpg","fileType":"image","mime":"image/png","height":133,"Width":200,"size":26509,"hasAlpha":true,"customMetadata":{"price":10},"embeddedMetadata":{"DateCreated":"2022-06-07T15:20:32.104Z","DateTimeCreated":"2022-06-07T15:20:32.105Z","ImageHeight":133,"ImageWidth":200},"createdAt":"2022-05-17T14:25:17.543Z","updatedAt":"2022-06-07T15:20:32.107Z"}]`
 
-var singleAssetResp string
+var singleFileResp string
 var missingFileIdsBody = `
 			{
 				"message": "The requested file(s) does not exist.",
@@ -40,8 +40,8 @@ var partialSuccessBody = `
 			}
 		]
 	}`
-var assetsArr []Asset
-var asset Asset
+var assetsArr []File
+var asset File
 var mediaApi *API
 var testExtenstions = []extension.IExtension{
 	&extension.AutoTag{
@@ -73,8 +73,8 @@ func TestMain(m *testing.M) {
 		log.Fatal(err)
 	}
 
-	singleAssetResp = respBody[1 : len(respBody)-1]
-	err = json.Unmarshal([]byte(singleAssetResp), &asset)
+	singleFileResp = respBody[1 : len(respBody)-1]
+	err = json.Unmarshal([]byte(singleFileResp), &asset)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -90,19 +90,19 @@ See test cases starting here  https://github.com/imagekit-developer/imagekit-nod
 Pass Tags as an array in SDK and assert that SDK is converting it to comma seperating string in query param.
 I see searchQuery=, skip=0, sort=ASC_CREATED in expectedUrl, it is wrong. By default nothign should be passed if user didn't pass any param.
 */
-func TestMedia_Assets(t *testing.T) {
+func TestMedia_Files(t *testing.T) {
 	var expected = assetsArr
 	var cases = map[string]struct {
-		params AssetsParam
+		params FilesParam
 		result string
 	}{
 		"default": {
-			params: AssetsParam{},
+			params: FilesParam{},
 			result: "/files",
 		},
 		"with-params": {
-			params: AssetsParam{
-				Type:        File,
+			params: FilesParam{
+				Type:        ListFile,
 				Sort:        AscName,
 				Path:        "/test",
 				SearchQuery: `createdAt > "7d" AND name: "file-name"`,
@@ -124,7 +124,7 @@ func TestMedia_Assets(t *testing.T) {
 
 			mediaApi.Config.API.Prefix = ts.URL + "/"
 
-			resp, err := mediaApi.Assets(ctx, tc.params)
+			resp, err := mediaApi.Files(ctx, tc.params)
 
 			if err != nil {
 				t.Error(err)
@@ -141,19 +141,19 @@ func TestMedia_Assets(t *testing.T) {
 	errServer := iktest.NewErrorServer(t)
 	mediaApi.Config.API.Prefix = errServer.Url() + "/"
 	errServer.TestErrors(func() error {
-		_, err := mediaApi.Assets(ctx, AssetsParam{})
+		_, err := mediaApi.Files(ctx, FilesParam{})
 		return err
 	})
 }
 
-func TestMedia_AssetById(t *testing.T) {
+func TestMedia_FileById(t *testing.T) {
 	var expected = asset
 	var mockBody = respBody[1 : len(respBody)-1]
 
 	var cases = map[string]struct {
 		fileId     string
 		url        string
-		result     Asset
+		result     File
 		body       string
 		statusCode int
 		shouldFail bool
@@ -177,7 +177,7 @@ func TestMedia_AssetById(t *testing.T) {
 
 			mediaApi.Config.API.Prefix = ts.URL + "/"
 
-			resp, err := mediaApi.AssetById(ctx, tc.fileId)
+			resp, err := mediaApi.FileById(ctx, tc.fileId)
 
 			if tc.shouldFail && err == nil {
 				t.Error("expected error")
@@ -198,12 +198,12 @@ func TestMedia_AssetById(t *testing.T) {
 	mediaApi.Config.API.Prefix = errServer.Url() + "/"
 
 	errServer.TestErrors(func() error {
-		_, err := mediaApi.AssetById(ctx, "111")
+		_, err := mediaApi.FileById(ctx, "111")
 		return err
 	})
 }
 
-func TestMedia_AssetVersions(t *testing.T) {
+func TestMedia_FileVersions(t *testing.T) {
 	var cases = map[string]struct {
 		fileId     string
 		versionId  string
@@ -214,7 +214,7 @@ func TestMedia_AssetVersions(t *testing.T) {
 		"all versions": {
 			fileId:     "6283b04dc82abf6294aee010",
 			versionId:  "v123",
-			body:       singleAssetResp,
+			body:       singleFileResp,
 			statusCode: 200,
 			shouldFail: false,
 		},
@@ -235,11 +235,11 @@ func TestMedia_AssetVersions(t *testing.T) {
 
 			mediaApi.Config.API.Prefix = ts.URL + "/"
 
-			params := AssetVersionsParam{
+			params := FileVersionsParam{
 				FileId:    tc.fileId,
 				VersionId: tc.versionId,
 			}
-			_, err := mediaApi.AssetVersions(ctx, params)
+			_, err := mediaApi.FileVersions(ctx, params)
 
 			if tc.shouldFail && err == nil {
 				t.Error("expected error")
@@ -256,20 +256,20 @@ func TestMedia_AssetVersions(t *testing.T) {
 	mediaApi.Config.API.Prefix = errServer.Url() + "/"
 
 	errServer.TestErrors(func() error {
-		_, err := mediaApi.AssetVersions(ctx, AssetVersionsParam{FileId: "111", VersionId: "v1"})
+		_, err := mediaApi.FileVersions(ctx, FileVersionsParam{FileId: "111", VersionId: "v1"})
 		return err
 	})
 }
 
-func TestMedia_UpdateAsset(t *testing.T) {
+func TestMedia_UpdateFile(t *testing.T) {
 	var expected = asset
 	var mockBody = respBody[1 : len(respBody)-1]
 
 	var cases = map[string]struct {
-		result     *Asset
+		result     *File
 		fileId     string
 		body       string
-		params     UpdateAssetParam
+		params     UpdateFileParam
 		statusCode int
 		shouldFail bool
 	}{
@@ -279,7 +279,7 @@ func TestMedia_UpdateAsset(t *testing.T) {
 			body:       mockBody,
 			statusCode: 200,
 			shouldFail: false,
-			params: UpdateAssetParam{
+			params: UpdateFileParam{
 				RemoveAITags:      []string{"one", "two"},
 				WebhookUrl:        "http://example.com/hook",
 				Tags:              []string{"abc", "def"},
@@ -298,7 +298,7 @@ func TestMedia_UpdateAsset(t *testing.T) {
 
 			mediaApi.Config.API.Prefix = ts.URL + "/"
 
-			response, err := mediaApi.UpdateAsset(ctx, tc.fileId, tc.params)
+			response, err := mediaApi.UpdateFile(ctx, tc.fileId, tc.params)
 
 			var expectedUrl = "/files/" + tc.fileId + "/details"
 
@@ -324,7 +324,7 @@ func TestMedia_UpdateAsset(t *testing.T) {
 	mediaApi.Config.API.Prefix = errServer.Url() + "/"
 
 	errServer.TestErrors(func() error {
-		_, err := mediaApi.UpdateAsset(ctx, "111", UpdateAssetParam{})
+		_, err := mediaApi.UpdateFile(ctx, "111", UpdateFileParam{})
 		return err
 	})
 }
@@ -554,7 +554,7 @@ func TestMedia_RemoveAITags(t *testing.T) {
 	})
 }
 
-func TestMedia_DeleteAsset(t *testing.T) {
+func TestMedia_DeleteFile(t *testing.T) {
 	var err error
 
 	httpTest := iktest.NewHttp(t)
@@ -563,7 +563,7 @@ func TestMedia_DeleteAsset(t *testing.T) {
 	defer ts.Close()
 
 	mediaApi.Config.API.Prefix = ts.URL + "/"
-	_, err = mediaApi.DeleteAsset(ctx, "file_id")
+	_, err = mediaApi.DeleteFile(ctx, "file_id")
 
 	if err != nil {
 		t.Error(err)
@@ -575,12 +575,12 @@ func TestMedia_DeleteAsset(t *testing.T) {
 	mediaApi.Config.API.Prefix = errServer.Url() + "/"
 
 	errServer.TestErrors(func() error {
-		_, err = mediaApi.DeleteAsset(ctx, "file_id")
+		_, err = mediaApi.DeleteFile(ctx, "file_id")
 		return err
 	})
 }
 
-func TestMedia_DeleteAssetVersion(t *testing.T) {
+func TestMedia_DeleteFileVersion(t *testing.T) {
 	var err error
 
 	httpTest := iktest.NewHttp(t)
@@ -589,7 +589,7 @@ func TestMedia_DeleteAssetVersion(t *testing.T) {
 	defer ts.Close()
 
 	mediaApi.Config.API.Prefix = ts.URL + "/"
-	_, err = mediaApi.DeleteAssetVersion(ctx, "file_id", "v2")
+	_, err = mediaApi.DeleteFileVersion(ctx, "file_id", "v2")
 
 	if err != nil {
 		t.Error(err)
@@ -602,12 +602,12 @@ func TestMedia_DeleteAssetVersion(t *testing.T) {
 	mediaApi.Config.API.Prefix = errServer.Url() + "/"
 
 	errServer.TestErrors(func() error {
-		_, err = mediaApi.DeleteAssetVersion(ctx, "file_id", "v2")
+		_, err = mediaApi.DeleteFileVersion(ctx, "file_id", "v2")
 		return err
 	})
 }
 
-func TestMedia_DeleteBulkAssets(t *testing.T) {
+func TestMedia_DeleteBulkFiles(t *testing.T) {
 	var err error
 	var param = FileIdsParam{
 		FileIds: []string{
@@ -623,7 +623,7 @@ func TestMedia_DeleteBulkAssets(t *testing.T) {
 
 	mediaApi.Config.API.Prefix = ts.URL + "/"
 
-	resp, err := mediaApi.DeleteBulkAssets(ctx, param)
+	resp, err := mediaApi.DeleteBulkFiles(ctx, param)
 
 	if err != nil {
 		t.Error(err)
@@ -640,14 +640,14 @@ func TestMedia_DeleteBulkAssets(t *testing.T) {
 	mediaApi.Config.API.Prefix = errServer.Url() + "/"
 
 	errServer.TestErrors(func() error {
-		_, err := mediaApi.DeleteBulkAssets(ctx, param)
+		_, err := mediaApi.DeleteBulkFiles(ctx, param)
 		return err
 	})
 }
 
-func TestMedia_CopyAsset(t *testing.T) {
+func TestMedia_CopyFile(t *testing.T) {
 	var err error
-	var param = CopyAssetParam{
+	var param = CopyFileParam{
 		SourcePath:          "/file.jpg",
 		DestinationPath:     "/natural/file.jpg",
 		IncludeFileVersions: true,
@@ -663,9 +663,9 @@ func TestMedia_CopyAsset(t *testing.T) {
 	/**
 	REVIEW-COMMENT
 
-	Please rename CopyAsset to CopyFile, same feedback for moveAsset
+	Please rename CopyFile to CopyFile, same feedback for moveFile
 	*/
-	_, err = mediaApi.CopyAsset(ctx, param)
+	_, err = mediaApi.CopyFile(ctx, param)
 	if err != nil {
 		t.Error(err)
 	}
@@ -675,14 +675,14 @@ func TestMedia_CopyAsset(t *testing.T) {
 	mediaApi.Config.API.Prefix = errServer.Url() + "/"
 
 	errServer.TestErrors(func() error {
-		_, err = mediaApi.CopyAsset(ctx, param)
+		_, err = mediaApi.CopyFile(ctx, param)
 		return err
 	})
 }
 
-func TestMedia_MoveAsset(t *testing.T) {
+func TestMedia_MoveFile(t *testing.T) {
 	var err error
-	var param = MoveAssetParam{
+	var param = MoveFileParam{
 		SourcePath:      "/file.jpg",
 		DestinationPath: "/natural/",
 	}
@@ -694,7 +694,7 @@ func TestMedia_MoveAsset(t *testing.T) {
 
 	mediaApi.Config.API.Prefix = ts.URL + "/"
 
-	_, err = mediaApi.MoveAsset(ctx, param)
+	_, err = mediaApi.MoveFile(ctx, param)
 	if err != nil {
 		t.Error(err)
 	}
@@ -705,19 +705,19 @@ func TestMedia_MoveAsset(t *testing.T) {
 	mediaApi.Config.API.Prefix = errServer.Url() + "/"
 
 	errServer.TestErrors(func() error {
-		_, err = mediaApi.MoveAsset(ctx, param)
+		_, err = mediaApi.MoveFile(ctx, param)
 		return err
 	})
 }
 
-func TestMedia_RenameAsset(t *testing.T) {
+func TestMedia_RenameFile(t *testing.T) {
 	var cases = map[string]struct {
-		param      RenameAssetParam
+		param      RenameFileParam
 		body       string
 		statusCode int
 	}{
 		"rename asset": {
-			param: RenameAssetParam{
+			param: RenameFileParam{
 				FilePath:    "/some/file.jpg",
 				NewFileName: "/default.jpg",
 				PurgeCache:  true,
@@ -726,7 +726,7 @@ func TestMedia_RenameAsset(t *testing.T) {
 			statusCode: 200,
 		},
 		"without purge": {
-			param: RenameAssetParam{
+			param: RenameFileParam{
 				FilePath:    "/some/file.jpg",
 				NewFileName: "/default.jpg",
 			},
@@ -744,7 +744,7 @@ func TestMedia_RenameAsset(t *testing.T) {
 
 			mediaApi.Config.API.Prefix = ts.URL + "/"
 
-			resp, err := mediaApi.RenameAsset(ctx, tc.param)
+			resp, err := mediaApi.RenameFile(ctx, tc.param)
 			if err != nil {
 				t.Error(err)
 			}
@@ -760,25 +760,24 @@ func TestMedia_RenameAsset(t *testing.T) {
 	mediaApi.Config.API.Prefix = errServer.Url() + "/"
 
 	errServer.TestErrors(func() error {
-		_, err := mediaApi.RenameAsset(ctx, RenameAssetParam{
+		_, err := mediaApi.RenameFile(ctx, RenameFileParam{
 			FilePath:    "/some/file.jpg",
 			NewFileName: "/default.jpg",
 		})
 		return err
 	})
 }
-
 func TestMedia_RestoreVersion(t *testing.T) {
 	var err error
 
-	var param = AssetVersionsParam{
+	var param = FileVersionsParam{
 		FileId:    "file_id",
 		VersionId: "v1",
 	}
 
 	httpTest := iktest.NewHttp(t)
 
-	ts := httptest.NewServer(httpTest.Handler(200, singleAssetResp))
+	ts := httptest.NewServer(httpTest.Handler(200, singleFileResp))
 	defer ts.Close()
 
 	mediaApi.Config.API.Prefix = ts.URL + "/"

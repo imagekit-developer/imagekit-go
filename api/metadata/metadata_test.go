@@ -27,6 +27,7 @@ func TestMain(m *testing.M) {
 
 	os.Exit(m.Run())
 }
+
 func getHandler(statusCode int, body string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(statusCode)
@@ -50,7 +51,7 @@ func TestMetadata_FromFile(t *testing.T) {
 
 	metadataApi.Config.API.Prefix = ts.URL + "/"
 
-	resp, err := metadataApi.FromAsset(ctx, "3325344545345")
+	resp, err := metadataApi.FromFile(ctx, "3325344545345")
 
 	if err != nil {
 		t.Error(err)
@@ -64,7 +65,7 @@ func TestMetadata_FromFile(t *testing.T) {
 	metadataApi.Config.API.Prefix = errServer.Url() + "/"
 
 	errServer.TestErrors(func() error {
-		_, err := metadataApi.FromAsset(ctx, "3325344545345")
+		_, err := metadataApi.FromFile(ctx, "3325344545345")
 		return err
 	})
 }

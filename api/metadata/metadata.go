@@ -260,8 +260,8 @@ func (m *API) delete(ctx context.Context, url string) (*http.Response, error) {
 	return m.Client.Do(req.WithContext(ctx))
 }
 
-// FromAsset fetches metadata of media library file
-func (m *API) FromAsset(ctx context.Context, fileId string) (*MetadataResponse, error) {
+// FromFile fetches metadata of media library file
+func (m *API) FromFile(ctx context.Context, fileId string) (*MetadataResponse, error) {
 	if fileId == "" {
 		return nil, errors.New("fileId can not be blank")
 	}

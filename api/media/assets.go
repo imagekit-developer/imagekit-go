@@ -14,16 +14,16 @@ import (
 	"gopkg.in/validator.v2"
 )
 
-// AssetType represents type of media library asset in request filter.
-type AssetType string
+// ListType represents type of media library files in request filter.
+type ListType string
 
 const (
-	File        AssetType = "file"
-	FileVersion AssetType = "file-version"
-	Folder      AssetType = "folder"
+	ListFile          ListType = "file"
+	ListFTFileVersion ListType = "file-version"
+	ListFolder        ListType = "folder"
 )
 
-// Sort specifies sort order for Assets results data.
+// Sort specifies sort order for ListFiles results data.
 type Sort string
 
 const (
@@ -48,26 +48,26 @@ const (
 	NonImage FileType = "non-image"
 )
 
-// AssetParam struct is a parameter type to Assets() function to search / list media library assets.
-type AssetsParam struct {
-	Type        AssetType `json:"type,omitempty"`
-	Sort        Sort      `json:"sort,omitempty"`
-	Path        string    `json:"path,omitempty"`
-	SearchQuery string    `json:"searchQuery,omitempty"`
-	FileType    FileType  `json:"fileType,omitempty"`
-	Tags        string    `json:"tags,omitempty"`
-	Limit       int       `json:"limit,omitempty"`
-	Skip        int       `json:"skip,omitempty"`
+// FilesParam struct is a parameter type to ListFiles() function to search / list media library files.
+type FilesParam struct {
+	Type        ListType `json:"type,omitempty"`
+	Sort        Sort     `json:"sort,omitempty"`
+	Path        string   `json:"path,omitempty"`
+	SearchQuery string   `json:"searchQuery,omitempty"`
+	FileType    FileType `json:"fileType,omitempty"`
+	Tags        string   `json:"tags,omitempty"`
+	Limit       int      `json:"limit,omitempty"`
+	Skip        int      `json:"skip,omitempty"`
 }
 
-// AssetVersionsParam represents filter for getting asset version
-type AssetVersionsParam struct {
+// FileVersionsParam represents filter for getting file's version
+type FileVersionsParam struct {
 	FileId    string `validate:"nonzero" json:"fileId"`
 	VersionId string `json:"versionId,omitempty"`
 }
 
-// Asset represents media library asset details.
-type Asset struct {
+// File represents media library File details.
+type File struct {
 	FileId            string `json:"fileId"`
 	Name              string `json:"name"`
 	FilePath          string `json:"filePath"`
@@ -90,20 +90,20 @@ type Asset struct {
 	UpdatedAt         time.Time         `json:"updatedAt"`
 }
 
-// AssetsResponse represents response type of Assets().
-type AssetsResponse struct {
-	Data []Asset
+// FilesResponse represents response type of Files().
+type FilesResponse struct {
+	Data []File
 	api.Response
 }
 
-// AssetResponse represents response type of AssetById().
-type AssetResponse struct {
-	Data Asset
+// FileResponse represents response type of FileById().
+type FileResponse struct {
+	Data File
 	api.Response
 }
 
-// UpdateAssetParam represents asset attributes to update
-type UpdateAssetParam struct {
+// UpdateFileParam represents file attributes to update
+type UpdateFileParam struct {
 	RemoveAITags      []string               `json:"removeAITags,omitempty"`
 	WebhookUrl        string                 `json:"webhookUrl,omitempty"`
 	Extensions        []extension.IExtension `json:"extensions,omitempty"`
@@ -112,13 +112,13 @@ type UpdateAssetParam struct {
 	CustomMetadata    map[string]any         `json:"customMetadata,omitempty"`
 }
 
-// TagsParam represents parameters to add tags to bulk assets
+// TagsParam represents parameters to add tags to bulk files
 type TagsParam struct {
 	FileIds []string `json:"fileIds"`
 	Tags    []string `json:"tags"`
 }
 
-// AITagsParam represents parameters to add AI tags to bulk assets
+// AITagsParam represents parameters to add AI tags to bulk files
 type AITagsParam struct {
 	FileIds []string `json:"fileIds"`
 	AITags  []string `json:"AITags"`
@@ -129,7 +129,7 @@ type UpdatedIds struct {
 	FileIds []string `json:"successfullyUpdatedFileIds"`
 }
 
-// TagsResponse represents response to add tags to bulk assets. Contains fileIds in Data
+// TagsResponse represents response to add tags to bulk files. Contains fileIds in Data
 type TagsResponse struct {
 	Data UpdatedIds
 	api.Response
@@ -140,33 +140,33 @@ type FileIdsParam struct {
 	FileIds []string `validate:"nonzero" json:"fileIds"`
 }
 
-// DeletedIds is a struct to hold slice of successfully deleted assets ids.
+// DeletedIds is a struct to hold slice of successfully deleted files ids.
 type DeletedIds struct {
 	FileIds []string            `json:"successfullyDeletedFileIds"`
 	Errors  []map[string]string `json:"errors"`
 }
 
-// DeleteAssetsResponse represents response to delete assets api which includes ids of deleted assets.
-type DeleteAssetsResponse struct {
+// DeleteFilessResponse represents response to delete files api which includes ids of deleted files.
+type DeleteFilesResponse struct {
 	Data DeletedIds
 	api.Response
 }
 
-// CopyAssetParam represents parameters to copy asset api
-type CopyAssetParam struct {
+// CopyFileParam represents parameters to copy files api
+type CopyFileParam struct {
 	SourcePath          string `validate:"nonzero" json:"sourceFilePath"`
 	DestinationPath     string `validate:"nonzero" json:"destinationPath"`
 	IncludeFileVersions bool   `json:"includeFileVersions"`
 }
 
-// MoveAssetParam represents parameters to move asset api
-type MoveAssetParam struct {
+// MoveFileParam represents parameters to move file api
+type MoveFileParam struct {
 	SourcePath      string `validate:"nonzero" json:"sourceFilePath"`
 	DestinationPath string `validate:"nonzero" json:"destinationPath"`
 }
 
-// RenameAssetParam represents parameter to rename asset api
-type RenameAssetParam struct {
+// RenameFileParam represents parameter to rename file api
+type RenameFileParam struct {
 	FilePath    string `validate:"nonzero" json:"filePath"`
 	NewFileName string `validate:"nonzero" json:"newFileName"`
 	PurgeCache  bool   `json:"purgeCache"`
@@ -177,8 +177,8 @@ type PurgeRequestId struct {
 	RequestId string `json:"purgeRequestId"`
 }
 
-// RenameAssetResponse represents response struct of rename asset api
-type RenameAssetResponse struct {
+// RenameFileResponse represents response struct of rename File api
+type RenameFileResponse struct {
 	Data PurgeRequestId
 	api.Response
 }
@@ -218,8 +218,8 @@ func (e *ErrorPartialSuccess) Error() string {
 	return fmt.Sprintf("%v", e.Errors)
 }
 
-// Assets retrieves media library assets. Filter options can be supplied as AssetsParams.
-func (m *API) Assets(ctx context.Context, params AssetsParam) (*AssetsResponse, error) {
+// Files retrieves media library files. Filter options can be supplied as FilesParams.
+func (m *API) Files(ctx context.Context, params FilesParam) (*FilesResponse, error) {
 	if err := defaults.Set(&params); err != nil {
 		return nil, err
 	}
@@ -238,7 +238,7 @@ func (m *API) Assets(ctx context.Context, params AssetsParam) (*AssetsResponse, 
 	resp, err := m.get(ctx, "files"+query)
 	defer api.DeferredBodyClose(resp)
 
-	response := &AssetsResponse{}
+	response := &FilesResponse{}
 	api.SetResponseMeta(resp, response)
 
 	if err != nil {
@@ -254,13 +254,13 @@ func (m *API) Assets(ctx context.Context, params AssetsParam) (*AssetsResponse, 
 	return response, err
 }
 
-// AssetById returns details of single asset by provided id
-func (m *API) AssetById(ctx context.Context, fileId string) (*AssetResponse, error) {
+// FileById returns details of single file by provided id
+func (m *API) FileById(ctx context.Context, fileId string) (*FileResponse, error) {
 	resp, err := m.get(ctx, fmt.Sprintf("files/%s/details", fileId))
 
 	defer api.DeferredBodyClose(resp)
 
-	response := &AssetResponse{}
+	response := &FileResponse{}
 
 	api.SetResponseMeta(resp, response)
 
@@ -276,8 +276,8 @@ func (m *API) AssetById(ctx context.Context, fileId string) (*AssetResponse, err
 	return response, err
 }
 
-// AssetVersions fetches given file version specified by version id or all versions if versionId not supplied
-func (m *API) AssetVersions(ctx context.Context, params AssetVersionsParam) (*AssetsResponse, error) {
+// FileVersions fetches given file version specified by version id or all versions if versionId not supplied
+func (m *API) FileVersions(ctx context.Context, params FileVersionsParam) (*FilesResponse, error) {
 	parts := []string{"files", params.FileId, "versions"}
 	if params.VersionId != "" {
 		parts = append(parts, params.VersionId)
@@ -290,7 +290,7 @@ func (m *API) AssetVersions(ctx context.Context, params AssetVersionsParam) (*As
 	resp, err := m.get(ctx, strings.Join(parts, "/"))
 	defer api.DeferredBodyClose(resp)
 
-	response := &AssetsResponse{}
+	response := &FilesResponse{}
 	api.SetResponseMeta(resp, response)
 
 	if err != nil {
@@ -303,18 +303,18 @@ func (m *API) AssetVersions(ctx context.Context, params AssetVersionsParam) (*As
 		if params.VersionId == "" {
 			err = json.Unmarshal(response.Body(), &response.Data)
 		} else {
-			var asset = Asset{}
-			if err = json.Unmarshal(response.Body(), &asset); err == nil {
-				response.Data = []Asset{asset}
+			var file = File{}
+			if err = json.Unmarshal(response.Body(), &file); err == nil {
+				response.Data = []File{file}
 			}
 		}
 	}
 	return response, err
 }
 
-// UpdateAsset updates single asset properties specified by UpdateAssetParam
-func (m *API) UpdateAsset(ctx context.Context, fileId string, params UpdateAssetParam) (*AssetResponse, error) {
-	response := &AssetResponse{}
+// UpdateFile updates single file properties specified by UpdateFileParam
+func (m *API) UpdateFile(ctx context.Context, fileId string, params UpdateFileParam) (*FileResponse, error) {
+	response := &FileResponse{}
 	var err error
 
 	if fileId == "" {
@@ -441,8 +441,8 @@ func (m *API) RemoveAITags(ctx context.Context, params AITagsParam) (*TagsRespon
 	return response, err
 }
 
-// DeleteAsset removes an asset by FileId from media library
-func (m *API) DeleteAsset(ctx context.Context, fileId string) (*api.Response, error) {
+// DeleteFile removes file by FileId from media library
+func (m *API) DeleteFile(ctx context.Context, fileId string) (*api.Response, error) {
 	var err error
 	response := &api.Response{}
 
@@ -465,8 +465,8 @@ func (m *API) DeleteAsset(ctx context.Context, fileId string) (*api.Response, er
 	return response, err
 }
 
-// DeleteAssetVersion removes given asset version
-func (m *API) DeleteAssetVersion(ctx context.Context, fileId string, versionId string) (*api.Response, error) {
+// DeleteFileVersion removes given file version
+func (m *API) DeleteFileVersion(ctx context.Context, fileId string, versionId string) (*api.Response, error) {
 	var err error
 	response := &api.Response{}
 
@@ -493,10 +493,10 @@ func (m *API) DeleteAssetVersion(ctx context.Context, fileId string, versionId s
 	return response, err
 }
 
-// DeleteBulkAssets deletes multiple assets from media library
-func (m *API) DeleteBulkAssets(ctx context.Context, param FileIdsParam) (*DeleteAssetsResponse, error) {
+// DeleteBulkFiles deletes multiple files from media library
+func (m *API) DeleteBulkFiles(ctx context.Context, param FileIdsParam) (*DeleteFilesResponse, error) {
 	var err error
-	response := &DeleteAssetsResponse{}
+	response := &DeleteFilesResponse{}
 
 	if err = validator.Validate(&param); err != nil {
 		return nil, err
@@ -519,8 +519,8 @@ func (m *API) DeleteBulkAssets(ctx context.Context, param FileIdsParam) (*Delete
 	return response, err
 }
 
-// CopyAsset copies an asset to target path
-func (m *API) CopyAsset(ctx context.Context, param CopyAssetParam) (*api.Response, error) {
+// CopyFile copies a file to target path
+func (m *API) CopyFile(ctx context.Context, param CopyFileParam) (*api.Response, error) {
 	var err error
 
 	response := &api.Response{}
@@ -544,8 +544,8 @@ func (m *API) CopyAsset(ctx context.Context, param CopyAssetParam) (*api.Respons
 	return response, err
 }
 
-// MoveAsset moves an asset to target path
-func (m *API) MoveAsset(ctx context.Context, param MoveAssetParam) (*api.Response, error) {
+// MoveFile moves a file to target path
+func (m *API) MoveFile(ctx context.Context, param MoveFileParam) (*api.Response, error) {
 	var err error
 
 	response := &api.Response{}
@@ -569,10 +569,10 @@ func (m *API) MoveAsset(ctx context.Context, param MoveAssetParam) (*api.Respons
 	return response, err
 }
 
-// RenameAsset renames an asset to new name as specified in RenameAssetParam struct and optionally includes purge request id
-func (m *API) RenameAsset(ctx context.Context, param RenameAssetParam) (*RenameAssetResponse, error) {
+// RenameFile renames a file to new name as specified in RenameFileParam struct and optionally includes purge request id
+func (m *API) RenameFile(ctx context.Context, param RenameFileParam) (*RenameFileResponse, error) {
 	var err error
-	var response = &RenameAssetResponse{}
+	var response = &RenameFileResponse{}
 
 	if err = validator.Validate(&param); err != nil {
 		return nil, err
@@ -596,10 +596,10 @@ func (m *API) RenameAsset(ctx context.Context, param RenameAssetParam) (*RenameA
 	return response, err
 }
 
-// RestoreVersion sets specified verison of the asset as current version
-func (m *API) RestoreVersion(ctx context.Context, param AssetVersionsParam) (*AssetResponse, error) {
+// RestoreVersion sets specified verison of the file as current version
+func (m *API) RestoreVersion(ctx context.Context, param FileVersionsParam) (*FileResponse, error) {
 	var err error
-	var response = &AssetResponse{}
+	var response = &FileResponse{}
 
 	if err = validator.Validate(&param); err != nil {
 		return nil, err
