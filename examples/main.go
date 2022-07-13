@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log"
 
 	"github.com/imagekit-developer/imagekit-go"
@@ -38,5 +39,7 @@ func createField() {
 }
 
 func main() {
+
+	fmt.Println("sample")
 
 }
