@@ -28,7 +28,7 @@ func uploadBase64(ik *imagekit.ImageKit) {
 func uploadReader(ik *imagekit.ImageKit) {
 	var err error
 
-	file, err := assets.Fs.Open("data/beauty_of_nature_12.jpg")
+	file, err := assets.Fs.Open("data/nature.jpg")
 	defer file.Close()
 
 	if err != nil {

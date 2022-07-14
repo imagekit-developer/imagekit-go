@@ -43,7 +43,7 @@ func main() {
 	var api = ik.Media
 	var files []uploader.UploadResult
 
-	for _, f := range []string{"data/beauty_of_nature_12.jpg", "data/image.jpg"} {
+	for _, f := range []string{"data/nature.jpg", "data/image.jpeg", "data/image1.jpg", "data/image2.jpeg"} {
 		files = append(files, uploadFile(ik, f))
 	}
 	log.Println(files)
@@ -110,4 +110,9 @@ func main() {
 	// Delete a file
 	delResp, err := api.DeleteFile(ctx, files[0].FileId)
 	log.Println(delResp, err)
+
+	// Delete a file version
+	delResp, err = api.DeleteFileVersion(ctx, files[1].FileId, files[1].VersionInfo["id"])
+	log.Println(delResp, err)
+
 }
