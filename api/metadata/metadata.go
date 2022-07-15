@@ -135,7 +135,8 @@ type Interoperability struct {
 }
 
 type Schema struct {
-	Type            string      `json:"type"`
+	Type string `json:"type"` //Text, Textarea, Number, Date, Boolean, SingleSelect, MultiSelect Date value should be an ISO8601 string
+
 	SelectOptions   interface{} `json:"selectOptions,omitempty"`
 	DefaultValue    interface{} `json:"defaultValue,omitempty"`
 	IsValueRequired bool        `json:"isValueRequired,omitempty"`
