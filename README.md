@@ -26,7 +26,7 @@ Table of contents -
 
 | SDK Version | Go        |
 |-------------|-----------|
-| 1.x         | >1.18     |
+| 1.x         | >=1.18     |
 
 
 ## Installation
