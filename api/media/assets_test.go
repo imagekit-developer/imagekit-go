@@ -82,14 +82,6 @@ func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
 
-/**
-REVIEW-COMMENT
-
-Permuaton combination of on all parameters the SDK supports. Some with empty values, incorrect values and correct values.
-See test cases starting here  https://github.com/imagekit-developer/imagekit-nodejs/blob/master/tests/mediaLibrary.js#L807For example:
-Pass Tags as an array in SDK and assert that SDK is converting it to comma seperating string in query param.
-I see searchQuery=, skip=0, sort=ASC_CREATED in expectedUrl, it is wrong. By default nothign should be passed if user didn't pass any param.
-*/
 func TestMedia_Files(t *testing.T) {
 	var expected = assetsArr
 	var cases = map[string]struct {
