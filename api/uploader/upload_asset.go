@@ -6,7 +6,7 @@ import (
 	"errors"
 
 	"github.com/imagekit-developer/imagekit-go/api"
-	"github.com/imagekit-developer/imagekit-go/extension"
+	"github.com/imagekit-developer/imagekit-go/api/extension"
 )
 
 // UploadParam defines upload parameters

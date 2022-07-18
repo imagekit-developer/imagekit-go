@@ -10,7 +10,7 @@ import (
 
 	"github.com/creasty/defaults"
 	"github.com/imagekit-developer/imagekit-go/api"
-	"github.com/imagekit-developer/imagekit-go/extension"
+	"github.com/imagekit-developer/imagekit-go/api/extension"
 	"gopkg.in/validator.v2"
 )
 
