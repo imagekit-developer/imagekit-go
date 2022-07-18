@@ -659,12 +659,7 @@ func TestMedia_CopyFile(t *testing.T) {
 	defer ts.Close()
 
 	mediaApi.Config.API.Prefix = ts.URL + "/"
-
-	/**
-	REVIEW-COMMENT
-
-	Please rename CopyFile to CopyFile, same feedback for moveFile
-	*/
+	
 	_, err = mediaApi.CopyFile(ctx, param)
 	if err != nil {
 		t.Error(err)
