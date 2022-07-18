@@ -3,6 +3,8 @@
 # ImageKit-go
 ImageKit.io Go SDK
 
+[![codecov](https://codecov.io/gh/imagekit-developer/imagekit-go/branch/dev/graph/badge.svg)](https://codecov.io/gh/imagekit-developer/imagekit-go)
+
 ImageKit Go SDK allows you to use [image resizing](https://docs.imagekit.io/features/image-transformations), [optimization](https://docs.imagekit.io/features/image-optimization), [file uploading](https://docs.imagekit.io/api-reference/upload-file-api) and other [ImageKit APIs](https://docs.imagekit.io/api-reference/api-introduction) from applications written in the Go language.
 
 All features except url generation and utility functions return response with ```ResponseMetaData``` which holds raw response Header, StatusCode and Body. The Response object also contains ```Data``` attribtue except when underlying api call is not supposed to return any data(such as DeleteFile).
