@@ -42,7 +42,18 @@ func TestUrl(t *testing.T) {
 			},
 			url: "https://imagekit.io/343534/tr:w-100,rt-90/default-image.jpg",
 		}, {
-			name: "signed",
+			name: "signed-without-transformation",
+			params: ikurl.UrlParam{
+				Path:          "default-image.jpg",
+				Signed:        true,
+				ExpireSeconds: 100,
+				UnixTime: func() int64 {
+					return 1653775828
+				},
+			},
+			url: "https://ik.imagekit.io/test/default-image.jpg?ik-t=1653775928&ik-s=48842eca663c6895331331db6c90f262c601f4e8",
+		}, {
+			name: "signed-with-transformation",
 			params: ikurl.UrlParam{
 				Path:        "default-image.jpg",
 				EndpointUrl: "https://ik.imagekit.io/test/",
@@ -60,7 +71,7 @@ func TestUrl(t *testing.T) {
 			},
 			url: "https://ik.imagekit.io/test/tr:w-200,rt-90/default-image.jpg?ik-t=1653775928&ik-s=6c74b32f5efc0cc39ab5c042718b36553d8a1606",
 		}, {
-			name: "src",
+			name: "src-with-transformation",
 			params: ikurl.UrlParam{
 				Src: "https://imagekit.io/343534/default-image.jpg",
 				Transformations: []ikurl.Transformation{
@@ -71,6 +82,12 @@ func TestUrl(t *testing.T) {
 				},
 			},
 			url: "https://imagekit.io/343534/default-image.jpg?tr=w-100,rt-90",
+		}, {
+			name: "src-without-transformation",
+			params: ikurl.UrlParam{
+				Src: "https://imagekit.io/343534/default-image.jpg",
+			},
+			url: "https://imagekit.io/343534/default-image.jpg",
 		}, {
 			name: "trquery",
 			params: ikurl.UrlParam{
@@ -98,7 +115,7 @@ func TestUrl(t *testing.T) {
 			}
 
 			if !urlsEquals(url, tc.url) {
-				t.Errorf("expected url: " + tc.url + ", got: " + url)
+				t.Errorf("expected url: " + tc.url + "\n got: " + url)
 			}
 		})
 	}

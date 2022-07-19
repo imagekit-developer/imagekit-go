@@ -34,10 +34,6 @@ func (ik *ImageKit) Url(params ikurl.UrlParam) (string, error) {
 		endpoint = ik.Config.Cloud.EndpointUrl
 	}
 
-	if endpoint == "" {
-		endpoint = ik.Config.Cloud.EndpointUrl
-	}
-
 	endpoint = strings.TrimRight(endpoint, "/") + "/"
 
 	if params.QueryParameters == nil {
@@ -49,7 +45,11 @@ func (ik *ImageKit) Url(params ikurl.UrlParam) (string, error) {
 			return "", err
 		}
 
-		if params.Transformations != nil {
+		if params.Transformations == nil {
+			if url, err = neturl.Parse(endpoint + params.Path); err != nil {
+				return "", err
+			}
+		} else {
 			if params.TransformationPosition == ikurl.QUERY {
 				params.QueryParameters["tr"] = join(":", params.Transformations...)
 				url, err = neturl.Parse(endpoint + params.Path)
