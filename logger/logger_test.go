@@ -10,6 +10,19 @@ type MockLogger struct {
 	DebugMessages map[int][]string
 }
 
+func TestLogger_New(t *testing.T) {
+	var logger any
+	logger = New()
+
+	if logger == nil {
+		t.Error("New returned nil")
+	}
+
+	if _, ok := logger.(*Logger); !ok {
+		t.Error("New() did not return *Logger")
+	}
+}
+
 func (m MockLogger) Debug(v ...interface{}) {
 	m.DebugMessages[len(m.DebugMessages)] = toStringsSlice(v...)
 }

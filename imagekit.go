@@ -24,6 +24,7 @@ type ImageKit struct {
 	Media    *media.API
 	Metadata *metadata.API
 	Uploader *uploader.API
+	getToken func() string
 }
 
 // NewParams is struct to define parameters to imagekit
@@ -44,6 +45,11 @@ func New() (*ImageKit, error) {
 }
 
 const DefaultTokenExpire = 60 * 30
+
+func getToken() string {
+	uuid := uuid.New()
+	return uuid.String()
+}
 
 // NewFromParams return new ImageKit object from provided parameters
 func NewFromParams(params NewParams) *ImageKit {
@@ -75,6 +81,7 @@ func NewFromConfiguration(cfg *config.Configuration) *ImageKit {
 			Logger: log,
 			Client: client,
 		},
+		getToken: getToken,
 	}
 }
 
@@ -93,8 +100,7 @@ type SignedToken struct {
 // SignToken signs given token and expiration timestamp with private key
 func (ik *ImageKit) SignToken(param SignTokenParam) SignedToken {
 	if param.Token == "" {
-		uuid := uuid.New()
-		param.Token = uuid.String()
+		param.Token = ik.getToken()
 	}
 
 	if param.Expires == 0 {

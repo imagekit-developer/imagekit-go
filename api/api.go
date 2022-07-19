@@ -2,7 +2,6 @@ package api
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -69,7 +68,7 @@ func (resp *Response) ParseError() error {
 	case 500, 502, 503, 504:
 		err = ErrServer
 	default:
-		err = errors.New("Undefined Error")
+		err = ErrUndefined
 	}
 	return err
 }

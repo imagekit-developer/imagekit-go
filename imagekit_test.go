@@ -2,6 +2,7 @@ package imagekit
 
 import (
 	neturl "net/url"
+	"os"
 	"reflect"
 	"testing"
 
@@ -18,6 +19,25 @@ var imgkit = NewFromParams(NewParams{
 
 func init() {
 	imgkit.Logger.SetLevel(logger.DEBUG)
+	os.Setenv("IMAGEKIT_PRIVATE_KEY", "private_")
+	os.Setenv("IMAGEKIT_PUBLIC_KEY", "public_")
+	os.Setenv("IMAGEKIT_ENDPOINT_URL", "https://ik.imagekit.io/test/")
+}
+
+func Test_New(t *testing.T) {
+	var ik any
+	ik, err := New()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if ik == nil {
+		t.Error("null")
+	}
+
+	if _, ok := ik.(*ImageKit); !ok {
+		t.Error("New() did not return *ImageKit")
+	}
 }
 
 func TestUrl(t *testing.T) {
@@ -142,6 +162,7 @@ func urlsEquals(url1 string, url2 string) bool {
 func TestSignToken(t *testing.T) {
 	var expire int64 = 1655379249 + DefaultTokenExpire
 	var unix = func() int64 { return 1655379249 }
+	var token = "xxxx-xxxx-xxxxxxxx"
 
 	cases := map[string]struct {
 		param  SignTokenParam
@@ -155,6 +176,14 @@ func TestSignToken(t *testing.T) {
 			param:  SignTokenParam{Token: "31c468de-520a-4dc1-8868-de1e0fb93a7b", unix: unix},
 			result: SignedToken{Token: "31c468de-520a-4dc1-8868-de1e0fb93a7b", Expires: expire, Signature: "b3c708386f56dbcdac2a6e650ab00789ec37645e"},
 		},
+		"autogen-token": {
+			param:  SignTokenParam{unix: unix},
+			result: SignedToken{Token: token, Expires: expire, Signature: "c46ef585f970b560aea69b90e32cd002c6639515"},
+		},
+	}
+
+	imgkit.getToken = func() string {
+		return token
 	}
 
 	for name, tc := range cases {

@@ -59,6 +59,23 @@ func newUploader(url string) (*API, error) {
 
 }
 
+func Test_New(t *testing.T) {
+	var api any
+	api, err := New()
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if api == nil {
+		t.Error("New() returned null")
+	}
+
+	if _, ok := api.(*API); !ok {
+		t.Error("New() did not return *API")
+	}
+}
+
 func TestUploader(t *testing.T) {
 	resultJson, err := json.Marshal(file)
 	if err != nil {
@@ -105,7 +122,7 @@ func TestUploader(t *testing.T) {
 	var readerForm = `{"customCoordinates":"11,100,400,500","customMetadata":"{\"Cost\":100}","extensions":"[{\"name\":\"google-auto-tagging\",\"minConfidence\":50,\"maxTags\":10},{\"name\":\"remove-bg\",\"options\":{\"add_shadow\":true,\"semitransparency\":true,\"bg_color\":\"#553333\",\"bg_image_url\":\"http://test/test.jpg\"}}]","fileName":"new-york-cityscape-buildings_A4zxKJbrL.jpg","folder":"/natural","isPrivateFile":"false","overwriteAITags":"true","overwriteCustomMetadata":"true","overwriteFile":"true","overwriteTags":"true","responseFields":"tags,customCoordinates,isPrivateFile","tags":"tag_1,tag_2","useUniqueFileName":"false","webhookUrl":"http://test/test"}`
 
 	var cases = map[string]struct {
-		file       interface{}
+		file       any
 		resp       string
 		param      UploadParam
 		result     *UploadResult
@@ -131,6 +148,13 @@ func TestUploader(t *testing.T) {
 			resp:       string(resultJson),
 			param:      UploadParam{},
 			result:     file,
+			shouldFail: true,
+		},
+		"invalid file param": {
+			file:       []int{},
+			resp:       "",
+			param:      UploadParam{},
+			result:     nil,
 			shouldFail: true,
 		},
 	}
