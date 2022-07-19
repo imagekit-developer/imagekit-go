@@ -82,6 +82,31 @@ func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
 
+func Test_New(t *testing.T) {
+	os.Setenv("IMAGEKIT_PRIVATE_KEY", "private_")
+	os.Setenv("IMAGEKIT_PUBLIC_KEY", "public_")
+	os.Setenv("IMAGEKIT_ENDPOINT_URL", "https://ik.imagekit.io/test/")
+
+	defer os.Unsetenv("IMAGEKIT_PRIVATE_KEY")
+	defer os.Unsetenv("IMAGEKIT_PUBLIC_KEY")
+	defer os.Unsetenv("IMAGEKIT_ENDPOINT_URL")
+
+	var api any
+	api, err := New()
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if api == nil {
+		t.Error("New() returned null")
+	}
+
+	if _, ok := api.(*API); !ok {
+		t.Error("New() did not return *API")
+	}
+}
+
 func TestMedia_Files(t *testing.T) {
 	var expected = assetsArr
 	var cases = map[string]struct {
@@ -651,7 +676,7 @@ func TestMedia_CopyFile(t *testing.T) {
 	defer ts.Close()
 
 	mediaApi.Config.API.Prefix = ts.URL + "/"
-	
+
 	_, err = mediaApi.CopyFile(ctx, param)
 	if err != nil {
 		t.Error(err)

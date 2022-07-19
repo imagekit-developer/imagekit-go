@@ -17,6 +17,31 @@ import (
 var ctx = context.Background()
 var metadataApi *API
 
+func Test_New(t *testing.T) {
+	os.Setenv("IMAGEKIT_PRIVATE_KEY", "private_")
+	os.Setenv("IMAGEKIT_PUBLIC_KEY", "public_")
+	os.Setenv("IMAGEKIT_ENDPOINT_URL", "https://ik.imagekit.io/test/")
+
+	defer os.Unsetenv("IMAGEKIT_PRIVATE_KEY")
+	defer os.Unsetenv("IMAGEKIT_PUBLIC_KEY")
+	defer os.Unsetenv("IMAGEKIT_ENDPOINT_URL")
+
+	var api any
+	api, err := New()
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if api == nil {
+		t.Error("New() returned null")
+	}
+
+	if _, ok := api.(*API); !ok {
+		t.Error("New() did not return *API")
+	}
+}
+
 func TestMain(m *testing.M) {
 	var err error
 	metadataApi, err = NewFromConfiguration(iktest.Cfg)
@@ -70,6 +95,12 @@ func TestMetadata_FromFile(t *testing.T) {
 		_, err := metadataApi.FromFile(ctx, "3325344545345")
 		return err
 	})
+
+	resp, err = metadataApi.FromFile(ctx, "")
+
+	if err == nil {
+		t.Error("expected error")
+	}
 }
 
 func TestMetadata_FromUrl(t *testing.T) {
@@ -78,6 +109,14 @@ func TestMetadata_FromUrl(t *testing.T) {
 	var err error
 	var respObj = &Metadata{}
 
+	_, err = metadataApi.FromUrl(ctx, "")
+	if err == nil {
+		t.Error("expected error")
+	}
+
+	if err == nil {
+		t.Error("expected error")
+	}
 	if err = json.Unmarshal([]byte(respBody), respObj); err != nil {
 		t.Error(err)
 	}
@@ -247,6 +286,10 @@ func TestMetadata_UpdateCustomField(t *testing.T) {
 func TestMetadata_DeleteCustomField(t *testing.T) {
 	var respBody = ``
 	var err error
+
+	if _, err := metadataApi.DeleteCustomField(ctx, ""); err == nil {
+		t.Error("expected error")
+	}
 
 	httpTest := iktest.NewHttp(t)
 
