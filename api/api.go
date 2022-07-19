@@ -199,31 +199,6 @@ func DeferredBodyClose(resp *http.Response) {
 	}
 }
 
-// IsLocalFilePath determines whether the provided path can be a local file.
-func IsLocalFilePath(path interface{}) bool {
-	switch pathV := path.(type) {
-	case string:
-		return !(IsValidURL(pathV) || IsBase64Data(pathV))
-	default:
-		return false
-	}
-}
-
-// IsValidURL checks whether urlCandidate string is a valid URL.
-func IsValidURL(urlCandidate string) bool {
-	urlStruct, err := url.Parse(urlCandidate)
-	if err != nil || urlStruct.Scheme == "" {
-		return false
-	}
-
-	return true
-}
-
-// IsBase64Data checks whether base64Candidate represents a valid base64 encoded string.
-func IsBase64Data(base64Candidate string) bool {
-	return base64DataRegex.MatchString(base64Candidate)
-}
-
 // SetResponseMeta assigns given http response data to response objects
 func SetResponseMeta(httpResp *http.Response, respStruct MetaSetter) {
 	if httpResp == nil {

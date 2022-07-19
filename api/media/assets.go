@@ -235,11 +235,10 @@ func (m *API) Files(ctx context.Context, params FilesParam) (*FilesResponse, err
 		query = "?" + query
 	}
 
-	resp, err := m.get(ctx, "files"+query)
-	defer api.DeferredBodyClose(resp)
-
 	response := &FilesResponse{}
-	api.SetResponseMeta(resp, response)
+
+	resp, err := m.get(ctx, "files"+query, response)
+	defer api.DeferredBodyClose(resp)
 
 	if err != nil {
 		return response, err
@@ -256,13 +255,11 @@ func (m *API) Files(ctx context.Context, params FilesParam) (*FilesResponse, err
 
 // FileById returns details of single file by provided id
 func (m *API) FileById(ctx context.Context, fileId string) (*FileResponse, error) {
-	resp, err := m.get(ctx, fmt.Sprintf("files/%s/details", fileId))
-
-	defer api.DeferredBodyClose(resp)
-
 	response := &FileResponse{}
 
-	api.SetResponseMeta(resp, response)
+	resp, err := m.get(ctx, fmt.Sprintf("files/%s/details", fileId), response)
+
+	defer api.DeferredBodyClose(resp)
 
 	if err != nil {
 		return response, err
@@ -287,11 +284,10 @@ func (m *API) FileVersions(ctx context.Context, params FileVersionsParam) (*File
 		return nil, err
 	}
 
-	resp, err := m.get(ctx, strings.Join(parts, "/"))
-	defer api.DeferredBodyClose(resp)
-
 	response := &FilesResponse{}
-	api.SetResponseMeta(resp, response)
+
+	resp, err := m.get(ctx, strings.Join(parts, "/"), response)
+	defer api.DeferredBodyClose(resp)
 
 	if err != nil {
 		return response, err
@@ -321,11 +317,9 @@ func (m *API) UpdateFile(ctx context.Context, fileId string, params UpdateFilePa
 		return nil, errors.New("fileId can not be empty")
 	}
 
-	resp, err := m.patch(ctx, fmt.Sprintf("files/%s/details", fileId), params)
+	resp, err := m.patch(ctx, fmt.Sprintf("files/%s/details", fileId), params, response)
 
 	defer api.DeferredBodyClose(resp)
-
-	api.SetResponseMeta(resp, response)
 
 	if err != nil {
 		return response, err
@@ -344,10 +338,8 @@ func (m *API) AddTags(ctx context.Context, params TagsParam) (*TagsResponse, err
 	response := &TagsResponse{}
 	var err error
 
-	resp, err := m.post(ctx, "files/addTags", params)
+	resp, err := m.post(ctx, "files/addTags", params, response)
 	defer api.DeferredBodyClose(resp)
-
-	api.SetResponseMeta(resp, response)
 
 	if err != nil {
 		return response, err
@@ -384,10 +376,8 @@ func (m *API) RemoveTags(ctx context.Context, params TagsParam) (*TagsResponse, 
 	response := &TagsResponse{}
 	var err error
 
-	resp, err := m.post(ctx, "files/removeTags", params)
+	resp, err := m.post(ctx, "files/removeTags", params, response)
 	defer api.DeferredBodyClose(resp)
-
-	api.SetResponseMeta(resp, response)
 
 	if err != nil {
 		return response, err
@@ -423,10 +413,8 @@ func (m *API) RemoveAITags(ctx context.Context, params AITagsParam) (*TagsRespon
 	response := &TagsResponse{}
 	var err error
 
-	resp, err := m.post(ctx, "files/removeAITags", params)
+	resp, err := m.post(ctx, "files/removeAITags", params, response)
 	defer api.DeferredBodyClose(resp)
-
-	api.SetResponseMeta(resp, response)
 
 	if err != nil {
 		return response, err
@@ -450,10 +438,8 @@ func (m *API) DeleteFile(ctx context.Context, fileId string) (*api.Response, err
 		return nil, errors.New("fileId can not be empty")
 	}
 
-	resp, err := m.delete(ctx, "files/"+fileId, nil)
+	resp, err := m.delete(ctx, "files/"+fileId, nil, response)
 	defer api.DeferredBodyClose(resp)
-
-	api.SetResponseMeta(resp, response)
 
 	if err != nil {
 		return response, err
@@ -478,10 +464,8 @@ func (m *API) DeleteFileVersion(ctx context.Context, fileId string, versionId st
 		return nil, errors.New("versionId can not be empty")
 	}
 
-	resp, err := m.delete(ctx, fmt.Sprintf("files/%s/versions/%s", fileId, versionId), nil)
+	resp, err := m.delete(ctx, fmt.Sprintf("files/%s/versions/%s", fileId, versionId), nil, response)
 	defer api.DeferredBodyClose(resp)
-
-	api.SetResponseMeta(resp, response)
 
 	if err != nil {
 		return response, err
@@ -502,10 +486,8 @@ func (m *API) DeleteBulkFiles(ctx context.Context, param FileIdsParam) (*DeleteF
 		return nil, err
 	}
 
-	resp, err := m.post(ctx, "files/batch/deleteByFileIds", param)
+	resp, err := m.post(ctx, "files/batch/deleteByFileIds", param, response)
 	defer api.DeferredBodyClose(resp)
-
-	api.SetResponseMeta(resp, response)
 
 	if err != nil {
 		return response, err
@@ -529,10 +511,8 @@ func (m *API) CopyFile(ctx context.Context, param CopyFileParam) (*api.Response,
 		return nil, err
 	}
 
-	resp, err := m.post(ctx, "files/copy", &param)
+	resp, err := m.post(ctx, "files/copy", &param, response)
 	defer api.DeferredBodyClose(resp)
-
-	api.SetResponseMeta(resp, response)
 
 	if err != nil {
 		return response, err
@@ -554,10 +534,8 @@ func (m *API) MoveFile(ctx context.Context, param MoveFileParam) (*api.Response,
 		return nil, err
 	}
 
-	resp, err := m.post(ctx, "files/move", &param)
+	resp, err := m.post(ctx, "files/move", &param, response)
 	defer api.DeferredBodyClose(resp)
-
-	api.SetResponseMeta(resp, response)
 
 	if err != nil {
 		return response, err
@@ -578,10 +556,8 @@ func (m *API) RenameFile(ctx context.Context, param RenameFileParam) (*RenameFil
 		return nil, err
 	}
 
-	resp, err := m.put(ctx, "files/rename", &param)
+	resp, err := m.put(ctx, "files/rename", &param, response)
 	defer api.DeferredBodyClose(resp)
-
-	api.SetResponseMeta(resp, response)
 
 	if err != nil {
 		return response, err
@@ -606,9 +582,7 @@ func (m *API) RestoreVersion(ctx context.Context, param FileVersionsParam) (*Fil
 	}
 
 	resp, err := m.delete(ctx, fmt.Sprintf("files/%s/versions/%s/restore",
-		param.FileId, param.VersionId), nil)
-
-	api.SetResponseMeta(resp, response)
+		param.FileId, param.VersionId), nil, response)
 
 	if resp.StatusCode != 200 {
 		err = response.ParseError()
@@ -626,9 +600,8 @@ func (m *API) BulkJobStatus(ctx context.Context, jobId string) (*JobStatusRespon
 		return nil, errors.New("jobId can not be blank")
 	}
 
-	resp, err := m.get(ctx, "bulkJobs/"+jobId)
+	resp, err := m.get(ctx, "bulkJobs/"+jobId, response)
 	defer api.DeferredBodyClose(resp)
-	api.SetResponseMeta(resp, response)
 
 	if err != nil {
 		return response, err

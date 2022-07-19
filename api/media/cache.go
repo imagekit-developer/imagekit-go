@@ -40,10 +40,8 @@ func (m *API) PurgeCache(ctx context.Context, param PurgeCacheParam) (*PurgeCach
 		return nil, err
 	}
 
-	resp, err := m.post(ctx, "files/purge", &param)
+	resp, err := m.post(ctx, "files/purge", &param, response)
 	defer api.DeferredBodyClose(resp)
-
-	api.SetResponseMeta(resp, response)
 
 	if err != nil {
 		return response, err
@@ -66,10 +64,9 @@ func (m *API) PurgeCacheStatus(ctx context.Context, requestId string) (*PurgeCac
 		return nil, errors.New("requestId can not be empty")
 	}
 
-	resp, err := m.get(ctx, "files/purge/"+requestId)
+	resp, err := m.get(ctx, "files/purge/"+requestId, response)
 
 	defer api.DeferredBodyClose(resp)
-	api.SetResponseMeta(resp, response)
 
 	if err != nil {
 		return response, err

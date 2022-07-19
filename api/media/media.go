@@ -38,7 +38,7 @@ func NewFromConfiguration(c *config.Configuration) (*API, error) {
 	}, nil
 }
 
-func (m *API) post(ctx context.Context, url string, data interface{}) (*http.Response, error) {
+func (m *API) post(ctx context.Context, url string, data interface{}, ms api.MetaSetter) (*http.Response, error) {
 	url = api.BuildPath(m.Config.API.Prefix, url)
 	var err error
 	var body []byte
@@ -62,10 +62,11 @@ func (m *API) post(ctx context.Context, url string, data interface{}) (*http.Res
 	if err != nil {
 		err = fmt.Errorf("client.Do %w", err)
 	}
+	api.SetResponseMeta(resp, ms)
 	return resp, err
 }
 
-func (m *API) get(ctx context.Context, url string) (*http.Response, error) {
+func (m *API) get(ctx context.Context, url string, ms api.MetaSetter) (*http.Response, error) {
 	url = api.BuildPath(m.Config.API.Prefix, url)
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 
@@ -75,10 +76,13 @@ func (m *API) get(ctx context.Context, url string) (*http.Response, error) {
 
 	req.SetBasicAuth(m.Config.Cloud.PrivateKey, "")
 
-	return m.Client.Do(req.WithContext(ctx))
+	resp, err := m.Client.Do(req.WithContext(ctx))
+	api.SetResponseMeta(resp, ms)
+
+	return resp, err
 }
 
-func (m *API) delete(ctx context.Context, url string, data interface{}) (*http.Response, error) {
+func (m *API) delete(ctx context.Context, url string, data interface{}, ms api.MetaSetter) (*http.Response, error) {
 	var err error
 	url = api.BuildPath(m.Config.API.Prefix, url)
 	var body []byte
@@ -99,10 +103,13 @@ func (m *API) delete(ctx context.Context, url string, data interface{}) (*http.R
 
 	req.SetBasicAuth(m.Config.Cloud.PrivateKey, "")
 
-	return m.Client.Do(req.WithContext(ctx))
+	resp, err := m.Client.Do(req.WithContext(ctx))
+	api.SetResponseMeta(resp, ms)
+
+	return resp, err
 }
 
-func (m *API) patch(ctx context.Context, url string, data interface{}) (*http.Response, error) {
+func (m *API) patch(ctx context.Context, url string, data interface{}, ms api.MetaSetter) (*http.Response, error) {
 	url = api.BuildPath(m.Config.API.Prefix, url)
 	var err error
 	var body []byte
@@ -121,10 +128,13 @@ func (m *API) patch(ctx context.Context, url string, data interface{}) (*http.Re
 	req.Header.Set("Content-Type", "application/json")
 	req.SetBasicAuth(m.Config.Cloud.PrivateKey, "")
 
-	return m.Client.Do(req.WithContext(ctx))
+	resp, err := m.Client.Do(req.WithContext(ctx))
+	api.SetResponseMeta(resp, ms)
+
+	return resp, err
 }
 
-func (m *API) put(ctx context.Context, url string, data interface{}) (*http.Response, error) {
+func (m *API) put(ctx context.Context, url string, data interface{}, ms api.MetaSetter) (*http.Response, error) {
 	url = api.BuildPath(m.Config.API.Prefix, url)
 	var err error
 	var body []byte
@@ -143,5 +153,8 @@ func (m *API) put(ctx context.Context, url string, data interface{}) (*http.Resp
 	req.Header.Set("Content-Type", "application/json")
 	req.SetBasicAuth(m.Config.Cloud.PrivateKey, "")
 
-	return m.Client.Do(req.WithContext(ctx))
+	resp, err := m.Client.Do(req.WithContext(ctx))
+	api.SetResponseMeta(resp, ms)
+
+	return resp, err
 }

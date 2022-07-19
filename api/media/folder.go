@@ -52,10 +52,8 @@ func (m *API) CreateFolder(ctx context.Context, param CreateFolderParam) (*api.R
 		return nil, err
 	}
 
-	resp, err := m.post(ctx, "folder", &param)
+	resp, err := m.post(ctx, "folder", &param, response)
 	defer api.DeferredBodyClose(resp)
-
-	api.SetResponseMeta(resp, response)
 
 	if err != nil {
 		return response, err
@@ -77,11 +75,9 @@ func (m *API) DeleteFolder(ctx context.Context, param DeleteFolderParam) (*api.R
 		return nil, err
 	}
 
-	resp, err := m.delete(ctx, "folder", &param)
+	resp, err := m.delete(ctx, "folder", &param, response)
 
 	defer api.DeferredBodyClose(resp)
-
-	api.SetResponseMeta(resp, response)
 
 	if err != nil {
 		return response, err
@@ -92,7 +88,7 @@ func (m *API) DeleteFolder(ctx context.Context, param DeleteFolderParam) (*api.R
 	return response, err
 }
 
-// MoveFolder moves given folder to new path in media library
+// MoveFolder moves given folder to new aath in media library
 func (m *API) MoveFolder(ctx context.Context, param MoveFolderParam) (*FolderResponse, error) {
 	var err error
 	var response = &FolderResponse{}
@@ -101,9 +97,8 @@ func (m *API) MoveFolder(ctx context.Context, param MoveFolderParam) (*FolderRes
 		return nil, err
 	}
 
-	resp, err := m.post(ctx, "bulkJobs/moveFolder", &param)
+	resp, err := m.post(ctx, "bulkJobs/moveFolder", &param, response)
 	defer api.DeferredBodyClose(resp)
-	api.SetResponseMeta(resp, response)
 
 	if err != nil {
 		return response, err
@@ -125,9 +120,8 @@ func (m *API) CopyFolder(ctx context.Context, param CopyFolderParam) (*FolderRes
 		return nil, err
 	}
 
-	resp, err := m.post(ctx, "bulkJobs/copyFolder", &param)
+	resp, err := m.post(ctx, "bulkJobs/copyFolder", &param, response)
 	defer api.DeferredBodyClose(resp)
-	api.SetResponseMeta(resp, response)
 
 	if err != nil {
 		return response, err
