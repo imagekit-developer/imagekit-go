@@ -381,8 +381,8 @@ resp, err := ik.Metadata.CreateCustomField(ctx, metadata.CreateFieldParam{
     Label: "Weight",
     Schema: metadata.Schema{
         Type: "Number",
-        MinValue: "1",
-        MaxValue: "1000",
+        MinValue: 1,
+        MaxValue: 1000,
     }
 })
 ```
@@ -396,7 +396,7 @@ resp, err := ik.Metadata.CustomFields(ctx, true)
 
 ### 3. Update custom metadata field
 ```
-resp, err := ik.Metadata.UpdateCustomField(ctx, "file_id", UpdateCustomFieldParam{
+resp, err := ik.Metadata.UpdateCustomField(ctx, "field_id", UpdateCustomFieldParam{
     Label: "Cost",
 })
 ```
