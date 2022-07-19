@@ -60,6 +60,14 @@ func newUploader(url string) (*API, error) {
 }
 
 func Test_New(t *testing.T) {
+	os.Setenv("IMAGEKIT_PRIVATE_KEY", "private_")
+	os.Setenv("IMAGEKIT_PUBLIC_KEY", "public_")
+	os.Setenv("IMAGEKIT_ENDPOINT_URL", "https://ik.imagekit.io/test/")
+
+	defer os.Unsetenv("IMAGEKIT_PRIVATE_KEY")
+	defer os.Unsetenv("IMAGEKIT_PUBLIC_KEY")
+	defer os.Unsetenv("IMAGEKIT_ENDPOINT_URL")
+
 	var api any
 	api, err := New()
 
