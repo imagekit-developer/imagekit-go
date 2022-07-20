@@ -22,7 +22,7 @@ type API struct {
 	Client api.HttpClient
 }
 
-// New creates a new Uploader API instance from the environment variable.
+// New creates a new Uploader API instance from environment variables.
 func New() (*API, error) {
 	c, err := config.New()
 	if err != nil {
@@ -32,7 +32,7 @@ func New() (*API, error) {
 	return NewFromConfiguration(c)
 }
 
-// NewFromConfiguration a new Upload API instance with the given Configuration.
+// NewFromConfiguration creates a new Upload API instance with the given Configuration.
 func NewFromConfiguration(c *config.Configuration) (*API, error) {
 	return &API{
 		Config: *c,

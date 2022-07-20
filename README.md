@@ -56,7 +56,7 @@ ik, err := ImageKit.NewFromParams(imagekit.NewParams{
 ```
 
 ## Response Format
-Results returned by functions which call backend api(such as media management, metadata, cache apis) embeds raw response in ```ResponseMetaData```, which can be used to get raw response ```StatusCode```, ```Header``` and ```Body```. The json resonse body is parsed to approprite sdk type and assigned to ```resp.Data```  attribute.
+Results returned by functions which call backend api(such as media management, metadata, cache apis) embeds raw response in ```ResponseMetaData```, which can be used to get raw response ```StatusCode```, ```Header``` and ```Body```. The json resonse body is parsed to appropriate sdk type and assigned to ```resp.Data```  attribute.
 
 ```
 resp, err := ik.Metadata.FromFile(ctx, fileId)

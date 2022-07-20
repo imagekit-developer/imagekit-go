@@ -135,7 +135,7 @@ type Interoperability struct {
 }
 
 type Schema struct {
-	Type string `json:"type"` //Text, Textarea, Number, Date, Boolean, SingleSelect, MultiSelect Date value should be an ISO8601 string
+	Type string `json:"type"` //Text, Textarea, Number, Date, Boolean, SingleSelect, MultiSelect. Date value should be an ISO8601 string
 
 	SelectOptions   interface{} `json:"selectOptions,omitempty"`
 	DefaultValue    interface{} `json:"defaultValue,omitempty"`
@@ -334,7 +334,7 @@ func (m *API) FromUrl(ctx context.Context, url string) (*MetadataResponse, error
 	return response, err
 }
 
-// CreateField creates new custom metadata field
+// CreateCustomField creates new custom metadata field
 func (m *API) CreateCustomField(ctx context.Context, param CreateFieldParam) (*CreateFieldResponse, error) {
 	var err error
 	var response = &CreateFieldResponse{}

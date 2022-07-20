@@ -15,7 +15,7 @@ type RemoveBgOption struct {
 	BgImageUrl       string `json:"bg_image_url,omitempty"`
 }
 
-// RemoveBg represents extension struct for auto tagging by providers such as google and aws
+// AutoTag represents extension struct for auto tagging by providers such as google and aws
 type AutoTag struct {
 	Name          TagService `json:"name"`
 	MinConfidence int        `json:"minConfidence"`
@@ -26,7 +26,7 @@ func (e *AutoTag) extName() string {
 	return string(e.Name)
 }
 
-// NewAutoTag to create extension for auto tagging
+// NewAutoTag creates an extension parameter for auto tagging
 func NewAutoTag(service TagService, minConf int, maxTags int) *AutoTag {
 	return &AutoTag{
 		Name:          service,
@@ -45,7 +45,7 @@ func (e *RemoveBg) extName() string {
 	return e.Name
 }
 
-// NewAutoTag to create extension for removing background
+// NewRemoveBg creates an extension parameter for removing background
 func NewRemoveBg(opt RemoveBgOption) *RemoveBg {
 	return &RemoveBg{
 		Name:    "remove-bg",
@@ -54,7 +54,7 @@ func NewRemoveBg(opt RemoveBgOption) *RemoveBg {
 }
 
 // IExtension prepresents common interface for different extensions.
-// extName() is unused. This interface is used only to store different types of extensions in a slice or array.
+// This interface is used only as a common type to store different types of extensions in a slice or array.
 type IExtension interface {
 	extName() string
 }

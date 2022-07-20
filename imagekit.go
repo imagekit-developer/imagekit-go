@@ -27,7 +27,7 @@ type ImageKit struct {
 	getToken func() string
 }
 
-// NewParams is struct to define parameters to imagekit
+// NewParams is a struct to define parameters to imagekit
 type NewParams struct {
 	PrivateKey  string
 	PublicKey   string
@@ -51,7 +51,7 @@ func getToken() string {
 	return uuid.String()
 }
 
-// NewFromParams return new ImageKit object from provided parameters
+// NewFromParams returns a new ImageKit object from provided parameters
 func NewFromParams(params NewParams) *ImageKit {
 	return NewFromConfiguration(
 		config.NewFromParams(params.PrivateKey, params.PublicKey, params.EndpointUrl),
