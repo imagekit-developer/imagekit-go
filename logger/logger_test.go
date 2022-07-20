@@ -1,7 +1,11 @@
 package logger
 
 import (
+	"bytes"
 	"fmt"
+	"log"
+	"os"
+	"strings"
 	"testing"
 )
 
@@ -29,6 +33,27 @@ func (m MockLogger) Debug(v ...interface{}) {
 
 func (m MockLogger) Error(v ...interface{}) {
 	m.ErrorMessages[len(m.ErrorMessages)] = toStringsSlice(v...)
+}
+
+func Test_Golog(t *testing.T) {
+	var buff bytes.Buffer
+	log.SetOutput(&buff)
+	defer log.SetOutput(os.Stderr)
+
+	gl := GoLog{}
+
+	gl.Debug("testing-debug")
+
+	if strings.Index(buff.String(), "testing-debug") == -1 {
+		t.Error("expected testing-debug")
+	}
+
+	gl.Error("testing-error")
+
+	if strings.Index(buff.String(), "testing-error") == -1 {
+		t.Error("expected testing-error")
+	}
+
 }
 
 func TestLogger_LogLevel_Error(t *testing.T) {
