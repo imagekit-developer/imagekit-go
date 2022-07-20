@@ -10,6 +10,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"os"
 	"testing"
 
@@ -249,4 +250,18 @@ func TestUploader(t *testing.T) {
 		_, err := uploader.Upload(ctx, reader, param)
 		return err
 	})
+}
+
+func Test_postFile(t *testing.T) {
+	uploader, err := newUploader("/")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	_, err = uploader.postFile(ctx, 5, url.Values{})
+
+	if err == nil {
+		t.Error("expected error")
+	}
+
 }
