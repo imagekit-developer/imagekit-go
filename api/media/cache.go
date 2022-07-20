@@ -41,7 +41,6 @@ func (m *API) PurgeCache(ctx context.Context, param PurgeCacheParam) (*PurgeCach
 	}
 
 	resp, err := m.post(ctx, "files/purge", &param, response)
-	defer api.DeferredBodyClose(resp)
 
 	if err != nil {
 		return response, err
@@ -65,8 +64,6 @@ func (m *API) PurgeCacheStatus(ctx context.Context, requestId string) (*PurgeCac
 	}
 
 	resp, err := m.get(ctx, "files/purge/"+requestId, response)
-
-	defer api.DeferredBodyClose(resp)
 
 	if err != nil {
 		return response, err

@@ -59,6 +59,8 @@ func (m *API) post(ctx context.Context, url string, data interface{}, ms api.Met
 	req.SetBasicAuth(m.Config.Cloud.PrivateKey, "")
 
 	resp, err := m.Client.Do(req.WithContext(ctx))
+	defer api.DeferredBodyClose(resp)
+
 	if err != nil {
 		err = fmt.Errorf("client.Do %w", err)
 	}
@@ -77,6 +79,8 @@ func (m *API) get(ctx context.Context, url string, ms api.MetaSetter) (*http.Res
 	req.SetBasicAuth(m.Config.Cloud.PrivateKey, "")
 
 	resp, err := m.Client.Do(req.WithContext(ctx))
+	defer api.DeferredBodyClose(resp)
+
 	api.SetResponseMeta(resp, ms)
 
 	return resp, err
@@ -104,6 +108,8 @@ func (m *API) delete(ctx context.Context, url string, data interface{}, ms api.M
 	req.SetBasicAuth(m.Config.Cloud.PrivateKey, "")
 
 	resp, err := m.Client.Do(req.WithContext(ctx))
+	defer api.DeferredBodyClose(resp)
+
 	api.SetResponseMeta(resp, ms)
 
 	return resp, err
@@ -129,6 +135,8 @@ func (m *API) patch(ctx context.Context, url string, data interface{}, ms api.Me
 	req.SetBasicAuth(m.Config.Cloud.PrivateKey, "")
 
 	resp, err := m.Client.Do(req.WithContext(ctx))
+	defer api.DeferredBodyClose(resp)
+
 	api.SetResponseMeta(resp, ms)
 
 	return resp, err
@@ -154,6 +162,8 @@ func (m *API) put(ctx context.Context, url string, data interface{}, ms api.Meta
 	req.SetBasicAuth(m.Config.Cloud.PrivateKey, "")
 
 	resp, err := m.Client.Do(req.WithContext(ctx))
+	defer api.DeferredBodyClose(resp)
+
 	api.SetResponseMeta(resp, ms)
 
 	return resp, err

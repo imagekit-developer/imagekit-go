@@ -8,7 +8,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/creasty/defaults"
 	"github.com/imagekit-developer/imagekit-go/api"
 	"github.com/imagekit-developer/imagekit-go/api/extension"
 	"gopkg.in/validator.v2"
@@ -220,10 +219,6 @@ func (e *ErrorPartialSuccess) Error() string {
 
 // Files retrieves media library files. Filter options can be supplied as FilesParams.
 func (m *API) Files(ctx context.Context, params FilesParam) (*FilesResponse, error) {
-	if err := defaults.Set(&params); err != nil {
-		return nil, err
-	}
-
 	values, err := api.StructToParams(params)
 	if err != nil {
 		return nil, err
@@ -238,7 +233,6 @@ func (m *API) Files(ctx context.Context, params FilesParam) (*FilesResponse, err
 	response := &FilesResponse{}
 
 	resp, err := m.get(ctx, "files"+query, response)
-	defer api.DeferredBodyClose(resp)
 
 	if err != nil {
 		return response, err
@@ -287,7 +281,6 @@ func (m *API) FileVersions(ctx context.Context, params FileVersionsParam) (*File
 	response := &FilesResponse{}
 
 	resp, err := m.get(ctx, strings.Join(parts, "/"), response)
-	defer api.DeferredBodyClose(resp)
 
 	if err != nil {
 		return response, err
@@ -319,8 +312,6 @@ func (m *API) UpdateFile(ctx context.Context, fileId string, params UpdateFilePa
 
 	resp, err := m.patch(ctx, fmt.Sprintf("files/%s/details", fileId), params, response)
 
-	defer api.DeferredBodyClose(resp)
-
 	if err != nil {
 		return response, err
 	}
@@ -339,7 +330,6 @@ func (m *API) AddTags(ctx context.Context, params TagsParam) (*TagsResponse, err
 	var err error
 
 	resp, err := m.post(ctx, "files/addTags", params, response)
-	defer api.DeferredBodyClose(resp)
 
 	if err != nil {
 		return response, err
@@ -377,7 +367,6 @@ func (m *API) RemoveTags(ctx context.Context, params TagsParam) (*TagsResponse, 
 	var err error
 
 	resp, err := m.post(ctx, "files/removeTags", params, response)
-	defer api.DeferredBodyClose(resp)
 
 	if err != nil {
 		return response, err
@@ -414,7 +403,6 @@ func (m *API) RemoveAITags(ctx context.Context, params AITagsParam) (*TagsRespon
 	var err error
 
 	resp, err := m.post(ctx, "files/removeAITags", params, response)
-	defer api.DeferredBodyClose(resp)
 
 	if err != nil {
 		return response, err
@@ -439,7 +427,6 @@ func (m *API) DeleteFile(ctx context.Context, fileId string) (*api.Response, err
 	}
 
 	resp, err := m.delete(ctx, "files/"+fileId, nil, response)
-	defer api.DeferredBodyClose(resp)
 
 	if err != nil {
 		return response, err
@@ -465,7 +452,6 @@ func (m *API) DeleteFileVersion(ctx context.Context, fileId string, versionId st
 	}
 
 	resp, err := m.delete(ctx, fmt.Sprintf("files/%s/versions/%s", fileId, versionId), nil, response)
-	defer api.DeferredBodyClose(resp)
 
 	if err != nil {
 		return response, err
@@ -487,7 +473,6 @@ func (m *API) DeleteBulkFiles(ctx context.Context, param FileIdsParam) (*DeleteF
 	}
 
 	resp, err := m.post(ctx, "files/batch/deleteByFileIds", param, response)
-	defer api.DeferredBodyClose(resp)
 
 	if err != nil {
 		return response, err
@@ -512,7 +497,6 @@ func (m *API) CopyFile(ctx context.Context, param CopyFileParam) (*api.Response,
 	}
 
 	resp, err := m.post(ctx, "files/copy", &param, response)
-	defer api.DeferredBodyClose(resp)
 
 	if err != nil {
 		return response, err
@@ -535,7 +519,6 @@ func (m *API) MoveFile(ctx context.Context, param MoveFileParam) (*api.Response,
 	}
 
 	resp, err := m.post(ctx, "files/move", &param, response)
-	defer api.DeferredBodyClose(resp)
 
 	if err != nil {
 		return response, err
@@ -601,7 +584,6 @@ func (m *API) BulkJobStatus(ctx context.Context, jobId string) (*JobStatusRespon
 	}
 
 	resp, err := m.get(ctx, "bulkJobs/"+jobId, response)
-	defer api.DeferredBodyClose(resp)
 
 	if err != nil {
 		return response, err

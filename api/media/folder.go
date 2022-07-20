@@ -53,7 +53,6 @@ func (m *API) CreateFolder(ctx context.Context, param CreateFolderParam) (*api.R
 	}
 
 	resp, err := m.post(ctx, "folder", &param, response)
-	defer api.DeferredBodyClose(resp)
 
 	if err != nil {
 		return response, err
@@ -77,8 +76,6 @@ func (m *API) DeleteFolder(ctx context.Context, param DeleteFolderParam) (*api.R
 
 	resp, err := m.delete(ctx, "folder", &param, response)
 
-	defer api.DeferredBodyClose(resp)
-
 	if err != nil {
 		return response, err
 	}
@@ -98,7 +95,6 @@ func (m *API) MoveFolder(ctx context.Context, param MoveFolderParam) (*FolderRes
 	}
 
 	resp, err := m.post(ctx, "bulkJobs/moveFolder", &param, response)
-	defer api.DeferredBodyClose(resp)
 
 	if err != nil {
 		return response, err
@@ -121,7 +117,6 @@ func (m *API) CopyFolder(ctx context.Context, param CopyFolderParam) (*FolderRes
 	}
 
 	resp, err := m.post(ctx, "bulkJobs/copyFolder", &param, response)
-	defer api.DeferredBodyClose(resp)
 
 	if err != nil {
 		return response, err

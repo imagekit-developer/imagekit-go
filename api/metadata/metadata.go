@@ -204,6 +204,8 @@ func (m *API) get(ctx context.Context, url string, query map[string]string, ms a
 	req.SetBasicAuth(m.Config.Cloud.PrivateKey, "")
 
 	resp, err := m.Client.Do(req.WithContext(ctx))
+	defer api.DeferredBodyClose(resp)
+
 	api.SetResponseMeta(resp, ms)
 
 	return resp, err
@@ -230,6 +232,8 @@ func (m *API) post(ctx context.Context, url string, data interface{}, ms api.Met
 	req.SetBasicAuth(m.Config.Cloud.PrivateKey, "")
 
 	resp, err := m.Client.Do(req.WithContext(ctx))
+	defer api.DeferredBodyClose(resp)
+
 	api.SetResponseMeta(resp, ms)
 	return resp, err
 }
@@ -255,6 +259,8 @@ func (m *API) patch(ctx context.Context, url string, data interface{}, ms api.Me
 	req.SetBasicAuth(m.Config.Cloud.PrivateKey, "")
 
 	resp, err := m.Client.Do(req.WithContext(ctx))
+	defer api.DeferredBodyClose(resp)
+
 	api.SetResponseMeta(resp, ms)
 	return resp, err
 }
@@ -272,6 +278,8 @@ func (m *API) delete(ctx context.Context, url string, ms api.MetaSetter) (*http.
 	req.SetBasicAuth(m.Config.Cloud.PrivateKey, "")
 
 	resp, err := m.Client.Do(req.WithContext(ctx))
+	defer api.DeferredBodyClose(resp)
+
 	api.SetResponseMeta(resp, ms)
 	return resp, err
 }
@@ -285,7 +293,6 @@ func (m *API) FromFile(ctx context.Context, fileId string) (*MetadataResponse, e
 	var response = &MetadataResponse{}
 
 	resp, err := m.get(ctx, fmt.Sprintf("files/%s/metadata", fileId), nil, response)
-	defer api.DeferredBodyClose(resp)
 
 	if err != nil {
 		return response, err
@@ -313,7 +320,6 @@ func (m *API) FromUrl(ctx context.Context, url string) (*MetadataResponse, error
 	}
 
 	resp, err := m.get(ctx, "metadata", map[string]string{"url": url}, response)
-	defer api.DeferredBodyClose(resp)
 
 	if err != nil {
 		return response, err
@@ -334,7 +340,6 @@ func (m *API) CreateCustomField(ctx context.Context, param CreateFieldParam) (*C
 	var response = &CreateFieldResponse{}
 
 	resp, err := m.post(ctx, "customMetadataFields", param, response)
-	defer api.DeferredBodyClose(resp)
 
 	if err != nil {
 		return response, err
@@ -362,7 +367,6 @@ func (m *API) CustomFields(ctx context.Context, includeDeleted bool) (*CustomFie
 	}
 
 	resp, err := m.get(ctx, "customMetadataFields", map[string]string{"includeDeleted": flag}, response)
-	defer api.DeferredBodyClose(resp)
 
 	if err != nil {
 		return response, err
@@ -387,7 +391,6 @@ func (m *API) UpdateCustomField(ctx context.Context, fieldId string, param Updat
 	}
 
 	resp, err := m.patch(ctx, "customMetadataFields/"+fieldId, param, response)
-	defer api.DeferredBodyClose(resp)
 
 	if err != nil {
 		return response, err
@@ -411,7 +414,6 @@ func (m *API) DeleteCustomField(ctx context.Context, fieldId string) (*api.Respo
 	var response = &api.Response{}
 
 	resp, err := m.delete(ctx, "customMetadataFields/"+fieldId, response)
-	defer api.DeferredBodyClose(resp)
 
 	if err != nil {
 		return response, err
