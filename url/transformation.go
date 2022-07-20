@@ -82,6 +82,8 @@ type Transformation struct {
 	BgColor          string // bg
 	Original         bool   // orig
 	Attachment       bool   // ik-attachment
+	Contrast         bool
+	Sharpen          any // bool or number
 }
 
 func appendBool(parts *[]string, v bool, prefix string) {
@@ -144,9 +146,7 @@ func (t Transformation) String() string {
 	}
 
 	appendBool(&parts, t.ProgressiveImage, "pr-")
-	//parts = append(parts, "pr-"+fmt.Sprintf("%v", t.ProgressiveImage))
 	appendBool(&parts, t.Lossless, "lo-")
-	//parts = append(parts, "lo-"+fmt.Sprintf("%v", t.Lossless))
 
 	if t.TrimEdges != nil {
 		parts = append(parts, "t-"+fmt.Sprintf("%v", t.TrimEdges))
@@ -157,10 +157,8 @@ func (t Transformation) String() string {
 	}
 
 	appendBool(&parts, t.ColorProfile, "cp-")
-	//parts = append(parts, "cp-"+fmt.Sprintf("%v", t.ColorProfile))
 
 	appendBool(&parts, t.ImageMetadata, "md-")
-	//	parts = append(parts, "md-"+fmt.Sprintf("%v", t.ImageMetadata))
 
 	if t.Rotate != nil {
 		parts = append(parts, "rt-"+fmt.Sprintf("%v", t.Rotate))
@@ -182,5 +180,15 @@ func (t Transformation) String() string {
 		parts = append(parts, "ik-attachment="+fmt.Sprintf("%v", t.Attachment))
 	}
 
+	switch v := t.Sharpen.(type) {
+	case bool:
+		parts = append(parts, "e-sharpen")
+	case int:
+		parts = append(parts, fmt.Sprintf("e-sharpen-%d", v))
+	}
+
+	if t.Contrast {
+		parts = append(parts, "e-contrast")
+	}
 	return strings.Join(parts, ",")
 }
