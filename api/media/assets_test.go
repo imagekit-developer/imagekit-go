@@ -235,6 +235,13 @@ func TestMedia_FileVersions(t *testing.T) {
 			statusCode: 200,
 			shouldFail: false,
 		},
+		"invalid": {
+			fileId:     "",
+			versionId:  "",
+			body:       singleFileResp,
+			statusCode: 200,
+			shouldFail: true,
+		},
 	}
 
 	for name, tc := range cases {
@@ -266,7 +273,9 @@ func TestMedia_FileVersions(t *testing.T) {
 				t.Error(err)
 			}
 
-			httpTest.Test(expectedUrl, "GET", nil)
+			if !tc.shouldFail {
+				httpTest.Test(expectedUrl, "GET", nil)
+			}
 		})
 	}
 	errServer := iktest.NewErrorServer(t)
@@ -296,6 +305,21 @@ func TestMedia_UpdateFile(t *testing.T) {
 			body:       mockBody,
 			statusCode: 200,
 			shouldFail: false,
+			params: UpdateFileParam{
+				RemoveAITags:      []string{"one", "two"},
+				WebhookUrl:        "http://example.com/hook",
+				Tags:              []string{"abc", "def"},
+				CustomCoordinates: "12,11,22,22",
+				Extensions:        testExtenstions,
+				CustomMetadata:    customMetadata,
+			},
+		},
+		"missing-file-id": {
+			result:     &expected,
+			fileId:     "",
+			body:       mockBody,
+			statusCode: 200,
+			shouldFail: true,
 			params: UpdateFileParam{
 				RemoveAITags:      []string{"one", "two"},
 				WebhookUrl:        "http://example.com/hook",
@@ -588,6 +612,12 @@ func TestMedia_DeleteFile(t *testing.T) {
 
 	httpTest.Test("/files/file_id", "DELETE", nil)
 
+	_, err = mediaApi.DeleteFile(ctx, "")
+
+	if err == nil {
+		t.Error("expected error")
+	}
+
 	errServer := iktest.NewErrorServer(t)
 	mediaApi.Config.API.Prefix = errServer.Url() + "/"
 
@@ -615,6 +645,19 @@ func TestMedia_DeleteFileVersion(t *testing.T) {
 	url := "/files/file_id/versions/v2"
 
 	httpTest.Test(url, "DELETE", nil)
+
+	_, err = mediaApi.DeleteFileVersion(ctx, "", "v2")
+
+	if err == nil {
+		t.Error("expected error")
+	}
+
+	_, err = mediaApi.DeleteFileVersion(ctx, "file_id", "")
+
+	if err == nil {
+		t.Error("expected error")
+	}
+
 	errServer := iktest.NewErrorServer(t)
 	mediaApi.Config.API.Prefix = errServer.Url() + "/"
 
@@ -653,6 +696,12 @@ func TestMedia_DeleteBulkFiles(t *testing.T) {
 	}
 	httpTest.Test("/files/batch/deleteByFileIds", "POST", param)
 
+	resp, err = mediaApi.DeleteBulkFiles(ctx, FileIdsParam{})
+
+	if err == nil {
+		t.Error("expected error")
+	}
+
 	errServer := iktest.NewErrorServer(t)
 	mediaApi.Config.API.Prefix = errServer.Url() + "/"
 
@@ -683,6 +732,11 @@ func TestMedia_CopyFile(t *testing.T) {
 	}
 	httpTest.Test("/files/copy", "POST", param)
 
+	_, err = mediaApi.CopyFile(ctx, CopyFileParam{})
+
+	if err == nil {
+		t.Error(err)
+	}
 	errServer := iktest.NewErrorServer(t)
 	mediaApi.Config.API.Prefix = errServer.Url() + "/"
 
@@ -712,6 +766,11 @@ func TestMedia_MoveFile(t *testing.T) {
 	}
 
 	httpTest.Test("/files/move", "POST", param)
+
+	_, err = mediaApi.MoveFile(ctx, MoveFileParam{})
+	if err == nil {
+		t.Error("expected error")
+	}
 
 	errServer := iktest.NewErrorServer(t)
 	mediaApi.Config.API.Prefix = errServer.Url() + "/"
@@ -768,6 +827,16 @@ func TestMedia_RenameFile(t *testing.T) {
 			httpTest.Test("/files/rename", "PUT", tc.param)
 		})
 	}
+	httpTest := iktest.NewHttp(t)
+	ts := httptest.NewServer(httpTest.Handler(200, ""))
+	defer ts.Close()
+
+	mediaApi.Config.API.Prefix = ts.URL + "/"
+
+	_, err := mediaApi.RenameFile(ctx, RenameFileParam{})
+	if err == nil {
+		t.Error(err)
+	}
 	errServer := iktest.NewErrorServer(t)
 	mediaApi.Config.API.Prefix = errServer.Url() + "/"
 
@@ -808,6 +877,11 @@ func TestMedia_RestoreVersion(t *testing.T) {
 
 	httpTest.Test(expectedUrl, "DELETE", param)
 
+	resp, err = mediaApi.RestoreVersion(ctx, FileVersionsParam{})
+	if err == nil {
+		t.Error("expected error")
+	}
+
 	errServer := iktest.NewErrorServer(t)
 	mediaApi.Config.API.Prefix = errServer.Url() + "/"
 
@@ -842,6 +916,11 @@ func TestMedia_BulkJobStatus(t *testing.T) {
 	}
 
 	httpTest.Test("/bulkJobs/"+jobId, "GET", nil)
+
+	resp, err = mediaApi.BulkJobStatus(ctx, "")
+	if err == nil {
+		t.Error("expected error")
+	}
 
 	errServer := iktest.NewErrorServer(t)
 	mediaApi.Config.API.Prefix = errServer.Url() + "/"

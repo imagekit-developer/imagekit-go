@@ -31,6 +31,12 @@ func TestMedia_CreateFolder(t *testing.T) {
 	}
 	httpTest.Test("/folder", "POST", param)
 
+	_, err = mediaApi.CreateFolder(ctx, CreateFolderParam{})
+
+	if err == nil {
+		t.Error("expected error")
+	}
+
 	errServer := iktest.NewErrorServer(t)
 	mediaApi.Config.API.Prefix = errServer.Url() + "/"
 
@@ -60,6 +66,12 @@ func TestMedia_DeleteFolder(t *testing.T) {
 	}
 
 	httpTest.Test("/folder", "DELETE", nil)
+
+	_, err = mediaApi.DeleteFolder(ctx, DeleteFolderParam{})
+
+	if err == nil {
+		t.Error("expected error")
+	}
 
 	errServer := iktest.NewErrorServer(t)
 	mediaApi.Config.API.Prefix = errServer.Url() + "/"
@@ -93,6 +105,12 @@ func TestMedia_MoveFolder(t *testing.T) {
 		t.Error(response.Data)
 	}
 	httpTest.Test("/bulkJobs/moveFolder", "POST", param)
+
+	response, err = mediaApi.MoveFolder(ctx, MoveFolderParam{})
+
+	if err == nil {
+		t.Error("expected error")
+	}
 
 	errServer := iktest.NewErrorServer(t)
 	mediaApi.Config.API.Prefix = errServer.Url() + "/"
@@ -134,6 +152,11 @@ func TestMedia_CopyFolder(t *testing.T) {
 	}
 	httpTest.Test("/bulkJobs/copyFolder", "POST", param)
 
+	response, err = mediaApi.CopyFolder(ctx, CopyFolderParam{})
+
+	if err == nil {
+		t.Error("expected error")
+	}
 	errServer := iktest.NewErrorServer(t)
 	mediaApi.Config.API.Prefix = errServer.Url() + "/"
 

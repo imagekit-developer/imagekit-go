@@ -20,6 +20,21 @@ func (ts Tstringer) String() string {
 	return ts.name
 }
 
+// read closer implementation
+type MockedRC struct {
+	called bool
+	data   io.ReadCloser
+}
+
+func (rc *MockedRC) Close() error {
+	rc.called = true
+	return nil
+}
+
+func (*MockedRC) Read(p []byte) (n int, err error) {
+	return n, err
+}
+
 type MockedResponse struct {
 	ResponseMetaData
 }
@@ -193,6 +208,19 @@ func Test_BuildPath(t *testing.T) {
 	}
 }
 
+func Test_DeferredBodyClose(t *testing.T) {
+	var rc = &MockedRC{}
+
+	var resp = &http.Response{
+		Body: rc,
+	}
+
+	DeferredBodyClose(resp)
+	if rc.called == false {
+		t.Error("deffered close not called")
+	}
+}
+
 func Test_SetResponseMeta(t *testing.T) {
 	h := http.Header{"content-type": []string{"application/json"}}
 
@@ -211,5 +239,19 @@ func Test_SetResponseMeta(t *testing.T) {
 
 	if !cmp.Equal(response.ResponseMetaData, meta) {
 		t.Error("invalid header")
+	}
+}
+
+func Test_Bool(t *testing.T) {
+	resp := Bool(true)
+
+	if *resp != true {
+		t.Error("invalid bool(true)")
+	}
+
+	resp = Bool(false)
+
+	if *resp != false {
+		t.Error("invalid bool(false)")
 	}
 }
