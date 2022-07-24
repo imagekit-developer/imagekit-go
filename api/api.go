@@ -219,3 +219,11 @@ func SetResponseMeta(httpResp *http.Response, respStruct MetaSetter) {
 func Bool(b bool) *bool {
 	return &b
 }
+
+func Int(i int) *int {
+	return &i
+}
+
+func Float32(f float32) *float32 {
+	return &f
+}
