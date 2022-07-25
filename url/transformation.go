@@ -84,8 +84,17 @@ type Transformation struct {
 	Attachment       bool   // ik-attachment
 	Contrast         bool
 	Sharpen          any // bool or number
+	UnsharpMask      UnsharpMask
 	Overlay          *Overlay
 	Raw              string
+}
+
+// UnsharpMask represents type of UnsharpMask option in Transformation
+type UnsharpMask struct {
+	Radius    float32
+	Sigma     float32
+	Amount    float32
+	Threshold float32
 }
 
 // Overlay represents transformation's overlay options
@@ -351,6 +360,11 @@ func (t Transformation) String() string {
 
 	if t.Contrast {
 		parts = append(parts, "e-contrast")
+	}
+
+	if usm := t.UnsharpMask; (UnsharpMask{} != usm) {
+		parts = append(parts, fmt.Sprintf("e-usm-%-.4f-%.4f-%.4f-%.4f",
+			usm.Radius, usm.Sigma, usm.Amount, usm.Threshold))
 	}
 
 	if t.Overlay != nil {

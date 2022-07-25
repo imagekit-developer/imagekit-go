@@ -182,6 +182,22 @@ func TestUrl(t *testing.T) {
 			},
 			url: "https://ik.imagekit.io/test/tr:w-200,ar-16-9,cm-extract,fo-center,xc-100,yc-110,q-85,f-auto,bl-50,dpr-2,rt-90,e-sharpen-40/default-image.jpg",
 		}, {
+			name: "unsharp-mask",
+			params: ikurl.UrlParam{
+				Path: "default-image.jpg",
+				Transformations: []ikurl.Transformation{
+					{
+						UnsharpMask: ikurl.UnsharpMask{
+							Radius:    2,
+							Sigma:     2,
+							Amount:    0.8,
+							Threshold: 0.024,
+						},
+					},
+				},
+			},
+			url: "https://ik.imagekit.io/test/tr:e-usm-2.0000-2.0000-0.8000-0.0240/default-image.jpg",
+		}, {
 			name: "common-overlay-options",
 			params: ikurl.UrlParam{
 				Path: "default-image.jpg",

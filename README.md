@@ -150,21 +150,130 @@ This results in a URL like:
 https://ik.imagekit.io/your_imagekit_id/endpoint/default-image.jpg?tr=h-300,w=400:rt-90
 ```
 
-[See full documentation](https://docs.imagekit.io/features/image-transformations) for transformation options.
 
 `UrlParam` has following options:
 
 | Option           | Description                    |
 | :----------------| :----------------------------- |
-| Path             | Conditional. This is the path at which the image exists. For example, `/path/to/image.jpg`. Either the `path` or `src` parameter needs to be specified for URL generation. |
-| Src              | Conditional. This is the complete URL of an image already mapped to ImageKit. For example, `https://ik.imagekit.io/your_imagekit_id/endpoint/path/to/image.jpg`. Either the `path` or `src` parameter needs to be specified for URL generation. |
+| Path             | Conditional. This is the path at which the image exists. For example, `/path/to/image.jpg`. Either the `Path` or `Src` parameter needs to be specified for URL generation. |
+| Src              | Conditional. This is the complete URL of an image already mapped to ImageKit. For example, `https://ik.imagekit.io/your_imagekit_id/endpoint/path/to/image.jpg`. Either the `Path` or `Src` parameter needs to be specified for URL generation. |
 | EndpointUrl      | Optional. The base URL to be appended before the path of the image. If not specified, the URL Endpoint specified at the time of SDK initialization is used. For example, https://ik.imagekit.io/your_imagekit_id/endpoint/ |
 | Transformations   | Optional. An array of objects specifying the transformation to be applied in the URL. Different steps of a [chained transformation](https://docs.imagekit.io/features/image-transformations/chained-transformations) can be specified as different objects of the array. The complete list of supported transformations in the SDK and some examples of using them are given later. 
-| TransformationPosition | Optional. The default value is `path` that places the transformation string as a path parameter in the URL. It can also be specified as `query`, which adds the transformation string as the URL's query parameter `tr`. If you use the `src` parameter to create the URL, then the transformation string is always added as a query parameter. |
+| TransformationPosition | Optional. The default value is `Path` that places the transformation string as a path parameter in the URL. It can also be specified as `query`, which adds the transformation string as the URL's query parameter `tr`. If you use the `Src` parameter to create the URL, then the transformation string is always added as a query parameter. |
 | NamedTransformation | Optional. Specifies name of a pre defined transformation. |
 | queryParameters  | Optional. These are the other query parameters that you want to add to the final URL. These can be any query parameters and not necessarily related to ImageKit. Especially useful if you want to add some versioning parameter to your URLs. |
-| signed           | Optional. Boolean. Default is `false`. If set to `true`, the SDK generates a signed image URL adding the image signature to the image URL. If you create a URL using the `src` parameter instead of `path`, then do correct `urlEndpoint` for this to work. Otherwise returned URL will have the wrong signature |
+| signed           | Optional. Boolean. Default is `false`. If set to `true`, the SDK generates a signed image URL adding the image signature to the image URL. If you create a URL using the `Src` parameter instead of `Path`, then do correct `EndpointUrl` for this to work. Otherwise returned URL will have the wrong signature |
 | expireSeconds    | Optional. Integer. Meant to be used along with the `signed` parameter to specify the time in seconds from now when the URL should expire. If specified, the URL contains the expiry timestamp in the URL, and the image signature is modified accordingly. |
+
+#### Examples of generating URLs
+**1. Chained Transformations as a query parameter**
+```go
+
+params := ikurl.UrlParam{
+    Path:        "default-image.jpg",
+    EndpointUrl: "https://ik.imagekit.io/demo-id/",
+    Transformations: []ikurl.Transformation{
+        {
+            Height: 300,
+            Width:  400,
+        },
+        {
+            Rotate: 90,
+        },
+    },
+    TransformationPosition: ikurl.QUERY,
+},
+
+url, err := ik.Url(params)
+```
+
+**2. Sharpening and contrast transforms and a progressive JPG image**
+
+There are some transforms like [Sharpening](https://docs.imagekit.io/features/image-transformations/image-enhancement-and-color-manipulation) that can be added to the URL with or without any other value. To use such transforms without specifying a value, specify the value as "-" in the transformation object. Otherwise, specify the value that you want to be added to this transformation.
+```go
+params := ikurl.UrlParam{
+    Path:        "default-image.jpg",
+    EndpointUrl: "https://ik.imagekit.io/demo-id/",
+    Transformations: []ikurl.Transformation{
+        {
+            Sharpen: true,
+        },
+    },
+}
+```
+#### List of supported transformations
+url package defines transformation type:
+```go
+// Transformation is a struct representing options for transformation parameter to Url()
+type Transformation struct {
+	Width            float32     // w
+	Height           float32     // h
+	AspectRatio      AspectRatio // ar
+	CropMode         CropMode
+	Focus            Focus  // fo-custom|face|auto|left|right|top|bottom|top_left.....
+	X                int    // x
+	Y                int    // y
+	Xc               int    // xc.  Focus with center coordinate Xc and Yc
+	Yc               int    // yc
+	Quality          int    // q
+	Format           Format // f
+	Blur             int    // bl
+	Dpr              any    // dpr (auto or number 0.1 to 5)
+	GrayScale        bool   // e-grayscale
+	DefaultImage     string // di (Replaces all forward slashes with @@)
+	ProgressiveImage bool   // pr
+	Lossless         bool   // lo
+	TrimEdges        any    // t (true or number 1-99)
+	Border           string // b ("width_hexColorCode")
+	ColorProfile     bool   // cp
+	ImageMetadata    bool   // md
+	Rotate           any    // rt (0 , 90 , 180 , 270 , 360 or auto)
+	Radius           any    // r (number or max)
+	BgColor          string // bg
+	Original         bool   // orig
+	Attachment       bool   // ik-attachment
+	Contrast         bool
+	Sharpen          any // bool or number
+	Overlay          *Overlay
+	Raw              string
+}
+
+// Overlay represents transformation's overlay options
+type Overlay struct {
+	X          *int         // ox
+	Y          *int         // oy
+	Height     *int         // oh
+	Width      *int         // ow
+	Background string       // obg
+	Focus      OverlayFocus // ofo
+	// Text overlay options
+	Text               string // ot
+	TextEncoded        string
+	TextWidth          *int      // otw
+	TextBackground     string    // otbg
+	TextPadding        string    // otp ("40" or "40_60" or "40_60_50_10")
+	TextInnerAlignment Alignment // otia
+	TextColor          string    // otc
+	TextFont           string    // otf
+	TextSize           *int      // ots
+	TextTypography     string    // ott (i, b or ib)=(italic, bold, both)
+	Radius             int       // or
+	// Image overlay options
+	Image            string      // oi (replaces all forward slashes with @@)
+	ImageAspectRatio AspectRatio // oiar
+	ImageBorder      string      // oib (width_colorcode: 5_red, 10_FF0000)
+	ImageDPR         *float32    // oidpr (0.1 to 5)
+	ImageQuality     *int        // oiq
+	ImageCropping    ImageCropping
+	ImageX           *int  //oix
+	ImageY           *int  //oiy
+	ImageXc          *int  //oixc
+	ImageYc          *int  //oixy
+	Trim             *bool //oit-true
+}
+```
+
+[See full documentation](https://docs.imagekit.io/features/image-transformations) for transformation options.
 
 ## File-Upload
 
