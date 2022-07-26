@@ -10,7 +10,7 @@ const (
 type UrlParam struct {
 	Path                string
 	Src                 string
-	EndpointUrl         string
+	UrlEndpoint         string
 	Transformations     []Transformation // tr:w-400,h-300
 	NamedTransformation string           // n-trname
 

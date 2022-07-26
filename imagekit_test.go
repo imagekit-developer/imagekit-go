@@ -15,7 +15,7 @@ import (
 var imgkit = NewFromParams(NewParams{
 	PrivateKey:  "private_",
 	PublicKey:   "public_",
-	EndpointUrl: "https://ik.imagekit.io/test/",
+	UrlEndpoint: "https://ik.imagekit.io/test/",
 })
 
 func init() {
@@ -53,7 +53,7 @@ func TestUrl(t *testing.T) {
 			name: "path",
 			params: ikurl.UrlParam{
 				Path:        "default-image.jpg",
-				EndpointUrl: "https://imagekit.io/343534/",
+				UrlEndpoint: "https://imagekit.io/343534/",
 				Transformations: []ikurl.Transformation{
 					{
 						Width:  100,
@@ -77,7 +77,7 @@ func TestUrl(t *testing.T) {
 			name: "signed-with-transformation",
 			params: ikurl.UrlParam{
 				Path:        "default-image.jpg",
-				EndpointUrl: "https://ik.imagekit.io/test/",
+				UrlEndpoint: "https://ik.imagekit.io/test/",
 				Transformations: []ikurl.Transformation{
 					{
 						Width:  200,
@@ -113,7 +113,7 @@ func TestUrl(t *testing.T) {
 			name: "trquery",
 			params: ikurl.UrlParam{
 				Path:        "default-image.jpg",
-				EndpointUrl: "https://imagekit.io/343534/",
+				UrlEndpoint: "https://imagekit.io/343534/",
 				Transformations: []ikurl.Transformation{
 					{
 						Width:  100,
@@ -127,7 +127,7 @@ func TestUrl(t *testing.T) {
 			name: "transformations",
 			params: ikurl.UrlParam{
 				Path:        "default-image.jpg",
-				EndpointUrl: "https://ik.imagekit.io/test-id/",
+				UrlEndpoint: "https://ik.imagekit.io/test-id/",
 				Transformations: []ikurl.Transformation{
 					{
 						Width:            200,

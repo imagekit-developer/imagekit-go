@@ -4,5 +4,5 @@ package config
 type Cloud struct {
 	PrivateKey  string
 	PublicKey   string
-	EndpointUrl string
+	UrlEndpoint string
 }

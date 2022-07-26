@@ -157,13 +157,13 @@ https://ik.imagekit.io/your_imagekit_id/endpoint/default-image.jpg?tr=h-300,w=40
 | :----------------| :----------------------------- |
 | Path             | Conditional. This is the path at which the image exists. For example, `/path/to/image.jpg`. Either the `Path` or `Src` parameter needs to be specified for URL generation. |
 | Src              | Conditional. This is the complete URL of an image already mapped to ImageKit. For example, `https://ik.imagekit.io/your_imagekit_id/endpoint/path/to/image.jpg`. Either the `Path` or `Src` parameter needs to be specified for URL generation. |
-| EndpointUrl      | Optional. The base URL to be appended before the path of the image. If not specified, the URL Endpoint specified at the time of SDK initialization is used. For example, https://ik.imagekit.io/your_imagekit_id/endpoint/ |
+| UrlEndpoint      | Optional. The base URL to be appended before the path of the image. If not specified, the URL Endpoint specified at the time of SDK initialization is used. For example, https://ik.imagekit.io/your_imagekit_id/endpoint/ |
 | Transformations   | Optional. An array of objects specifying the transformation to be applied in the URL. Different steps of a [chained transformation](https://docs.imagekit.io/features/image-transformations/chained-transformations) can be specified as different objects of the array. The complete list of supported transformations in the SDK and some examples of using them are given later. 
 | TransformationPosition | Optional. The default value is `Path` that places the transformation string as a path parameter in the URL. It can also be specified as `query`, which adds the transformation string as the URL's query parameter `tr`. If you use the `Src` parameter to create the URL, then the transformation string is always added as a query parameter. |
 | NamedTransformation | Optional. Specifies name of a pre defined transformation. |
-| queryParameters  | Optional. These are the other query parameters that you want to add to the final URL. These can be any query parameters and not necessarily related to ImageKit. Especially useful if you want to add some versioning parameter to your URLs. |
-| signed           | Optional. Boolean. Default is `false`. If set to `true`, the SDK generates a signed image URL adding the image signature to the image URL. If you create a URL using the `Src` parameter instead of `Path`, then do correct `EndpointUrl` for this to work. Otherwise returned URL will have the wrong signature |
-| expireSeconds    | Optional. Integer. Meant to be used along with the `signed` parameter to specify the time in seconds from now when the URL should expire. If specified, the URL contains the expiry timestamp in the URL, and the image signature is modified accordingly. |
+| QueryParameters  | Optional. These are the other query parameters that you want to add to the final URL. These can be any query parameters and not necessarily related to ImageKit. Especially useful if you want to add some versioning parameter to your URLs. |
+| Signed           | Optional. Boolean. Default is `false`. If set to `true`, the SDK generates a signed image URL adding the image signature to the image URL. If you create a URL using the `Src` parameter instead of `Path`, then do correct `UrlEndpoint` for this to work. Otherwise returned URL will have the wrong signature |
+| ExpireSeconds    | Optional. Integer. Meant to be used along with the `Signed` parameter to specify the time in seconds from now when the URL should expire. If specified, the URL contains the expiry timestamp in the URL, and the image signature is modified accordingly. |
 
 #### Examples of generating URLs
 **1. Chained Transformations as a query parameter**
@@ -171,7 +171,7 @@ https://ik.imagekit.io/your_imagekit_id/endpoint/default-image.jpg?tr=h-300,w=40
 
 params := ikurl.UrlParam{
     Path:        "default-image.jpg",
-    EndpointUrl: "https://ik.imagekit.io/demo-id/",
+    UrlEndpoint: "https://ik.imagekit.io/demo-id/",
     Transformations: []ikurl.Transformation{
         {
             Height: 300,
@@ -193,7 +193,7 @@ There are some transforms like [Sharpening](https://docs.imagekit.io/features/im
 ```go
 params := ikurl.UrlParam{
     Path:        "default-image.jpg",
-    EndpointUrl: "https://ik.imagekit.io/demo-id/",
+    UrlEndpoint: "https://ik.imagekit.io/demo-id/",
     Transformations: []ikurl.Transformation{
         {
             Sharpen: true,

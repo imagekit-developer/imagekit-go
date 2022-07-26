@@ -28,10 +28,10 @@ func (ik *ImageKit) Url(params ikurl.UrlParam) (string, error) {
 	var resultUrl string
 	var url *neturl.URL
 	var err error
-	var endpoint = params.EndpointUrl
+	var endpoint = params.UrlEndpoint
 
 	if endpoint == "" {
-		endpoint = ik.Config.Cloud.EndpointUrl
+		endpoint = ik.Config.Cloud.UrlEndpoint
 	}
 
 	endpoint = strings.TrimRight(endpoint, "/") + "/"

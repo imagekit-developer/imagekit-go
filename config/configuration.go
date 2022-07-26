@@ -37,7 +37,7 @@ func NewFromParams(privateKey string, publicKey string, endpointUrl string) *Con
 	cloudConf := Cloud{
 		PrivateKey:  privateKey,
 		PublicKey:   publicKey,
-		EndpointUrl: endpointUrl,
+		UrlEndpoint: endpointUrl,
 	}
 
 	var api = API{}

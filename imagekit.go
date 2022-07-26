@@ -31,7 +31,7 @@ type ImageKit struct {
 type NewParams struct {
 	PrivateKey  string
 	PublicKey   string
-	EndpointUrl string
+	UrlEndpoint string
 }
 
 // New returns ImageKit object from environment variables
@@ -54,7 +54,7 @@ func getToken() string {
 // NewFromParams returns a new ImageKit object from provided parameters
 func NewFromParams(params NewParams) *ImageKit {
 	return NewFromConfiguration(
-		config.NewFromParams(params.PrivateKey, params.PublicKey, params.EndpointUrl),
+		config.NewFromParams(params.PrivateKey, params.PublicKey, params.UrlEndpoint),
 	)
 }
 
