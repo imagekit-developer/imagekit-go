@@ -14,15 +14,6 @@ import (
 	ikurl "github.com/imagekit-developer/imagekit-go/url"
 )
 
-func join(sep string, args ...ikurl.Transformation) string {
-	var parts []string
-
-	for _, v := range args {
-		parts = append(parts, v.String())
-	}
-	return strings.Join(parts, sep)
-}
-
 // Url generates url from UrlParam
 func (ik *ImageKit) Url(params ikurl.UrlParam) (string, error) {
 	var resultUrl string
@@ -51,12 +42,12 @@ func (ik *ImageKit) Url(params ikurl.UrlParam) (string, error) {
 			}
 		} else {
 			if params.TransformationPosition == ikurl.QUERY {
-				params.QueryParameters["tr"] = join(":", params.Transformations...)
+				params.QueryParameters["tr"] = joinTransformations(params.Transformations...)
 				url, err = neturl.Parse(endpoint + params.Path)
 
 			} else {
 				url, err = neturl.Parse(url.String() +
-					"tr:" + join(":", params.Transformations...) +
+					"tr:" + joinTransformations(params.Transformations...) +
 					"/" + strings.TrimLeft(params.Path, "/"))
 			}
 		}
@@ -66,7 +57,7 @@ func (ik *ImageKit) Url(params ikurl.UrlParam) (string, error) {
 		}
 
 		if params.Transformations != nil {
-			params.QueryParameters["tr"] = join(":", params.Transformations...)
+			params.QueryParameters["tr"] = joinTransformations(params.Transformations...)
 		}
 	}
 
@@ -108,4 +99,47 @@ func (ik *ImageKit) Url(params ikurl.UrlParam) (string, error) {
 	}
 
 	return resultUrl, nil
+}
+
+func joinTransformations(args ...map[string]any) string {
+	var parts []string
+
+	for _, v := range args {
+		parts = append(parts, transform(v))
+	}
+	return strings.Join(parts, ":")
+}
+
+func transform(tr map[string]any) string {
+	var parts []string
+
+	for k, v := range tr {
+		value := fmt.Sprintf("%v", v)
+
+		if k == "raw" {
+			parts = append(parts, value)
+			continue
+		}
+		prefix, ok := ikurl.TransformationCode[k]
+
+		if !ok {
+			parts = append(parts, value)
+			continue
+		}
+
+		if v == "-" {
+			parts = append(parts, prefix)
+		} else {
+			if prefix == "di" || prefix == "oi" {
+				value = strings.ReplaceAll(strings.Trim(value, "/"), "/", "@@")
+			}
+			if k == "attachment" {
+				parts = append(parts, prefix+"="+value)
+			} else {
+				parts = append(parts, prefix+"-"+value)
+			}
+		}
+	}
+
+	return strings.Join(parts, ",")
 }

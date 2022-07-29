@@ -4,10 +4,12 @@ import (
 	neturl "net/url"
 	"os"
 	"reflect"
+	"regexp"
+	"sort"
+	"strings"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
-	"github.com/imagekit-developer/imagekit-go/api"
 	"github.com/imagekit-developer/imagekit-go/logger"
 	ikurl "github.com/imagekit-developer/imagekit-go/url"
 )
@@ -54,10 +56,10 @@ func TestUrl(t *testing.T) {
 			params: ikurl.UrlParam{
 				Path:        "default-image.jpg",
 				UrlEndpoint: "https://imagekit.io/343534/",
-				Transformations: []ikurl.Transformation{
+				Transformations: []map[string]any{
 					{
-						Width:  100,
-						Rotate: 90,
+						"width":    100,
+						"rotation": 90,
 					},
 				},
 			},
@@ -78,10 +80,10 @@ func TestUrl(t *testing.T) {
 			params: ikurl.UrlParam{
 				Path:        "default-image.jpg",
 				UrlEndpoint: "https://ik.imagekit.io/test/",
-				Transformations: []ikurl.Transformation{
+				Transformations: []map[string]any{
 					{
-						Width:  200,
-						Rotate: 90,
+						"width":    200,
+						"rotation": 90,
 					},
 				},
 				Signed:        true,
@@ -95,10 +97,10 @@ func TestUrl(t *testing.T) {
 			name: "src-with-transformation",
 			params: ikurl.UrlParam{
 				Src: "https://imagekit.io/343534/default-image.jpg",
-				Transformations: []ikurl.Transformation{
+				Transformations: []map[string]any{
 					{
-						Width:  100,
-						Rotate: 90,
+						"width":    100,
+						"rotation": 90,
 					},
 				},
 			},
@@ -114,10 +116,10 @@ func TestUrl(t *testing.T) {
 			params: ikurl.UrlParam{
 				Path:        "default-image.jpg",
 				UrlEndpoint: "https://imagekit.io/343534/",
-				Transformations: []ikurl.Transformation{
+				Transformations: []map[string]any{
 					{
-						Width:  100,
-						Rotate: 90,
+						"width":    100,
+						"rotation": 90,
 					},
 				},
 				TransformationPosition: ikurl.QUERY,
@@ -127,56 +129,56 @@ func TestUrl(t *testing.T) {
 			name: "transformations",
 			params: ikurl.UrlParam{
 				Path:        "default-image.jpg",
-				UrlEndpoint: "https://ik.imagekit.io/test-id/",
-				Transformations: []ikurl.Transformation{
+				UrlEndpoint: "https://ik.imagekit.io/dk1m7xkgi/",
+				Transformations: []map[string]any{
 					{
-						Width:            200,
-						Height:           400,
-						CropMode:         ikurl.CmExtract,
-						Focus:            ikurl.FoCenter,
-						X:                100,
-						Y:                110,
-						Quality:          85,
-						Format:           ikurl.FAuto,
-						Blur:             5,
-						Dpr:              "auto",
-						GrayScale:        true,
-						DefaultImage:     "/test2_hBIIEweBy.gif",
-						ProgressiveImage: true,
-						Lossless:         true,
-						TrimEdges:        true,
-						Border:           "5_005500",
-						ColorProfile:     true,
-						ImageMetadata:    true,
-						Rotate:           "auto",
-						Radius:           40,
-						BgColor:          "344222",
-						Attachment:       true,
-						Contrast:         true,
-						Sharpen:          true,
-						Raw:              "x-1",
+						"width":          200,
+						"height":         400,
+						"cropMode":       "extract",
+						"focus":          "center",
+						"x":              100,
+						"y":              110,
+						"quality":        85,
+						"format":         "auto",
+						"blur":           5,
+						"dpr":            "auto",
+						"effectGray":     "-",
+						"defaultImage":   "/test2_hBIIEweBy.gif",
+						"progressive":    true,
+						"lossless":       true,
+						"trim":           true,
+						"border":         "5_005500",
+						"colorProfile":   true,
+						"metadata":       true,
+						"rotation":       "auto",
+						"radius":         40,
+						"background":     "344222",
+						"attachment":     true,
+						"effectContrast": "-",
+						"effectSharpen":  "-",
+						"raw":            "x-1",
 					},
 				},
 			},
-			url: "https://ik.imagekit.io/test-id/tr:w-200,h-400,cm-extract,fo-center,x-100,y-110,q-85,f-auto,bl-5,dpr-auto,e-grayscale,di-test2_hBIIEweBy.gif,pr-true,lo-true,t-true,b-5_005500,cp-true,md-true,rt-auto,r-40,bg-344222,ik-attachment=true,e-sharpen,e-contrast,x-1/default-image.jpg",
+			url: "https://ik.imagekit.io/dk1m7xkgi/tr:w-200,h-400,cm-extract,fo-center,x-100,y-110,q-85,f-auto,bl-5,dpr-auto,e-grayscale,di-test2_hBIIEweBy.gif,pr-true,lo-true,t-true,b-5_005500,cp-true,md-true,rt-auto,r-40,bg-344222,ik-attachment=true,e-sharpen,e-contrast,x-1/default-image.jpg",
 		}, {
 			name: "aspect-ratio-xc-yc",
 			params: ikurl.UrlParam{
 				Path: "default-image.jpg",
-				Transformations: []ikurl.Transformation{
+				Transformations: []map[string]any{
 					{
-						Width:       200,
-						AspectRatio: ikurl.AspectRatio{Width: 16, Height: 9},
-						CropMode:    ikurl.CmExtract,
-						Focus:       ikurl.FoCenter,
-						Xc:          100,
-						Yc:          110,
-						Quality:     85,
-						Format:      ikurl.FAuto,
-						Blur:        50,
-						Dpr:         2,
-						Rotate:      90,
-						Sharpen:     40,
+						"width":         200,
+						"aspectRatio":   "16-9",
+						"cropMode":      "extract",
+						"focus":         "center",
+						"xc":            100,
+						"yc":            110,
+						"quality":       85,
+						"format":        "auto",
+						"blur":          50,
+						"dpr":           2,
+						"rotation":      90,
+						"effectSharpen": 40,
 					},
 				},
 			},
@@ -185,32 +187,41 @@ func TestUrl(t *testing.T) {
 			name: "unsharp-mask",
 			params: ikurl.UrlParam{
 				Path: "default-image.jpg",
-				Transformations: []ikurl.Transformation{
+				Transformations: []map[string]any{
 					{
-						UnsharpMask: ikurl.UnsharpMask{
-							Radius:    2,
-							Sigma:     2,
-							Amount:    0.8,
-							Threshold: 0.024,
-						},
+						"effectUSM": "2-2-0.8-0.024",
 					},
 				},
 			},
-			url: "https://ik.imagekit.io/test/tr:e-usm-2.0000-2.0000-0.8000-0.0240/default-image.jpg",
+			url: "https://ik.imagekit.io/test/tr:e-usm-2-2-0.8-0.024/default-image.jpg",
 		}, {
+			name: "chained transformations",
+			params: ikurl.UrlParam{
+				Path:        "default-image.jpg",
+				UrlEndpoint: "https://ik.imagekit.io/343534/",
+				Transformations: []map[string]any{
+					{
+						"width":  100,
+						"height": 200,
+					}, {
+						"rotation": 90,
+					},
+				},
+			},
+			url: "https://ik.imagekit.io/343534/tr:w-100,h-200:rt-90/default-image.jpg",
+		}, {
+
 			name: "common-overlay-options",
 			params: ikurl.UrlParam{
 				Path: "default-image.jpg",
-				Transformations: []ikurl.Transformation{
+				Transformations: []map[string]any{
 					{
-						Overlay: &ikurl.Overlay{
-							X:          api.Int(100),
-							Y:          api.Int(110),
-							Height:     api.Int(100),
-							Width:      api.Int(90),
-							Background: "443322",
-							Focus:      ikurl.OfBottom,
-						},
+						"overlayX":          100,
+						"overlayY":          110,
+						"overlayHeight":     100,
+						"overlayWidth":      90,
+						"overlayBackground": "443322",
+						"overlayFocus":      "bottom",
 					},
 				},
 			},
@@ -219,23 +230,21 @@ func TestUrl(t *testing.T) {
 			name: "text-overlay-options",
 			params: ikurl.UrlParam{
 				Path: "default-image.jpg",
-				Transformations: []ikurl.Transformation{
+				Transformations: []map[string]any{
 					{
-						Overlay: &ikurl.Overlay{
-							Text:               "this is a sample overlay",
-							X:                  api.Int(100),
-							Y:                  api.Int(110),
-							Height:             api.Int(500),
-							Width:              api.Int(900),
-							TextPadding:        "20_40",
-							TextBackground:     "ffffff",
-							TextInnerAlignment: ikurl.Right,
-							TextColor:          "blue",
-							TextFont:           "Arvo",
-							TextSize:           api.Int(40),
-							TextTypography:     "ib",
-							Radius:             20,
-						},
+						"overlayText":               "this is a sample overlay",
+						"overlayX":                  100,
+						"overlayY":                  110,
+						"overlayHeight":             500,
+						"overlayWidth":              900,
+						"overlayTextPadding":        "20_40",
+						"overlayTextBackground":     "ffffff",
+						"overlayTextInnerAlignment": "right",
+						"overlayTextColor":          "blue",
+						"overlayTextFontFamily":     "Arvo",
+						"overlayTextFontSize":       40,
+						"overlayTextTypography":     "ib",
+						"overlayRadius":             20,
 					},
 				},
 			},
@@ -244,22 +253,20 @@ func TestUrl(t *testing.T) {
 			name: "image-overlay-options",
 			params: ikurl.UrlParam{
 				Path: "default-image.jpg",
-				Transformations: []ikurl.Transformation{
+				Transformations: []map[string]any{
 					{
-						Overlay: &ikurl.Overlay{
-							Image:         "/test2_hBIIEweBy.gif",
-							X:             api.Int(100),
-							Y:             api.Int(110),
-							Height:        api.Int(200),
-							Width:         api.Int(200),
-							ImageBorder:   "4_blue",
-							ImageDPR:      api.Float32(0.2),
-							ImageQuality:  api.Int(80),
-							ImageCropping: ikurl.CropAtMax,
-							ImageX:        api.Int(100),
-							ImageY:        api.Int(20),
-							Trim:          api.Bool(false),
-						},
+						"overlayImage":         "/test2_hBIIEweBy.gif",
+						"overlayX":             100,
+						"overlayY":             110,
+						"overlayHeight":        200,
+						"overlayWidth":         200,
+						"overlayImageBorder":   "4_blue",
+						"overlayImageDPR":      0.2,
+						"overlayImageQuality":  80,
+						"overlayImageCropping": "at_max",
+						"overlayImageX":        100,
+						"overlayImageY":        20,
+						"overlayImageTrim":     false,
 					},
 				},
 			},
@@ -270,18 +277,42 @@ func TestUrl(t *testing.T) {
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
 			url, err := imgkit.Url(tc.params)
-			imgkit.Logger.Debug(url)
 
 			if err != nil {
 				t.Errorf(err.Error())
 			}
 
-			if !urlsEquals(url, tc.url) {
-				t.Errorf("expected url: %s\ngot: %s", tc.url, url)
+			if strings.Index(tc.url, "tr:") > -1 {
+				url, tr := extractTransformation(t, url)
+				expectedUrl, expectedTr := extractTransformation(t, tc.url)
+
+				if !urlsEquals(url, expectedUrl) {
+					t.Errorf("expected url: %s\ngot: %s", expectedUrl, url)
+				}
+
+				if !cmp.Equal(tr, expectedTr) {
+					t.Errorf("url: %s, expected tr: %s\ngot tr: %s", tc.url, expectedTr, tr)
+				}
 			}
 		})
 	}
 
+}
+
+func extractTransformation(t *testing.T, url string) (urlResult string, trResult []string) {
+	re := regexp.MustCompile("tr:(.+)/")
+	m := re.FindStringSubmatch(url)
+
+	if m == nil {
+		t.Error("transformation not found")
+		return
+	}
+
+	urlResult = strings.Replace(url, "tr:"+m[1], "", 1)
+	trResult = strings.Split(m[1], ",")
+	sort.Strings(trResult)
+
+	return urlResult, trResult
 }
 
 func urlsEquals(url1 string, url2 string) bool {

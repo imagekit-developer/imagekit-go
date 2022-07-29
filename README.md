@@ -110,11 +110,11 @@ import (
 url, err := ik.Url(ikurl.UrlParam{
     Path: "/default-image.jpg",
     UrlEndpoint: "https://ik.imagekit.io/your_imagekit_id/endpoint/",
-    Transformations: []ikurl.Transformation{
+    Transformations: []map[string]any{
         {
-            Width:  400,
-            Height: 300,
-            Rotate: 90,
+            "width":  400,
+            "height": 300,
+            "rotation": 90,
         },
     },
 })
@@ -134,11 +134,11 @@ import (
 
 url, err := ik.Url(ikurl.UrlParam{
     Src: "https://ik.imagekit.io/your_imagekit_id/endpoint/default-image.jpg",
-    Transformations: []ikurl.Transformation{
+    Transformations: []map[string]any{
         {
-            Width:  400,
-            Height: 300,
-            Rotate: 90,
+            "width":  400,
+            "height": 300,
+            "rotation": 90,
         },
     },
 })
@@ -147,7 +147,7 @@ url, err := ik.Url(ikurl.UrlParam{
 This results in a URL like:
 
 ```
-https://ik.imagekit.io/your_imagekit_id/endpoint/default-image.jpg?tr=h-300,w=400:rt-90
+https://ik.imagekit.io/your_imagekit_id/endpoint/default-image.jpg?tr=h-300,w-400:rt-90
 ```
 
 
@@ -172,13 +172,13 @@ https://ik.imagekit.io/your_imagekit_id/endpoint/default-image.jpg?tr=h-300,w=40
 params := ikurl.UrlParam{
     Path:        "default-image.jpg",
     UrlEndpoint: "https://ik.imagekit.io/demo-id/",
-    Transformations: []ikurl.Transformation{
+    Transformations: []map[string]any{
         {
-            Height: 300,
-            Width:  400,
+            "height": 300,
+            "width":  400,
         },
         {
-            Rotate: 90,
+            "rotation": 90,
         },
     },
     TransformationPosition: ikurl.QUERY,
@@ -194,86 +194,83 @@ There are some transforms like [Sharpening](https://docs.imagekit.io/features/im
 params := ikurl.UrlParam{
     Path:        "default-image.jpg",
     UrlEndpoint: "https://ik.imagekit.io/demo-id/",
-    Transformations: []ikurl.Transformation{
+    Transformations: []map[string]any{
         {
-            Sharpen: true,
+            "effectSharpen": "-",
         },
     },
 }
 ```
 #### List of supported transformations
-url package defines transformation type:
-```go
-// Transformation is a struct representing options for transformation parameter to Url()
-type Transformation struct {
-	Width            float32     // w
-	Height           float32     // h
-	AspectRatio      AspectRatio // ar
-	CropMode         CropMode
-	Focus            Focus  // fo-custom|face|auto|left|right|top|bottom|top_left.....
-	X                int    // x
-	Y                int    // y
-	Xc               int    // xc.  Focus with center coordinate Xc and Yc
-	Yc               int    // yc
-	Quality          int    // q
-	Format           Format // f
-	Blur             int    // bl
-	Dpr              any    // dpr (auto or number 0.1 to 5)
-	GrayScale        bool   // e-grayscale
-	DefaultImage     string // di (Replaces all forward slashes with @@)
-	ProgressiveImage bool   // pr
-	Lossless         bool   // lo
-	TrimEdges        any    // t (true or number 1-99)
-	Border           string // b ("width_hexColorCode")
-	ColorProfile     bool   // cp
-	ImageMetadata    bool   // md
-	Rotate           any    // rt (0 , 90 , 180 , 270 , 360 or auto)
-	Radius           any    // r (number or max)
-	BgColor          string // bg
-	Original         bool   // orig
-	Attachment       bool   // ik-attachment
-	Contrast         bool
-	Sharpen          any // bool or number
-	Overlay          *Overlay
-	Raw              string
-}
 
-// Overlay represents transformation's overlay options
-type Overlay struct {
-	X          *int         // ox
-	Y          *int         // oy
-	Height     *int         // oh
-	Width      *int         // ow
-	Background string       // obg
-	Focus      OverlayFocus // ofo
-	// Text overlay options
-	Text               string // ot
-	TextEncoded        string
-	TextWidth          *int      // otw
-	TextBackground     string    // otbg
-	TextPadding        string    // otp ("40" or "40_60" or "40_60_50_10")
-	TextInnerAlignment Alignment // otia
-	TextColor          string    // otc
-	TextFont           string    // otf
-	TextSize           *int      // ots
-	TextTypography     string    // ott (i, b or ib)=(italic, bold, both)
-	Radius             int       // or
-	// Image overlay options
-	Image            string      // oi (replaces all forward slashes with @@)
-	ImageAspectRatio AspectRatio // oiar
-	ImageBorder      string      // oib (width_colorcode: 5_red, 10_FF0000)
-	ImageDPR         *float32    // oidpr (0.1 to 5)
-	ImageQuality     *int        // oiq
-	ImageCropping    ImageCropping
-	ImageX           *int  //oix
-	ImageY           *int  //oiy
-	ImageXc          *int  //oixc
-	ImageYc          *int  //oixy
-	Trim             *bool //oit-true
-}
-```
+See the complete list of transformations supported in ImageKit [here](https://docs.imagekit.io/features/image-transformations). The SDK gives a name to each transformation parameter e.g. `height` for `h` and `width` for `w` parameter. It makes your code more readable. If the property does not match any of the following supported options, it is added as it is.
 
-[See full documentation](https://docs.imagekit.io/features/image-transformations) for transformation options.
+| Supported Transformation Name | Translates to parameter |
+|-------------------------------|-------------------------|
+|height                    |h|
+|width                     |w|
+|aspectRatio               |ar|
+|quality                   |q|
+|crop                      |c|
+|cropMode                  |cm|
+|x                         |x|
+|y                         |y|
+|xc                        |xc|
+|yc                        |yc|
+|focus                     |fo|
+|format                    |f|
+|radius                    |r|
+|background                |bg|
+|border                    |b|
+|rotation                  |rt|
+|blur                      |bl|
+|named                     |n|
+|overlayX                  |ox|
+|overlayY                  |oy|
+|overlayFocus              |ofo|
+|overlayHeight             |oh|
+|overlayWidth              |ow|
+|overlayImage              |oi|
+|overlayImageX             |oix|
+|overlayImageY             |oiy|
+|overlayImageXc            |oixc|
+|overlayImageYc            |oiyc|
+|overlayImageAspectRatio   |oiar|
+|overlayImageBackground    |oibg|
+|overlayImageBorder        |oib|
+|overlayImageDPR           |oidpr|
+|overlayImageQuality       |oiq|
+|overlayImageCropping      |oic|
+|overlayImageFocus         |oifo|
+|overlayImageTrim          |oit|
+|overlayText               |ot|
+|overlayTextFontSize       |ots|
+|overlayTextFontFamily     |otf|
+|overlayTextColor          |otc|
+|overlayTextTransparency   |oa|
+|overlayAlpha              |oa|
+|overlayTextTypography     |ott|
+|overlayBackground         |obg|
+|overlayTextEncoded        |ote|
+|overlayTextWidth          |otw|
+|overlayTextBackground     |otbg|
+|overlayTextPadding        |otp|
+|overlayTextInnerAlignment |otia|
+|overlayRadius             |or|
+|progressive               |pr|
+|lossless                  |lo|
+|trim                      |t|
+|metadata                  |md|
+|colorProfile              |cp|
+|defaultImage              |di|
+|dpr                       |dpr|
+|effectSharpen             |e-sharpen|
+|effectUSM                 |e-usm|
+|effectContrast            |e-contrast|
+|effectGray                |e-grayscale|
+|original                  |orig|
+|attachment                |ik-attachment|
+
 
 ## File-Upload
 
@@ -614,5 +611,6 @@ For any feedback or to report any issues or general implementation support, plea
 * [Main website](https://imagekit.io)
 
 ## License
+
 
 Released under the MIT license.
