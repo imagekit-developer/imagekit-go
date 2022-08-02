@@ -133,11 +133,7 @@ func transform(tr map[string]any) string {
 			if prefix == "di" || prefix == "oi" {
 				value = strings.ReplaceAll(strings.Trim(value, "/"), "/", "@@")
 			}
-			if k == "attachment" {
-				parts = append(parts, prefix+"="+value)
-			} else {
-				parts = append(parts, prefix+"-"+value)
-			}
+			parts = append(parts, prefix+"-"+value)
 		}
 	}
 

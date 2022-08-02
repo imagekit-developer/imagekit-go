@@ -153,14 +153,13 @@ func TestUrl(t *testing.T) {
 						"rotation":       "auto",
 						"radius":         40,
 						"background":     "344222",
-						"attachment":     true,
 						"effectContrast": "-",
 						"effectSharpen":  "-",
 						"raw":            "x-1",
 					},
 				},
 			},
-			url: "https://ik.imagekit.io/dk1m7xkgi/tr:w-200,h-400,cm-extract,fo-center,x-100,y-110,q-85,f-auto,bl-5,dpr-auto,e-grayscale,di-test2_hBIIEweBy.gif,pr-true,lo-true,t-true,b-5_005500,cp-true,md-true,rt-auto,r-40,bg-344222,ik-attachment=true,e-sharpen,e-contrast,x-1/default-image.jpg",
+			url: "https://ik.imagekit.io/dk1m7xkgi/tr:w-200,h-400,cm-extract,fo-center,x-100,y-110,q-85,f-auto,bl-5,dpr-auto,e-grayscale,di-test2_hBIIEweBy.gif,pr-true,lo-true,t-true,b-5_005500,cp-true,md-true,rt-auto,r-40,bg-344222,e-sharpen,e-contrast,x-1/default-image.jpg",
 		}, {
 			name: "aspect-ratio-xc-yc",
 			params: ikurl.UrlParam{

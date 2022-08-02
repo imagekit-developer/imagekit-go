@@ -5,7 +5,6 @@ import (
 	"log"
 
 	"github.com/imagekit-developer/imagekit-go"
-	"github.com/imagekit-developer/imagekit-go/api"
 	ikurl "github.com/imagekit-developer/imagekit-go/url"
 )
 
@@ -18,17 +17,14 @@ func main() {
 
 	url, err := ik.Url(ikurl.UrlParam{
 		Path: "/default-image.jpg",
-		Transformations: []ikurl.Transformation{
+		Transformations: []map[string]any{
 			{
-				Height: 300,
-				Width:  300,
-
-				Overlay: &ikurl.Overlay{
-					Image:       "test2_5r9tRj4L4.gif",
-					Width:       api.Int(100),
-					X:           api.Int(0),
-					ImageBorder: "10_CDDC39",
-				},
+				"height":             300,
+				"width":              300,
+				"overlayImage":       "test2_5r9tRj4L4.gif",
+				"overlayWidth":       100,
+				"x":                  0,
+				"overlayImageBorder": "10_CDDC39",
 			},
 		},
 	})

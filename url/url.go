@@ -85,5 +85,4 @@ var TransformationCode = map[string]string{
 	"effectContrast":            "e-contrast",
 	"effectGray":                "e-grayscale",
 	"original":                  "orig",
-	"attachment":                "ik-attachment",
 }
