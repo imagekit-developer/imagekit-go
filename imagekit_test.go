@@ -65,7 +65,7 @@ func TestUrl(t *testing.T) {
 			},
 			url: "https://imagekit.io/343534/tr:w-100,rt-90/default-image.jpg",
 		}, {
-			name: "signed-without-transformation",
+			name: "signed-url",
 			params: ikurl.UrlParam{
 				Path:          "default-image.jpg",
 				Signed:        true,
@@ -75,24 +75,6 @@ func TestUrl(t *testing.T) {
 				},
 			},
 			url: "https://ik.imagekit.io/test/default-image.jpg?ik-t=1653775928&ik-s=48842eca663c6895331331db6c90f262c601f4e8",
-		}, {
-			name: "signed-with-transformation",
-			params: ikurl.UrlParam{
-				Path:        "default-image.jpg",
-				UrlEndpoint: "https://ik.imagekit.io/test/",
-				Transformations: []map[string]any{
-					{
-						"width":    200,
-						"rotation": 90,
-					},
-				},
-				Signed:        true,
-				ExpireSeconds: 100,
-				UnixTime: func() int64 {
-					return 1653775828
-				},
-			},
-			url: "https://ik.imagekit.io/test/tr:w-200,rt-90/default-image.jpg?ik-t=1653775928&ik-s=6c74b32f5efc0cc39ab5c042718b36553d8a1606",
 		}, {
 			name: "src-with-transformation",
 			params: ikurl.UrlParam{
@@ -308,8 +290,13 @@ func extractTransformation(t *testing.T, url string) (urlResult string, trResult
 	}
 
 	urlResult = strings.Replace(url, "tr:"+m[1], "", 1)
-	trResult = strings.Split(m[1], ",")
-	sort.Strings(trResult)
+	trs := strings.Split(m[1], ":")
+
+	for _, tr := range trs {
+		parts := strings.Split(tr, ",")
+		sort.Strings(parts)
+		trResult = append(trResult, parts...)
+	}
 
 	return urlResult, trResult
 }
@@ -331,7 +318,7 @@ func urlsEquals(url1 string, url2 string) bool {
 	return reflect.DeepEqual(q1, q2)
 }
 
-func TestSignToken(t *testing.T) {
+func Test_SignToken(t *testing.T) {
 	var expire int64 = 1655379249 + DefaultTokenExpire
 	var unix = func() int64 { return 1655379249 }
 	var token = "xxxx-xxxx-xxxxxxxx"
