@@ -1,18 +1,16 @@
 [<img width="250" alt="ImageKit.io" src="https://raw.githubusercontent.com/imagekit-developer/imagekit-javascript/master/assets/imagekit-light-logo.svg"/>](https://imagekit.io)
 
-# ImageKit-go
-ImageKit.io Go SDK
-
+# ImageKit.io Go SDK
 [![CI](https://github.com/imagekit-developer/imagekit-go/workflows/CI/badge.svg)](https://github.com/imagekit-developer/imagekit-go/)
 [![codecov](https://codecov.io/gh/imagekit-developer/imagekit-go/branch/dev/graph/badge.svg)](https://codecov.io/gh/imagekit-developer/imagekit-go)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Twitter Follow](https://img.shields.io/twitter/follow/imagekitio?label=Follow&style=social)](https://twitter.com/ImagekitIo)
 
-Go SDK for [ImageKit](https://imagekit.io/) implements all the backend API, URL-generation and other utility functions.
+Go SDK for [ImageKit](https://imagekit.io/) implements all the backend API, URL-generation, and other utility functions.
 
 ImageKit is complete media storage, optimization, and transformation solution that comes with an [image and video CDN](https://imagekit.io). It can be integrated with your existing infrastructure - storage like AWS S3, web servers, your CDN, and custom domain names, allowing you to deliver optimized images in minutes with minimal code changes.
 
-All methods except url generation and utility functions return response with `ResponseMetaData` which holds raw response header, HTTP status code and raw response body. The Response object also contains `Data` attribtue except when underlying API call is not supposed to return any data such as delete file API.
+All methods except url generation and utility functions return a response with `ResponseMetaData`, which holds the raw response header, HTTP status code, and raw response body. The Response object also contains the `Data` attribute except when the underlying API call is not supposed to return any data such as delete file API.
 
 Table of contents -
 
@@ -62,7 +60,7 @@ ik, err := ImageKit.NewFromParams(imagekit.NewParams{
 ```
 
 ## Response Format
-Results returned by functions which call backend api(such as media management, metadata, cache apis) embeds raw response in `ResponseMetaData`, which can be used to get the response HTTP `StatusCode`, `Header` and `Body`. The json resonse body is parsed to appropriate SDK type and assigned to `Data`  attribute.
+Results returned by functions that call backend API(such as media management, metadata, cache APIs) embeds raw response in `ResponseMetaData`, which can be used to get the response HTTP `StatusCode`, `Header`, and `Body`. The JSON response body is parsed to the appropriate SDK type and assigned to the `Data`  attribute.
 
 ```
 resp, err := ik.Metadata.FromFile(ctx, fileId)
@@ -70,11 +68,11 @@ log.Println(resp.ResponseMetaData.Header, resp.Data.Url)
 
 ```
 
-Functions which do not get any response body from API, does not include `Data` attribute in response. Such responses are of type `*api.Response` and only ResponseMetaData is available.
+Functions that do not get any response body from API do not include the `Data` attribute in the response. In such cases, only `ResponseMetaData` is available.
 
 ## Error Handling
-ImageKit API returns non 2xx status code upon error.
-SDK defines following errors in api package based on the status code returned:
+ImageKit API returns a non-2xx status code upon error.
+SDK defines the following errors in the API package based on the status code returned:
 
 ```
 imagekit-go/api:
@@ -100,11 +98,11 @@ if errors.Is(err, api.ErrForbidden) {
 ## URL-generation
 
 ### 1. Using image path and image hostname or endpoint
-This method allows you to create an URL to access a file using the relative file path and the ImageKit URL endpoint (`urlEndpoint`). The file can be an image, video or any other static file supported by ImageKit.
+This method allows you to create an URL to access a file using the relative file path and the ImageKit URL endpoint (`urlEndpoint`). The file can be an image, video, or any other static file supported by ImageKit.
 
 ```
 import (
-	ikurl "github.com/imagekit-developer/imagekit-go/url"
+    ikurl "github.com/imagekit-developer/imagekit-go/url"
 )
 
 url, err := ik.Url(ikurl.UrlParam{
@@ -124,12 +122,12 @@ This results in a URL like:
 https://ik.imagekit.io/your_imagekit_id/endpoint/tr:h-300,w-400:rt-90/default-image.jpg
 ```
 
-### 2. Using full image URL**
+### 2. Using full image URL
 This method allows you to add transformation parameters to an absolute URL. For example, if you have configured a custom CNAME and have absolute asset URLs in your database or CMS, you will often need this.
 
 ```
 import (
-	ikurl "github.com/imagekit-developer/imagekit-go/url"
+    ikurl "github.com/imagekit-developer/imagekit-go/url"
 )
 
 url, err := ik.Url(ikurl.UrlParam{
@@ -151,7 +149,7 @@ https://ik.imagekit.io/your_imagekit_id/endpoint/default-image.jpg?tr=h-300,w-40
 ```
 
 
-`UrlParam` has following options:
+`UrlParam` has the following options:
 
 | Option           | Description                    |
 | :----------------| :----------------------------- |
@@ -159,9 +157,9 @@ https://ik.imagekit.io/your_imagekit_id/endpoint/default-image.jpg?tr=h-300,w-40
 | Src              | Conditional. This is the complete URL of an image already mapped to ImageKit. For example, `https://ik.imagekit.io/your_imagekit_id/endpoint/path/to/image.jpg`. Either the `Path` or `Src` parameter needs to be specified for URL generation. |
 | UrlEndpoint      | Optional. The base URL to be appended before the path of the image. If not specified, the URL Endpoint specified at the time of SDK initialization is used. For example, https://ik.imagekit.io/your_imagekit_id/endpoint/ |
 | Transformations   | Optional. An array of objects specifying the transformation to be applied in the URL. Different steps of a [chained transformation](https://docs.imagekit.io/features/image-transformations/chained-transformations) can be specified as different objects of the array. The complete list of supported transformations in the SDK and some examples of using them are given later. 
-| TransformationPosition | Optional. The default value is `Path` that places the transformation string as a path parameter in the URL. It can also be specified as `query`, which adds the transformation string as the URL's query parameter `tr`. If you use the `Src` parameter to create the URL, then the transformation string is always added as a query parameter. |
-| NamedTransformation | Optional. Specifies name of a pre defined transformation. |
-| QueryParameters  | Optional. These are the other query parameters that you want to add to the final URL. These can be any query parameters and not necessarily related to ImageKit. Especially useful if you want to add some versioning parameter to your URLs. |
+| TransformationPosition | Optional. The default value is `Path`, which places the transformation string as a path parameter in the URL. It can also be specified as `query`, which adds the transformation string as the URL's query parameter `tr`. If you use the `Src` parameter to create the URL, then the transformation string is always added as a query parameter. |
+| NamedTransformation | Optional. Specifies the name of a pre-defined transformation. |
+| QueryParameters  | Optional. These are the other query parameters that you want to add to the final URL. These can be any query parameters and not necessarily related to ImageKit. Especially useful if you want to add some versioning parameters to your URLs. |
 | Signed           | Optional. Boolean. Default is `false`. If set to `true`, the SDK generates a signed image URL adding the image signature to the image URL. If you create a URL using the `Src` parameter instead of `Path`, then do correct `UrlEndpoint` for this to work. Otherwise returned URL will have the wrong signature |
 | ExpireSeconds    | Optional. Integer. Meant to be used along with the `Signed` parameter to specify the time in seconds from now when the URL should expire. If specified, the URL contains the expiry timestamp in the URL, and the image signature is modified accordingly. |
 
@@ -187,9 +185,9 @@ params := ikurl.UrlParam{
 url, err := ik.Url(params)
 ```
 
-**2. Sharpening and contrast transforms and a progressive JPG image**
+**2. Sharpening and contrast transform and a progressive JPG image**
 
-There are some transforms like [Sharpening](https://docs.imagekit.io/features/image-transformations/image-enhancement-and-color-manipulation) that can be added to the URL with or without any other value. To use such transforms without specifying a value, specify the value as "-" in the transformation object. Otherwise, specify the value that you want to be added to this transformation.
+Some transform like [Sharpening](https://docs.imagekit.io/features/image-transformations/image-enhancement-and-color-manipulation) can be added to the URL with or without any other value. To use such transforms without specifying a value, specify the value as "-" in the transformation object. Otherwise, specify the value that you want to be added to this transformation.
 ```go
 params := ikurl.UrlParam{
     Path:        "default-image.jpg",
@@ -204,6 +202,8 @@ params := ikurl.UrlParam{
 #### List of supported transformations
 
 See the complete list of transformations supported in ImageKit [here](https://docs.imagekit.io/features/image-transformations). The SDK gives a name to each transformation parameter e.g. `height` for `h` and `width` for `w` parameter. It makes your code more readable. If the property does not match any of the following supported options, it is added as it is.
+
+If you want to generate transformations in your application and add them to the URL as it is, use the raw parameter.
 
 | Supported Transformation Name | Translates to parameter |
 |-------------------------------|-------------------------|
@@ -269,14 +269,14 @@ See the complete list of transformations supported in ImageKit [here](https://do
 |effectContrast            |e-contrast|
 |effectGray                |e-grayscale|
 |original                  |orig|
-|attachment                |ik-attachment|
+|raw                       | `replaced by the parameter value`|
 
 
 ## File-Upload
 
 The SDK uploader package provides a simple interface using the `.upload()` method to upload files to the ImageKit Media Library. It accepts all the parameters supported by the [ImageKit Upload API](https://docs.imagekit.io/api-reference/upload-file-api/server-side-file-upload).
 
-The upload() method accepts file and UploadParam. File param can be base64 encode image, url or io.Reader. This method returns `UploadResponse` object and `err` if any. You can pass other parameters supported by the ImageKit upload API using the same parameter name as specified in the upload API documentation. For example, to specify tags for a file at the time of upload, use the tags parameter as specified in the [documentation here](https://docs.imagekit.io/api-reference/upload-file-api/server-side-file-upload).
+The upload() method accept file and UploadParam. File param can be base64 encoded image, absolute HTTP URL, or io.Reader. This method returns the `UploadResponse` object and `err` if any. In addition, you can pass other parameters supported by the ImageKit upload API using the same parameter name as specified in the upload API documentation. For example, to set tags for a file at the upload time, use the tags parameter as defined in the [documentation here](https://docs.imagekit.io/api-reference/upload-file-api/server-side-file-upload).
 
 ```
 import "github.com/imagekit-developer/imagekit-go/uploader"
@@ -293,7 +293,7 @@ resp, err := ik.Uploader.Upload(ctx, base64Image, uploader.UploadParam{
 The SDK provides a simple interface for all the [media APIs mentioned here](https://docs.imagekit.io/api-reference/media-api) to manage your files. 
 
 ### 1. List & Search Files
-List files in media library, optionally filter and sort using `FileParams`.
+List files in the media library, optionally filter and sort using `FileParams`.
 
 ```
 import (
@@ -346,7 +346,7 @@ resp, err := ik.Media.UpdateFile(ctx, fileId, media.UpdateFileParam{
 ```
 
 ### 6. Add Tags (bulk)
-Adds given tags to multiple files. Accepts slices of tags and file ids. Returns slice of file ids. [API documentation here](https://docs.imagekit.io/api-reference/media-api/add-tags-bulk).
+Set tags to multiple files. Accepts slices of tags and file Ids. Returns slice of file ids. [API documentation here](https://docs.imagekit.io/api-reference/media-api/add-tags-bulk).
 
 ```
 resp, err := ik.Media.AddTags(ctx, media.TagsParam{
@@ -356,7 +356,7 @@ resp, err := ik.Media.AddTags(ctx, media.TagsParam{
 ```
 
 ### 7. Remove Tags (bulk)
-Removes tags from multiple files. Returns slice of file ids updated. [API documentation here](https://docs.imagekit.io/api-reference/media-api/remove-tags-bulk).
+Removes tags from multiple files. Returns slice of file IDs updated. [API documentation here](https://docs.imagekit.io/api-reference/media-api/remove-tags-bulk).
 
 ```
 resp, err := ik.Media.RemoveTags(ctx, media.TagsParam{
@@ -381,7 +381,7 @@ resp, err := ik.Media.DeleteFile(ctx, "file_id")
 ```
 
 ### 10. Delete File Version
-Deletes given version of the file. [API documentation here](https://docs.imagekit.io/api-reference/media-api/delete-file-version).
+Deletes the given version of the file. [API documentation here](https://docs.imagekit.io/api-reference/media-api/delete-file-version).
 ```
 resp, err := ik.Media.DeleteFileVersion(ctx, "file_id", "version_1")
 ```
@@ -432,7 +432,7 @@ resp, err := ik.Media.RenameFile(ctx, media.RenameFileParam{
 ```
 
 ### 15. Restore File Version
-Restore file version to a different version of a file as per [API documentation here](https://docs.imagekit.io/api-reference/media-api/restore-file-version).
+Restore the file version as per [API documentation here](https://docs.imagekit.io/api-reference/media-api/restore-file-version).
 Accepts string type file id and version id.
 ```
 resp, err := ik.Media.RestoreVersion(ctx, media.FileVersionsParam{
@@ -442,7 +442,7 @@ resp, err := ik.Media.RestoreVersion(ctx, media.FileVersionsParam{
 ```
 
 ### 16. Create Folder
-Creates a new folder as per [API documentation here](https://docs.imagekit.io/api-reference/media-api/create-folder). `err` is not nil when response is not 201.
+Creates a new folder as per [API documentation here](https://docs.imagekit.io/api-reference/media-api/create-folder). `err` is not nil when the response is not 201.
 
 Accepts string type folder name and parent path.
 
@@ -485,14 +485,14 @@ resp, err := ik.Media.MoveFolder(ctx, media.MoveFolderParam{
 ```
 
 ### 20. Bulk Job Status
-Get status of a bulk job operation by job id.  Accepts string type job id. [API documentation here](https://docs.imagekit.io/api-reference/media-api/copy-move-folder-status).
+Get the status of a bulk job operation by job id. Accepts string type job id. [API documentation here](https://docs.imagekit.io/api-reference/media-api/copy-move-folder-status).
 
 ```
 resp, err := ik.BulkJobStatus(ctx, "job_id")
 ```
 
 ### 21. Purge Cache
-This will purge given url's CDN and ImageKit.io's internal cache as per [API documentation here](https://docs.imagekit.io/api-reference/media-api/purge-cache).
+This will purge the CDN and ImageKit internal cache for a given URL. [API documentation here](https://docs.imagekit.io/api-reference/media-api/purge-cache).
 
 ```
 resp, err := ik.Media.PurgeCache(ctx, media.PurgeCacheParam{
@@ -565,11 +565,13 @@ resp, err := ik.Metadata.DeleteCustomField(ctx, "field_id")
     
 ## Utility Functions
 
-### 1. SignToken
-This method generates a signature for given token and timestamp using the configured private key. It is useful for client side file upload to authenticate requests. `Token` is a random string. `Expires` is a unix timestamp by which token should expire.  `Token` and `Expires` both are optional parameters. `Token` defaults to auto generated UUID string. `Expires` defaults to a current time + 30 minutes value.
+We have included the following commonly used utility function in this package.
+
+### 1. Authentication parameter generation
+This method generates a signature for a given token and timestamp using the configured private key. It is useful for client-side file upload to authenticate requests. `Token` is a random string. `Expires` is a unix timestamp by which token should expire. `Token` and `Expires` are both optional parameters. `Token` defaults to an auto-generated UUID string. `Expires` defaults to a current time + 30 minutes value.
 
 ```
-// Using auto generated token and expiration
+// Using auto-generated token and expiration
 resp := ik.SignToken(imagekit.SignTokenParam{})
 
 // Using specific token and expiration
@@ -583,7 +585,7 @@ resp := ik.SignToken(imagekit.SignTokenParam{
 ## Rate Limits
 Except for upload API, all ImageKit APIs are rate limited to avoid excessive request rates. 
 
-Whenever backend api returns 429 status code, error of type `ErrTooManyRequests` is returned, which can be tested with `errors.Is`. The rate limit detail can be retrieved from response metadata header. Please sleep/pause for the number of milliseconds specified by the value of `resp.ResponseMetaData.Header["X-RateLimit-Reset"]` property before making additional requests to that endpoint.
+Whenever backend API returns 429 status code, error of type `ErrTooManyRequests` is returned, which can be tested with `errors.Is`. The rate limit detail can be retrieved from the response metadata header. Please sleep/pause for the number of milliseconds specified by the value of `resp.ResponseMetaData.Header["X-RateLimit-Reset"]` property before making additional requests to that endpoint.
 
 ```
 import (
@@ -611,6 +613,4 @@ For any feedback or to report any issues or general implementation support, plea
 * [Main website](https://imagekit.io)
 
 ## License
-
-
 Released under the MIT license.
