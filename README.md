@@ -32,7 +32,7 @@ Table of contents -
 
 | SDK Version | Go        |
 |-------------|-----------|
-| 1.x         | >=1.18     |
+| 1.x         | >=1.18    |
 
 
 ## Installation
@@ -123,7 +123,7 @@ https://ik.imagekit.io/your_imagekit_id/endpoint/tr:h-300,w-400:rt-90/default-im
 ```
 
 ### 2. Using full image URL
-This method allows you to add transformation parameters to an absolute URL. For example, if you have configured a custom CNAME and have absolute asset URLs in your database or CMS, you will often need this.
+This method allows you to add transformation parameters to an absolute URL. For example, if you have configured a custom CNAME and have absolute file URLs in your database or CMS, you will often need this.
 
 ```
 import (
