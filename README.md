@@ -48,7 +48,7 @@ import (
     "github.com/imagekit-developer/imagekit-go"
 )
 
-// Using environment variables IMAGEKIT_PRIVATE_KEY, IMAGEKIT_PUBLIC_KEY and IMAGEKIT_URL_ENDPOINT
+// Using environment variables IMAGEKIT_PRIVATE_KEY, IMAGEKIT_PUBLIC_KEY and IMAGEKIT_ENDPOINT_URL
 ik, err := ImageKit.New()
 
 // Using keys in argument
