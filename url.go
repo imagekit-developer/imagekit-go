@@ -5,7 +5,6 @@ import (
 	"crypto/sha1"
 	"encoding/hex"
 	"fmt"
-	"log"
 	neturl "net/url"
 	"strconv"
 	"strings"
