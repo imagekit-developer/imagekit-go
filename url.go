@@ -78,7 +78,6 @@ func (ik *ImageKit) Url(params ikurl.UrlParam) (string, error) {
 
 		if params.UnixTime == nil {
 			now = time.Now().Unix()
-			log.Println(now)
 		} else {
 			now = params.UnixTime()
 		}
