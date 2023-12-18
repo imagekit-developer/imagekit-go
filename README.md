@@ -199,6 +199,21 @@ params := ikurl.UrlParam{
     },
 }
 ```
+
+**3. Adding overlays to images**
+
+ImageKit.io  allows overlaying [text](https://docs.imagekit.io/features/image-transformations/overlay-using-layers#add-text-over-image) or [image](https://docs.imagekit.io/features/image-transformations/overlay-using-layers#add-images-over-image) over other images and videos for watermarking or creating dynamic assets using custom text.
+```go
+params := ikurl.UrlParam{
+    Path:        "default-image.jpg",
+    UrlEndpoint: "https://ik.imagekit.io/demo-id/",
+    Transformations: []map[string]any{
+        {
+            "raw": "l-image,i-default-image.jpg,w-100,b-10_CDDC39,l-end"
+        },
+    },
+}
+```
 #### List of supported transformations
 
 See the complete list of transformations supported in ImageKit [here](https://docs.imagekit.io/features/image-transformations). The SDK gives a name to each transformation parameter e.g. `height` for `h` and `width` for `w` parameter. It makes your code more readable. If the property does not match any of the following supported options, it is added as it is.
@@ -225,38 +240,6 @@ If you want to generate transformations in your application and add them to the 
 |rotation                  |rt|
 |blur                      |bl|
 |named                     |n|
-|overlayX                  |ox|
-|overlayY                  |oy|
-|overlayFocus              |ofo|
-|overlayHeight             |oh|
-|overlayWidth              |ow|
-|overlayImage              |oi|
-|overlayImageX             |oix|
-|overlayImageY             |oiy|
-|overlayImageXc            |oixc|
-|overlayImageYc            |oiyc|
-|overlayImageAspectRatio   |oiar|
-|overlayImageBackground    |oibg|
-|overlayImageBorder        |oib|
-|overlayImageDPR           |oidpr|
-|overlayImageQuality       |oiq|
-|overlayImageCropping      |oic|
-|overlayImageFocus         |oifo|
-|overlayImageTrim          |oit|
-|overlayText               |ot|
-|overlayTextFontSize       |ots|
-|overlayTextFontFamily     |otf|
-|overlayTextColor          |otc|
-|overlayTextTransparency   |oa|
-|overlayAlpha              |oa|
-|overlayTextTypography     |ott|
-|overlayBackground         |obg|
-|overlayTextEncoded        |ote|
-|overlayTextWidth          |otw|
-|overlayTextBackground     |otbg|
-|overlayTextPadding        |otp|
-|overlayTextInnerAlignment |otia|
-|overlayRadius             |or|
 |progressive               |pr|
 |lossless                  |lo|
 |trim                      |t|
