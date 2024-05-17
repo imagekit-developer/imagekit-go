@@ -44,7 +44,7 @@ func (ik *ImageKit) Url(params ikurl.UrlParam) (string, error) {
 		} else {
 			if params.TransformationPosition == ikurl.QUERY {
 				params.QueryParameters["tr"] = joinTransformations(params.Transformations...)
-				url, err = neturl.Parse(endpoint + params.Path)
+				url, err = neturl.Parse(strings.TrimRight(endpoint, "/") + "/" + strings.TrimLeft(params.Path, "/"))
 
 			} else {
 				url, err = neturl.Parse(url.String() +
@@ -90,6 +90,7 @@ func (ik *ImageKit) Url(params ikurl.UrlParam) (string, error) {
 			expires = strconv.Itoa(DEFAULT_TIMESTAMP)
 		}
 		var path = strings.Replace(resultUrl, endpoint, "", 1)
+		path = strings.TrimPrefix(path, "/")
 		path = path + expires
 		mac := hmac.New(sha1.New, []byte(ik.Config.Cloud.PrivateKey))
 		mac.Write([]byte(path))
