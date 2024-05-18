@@ -6,6 +6,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	neturl "net/url"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -148,6 +149,7 @@ func transform(tr map[string]any) string {
 			parts = append(parts, prefix+"-"+value)
 		}
 	}
+	sort.Strings(parts)
 
 	return strings.Join(parts, ",")
 }
