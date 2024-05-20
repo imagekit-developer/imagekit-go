@@ -110,6 +110,20 @@ func TestUrl(t *testing.T) {
 			url: "https://ik.imagekit.io/test/default-image.jpg?tr=h-300%2Cw-300&ik-t=1653775928&ik-s=55f319d3a7db76e652545599a57af3dd94e32e24",
 		},
 		{
+			name: "signed-url-without-ExpireSeconds",
+			params: ikurl.UrlParam{
+				Path:   "default-image.jpg",
+				Signed: true,
+				Transformations: []map[string]any{
+					{
+						"height": 300,
+						"width":  300,
+					},
+				},
+			},
+			url: "https://ik.imagekit.io/test/tr:h-300,w-300/default-image.jpg?ik-s=355f6c8a91031847828169116fd1d1db6e2aa8c7",
+		},
+		{
 			name: "src-with-transformation",
 			params: ikurl.UrlParam{
 				Src: "https://imagekit.io/343534/default-image.jpg",
