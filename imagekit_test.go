@@ -4,9 +4,6 @@ import (
 	neturl "net/url"
 	"os"
 	"reflect"
-	"regexp"
-	"sort"
-	"strings"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -63,7 +60,7 @@ func TestUrl(t *testing.T) {
 					},
 				},
 			},
-			url: "https://imagekit.io/343534/tr:w-100,rt-90/default-image.jpg",
+			url: "https://imagekit.io/343534/tr:rt-90,w-100/default-image.jpg",
 		}, {
 			name: "signed-url",
 			params: ikurl.UrlParam{
@@ -76,6 +73,57 @@ func TestUrl(t *testing.T) {
 			},
 			url: "https://ik.imagekit.io/test/default-image.jpg?ik-t=1653775928&ik-s=48842eca663c6895331331db6c90f262c601f4e8",
 		}, {
+			name: "signed-url-with-transformation",
+			params: ikurl.UrlParam{
+				Path:          "default-image.jpg",
+				Signed:        true,
+				ExpireSeconds: 100,
+				UnixTime: func() int64 {
+					return 1653775828
+				},
+				Transformations: []map[string]any{
+					{
+						"height": 300,
+						"width":  300,
+					},
+				},
+			},
+			url: "https://ik.imagekit.io/test/tr:h-300,w-300/default-image.jpg?ik-t=1653775928&ik-s=1a74eab9fca6fa0bb2298aa07f4e3892a925a508",
+		},
+		{
+			name: "signed-url-with-transformation-in-query",
+			params: ikurl.UrlParam{
+				Path:          "default-image.jpg",
+				Signed:        true,
+				ExpireSeconds: 100,
+				UnixTime: func() int64 {
+					return 1653775828
+				},
+				TransformationPosition: "query",
+				Transformations: []map[string]any{
+					{
+						"height": 300,
+						"width":  300,
+					},
+				},
+			},
+			url: "https://ik.imagekit.io/test/default-image.jpg?tr=h-300%2Cw-300&ik-t=1653775928&ik-s=55f319d3a7db76e652545599a57af3dd94e32e24",
+		},
+		{
+			name: "signed-url-without-ExpireSeconds",
+			params: ikurl.UrlParam{
+				Path:   "default-image.jpg",
+				Signed: true,
+				Transformations: []map[string]any{
+					{
+						"height": 300,
+						"width":  300,
+					},
+				},
+			},
+			url: "https://ik.imagekit.io/test/tr:h-300,w-300/default-image.jpg?ik-s=355f6c8a91031847828169116fd1d1db6e2aa8c7",
+		},
+		{
 			name: "src-with-transformation",
 			params: ikurl.UrlParam{
 				Src: "https://imagekit.io/343534/default-image.jpg",
@@ -86,7 +134,7 @@ func TestUrl(t *testing.T) {
 					},
 				},
 			},
-			url: "https://imagekit.io/343534/default-image.jpg?tr=w-100,rt-90",
+			url: "https://imagekit.io/343534/default-image.jpg?tr=rt-90%2Cw-100",
 		}, {
 			name: "src-without-transformation",
 			params: ikurl.UrlParam{
@@ -106,7 +154,7 @@ func TestUrl(t *testing.T) {
 				},
 				TransformationPosition: ikurl.QUERY,
 			},
-			url: "https://imagekit.io/343534/default-image.jpg?tr=w-100%2crt-90",
+			url: "https://imagekit.io/343534/default-image.jpg?tr=rt-90%2Cw-100",
 		}, {
 			name: "transformations",
 			params: ikurl.UrlParam{
@@ -141,7 +189,7 @@ func TestUrl(t *testing.T) {
 					},
 				},
 			},
-			url: "https://ik.imagekit.io/dk1m7xkgi/tr:w-200,h-400,cm-extract,fo-center,x-100,y-110,q-85,f-auto,bl-5,dpr-auto,e-grayscale,di-test2_hBIIEweBy.gif,pr-true,lo-true,t-true,b-5_005500,cp-true,md-true,rt-auto,r-40,bg-344222,e-sharpen,e-contrast,x-1/default-image.jpg",
+			url: "https://ik.imagekit.io/dk1m7xkgi/tr:b-5_005500,bg-344222,bl-5,cm-extract,cp-true,di-test2_hBIIEweBy.gif,dpr-auto,e-contrast,e-grayscale,e-sharpen,f-auto,fo-center,h-400,lo-true,md-true,pr-true,q-85,r-40,rt-auto,t-true,w-200,x-1,x-100,y-110/default-image.jpg",
 		}, {
 			name: "aspect-ratio-xc-yc",
 			params: ikurl.UrlParam{
@@ -163,7 +211,7 @@ func TestUrl(t *testing.T) {
 					},
 				},
 			},
-			url: "https://ik.imagekit.io/test/tr:w-200,ar-16-9,cm-extract,fo-center,xc-100,yc-110,q-85,f-auto,bl-50,dpr-2,rt-90,e-sharpen-40/default-image.jpg",
+			url: "https://ik.imagekit.io/test/tr:ar-16-9,bl-50,cm-extract,dpr-2,e-sharpen-40,f-auto,fo-center,q-85,rt-90,w-200,xc-100,yc-110/default-image.jpg",
 		}, {
 			name: "unsharp-mask",
 			params: ikurl.UrlParam{
@@ -189,7 +237,7 @@ func TestUrl(t *testing.T) {
 					},
 				},
 			},
-			url: "https://ik.imagekit.io/343534/tr:w-100,h-200:rt-90/default-image.jpg",
+			url: "https://ik.imagekit.io/343534/tr:h-200,w-100:rt-90/default-image.jpg",
 		}, {
 
 			name: "common-overlay-options",
@@ -206,7 +254,7 @@ func TestUrl(t *testing.T) {
 					},
 				},
 			},
-			url: "https://ik.imagekit.io/test/tr:ox-100,oy-110,oh-100,ow-90,obg-443322,ofo-bottom/default-image.jpg",
+			url: "https://ik.imagekit.io/test/tr:obg-443322,ofo-bottom,oh-100,ow-90,ox-100,oy-110/default-image.jpg",
 		}, {
 			name: "text-overlay-options",
 			params: ikurl.UrlParam{
@@ -229,7 +277,7 @@ func TestUrl(t *testing.T) {
 					},
 				},
 			},
-			url: "https://ik.imagekit.io/test/tr:ot-this%20is%20a%20sample%20overlay,ox-100,oy-110,oh-500,ow-900,otbg-ffffff,otp-20_40,otia-right,otc-blue,otf-Arvo,ots-40,ott-ib,or-20/default-image.jpg",
+			url: "https://ik.imagekit.io/test/tr:oh-500,or-20,ot-this%20is%20a%20sample%20overlay,otbg-ffffff,otc-blue,otf-Arvo,otia-right,otp-20_40,ots-40,ott-ib,ow-900,ox-100,oy-110/default-image.jpg",
 		}, {
 			name: "image-overlay-options",
 			params: ikurl.UrlParam{
@@ -251,7 +299,7 @@ func TestUrl(t *testing.T) {
 					},
 				},
 			},
-			url: "https://ik.imagekit.io/test/tr:oi-test2_hBIIEweBy.gif,ox-100,oy-110,oh-200,ow-200,oib-4_blue,oidpr-0.2,oiq-80,oic-at_max,oix-100,oiy-20,oit-false/default-image.jpg",
+			url: "https://ik.imagekit.io/test/tr:oh-200,oi-test2_hBIIEweBy.gif,oib-4_blue,oic-at_max,oidpr-0.2,oiq-80,oit-false,oix-100,oiy-20,ow-200,ox-100,oy-110/default-image.jpg",
 		},
 	}
 
@@ -262,43 +310,12 @@ func TestUrl(t *testing.T) {
 			if err != nil {
 				t.Errorf(err.Error())
 			}
-
-			if strings.Index(tc.url, "tr:") > -1 {
-				url, tr := extractTransformation(t, url)
-				expectedUrl, expectedTr := extractTransformation(t, tc.url)
-
-				if !urlsEquals(url, expectedUrl) {
-					t.Errorf("expected url: %s\ngot: %s", expectedUrl, url)
-				}
-
-				if !cmp.Equal(tr, expectedTr) {
-					t.Errorf("url: %s, expected tr: %s\ngot tr: %s", tc.url, expectedTr, tr)
-				}
+			if !urlsEquals(url, tc.url) {
+				t.Errorf("expected url: %s\ngot: %s", tc.url, url)
 			}
 		})
 	}
 
-}
-
-func extractTransformation(t *testing.T, url string) (urlResult string, trResult []string) {
-	re := regexp.MustCompile("tr:(.+)/")
-	m := re.FindStringSubmatch(url)
-
-	if m == nil {
-		t.Error("transformation not found")
-		return
-	}
-
-	urlResult = strings.Replace(url, "tr:"+m[1], "", 1)
-	trs := strings.Split(m[1], ":")
-
-	for _, tr := range trs {
-		parts := strings.Split(tr, ",")
-		sort.Strings(parts)
-		trResult = append(trResult, parts...)
-	}
-
-	return urlResult, trResult
 }
 
 func urlsEquals(url1 string, url2 string) bool {

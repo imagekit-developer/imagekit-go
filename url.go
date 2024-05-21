@@ -6,12 +6,15 @@ import (
 	"encoding/hex"
 	"fmt"
 	neturl "net/url"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
 
 	ikurl "github.com/imagekit-developer/imagekit-go/url"
 )
+
+const DEFAULT_TIMESTAMP = 9999999999
 
 // Url generates url from UrlParam
 func (ik *ImageKit) Url(params ikurl.UrlParam) (string, error) {
@@ -42,7 +45,7 @@ func (ik *ImageKit) Url(params ikurl.UrlParam) (string, error) {
 		} else {
 			if params.TransformationPosition == ikurl.QUERY {
 				params.QueryParameters["tr"] = joinTransformations(params.Transformations...)
-				url, err = neturl.Parse(endpoint + params.Path)
+				url, err = neturl.Parse(strings.TrimRight(endpoint, "/") + "/" + strings.TrimLeft(params.Path, "/"))
 
 			} else {
 				url, err = neturl.Parse(url.String() +
@@ -81,18 +84,30 @@ func (ik *ImageKit) Url(params ikurl.UrlParam) (string, error) {
 			now = params.UnixTime()
 		}
 
-		var expires = strconv.FormatInt(now+int64(params.ExpireSeconds), 10)
+		var expires string
+		if params.ExpireSeconds > 0 {
+			expires = strconv.FormatInt(now+int64(params.ExpireSeconds), 10)
+		} else {
+			expires = strconv.Itoa(DEFAULT_TIMESTAMP)
+		}
 		var path = strings.Replace(resultUrl, endpoint, "", 1)
-
+		path = strings.TrimPrefix(path, "/")
 		path = path + expires
 		mac := hmac.New(sha1.New, []byte(ik.Config.Cloud.PrivateKey))
 		mac.Write([]byte(path))
 		signature := hex.EncodeToString(mac.Sum(nil))
-
 		if strings.Index(resultUrl, "?") > -1 {
-			resultUrl = resultUrl + "&" + fmt.Sprintf("ik-t=%s&ik-s=%s", expires, signature)
+			if params.ExpireSeconds > 0 && params.ExpireSeconds != DEFAULT_TIMESTAMP {
+				resultUrl = resultUrl + "&" + fmt.Sprintf("ik-t=%s&ik-s=%s", expires, signature)
+			} else {
+				resultUrl = resultUrl + "&" + fmt.Sprintf("ik-s=%s", signature)
+			}
 		} else {
-			resultUrl = resultUrl + "?" + fmt.Sprintf("ik-t=%s&ik-s=%s", expires, signature)
+			if params.ExpireSeconds > 0 && params.ExpireSeconds != DEFAULT_TIMESTAMP {
+				resultUrl = resultUrl + "?" + fmt.Sprintf("ik-t=%s&ik-s=%s", expires, signature)
+			} else {
+				resultUrl = resultUrl + "?" + fmt.Sprintf("ik-s=%s", signature)
+			}
 		}
 	}
 
@@ -134,6 +149,7 @@ func transform(tr map[string]any) string {
 			parts = append(parts, prefix+"-"+value)
 		}
 	}
+	sort.Strings(parts)
 
 	return strings.Join(parts, ",")
 }
