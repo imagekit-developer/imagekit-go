@@ -85,9 +85,33 @@ func (r *FolderService) Rename(ctx context.Context, body FolderRenameParams, opt
 	return
 }
 
-type FolderNewResponse = any
+type FolderNewResponse struct {
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
 
-type FolderDeleteResponse = any
+// Returns the unmodified JSON received from the API
+func (r FolderNewResponse) RawJSON() string { return r.JSON.raw }
+func (r *FolderNewResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type FolderDeleteResponse struct {
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r FolderDeleteResponse) RawJSON() string { return r.JSON.raw }
+func (r *FolderDeleteResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type FolderCopyResponse struct {
 	// Unique identifier of the bulk job. This can be used to check the status of the

@@ -168,7 +168,7 @@ type FileUpdateResponse struct {
 	// An string with custom coordinates of the file.
 	CustomCoordinates string `json:"customCoordinates,nullable"`
 	// An object with custom metadata for the file.
-	CustomMetadata  any                               `json:"customMetadata"`
+	CustomMetadata  map[string]any                    `json:"customMetadata"`
 	ExtensionStatus FileUpdateResponseExtensionStatus `json:"extensionStatus"`
 	// Unique identifier of the asset.
 	FileID string `json:"fileId"`
@@ -316,7 +316,19 @@ func (r *FileUpdateResponseVersionInfo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type FileCopyResponse = any
+type FileCopyResponse struct {
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r FileCopyResponse) RawJSON() string { return r.JSON.raw }
+func (r *FileCopyResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // Object containing details of a file or file version.
 type FileGetResponse struct {
@@ -328,7 +340,7 @@ type FileGetResponse struct {
 	// An string with custom coordinates of the file.
 	CustomCoordinates string `json:"customCoordinates,nullable"`
 	// An object with custom metadata for the file.
-	CustomMetadata any `json:"customMetadata"`
+	CustomMetadata map[string]any `json:"customMetadata"`
 	// Unique identifier of the asset.
 	FileID string `json:"fileId"`
 	// Path of the file. This is the path you would use in the URL to access the file.
@@ -448,7 +460,19 @@ func (r *FileGetResponseVersionInfo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type FileMoveResponse = any
+type FileMoveResponse struct {
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r FileMoveResponse) RawJSON() string { return r.JSON.raw }
+func (r *FileMoveResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type FileRenameResponse struct {
 	// Unique identifier of the purge request. This can be used to check the status of
@@ -486,7 +510,7 @@ type FileUploadResponse struct {
 	// metadata on an asset, you have to create the field using custom metadata fields
 	// API. Send `customMetadata` in `responseFields` in API request to get the value
 	// of this field.
-	CustomMetadata any `json:"customMetadata"`
+	CustomMetadata map[string]any `json:"customMetadata"`
 	// The duration of the video in seconds (only for video).
 	Duration int64 `json:"duration"`
 	// Consolidated embedded metadata associated with the file. It includes exif, iptc,
@@ -782,7 +806,7 @@ type FileUpdateParamsBodyUpdateFileDetails struct {
 	// A key-value data to be associated with the asset. To unset a key, send `null`
 	// value for that key. Before setting any custom metadata on an asset you have to
 	// create the field using custom metadata fields API.
-	CustomMetadata any `json:"customMetadata,omitzero"`
+	CustomMetadata map[string]any `json:"customMetadata,omitzero"`
 	// Array of extensions to be applied to the asset. Each extension can be configured
 	// with specific parameters based on the extension type.
 	Extensions []FileUpdateParamsBodyUpdateFileDetailsExtensionUnion `json:"extensions,omitzero"`
@@ -810,9 +834,9 @@ func (r *FileUpdateParamsBodyUpdateFileDetails) UnmarshalJSON(data []byte) error
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type FileUpdateParamsBodyUpdateFileDetailsExtensionUnion struct {
-	OfRemoveBackground *FileUpdateParamsBodyUpdateFileDetailsExtensionRemoveBackground `json:",omitzero,inline"`
-	OfAutoTagging      *FileUpdateParamsBodyUpdateFileDetailsExtensionAutoTagging      `json:",omitzero,inline"`
-	OfAutoDescription  *FileUpdateParamsBodyUpdateFileDetailsExtensionAutoDescription  `json:",omitzero,inline"`
+	OfRemoveBackground *shared.RemovedotBgExtensionParam     `json:",omitzero,inline"`
+	OfAutoTagging      *shared.AutoTaggingExtensionParam     `json:",omitzero,inline"`
+	OfAutoDescription  *shared.AutoDescriptionExtensionParam `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -835,7 +859,7 @@ func (u *FileUpdateParamsBodyUpdateFileDetailsExtensionUnion) asAny() any {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u FileUpdateParamsBodyUpdateFileDetailsExtensionUnion) GetOptions() *FileUpdateParamsBodyUpdateFileDetailsExtensionRemoveBackgroundOptions {
+func (u FileUpdateParamsBodyUpdateFileDetailsExtensionUnion) GetOptions() *shared.RemovedotBgExtensionOptionsParam {
 	if vt := u.OfRemoveBackground; vt != nil {
 		return &vt.Options
 	}
@@ -868,105 +892,6 @@ func (u FileUpdateParamsBodyUpdateFileDetailsExtensionUnion) GetName() *string {
 		return (*string)(&vt.Name)
 	}
 	return nil
-}
-
-// The property Name is required.
-type FileUpdateParamsBodyUpdateFileDetailsExtensionRemoveBackground struct {
-	// Specifies the background removal extension.
-	//
-	// Any of "remove-bg".
-	Name    string                                                                `json:"name,omitzero,required"`
-	Options FileUpdateParamsBodyUpdateFileDetailsExtensionRemoveBackgroundOptions `json:"options,omitzero"`
-	paramObj
-}
-
-func (r FileUpdateParamsBodyUpdateFileDetailsExtensionRemoveBackground) MarshalJSON() (data []byte, err error) {
-	type shadow FileUpdateParamsBodyUpdateFileDetailsExtensionRemoveBackground
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *FileUpdateParamsBodyUpdateFileDetailsExtensionRemoveBackground) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[FileUpdateParamsBodyUpdateFileDetailsExtensionRemoveBackground](
-		"name", "remove-bg",
-	)
-}
-
-type FileUpdateParamsBodyUpdateFileDetailsExtensionRemoveBackgroundOptions struct {
-	// Whether to add an artificial shadow to the result. Default is false. Note:
-	// Adding shadows is currently only supported for car photos.
-	AddShadow param.Opt[bool] `json:"add_shadow,omitzero"`
-	// Specifies a solid color background using hex code (e.g., "81d4fa", "fff") or
-	// color name (e.g., "green"). If this parameter is set, `bg_image_url` must be
-	// empty.
-	BgColor param.Opt[string] `json:"bg_color,omitzero"`
-	// Sets a background image from a URL. If this parameter is set, `bg_color` must be
-	// empty.
-	BgImageURL param.Opt[string] `json:"bg_image_url,omitzero"`
-	// Allows semi-transparent regions in the result. Default is true. Note:
-	// Semitransparency is currently only supported for car windows.
-	Semitransparency param.Opt[bool] `json:"semitransparency,omitzero"`
-	paramObj
-}
-
-func (r FileUpdateParamsBodyUpdateFileDetailsExtensionRemoveBackgroundOptions) MarshalJSON() (data []byte, err error) {
-	type shadow FileUpdateParamsBodyUpdateFileDetailsExtensionRemoveBackgroundOptions
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *FileUpdateParamsBodyUpdateFileDetailsExtensionRemoveBackgroundOptions) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The properties MaxTags, MinConfidence, Name are required.
-type FileUpdateParamsBodyUpdateFileDetailsExtensionAutoTagging struct {
-	// Maximum number of tags to attach to the asset.
-	MaxTags int64 `json:"maxTags,required"`
-	// Minimum confidence level for tags to be considered valid.
-	MinConfidence int64 `json:"minConfidence,required"`
-	// Specifies the auto-tagging extension used.
-	//
-	// Any of "google-auto-tagging", "aws-auto-tagging".
-	Name string `json:"name,omitzero,required"`
-	paramObj
-}
-
-func (r FileUpdateParamsBodyUpdateFileDetailsExtensionAutoTagging) MarshalJSON() (data []byte, err error) {
-	type shadow FileUpdateParamsBodyUpdateFileDetailsExtensionAutoTagging
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *FileUpdateParamsBodyUpdateFileDetailsExtensionAutoTagging) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[FileUpdateParamsBodyUpdateFileDetailsExtensionAutoTagging](
-		"name", "google-auto-tagging", "aws-auto-tagging",
-	)
-}
-
-// The property Name is required.
-type FileUpdateParamsBodyUpdateFileDetailsExtensionAutoDescription struct {
-	// Specifies the auto description extension.
-	//
-	// Any of "ai-auto-description".
-	Name string `json:"name,omitzero,required"`
-	paramObj
-}
-
-func (r FileUpdateParamsBodyUpdateFileDetailsExtensionAutoDescription) MarshalJSON() (data []byte, err error) {
-	type shadow FileUpdateParamsBodyUpdateFileDetailsExtensionAutoDescription
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *FileUpdateParamsBodyUpdateFileDetailsExtensionAutoDescription) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[FileUpdateParamsBodyUpdateFileDetailsExtensionAutoDescription](
-		"name", "ai-auto-description",
-	)
 }
 
 // Only one field can be non-zero.
@@ -1269,9 +1194,9 @@ func (r FileUploadParams) MarshalMultipart() (data []byte, contentType string, e
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type FileUploadParamsExtensionUnion struct {
-	OfRemoveBackground *FileUploadParamsExtensionRemoveBackground `json:",omitzero,inline"`
-	OfAutoTagging      *FileUploadParamsExtensionAutoTagging      `json:",omitzero,inline"`
-	OfAutoDescription  *FileUploadParamsExtensionAutoDescription  `json:",omitzero,inline"`
+	OfRemoveBackground *shared.RemovedotBgExtensionParam     `json:",omitzero,inline"`
+	OfAutoTagging      *shared.AutoTaggingExtensionParam     `json:",omitzero,inline"`
+	OfAutoDescription  *shared.AutoDescriptionExtensionParam `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -1294,7 +1219,7 @@ func (u *FileUploadParamsExtensionUnion) asAny() any {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u FileUploadParamsExtensionUnion) GetOptions() *FileUploadParamsExtensionRemoveBackgroundOptions {
+func (u FileUploadParamsExtensionUnion) GetOptions() *shared.RemovedotBgExtensionOptionsParam {
 	if vt := u.OfRemoveBackground; vt != nil {
 		return &vt.Options
 	}
@@ -1327,105 +1252,6 @@ func (u FileUploadParamsExtensionUnion) GetName() *string {
 		return (*string)(&vt.Name)
 	}
 	return nil
-}
-
-// The property Name is required.
-type FileUploadParamsExtensionRemoveBackground struct {
-	// Specifies the background removal extension.
-	//
-	// Any of "remove-bg".
-	Name    string                                           `json:"name,omitzero,required"`
-	Options FileUploadParamsExtensionRemoveBackgroundOptions `json:"options,omitzero"`
-	paramObj
-}
-
-func (r FileUploadParamsExtensionRemoveBackground) MarshalJSON() (data []byte, err error) {
-	type shadow FileUploadParamsExtensionRemoveBackground
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *FileUploadParamsExtensionRemoveBackground) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[FileUploadParamsExtensionRemoveBackground](
-		"name", "remove-bg",
-	)
-}
-
-type FileUploadParamsExtensionRemoveBackgroundOptions struct {
-	// Whether to add an artificial shadow to the result. Default is false. Note:
-	// Adding shadows is currently only supported for car photos.
-	AddShadow param.Opt[bool] `json:"add_shadow,omitzero"`
-	// Specifies a solid color background using hex code (e.g., "81d4fa", "fff") or
-	// color name (e.g., "green"). If this parameter is set, `bg_image_url` must be
-	// empty.
-	BgColor param.Opt[string] `json:"bg_color,omitzero"`
-	// Sets a background image from a URL. If this parameter is set, `bg_color` must be
-	// empty.
-	BgImageURL param.Opt[string] `json:"bg_image_url,omitzero"`
-	// Allows semi-transparent regions in the result. Default is true. Note:
-	// Semitransparency is currently only supported for car windows.
-	Semitransparency param.Opt[bool] `json:"semitransparency,omitzero"`
-	paramObj
-}
-
-func (r FileUploadParamsExtensionRemoveBackgroundOptions) MarshalJSON() (data []byte, err error) {
-	type shadow FileUploadParamsExtensionRemoveBackgroundOptions
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *FileUploadParamsExtensionRemoveBackgroundOptions) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The properties MaxTags, MinConfidence, Name are required.
-type FileUploadParamsExtensionAutoTagging struct {
-	// Maximum number of tags to attach to the asset.
-	MaxTags int64 `json:"maxTags,required"`
-	// Minimum confidence level for tags to be considered valid.
-	MinConfidence int64 `json:"minConfidence,required"`
-	// Specifies the auto-tagging extension used.
-	//
-	// Any of "google-auto-tagging", "aws-auto-tagging".
-	Name string `json:"name,omitzero,required"`
-	paramObj
-}
-
-func (r FileUploadParamsExtensionAutoTagging) MarshalJSON() (data []byte, err error) {
-	type shadow FileUploadParamsExtensionAutoTagging
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *FileUploadParamsExtensionAutoTagging) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[FileUploadParamsExtensionAutoTagging](
-		"name", "google-auto-tagging", "aws-auto-tagging",
-	)
-}
-
-// The property Name is required.
-type FileUploadParamsExtensionAutoDescription struct {
-	// Specifies the auto description extension.
-	//
-	// Any of "ai-auto-description".
-	Name string `json:"name,omitzero,required"`
-	paramObj
-}
-
-func (r FileUploadParamsExtensionAutoDescription) MarshalJSON() (data []byte, err error) {
-	type shadow FileUploadParamsExtensionAutoDescription
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *FileUploadParamsExtensionAutoDescription) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[FileUploadParamsExtensionAutoDescription](
-		"name", "ai-auto-description",
-	)
 }
 
 // Configure pre-processing (`pre`) and post-processing (`post`) transformations.

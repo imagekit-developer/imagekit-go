@@ -57,7 +57,7 @@ type AssetListResponseUnion struct {
 	// This field is from variant [AssetListResponseFileFileVersion].
 	CustomCoordinates string `json:"customCoordinates"`
 	// This field is from variant [AssetListResponseFileFileVersion].
-	CustomMetadata any `json:"customMetadata"`
+	CustomMetadata map[string]any `json:"customMetadata"`
 	// This field is from variant [AssetListResponseFileFileVersion].
 	FileID string `json:"fileId"`
 	// This field is from variant [AssetListResponseFileFileVersion].
@@ -148,7 +148,7 @@ type AssetListResponseFileFileVersion struct {
 	// An string with custom coordinates of the file.
 	CustomCoordinates string `json:"customCoordinates,nullable"`
 	// An object with custom metadata for the file.
-	CustomMetadata any `json:"customMetadata"`
+	CustomMetadata map[string]any `json:"customMetadata"`
 	// Unique identifier of the asset.
 	FileID string `json:"fileId"`
 	// Path of the file. This is the path you would use in the URL to access the file.

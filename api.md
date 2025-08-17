@@ -1,3 +1,9 @@
+# Shared Params Types
+
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go/shared#AutoDescriptionExtensionParam">AutoDescriptionExtensionParam</a>
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go/shared#AutoTaggingExtensionParam">AutoTaggingExtensionParam</a>
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go/shared#RemovedotBgExtensionParam">RemovedotBgExtensionParam</a>
+
 # Shared Response Types
 
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go/shared#ExifDetails">ExifDetails</a>

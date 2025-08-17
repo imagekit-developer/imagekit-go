@@ -13,6 +13,7 @@ import (
 	"github.com/stainless-sdks/imagekit-go"
 	"github.com/stainless-sdks/imagekit-go/internal/testutil"
 	"github.com/stainless-sdks/imagekit-go/option"
+	"github.com/stainless-sdks/imagekit-go/shared"
 )
 
 func TestBetaV2FileUploadWithOptionalParams(t *testing.T) {
@@ -41,9 +42,9 @@ func TestBetaV2FileUploadWithOptionalParams(t *testing.T) {
 		},
 		Description: imagekit.String("Running shoes"),
 		Extensions: []imagekit.BetaV2FileUploadParamsExtensionUnion{{
-			OfRemoveBackground: &imagekit.BetaV2FileUploadParamsExtensionRemoveBackground{
-				Name: "remove-bg",
-				Options: imagekit.BetaV2FileUploadParamsExtensionRemoveBackgroundOptions{
+			OfRemoveBackground: &shared.RemovedotBgExtensionParam{
+				Name: shared.RemovedotBgExtensionNameRemoveBg,
+				Options: shared.RemovedotBgExtensionOptionsParam{
 					AddShadow:        imagekit.Bool(true),
 					BgColor:          imagekit.String("bg_color"),
 					BgImageURL:       imagekit.String("bg_image_url"),
@@ -51,10 +52,10 @@ func TestBetaV2FileUploadWithOptionalParams(t *testing.T) {
 				},
 			},
 		}, {
-			OfAutoTagging: &imagekit.BetaV2FileUploadParamsExtensionAutoTagging{
+			OfAutoTagging: &shared.AutoTaggingExtensionParam{
 				MaxTags:       5,
 				MinConfidence: 95,
-				Name:          "google-auto-tagging",
+				Name:          shared.AutoTaggingExtensionNameGoogleAutoTagging,
 			},
 		}},
 		Folder:                  imagekit.String("folder"),

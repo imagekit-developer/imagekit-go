@@ -90,7 +90,7 @@ type BetaV2FileUploadResponse struct {
 	// metadata on an asset, you have to create the field using custom metadata fields
 	// API. Send `customMetadata` in `responseFields` in API request to get the value
 	// of this field.
-	CustomMetadata any `json:"customMetadata"`
+	CustomMetadata map[string]any `json:"customMetadata"`
 	// The duration of the video in seconds (only for video).
 	Duration int64 `json:"duration"`
 	// Consolidated embedded metadata associated with the file. It includes exif, iptc,
@@ -486,9 +486,9 @@ func (r BetaV2FileUploadParams) MarshalMultipart() (data []byte, contentType str
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type BetaV2FileUploadParamsExtensionUnion struct {
-	OfRemoveBackground *BetaV2FileUploadParamsExtensionRemoveBackground `json:",omitzero,inline"`
-	OfAutoTagging      *BetaV2FileUploadParamsExtensionAutoTagging      `json:",omitzero,inline"`
-	OfAutoDescription  *BetaV2FileUploadParamsExtensionAutoDescription  `json:",omitzero,inline"`
+	OfRemoveBackground *shared.RemovedotBgExtensionParam     `json:",omitzero,inline"`
+	OfAutoTagging      *shared.AutoTaggingExtensionParam     `json:",omitzero,inline"`
+	OfAutoDescription  *shared.AutoDescriptionExtensionParam `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -511,7 +511,7 @@ func (u *BetaV2FileUploadParamsExtensionUnion) asAny() any {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u BetaV2FileUploadParamsExtensionUnion) GetOptions() *BetaV2FileUploadParamsExtensionRemoveBackgroundOptions {
+func (u BetaV2FileUploadParamsExtensionUnion) GetOptions() *shared.RemovedotBgExtensionOptionsParam {
 	if vt := u.OfRemoveBackground; vt != nil {
 		return &vt.Options
 	}
@@ -544,105 +544,6 @@ func (u BetaV2FileUploadParamsExtensionUnion) GetName() *string {
 		return (*string)(&vt.Name)
 	}
 	return nil
-}
-
-// The property Name is required.
-type BetaV2FileUploadParamsExtensionRemoveBackground struct {
-	// Specifies the background removal extension.
-	//
-	// Any of "remove-bg".
-	Name    string                                                 `json:"name,omitzero,required"`
-	Options BetaV2FileUploadParamsExtensionRemoveBackgroundOptions `json:"options,omitzero"`
-	paramObj
-}
-
-func (r BetaV2FileUploadParamsExtensionRemoveBackground) MarshalJSON() (data []byte, err error) {
-	type shadow BetaV2FileUploadParamsExtensionRemoveBackground
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *BetaV2FileUploadParamsExtensionRemoveBackground) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[BetaV2FileUploadParamsExtensionRemoveBackground](
-		"name", "remove-bg",
-	)
-}
-
-type BetaV2FileUploadParamsExtensionRemoveBackgroundOptions struct {
-	// Whether to add an artificial shadow to the result. Default is false. Note:
-	// Adding shadows is currently only supported for car photos.
-	AddShadow param.Opt[bool] `json:"add_shadow,omitzero"`
-	// Specifies a solid color background using hex code (e.g., "81d4fa", "fff") or
-	// color name (e.g., "green"). If this parameter is set, `bg_image_url` must be
-	// empty.
-	BgColor param.Opt[string] `json:"bg_color,omitzero"`
-	// Sets a background image from a URL. If this parameter is set, `bg_color` must be
-	// empty.
-	BgImageURL param.Opt[string] `json:"bg_image_url,omitzero"`
-	// Allows semi-transparent regions in the result. Default is true. Note:
-	// Semitransparency is currently only supported for car windows.
-	Semitransparency param.Opt[bool] `json:"semitransparency,omitzero"`
-	paramObj
-}
-
-func (r BetaV2FileUploadParamsExtensionRemoveBackgroundOptions) MarshalJSON() (data []byte, err error) {
-	type shadow BetaV2FileUploadParamsExtensionRemoveBackgroundOptions
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *BetaV2FileUploadParamsExtensionRemoveBackgroundOptions) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The properties MaxTags, MinConfidence, Name are required.
-type BetaV2FileUploadParamsExtensionAutoTagging struct {
-	// Maximum number of tags to attach to the asset.
-	MaxTags int64 `json:"maxTags,required"`
-	// Minimum confidence level for tags to be considered valid.
-	MinConfidence int64 `json:"minConfidence,required"`
-	// Specifies the auto-tagging extension used.
-	//
-	// Any of "google-auto-tagging", "aws-auto-tagging".
-	Name string `json:"name,omitzero,required"`
-	paramObj
-}
-
-func (r BetaV2FileUploadParamsExtensionAutoTagging) MarshalJSON() (data []byte, err error) {
-	type shadow BetaV2FileUploadParamsExtensionAutoTagging
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *BetaV2FileUploadParamsExtensionAutoTagging) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[BetaV2FileUploadParamsExtensionAutoTagging](
-		"name", "google-auto-tagging", "aws-auto-tagging",
-	)
-}
-
-// The property Name is required.
-type BetaV2FileUploadParamsExtensionAutoDescription struct {
-	// Specifies the auto description extension.
-	//
-	// Any of "ai-auto-description".
-	Name string `json:"name,omitzero,required"`
-	paramObj
-}
-
-func (r BetaV2FileUploadParamsExtensionAutoDescription) MarshalJSON() (data []byte, err error) {
-	type shadow BetaV2FileUploadParamsExtensionAutoDescription
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *BetaV2FileUploadParamsExtensionAutoDescription) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[BetaV2FileUploadParamsExtensionAutoDescription](
-		"name", "ai-auto-description",
-	)
 }
 
 // Configure pre-processing (`pre`) and post-processing (`post`) transformations.

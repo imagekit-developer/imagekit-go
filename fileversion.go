@@ -106,7 +106,7 @@ type FileVersionListResponse struct {
 	// An string with custom coordinates of the file.
 	CustomCoordinates string `json:"customCoordinates,nullable"`
 	// An object with custom metadata for the file.
-	CustomMetadata any `json:"customMetadata"`
+	CustomMetadata map[string]any `json:"customMetadata"`
 	// Unique identifier of the asset.
 	FileID string `json:"fileId"`
 	// Path of the file. This is the path you would use in the URL to access the file.
@@ -226,7 +226,19 @@ func (r *FileVersionListResponseVersionInfo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type FileVersionDeleteResponse = any
+type FileVersionDeleteResponse struct {
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r FileVersionDeleteResponse) RawJSON() string { return r.JSON.raw }
+func (r *FileVersionDeleteResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // Object containing details of a file or file version.
 type FileVersionGetResponse struct {
@@ -238,7 +250,7 @@ type FileVersionGetResponse struct {
 	// An string with custom coordinates of the file.
 	CustomCoordinates string `json:"customCoordinates,nullable"`
 	// An object with custom metadata for the file.
-	CustomMetadata any `json:"customMetadata"`
+	CustomMetadata map[string]any `json:"customMetadata"`
 	// Unique identifier of the asset.
 	FileID string `json:"fileId"`
 	// Path of the file. This is the path you would use in the URL to access the file.
@@ -368,7 +380,7 @@ type FileVersionRestoreResponse struct {
 	// An string with custom coordinates of the file.
 	CustomCoordinates string `json:"customCoordinates,nullable"`
 	// An object with custom metadata for the file.
-	CustomMetadata any `json:"customMetadata"`
+	CustomMetadata map[string]any `json:"customMetadata"`
 	// Unique identifier of the asset.
 	FileID string `json:"fileId"`
 	// Path of the file. This is the path you would use in the URL to access the file.
