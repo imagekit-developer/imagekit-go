@@ -1,3 +1,11 @@
+# Shared Response Types
+
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go/shared#ExifDetails">ExifDetails</a>
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go/shared#ExifImage">ExifImage</a>
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go/shared#Gps">Gps</a>
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go/shared#Interoperability">Interoperability</a>
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go/shared#Thumbnail">Thumbnail</a>
+
 # CustomMetadataFields
 
 Response Types:
