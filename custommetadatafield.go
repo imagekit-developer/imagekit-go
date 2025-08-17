@@ -117,7 +117,7 @@ func (r *CustomMetadataFieldNewResponse) UnmarshalJSON(data []byte) error {
 type CustomMetadataFieldNewResponseSchema struct {
 	// Type of the custom metadata field.
 	//
-	// Any of "Text", "TextArea", "Number", "Date", "Boolean", "SingleSelect",
+	// Any of "Text", "Textarea", "Number", "Date", "Boolean", "SingleSelect",
 	// "MultiSelect".
 	Type string `json:"type,required"`
 	// The default value for this custom metadata field. Date type of default value
@@ -412,7 +412,7 @@ func (r *CustomMetadataFieldUpdateResponse) UnmarshalJSON(data []byte) error {
 type CustomMetadataFieldUpdateResponseSchema struct {
 	// Type of the custom metadata field.
 	//
-	// Any of "Text", "TextArea", "Number", "Date", "Boolean", "SingleSelect",
+	// Any of "Text", "Textarea", "Number", "Date", "Boolean", "SingleSelect",
 	// "MultiSelect".
 	Type string `json:"type,required"`
 	// The default value for this custom metadata field. Date type of default value
@@ -707,7 +707,7 @@ func (r *CustomMetadataFieldListResponse) UnmarshalJSON(data []byte) error {
 type CustomMetadataFieldListResponseSchema struct {
 	// Type of the custom metadata field.
 	//
-	// Any of "Text", "TextArea", "Number", "Date", "Boolean", "SingleSelect",
+	// Any of "Text", "Textarea", "Number", "Date", "Boolean", "SingleSelect",
 	// "MultiSelect".
 	Type string `json:"type,required"`
 	// The default value for this custom metadata field. Date type of default value
@@ -995,7 +995,7 @@ func (r *CustomMetadataFieldNewParams) UnmarshalJSON(data []byte) error {
 type CustomMetadataFieldNewParamsSchema struct {
 	// Type of the custom metadata field.
 	//
-	// Any of "Text", "TextArea", "Number", "Date", "Boolean", "SingleSelect",
+	// Any of "Text", "Textarea", "Number", "Date", "Boolean", "SingleSelect",
 	// "MultiSelect".
 	Type string `json:"type,omitzero,required"`
 	// Sets this custom metadata field as required. Setting custom metadata fields on
@@ -1036,7 +1036,7 @@ func (r *CustomMetadataFieldNewParamsSchema) UnmarshalJSON(data []byte) error {
 
 func init() {
 	apijson.RegisterFieldValidator[CustomMetadataFieldNewParamsSchema](
-		"type", "Text", "TextArea", "Number", "Date", "Boolean", "SingleSelect", "MultiSelect",
+		"type", "Text", "Textarea", "Number", "Date", "Boolean", "SingleSelect", "MultiSelect",
 	)
 }
 
@@ -1378,8 +1378,7 @@ func (u *CustomMetadataFieldUpdateParamsSchemaSelectOptionUnion) asAny() any {
 }
 
 type CustomMetadataFieldListParams struct {
-	// Set it to `true` to include deleted field objects in the API response. Default
-	// value is `false`.
+	// Set it to `true` to include deleted field objects in the API response.
 	IncludeDeleted param.Opt[bool] `query:"includeDeleted,omitzero" json:"-"`
 	paramObj
 }

@@ -13,7 +13,7 @@ import (
 	"github.com/stainless-sdks/imagekit-go/option"
 )
 
-func TestFileVersionList(t *testing.T) {
+func TestAccountOriginNewWithOptionalParams(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -27,7 +27,18 @@ func TestFileVersionList(t *testing.T) {
 		option.WithPrivateAPIKey("My Private API Key"),
 		option.WithPassword("My Password"),
 	)
-	_, err := client.Files.Versions.List(context.TODO(), "fileId")
+	_, err := client.Accounts.Origins.New(context.TODO(), imagekit.AccountOriginNewParams{
+		OfS3: &imagekit.AccountOriginNewParamsBodyS3{
+			AccessKey:                 "AKIATEST123",
+			Bucket:                    "test-bucket",
+			Name:                      "My S3 Origin",
+			SecretKey:                 "secrettest123",
+			Type:                      "S3",
+			BaseURLForCanonicalHeader: imagekit.String("https://cdn.example.com"),
+			IncludeCanonicalHeader:    imagekit.Bool(false),
+			Prefix:                    imagekit.String("images"),
+		},
+	})
 	if err != nil {
 		var apierr *imagekit.Error
 		if errors.As(err, &apierr) {
@@ -37,7 +48,7 @@ func TestFileVersionList(t *testing.T) {
 	}
 }
 
-func TestFileVersionDelete(t *testing.T) {
+func TestAccountOriginUpdateWithOptionalParams(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -51,11 +62,20 @@ func TestFileVersionDelete(t *testing.T) {
 		option.WithPrivateAPIKey("My Private API Key"),
 		option.WithPassword("My Password"),
 	)
-	_, err := client.Files.Versions.Delete(
+	_, err := client.Accounts.Origins.Update(
 		context.TODO(),
-		"versionId",
-		imagekit.FileVersionDeleteParams{
-			FileID: "fileId",
+		"id",
+		imagekit.AccountOriginUpdateParams{
+			OfS3: &imagekit.AccountOriginUpdateParamsBodyS3{
+				AccessKey:                 "AKIATEST123",
+				Bucket:                    "test-bucket",
+				Name:                      "My S3 Origin",
+				SecretKey:                 "secrettest123",
+				Type:                      "S3",
+				BaseURLForCanonicalHeader: imagekit.String("https://cdn.example.com"),
+				IncludeCanonicalHeader:    imagekit.Bool(false),
+				Prefix:                    imagekit.String("images"),
+			},
 		},
 	)
 	if err != nil {
@@ -67,7 +87,7 @@ func TestFileVersionDelete(t *testing.T) {
 	}
 }
 
-func TestFileVersionGet(t *testing.T) {
+func TestAccountOriginList(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -81,13 +101,7 @@ func TestFileVersionGet(t *testing.T) {
 		option.WithPrivateAPIKey("My Private API Key"),
 		option.WithPassword("My Password"),
 	)
-	_, err := client.Files.Versions.Get(
-		context.TODO(),
-		"versionId",
-		imagekit.FileVersionGetParams{
-			FileID: "fileId",
-		},
-	)
+	_, err := client.Accounts.Origins.List(context.TODO())
 	if err != nil {
 		var apierr *imagekit.Error
 		if errors.As(err, &apierr) {
@@ -97,7 +111,7 @@ func TestFileVersionGet(t *testing.T) {
 	}
 }
 
-func TestFileVersionRestore(t *testing.T) {
+func TestAccountOriginDelete(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -111,13 +125,31 @@ func TestFileVersionRestore(t *testing.T) {
 		option.WithPrivateAPIKey("My Private API Key"),
 		option.WithPassword("My Password"),
 	)
-	_, err := client.Files.Versions.Restore(
-		context.TODO(),
-		"versionId",
-		imagekit.FileVersionRestoreParams{
-			FileID: "fileId",
-		},
+	err := client.Accounts.Origins.Delete(context.TODO(), "id")
+	if err != nil {
+		var apierr *imagekit.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestAccountOriginGet(t *testing.T) {
+	t.Skip("Prism tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := imagekit.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithPrivateAPIKey("My Private API Key"),
+		option.WithPassword("My Password"),
 	)
+	_, err := client.Accounts.Origins.Get(context.TODO(), "id")
 	if err != nil {
 		var apierr *imagekit.Error
 		if errors.As(err, &apierr) {

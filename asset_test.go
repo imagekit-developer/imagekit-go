@@ -13,7 +13,7 @@ import (
 	"github.com/stainless-sdks/imagekit-go/option"
 )
 
-func TestFileBatchDelete(t *testing.T) {
+func TestAssetListWithOptionalParams(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -27,8 +27,14 @@ func TestFileBatchDelete(t *testing.T) {
 		option.WithPrivateAPIKey("My Private API Key"),
 		option.WithPassword("My Password"),
 	)
-	_, err := client.Files.Batch.Delete(context.TODO(), imagekit.FileBatchDeleteParams{
-		FileIDs: []string{"598821f949c0a938d57563bd", "598821f949c0a938d57563be"},
+	_, err := client.Assets.List(context.TODO(), imagekit.AssetListParams{
+		FileType:    imagekit.AssetListParamsFileTypeAll,
+		Limit:       imagekit.Int(1),
+		Path:        imagekit.String("path"),
+		SearchQuery: imagekit.String("searchQuery"),
+		Skip:        imagekit.Int(0),
+		Sort:        imagekit.AssetListParamsSortAscName,
+		Type:        imagekit.AssetListParamsTypeFile,
 	})
 	if err != nil {
 		var apierr *imagekit.Error

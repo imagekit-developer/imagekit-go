@@ -18,9 +18,11 @@ type Client struct {
 	Options              []option.RequestOption
 	CustomMetadataFields CustomMetadataFieldService
 	Files                FileService
-	Folder               FolderService
-	BulkJobs             BulkJobService
+	Assets               AssetService
+	Cache                CacheService
+	Folders              FolderService
 	Accounts             AccountService
+	Beta                 BetaService
 }
 
 // DefaultClientOptions read from the environment (IMAGEKIT_PRIVATE_API_KEY,
@@ -53,9 +55,11 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 
 	r.CustomMetadataFields = NewCustomMetadataFieldService(opts...)
 	r.Files = NewFileService(opts...)
-	r.Folder = NewFolderService(opts...)
-	r.BulkJobs = NewBulkJobService(opts...)
+	r.Assets = NewAssetService(opts...)
+	r.Cache = NewCacheService(opts...)
+	r.Folders = NewFolderService(opts...)
 	r.Accounts = NewAccountService(opts...)
+	r.Beta = NewBetaService(opts...)
 
 	return
 }

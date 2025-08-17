@@ -15,21 +15,21 @@ import (
 	"github.com/stainless-sdks/imagekit-go/packages/respjson"
 )
 
-// FilePurgeService contains methods and other services that help with interacting
-// with the ImageKit API.
+// CacheInvalidationService contains methods and other services that help with
+// interacting with the ImageKit API.
 //
 // Note, unlike clients, this service does not read variables from the environment
 // automatically. You should not instantiate this service directly, and instead use
-// the [NewFilePurgeService] method instead.
-type FilePurgeService struct {
+// the [NewCacheInvalidationService] method instead.
+type CacheInvalidationService struct {
 	Options []option.RequestOption
 }
 
-// NewFilePurgeService generates a new service that applies the given options to
-// each request. These options are applied after the parent client's options (if
-// there is one), and before any request-specific options.
-func NewFilePurgeService(opts ...option.RequestOption) (r FilePurgeService) {
-	r = FilePurgeService{}
+// NewCacheInvalidationService generates a new service that applies the given
+// options to each request. These options are applied after the parent client's
+// options (if there is one), and before any request-specific options.
+func NewCacheInvalidationService(opts ...option.RequestOption) (r CacheInvalidationService) {
+	r = CacheInvalidationService{}
 	r.Options = opts
 	return
 }
@@ -37,7 +37,7 @@ func NewFilePurgeService(opts ...option.RequestOption) (r FilePurgeService) {
 // This API will purge CDN cache and ImageKit.io's internal cache for a file. Note:
 // Purge cache is an asynchronous process and it may take some time to reflect the
 // changes.
-func (r *FilePurgeService) Execute(ctx context.Context, body FilePurgeExecuteParams, opts ...option.RequestOption) (res *FilePurgeExecuteResponse, err error) {
+func (r *CacheInvalidationService) New(ctx context.Context, body CacheInvalidationNewParams, opts ...option.RequestOption) (res *CacheInvalidationNewResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "v1/files/purge"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -45,7 +45,7 @@ func (r *FilePurgeService) Execute(ctx context.Context, body FilePurgeExecutePar
 }
 
 // This API returns the status of a purge cache request.
-func (r *FilePurgeService) Status(ctx context.Context, requestID string, opts ...option.RequestOption) (res *FilePurgeStatusResponse, err error) {
+func (r *CacheInvalidationService) Get(ctx context.Context, requestID string, opts ...option.RequestOption) (res *CacheInvalidationGetResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if requestID == "" {
 		err = errors.New("missing required requestId parameter")
@@ -56,7 +56,7 @@ func (r *FilePurgeService) Status(ctx context.Context, requestID string, opts ..
 	return
 }
 
-type FilePurgeExecuteResponse struct {
+type CacheInvalidationNewResponse struct {
 	// Unique identifier of the purge request. This can be used to check the status of
 	// the purge request.
 	RequestID string `json:"requestId"`
@@ -69,16 +69,16 @@ type FilePurgeExecuteResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r FilePurgeExecuteResponse) RawJSON() string { return r.JSON.raw }
-func (r *FilePurgeExecuteResponse) UnmarshalJSON(data []byte) error {
+func (r CacheInvalidationNewResponse) RawJSON() string { return r.JSON.raw }
+func (r *CacheInvalidationNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type FilePurgeStatusResponse struct {
+type CacheInvalidationGetResponse struct {
 	// Status of the purge request.
 	//
 	// Any of "Pending", "Completed".
-	Status FilePurgeStatusResponseStatus `json:"status"`
+	Status CacheInvalidationGetResponseStatus `json:"status"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Status      respjson.Field
@@ -88,29 +88,29 @@ type FilePurgeStatusResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r FilePurgeStatusResponse) RawJSON() string { return r.JSON.raw }
-func (r *FilePurgeStatusResponse) UnmarshalJSON(data []byte) error {
+func (r CacheInvalidationGetResponse) RawJSON() string { return r.JSON.raw }
+func (r *CacheInvalidationGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Status of the purge request.
-type FilePurgeStatusResponseStatus string
+type CacheInvalidationGetResponseStatus string
 
 const (
-	FilePurgeStatusResponseStatusPending   FilePurgeStatusResponseStatus = "Pending"
-	FilePurgeStatusResponseStatusCompleted FilePurgeStatusResponseStatus = "Completed"
+	CacheInvalidationGetResponseStatusPending   CacheInvalidationGetResponseStatus = "Pending"
+	CacheInvalidationGetResponseStatusCompleted CacheInvalidationGetResponseStatus = "Completed"
 )
 
-type FilePurgeExecuteParams struct {
+type CacheInvalidationNewParams struct {
 	// The full URL of the file to be purged.
-	URL string `json:"url,required"`
+	URL string `json:"url,required" format:"uri"`
 	paramObj
 }
 
-func (r FilePurgeExecuteParams) MarshalJSON() (data []byte, err error) {
-	type shadow FilePurgeExecuteParams
+func (r CacheInvalidationNewParams) MarshalJSON() (data []byte, err error) {
+	type shadow CacheInvalidationNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *FilePurgeExecuteParams) UnmarshalJSON(data []byte) error {
+func (r *CacheInvalidationNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }

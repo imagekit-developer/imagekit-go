@@ -13,7 +13,7 @@ import (
 	"github.com/stainless-sdks/imagekit-go/option"
 )
 
-func TestBulkJobCopyFolderWithOptionalParams(t *testing.T) {
+func TestCacheInvalidationNew(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -27,10 +27,8 @@ func TestBulkJobCopyFolderWithOptionalParams(t *testing.T) {
 		option.WithPrivateAPIKey("My Private API Key"),
 		option.WithPassword("My Password"),
 	)
-	_, err := client.BulkJobs.CopyFolder(context.TODO(), imagekit.BulkJobCopyFolderParams{
-		DestinationPath:  "/path/of/destination/folder",
-		SourceFolderPath: "/path/of/source/folder",
-		IncludeVersions:  imagekit.Bool(true),
+	_, err := client.Cache.Invalidation.New(context.TODO(), imagekit.CacheInvalidationNewParams{
+		URL: "https://ik.imagekit.io/your_imagekit_id/default-image.jpg",
 	})
 	if err != nil {
 		var apierr *imagekit.Error
@@ -41,7 +39,7 @@ func TestBulkJobCopyFolderWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestBulkJobMoveFolder(t *testing.T) {
+func TestCacheInvalidationGet(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -55,34 +53,7 @@ func TestBulkJobMoveFolder(t *testing.T) {
 		option.WithPrivateAPIKey("My Private API Key"),
 		option.WithPassword("My Password"),
 	)
-	_, err := client.BulkJobs.MoveFolder(context.TODO(), imagekit.BulkJobMoveFolderParams{
-		DestinationPath:  "/path/of/destination/folder",
-		SourceFolderPath: "/path/of/source/folder",
-	})
-	if err != nil {
-		var apierr *imagekit.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestBulkJobGetStatus(t *testing.T) {
-	t.Skip("Prism tests are disabled")
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := imagekit.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithPrivateAPIKey("My Private API Key"),
-		option.WithPassword("My Password"),
-	)
-	_, err := client.BulkJobs.GetStatus(context.TODO(), "jobId")
+	_, err := client.Cache.Invalidation.Get(context.TODO(), "requestId")
 	if err != nil {
 		var apierr *imagekit.Error
 		if errors.As(err, &apierr) {

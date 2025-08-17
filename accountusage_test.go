@@ -14,7 +14,7 @@ import (
 	"github.com/stainless-sdks/imagekit-go/option"
 )
 
-func TestAccountGetUsage(t *testing.T) {
+func TestAccountUsageGet(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -28,7 +28,7 @@ func TestAccountGetUsage(t *testing.T) {
 		option.WithPrivateAPIKey("My Private API Key"),
 		option.WithPassword("My Password"),
 	)
-	_, err := client.Accounts.GetUsage(context.TODO(), imagekit.AccountGetUsageParams{
+	_, err := client.Accounts.Usage.Get(context.TODO(), imagekit.AccountUsageGetParams{
 		EndDate:   time.Now(),
 		StartDate: time.Now(),
 	})

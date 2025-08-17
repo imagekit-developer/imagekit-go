@@ -53,7 +53,7 @@ func (r *FileMetadataService) Get(ctx context.Context, fileID string, opts ...op
 
 // Get image EXIF, pHash, and other metadata from ImageKit.io powered remote URL
 // using this API.
-func (r *FileMetadataService) FromURL(ctx context.Context, query FileMetadataFromURLParams, opts ...option.RequestOption) (res *FileMetadataFromURLResponse, err error) {
+func (r *FileMetadataService) GetFromURL(ctx context.Context, query FileMetadataGetFromURLParams, opts ...option.RequestOption) (res *FileMetadataGetFromURLResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "v1/files/metadata"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
@@ -118,16 +118,16 @@ func (r *FileMetadataGetResponse) UnmarshalJSON(data []byte) error {
 
 type FileMetadataGetResponseExif struct {
 	// Object containing Exif details.
-	Exif ExifDetails `json:"exif"`
+	Exif FileMetadataGetResponseExifExif `json:"exif"`
 	// Object containing GPS information.
-	Gps Gps `json:"gps"`
+	Gps FileMetadataGetResponseExifGps `json:"gps"`
 	// Object containing EXIF image information.
-	Image ExifImage `json:"image"`
+	Image FileMetadataGetResponseExifImage `json:"image"`
 	// JSON object.
-	Interoperability Interoperability `json:"interoperability"`
-	Makernote        map[string]any   `json:"makernote"`
+	Interoperability FileMetadataGetResponseExifInteroperability `json:"interoperability"`
+	Makernote        map[string]any                              `json:"makernote"`
 	// Object containing Thumbnail information.
-	Thumbnail Thumbnail `json:"thumbnail"`
+	Thumbnail FileMetadataGetResponseExifThumbnail `json:"thumbnail"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Exif             respjson.Field
@@ -147,8 +147,175 @@ func (r *FileMetadataGetResponseExif) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Object containing Exif details.
+type FileMetadataGetResponseExifExif struct {
+	ApertureValue            float64 `json:"ApertureValue"`
+	ColorSpace               int64   `json:"ColorSpace"`
+	CreateDate               string  `json:"CreateDate"`
+	CustomRendered           int64   `json:"CustomRendered"`
+	DateTimeOriginal         string  `json:"DateTimeOriginal"`
+	ExifImageHeight          int64   `json:"ExifImageHeight"`
+	ExifImageWidth           int64   `json:"ExifImageWidth"`
+	ExifVersion              string  `json:"ExifVersion"`
+	ExposureCompensation     float64 `json:"ExposureCompensation"`
+	ExposureMode             int64   `json:"ExposureMode"`
+	ExposureProgram          int64   `json:"ExposureProgram"`
+	ExposureTime             float64 `json:"ExposureTime"`
+	Flash                    int64   `json:"Flash"`
+	FlashpixVersion          string  `json:"FlashpixVersion"`
+	FNumber                  float64 `json:"FNumber"`
+	FocalLength              int64   `json:"FocalLength"`
+	FocalPlaneResolutionUnit int64   `json:"FocalPlaneResolutionUnit"`
+	FocalPlaneXResolution    float64 `json:"FocalPlaneXResolution"`
+	FocalPlaneYResolution    float64 `json:"FocalPlaneYResolution"`
+	InteropOffset            int64   `json:"InteropOffset"`
+	ISO                      int64   `json:"ISO"`
+	MeteringMode             int64   `json:"MeteringMode"`
+	SceneCaptureType         int64   `json:"SceneCaptureType"`
+	ShutterSpeedValue        float64 `json:"ShutterSpeedValue"`
+	SubSecTime               string  `json:"SubSecTime"`
+	WhiteBalance             int64   `json:"WhiteBalance"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ApertureValue            respjson.Field
+		ColorSpace               respjson.Field
+		CreateDate               respjson.Field
+		CustomRendered           respjson.Field
+		DateTimeOriginal         respjson.Field
+		ExifImageHeight          respjson.Field
+		ExifImageWidth           respjson.Field
+		ExifVersion              respjson.Field
+		ExposureCompensation     respjson.Field
+		ExposureMode             respjson.Field
+		ExposureProgram          respjson.Field
+		ExposureTime             respjson.Field
+		Flash                    respjson.Field
+		FlashpixVersion          respjson.Field
+		FNumber                  respjson.Field
+		FocalLength              respjson.Field
+		FocalPlaneResolutionUnit respjson.Field
+		FocalPlaneXResolution    respjson.Field
+		FocalPlaneYResolution    respjson.Field
+		InteropOffset            respjson.Field
+		ISO                      respjson.Field
+		MeteringMode             respjson.Field
+		SceneCaptureType         respjson.Field
+		ShutterSpeedValue        respjson.Field
+		SubSecTime               respjson.Field
+		WhiteBalance             respjson.Field
+		ExtraFields              map[string]respjson.Field
+		raw                      string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r FileMetadataGetResponseExifExif) RawJSON() string { return r.JSON.raw }
+func (r *FileMetadataGetResponseExifExif) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Object containing GPS information.
+type FileMetadataGetResponseExifGps struct {
+	GpsVersionID []int64 `json:"GPSVersionID"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		GpsVersionID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r FileMetadataGetResponseExifGps) RawJSON() string { return r.JSON.raw }
+func (r *FileMetadataGetResponseExifGps) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Object containing EXIF image information.
+type FileMetadataGetResponseExifImage struct {
+	ExifOffset       int64  `json:"ExifOffset"`
+	GpsInfo          int64  `json:"GPSInfo"`
+	Make             string `json:"Make"`
+	Model            string `json:"Model"`
+	ModifyDate       string `json:"ModifyDate"`
+	Orientation      int64  `json:"Orientation"`
+	ResolutionUnit   int64  `json:"ResolutionUnit"`
+	Software         string `json:"Software"`
+	XResolution      int64  `json:"XResolution"`
+	YCbCrPositioning int64  `json:"YCbCrPositioning"`
+	YResolution      int64  `json:"YResolution"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ExifOffset       respjson.Field
+		GpsInfo          respjson.Field
+		Make             respjson.Field
+		Model            respjson.Field
+		ModifyDate       respjson.Field
+		Orientation      respjson.Field
+		ResolutionUnit   respjson.Field
+		Software         respjson.Field
+		XResolution      respjson.Field
+		YCbCrPositioning respjson.Field
+		YResolution      respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r FileMetadataGetResponseExifImage) RawJSON() string { return r.JSON.raw }
+func (r *FileMetadataGetResponseExifImage) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JSON object.
+type FileMetadataGetResponseExifInteroperability struct {
+	InteropIndex   string `json:"InteropIndex"`
+	InteropVersion string `json:"InteropVersion"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		InteropIndex   respjson.Field
+		InteropVersion respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r FileMetadataGetResponseExifInteroperability) RawJSON() string { return r.JSON.raw }
+func (r *FileMetadataGetResponseExifInteroperability) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Object containing Thumbnail information.
+type FileMetadataGetResponseExifThumbnail struct {
+	Compression     int64 `json:"Compression"`
+	ResolutionUnit  int64 `json:"ResolutionUnit"`
+	ThumbnailLength int64 `json:"ThumbnailLength"`
+	ThumbnailOffset int64 `json:"ThumbnailOffset"`
+	XResolution     int64 `json:"XResolution"`
+	YResolution     int64 `json:"YResolution"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Compression     respjson.Field
+		ResolutionUnit  respjson.Field
+		ThumbnailLength respjson.Field
+		ThumbnailOffset respjson.Field
+		XResolution     respjson.Field
+		YResolution     respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r FileMetadataGetResponseExifThumbnail) RawJSON() string { return r.JSON.raw }
+func (r *FileMetadataGetResponseExifThumbnail) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // JSON object containing metadata.
-type FileMetadataFromURLResponse struct {
+type FileMetadataGetFromURLResponse struct {
 	// The audio codec used in the video (only for video).
 	AudioCodec string `json:"audioCodec"`
 	// The bit rate of the video in kbps (only for video).
@@ -156,8 +323,8 @@ type FileMetadataFromURLResponse struct {
 	// The density of the image in DPI.
 	Density int64 `json:"density"`
 	// The duration of the video in seconds (only for video).
-	Duration int64                           `json:"duration"`
-	Exif     FileMetadataFromURLResponseExif `json:"exif"`
+	Duration int64                              `json:"duration"`
+	Exif     FileMetadataGetFromURLResponseExif `json:"exif"`
 	// The format of the file (e.g., 'jpg', 'mp4').
 	Format string `json:"format"`
 	// Indicates if the image has a color profile.
@@ -198,23 +365,23 @@ type FileMetadataFromURLResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r FileMetadataFromURLResponse) RawJSON() string { return r.JSON.raw }
-func (r *FileMetadataFromURLResponse) UnmarshalJSON(data []byte) error {
+func (r FileMetadataGetFromURLResponse) RawJSON() string { return r.JSON.raw }
+func (r *FileMetadataGetFromURLResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type FileMetadataFromURLResponseExif struct {
+type FileMetadataGetFromURLResponseExif struct {
 	// Object containing Exif details.
-	Exif ExifDetails `json:"exif"`
+	Exif FileMetadataGetFromURLResponseExifExif `json:"exif"`
 	// Object containing GPS information.
-	Gps Gps `json:"gps"`
+	Gps FileMetadataGetFromURLResponseExifGps `json:"gps"`
 	// Object containing EXIF image information.
-	Image ExifImage `json:"image"`
+	Image FileMetadataGetFromURLResponseExifImage `json:"image"`
 	// JSON object.
-	Interoperability Interoperability `json:"interoperability"`
-	Makernote        map[string]any   `json:"makernote"`
+	Interoperability FileMetadataGetFromURLResponseExifInteroperability `json:"interoperability"`
+	Makernote        map[string]any                                     `json:"makernote"`
 	// Object containing Thumbnail information.
-	Thumbnail Thumbnail `json:"thumbnail"`
+	Thumbnail FileMetadataGetFromURLResponseExifThumbnail `json:"thumbnail"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Exif             respjson.Field
@@ -229,21 +396,188 @@ type FileMetadataFromURLResponseExif struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r FileMetadataFromURLResponseExif) RawJSON() string { return r.JSON.raw }
-func (r *FileMetadataFromURLResponseExif) UnmarshalJSON(data []byte) error {
+func (r FileMetadataGetFromURLResponseExif) RawJSON() string { return r.JSON.raw }
+func (r *FileMetadataGetFromURLResponseExif) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type FileMetadataFromURLParams struct {
+// Object containing Exif details.
+type FileMetadataGetFromURLResponseExifExif struct {
+	ApertureValue            float64 `json:"ApertureValue"`
+	ColorSpace               int64   `json:"ColorSpace"`
+	CreateDate               string  `json:"CreateDate"`
+	CustomRendered           int64   `json:"CustomRendered"`
+	DateTimeOriginal         string  `json:"DateTimeOriginal"`
+	ExifImageHeight          int64   `json:"ExifImageHeight"`
+	ExifImageWidth           int64   `json:"ExifImageWidth"`
+	ExifVersion              string  `json:"ExifVersion"`
+	ExposureCompensation     float64 `json:"ExposureCompensation"`
+	ExposureMode             int64   `json:"ExposureMode"`
+	ExposureProgram          int64   `json:"ExposureProgram"`
+	ExposureTime             float64 `json:"ExposureTime"`
+	Flash                    int64   `json:"Flash"`
+	FlashpixVersion          string  `json:"FlashpixVersion"`
+	FNumber                  float64 `json:"FNumber"`
+	FocalLength              int64   `json:"FocalLength"`
+	FocalPlaneResolutionUnit int64   `json:"FocalPlaneResolutionUnit"`
+	FocalPlaneXResolution    float64 `json:"FocalPlaneXResolution"`
+	FocalPlaneYResolution    float64 `json:"FocalPlaneYResolution"`
+	InteropOffset            int64   `json:"InteropOffset"`
+	ISO                      int64   `json:"ISO"`
+	MeteringMode             int64   `json:"MeteringMode"`
+	SceneCaptureType         int64   `json:"SceneCaptureType"`
+	ShutterSpeedValue        float64 `json:"ShutterSpeedValue"`
+	SubSecTime               string  `json:"SubSecTime"`
+	WhiteBalance             int64   `json:"WhiteBalance"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ApertureValue            respjson.Field
+		ColorSpace               respjson.Field
+		CreateDate               respjson.Field
+		CustomRendered           respjson.Field
+		DateTimeOriginal         respjson.Field
+		ExifImageHeight          respjson.Field
+		ExifImageWidth           respjson.Field
+		ExifVersion              respjson.Field
+		ExposureCompensation     respjson.Field
+		ExposureMode             respjson.Field
+		ExposureProgram          respjson.Field
+		ExposureTime             respjson.Field
+		Flash                    respjson.Field
+		FlashpixVersion          respjson.Field
+		FNumber                  respjson.Field
+		FocalLength              respjson.Field
+		FocalPlaneResolutionUnit respjson.Field
+		FocalPlaneXResolution    respjson.Field
+		FocalPlaneYResolution    respjson.Field
+		InteropOffset            respjson.Field
+		ISO                      respjson.Field
+		MeteringMode             respjson.Field
+		SceneCaptureType         respjson.Field
+		ShutterSpeedValue        respjson.Field
+		SubSecTime               respjson.Field
+		WhiteBalance             respjson.Field
+		ExtraFields              map[string]respjson.Field
+		raw                      string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r FileMetadataGetFromURLResponseExifExif) RawJSON() string { return r.JSON.raw }
+func (r *FileMetadataGetFromURLResponseExifExif) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Object containing GPS information.
+type FileMetadataGetFromURLResponseExifGps struct {
+	GpsVersionID []int64 `json:"GPSVersionID"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		GpsVersionID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r FileMetadataGetFromURLResponseExifGps) RawJSON() string { return r.JSON.raw }
+func (r *FileMetadataGetFromURLResponseExifGps) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Object containing EXIF image information.
+type FileMetadataGetFromURLResponseExifImage struct {
+	ExifOffset       int64  `json:"ExifOffset"`
+	GpsInfo          int64  `json:"GPSInfo"`
+	Make             string `json:"Make"`
+	Model            string `json:"Model"`
+	ModifyDate       string `json:"ModifyDate"`
+	Orientation      int64  `json:"Orientation"`
+	ResolutionUnit   int64  `json:"ResolutionUnit"`
+	Software         string `json:"Software"`
+	XResolution      int64  `json:"XResolution"`
+	YCbCrPositioning int64  `json:"YCbCrPositioning"`
+	YResolution      int64  `json:"YResolution"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ExifOffset       respjson.Field
+		GpsInfo          respjson.Field
+		Make             respjson.Field
+		Model            respjson.Field
+		ModifyDate       respjson.Field
+		Orientation      respjson.Field
+		ResolutionUnit   respjson.Field
+		Software         respjson.Field
+		XResolution      respjson.Field
+		YCbCrPositioning respjson.Field
+		YResolution      respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r FileMetadataGetFromURLResponseExifImage) RawJSON() string { return r.JSON.raw }
+func (r *FileMetadataGetFromURLResponseExifImage) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JSON object.
+type FileMetadataGetFromURLResponseExifInteroperability struct {
+	InteropIndex   string `json:"InteropIndex"`
+	InteropVersion string `json:"InteropVersion"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		InteropIndex   respjson.Field
+		InteropVersion respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r FileMetadataGetFromURLResponseExifInteroperability) RawJSON() string { return r.JSON.raw }
+func (r *FileMetadataGetFromURLResponseExifInteroperability) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Object containing Thumbnail information.
+type FileMetadataGetFromURLResponseExifThumbnail struct {
+	Compression     int64 `json:"Compression"`
+	ResolutionUnit  int64 `json:"ResolutionUnit"`
+	ThumbnailLength int64 `json:"ThumbnailLength"`
+	ThumbnailOffset int64 `json:"ThumbnailOffset"`
+	XResolution     int64 `json:"XResolution"`
+	YResolution     int64 `json:"YResolution"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Compression     respjson.Field
+		ResolutionUnit  respjson.Field
+		ThumbnailLength respjson.Field
+		ThumbnailOffset respjson.Field
+		XResolution     respjson.Field
+		YResolution     respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r FileMetadataGetFromURLResponseExifThumbnail) RawJSON() string { return r.JSON.raw }
+func (r *FileMetadataGetFromURLResponseExifThumbnail) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type FileMetadataGetFromURLParams struct {
 	// Should be a valid file URL. It should be accessible using your ImageKit.io
 	// account.
-	URL string `query:"url,required" json:"-"`
+	URL string `query:"url,required" format:"uri" json:"-"`
 	paramObj
 }
 
-// URLQuery serializes [FileMetadataFromURLParams]'s query parameters as
+// URLQuery serializes [FileMetadataGetFromURLParams]'s query parameters as
 // `url.Values`.
-func (r FileMetadataFromURLParams) URLQuery() (v url.Values, err error) {
+func (r FileMetadataGetFromURLParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

@@ -37,7 +37,7 @@ func TestFileMetadataGet(t *testing.T) {
 	}
 }
 
-func TestFileMetadataFromURL(t *testing.T) {
+func TestFileMetadataGetFromURL(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -51,8 +51,8 @@ func TestFileMetadataFromURL(t *testing.T) {
 		option.WithPrivateAPIKey("My Private API Key"),
 		option.WithPassword("My Password"),
 	)
-	_, err := client.Files.Metadata.FromURL(context.TODO(), imagekit.FileMetadataFromURLParams{
-		URL: "url",
+	_, err := client.Files.Metadata.GetFromURL(context.TODO(), imagekit.FileMetadataGetFromURLParams{
+		URL: "https://example.com",
 	})
 	if err != nil {
 		var apierr *imagekit.Error

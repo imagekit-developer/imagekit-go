@@ -33,8 +33,10 @@ The full API of this library can be found in [api.md](api.md).
 package main
 
 import (
+	"bytes"
 	"context"
 	"fmt"
+	"io"
 
 	"github.com/stainless-sdks/imagekit-go"
 	"github.com/stainless-sdks/imagekit-go/option"
@@ -45,8 +47,8 @@ func main() {
 		option.WithPrivateAPIKey("My Private API Key"), // defaults to os.LookupEnv("IMAGEKIT_PRIVATE_API_KEY")
 		option.WithPassword("My Password"),             // defaults to os.LookupEnv("ORG_MY_PASSWORD_TOKEN")
 	)
-	response, err := client.Files.UploadV1(context.TODO(), imagekit.FileUploadV1Params{
-		File:     "https://www.example.com/rest-of-the-image-path.jpg",
+	response, err := client.Files.Upload(context.TODO(), imagekit.FileUploadParams{
+		File:     io.Reader(bytes.NewBuffer([]byte("some file contents"))),
 		FileName: "fileName",
 	})
 	if err != nil {
@@ -258,7 +260,7 @@ client := imagekit.NewClient(
 	option.WithHeader("X-Some-Header", "custom_header_info"),
 )
 
-client.Files.UploadV1(context.TODO(), ...,
+client.Files.Upload(context.TODO(), ...,
 	// Override the header
 	option.WithHeader("X-Some-Header", "some_other_custom_header_info"),
 	// Add an undocumented field to the request body, using sjson syntax
@@ -289,8 +291,8 @@ When the API returns a non-success status code, we return an error with type
 To handle errors, we recommend that you use the `errors.As` pattern:
 
 ```go
-_, err := client.Files.UploadV1(context.TODO(), imagekit.FileUploadV1Params{
-	File:     "https://www.example.com/rest-of-the-image-path.jpg",
+_, err := client.Files.Upload(context.TODO(), imagekit.FileUploadParams{
+	File:     io.Reader(bytes.NewBuffer([]byte("some file contents"))),
 	FileName: "fileName",
 })
 if err != nil {
@@ -317,10 +319,10 @@ To set a per-retry timeout, use `option.WithRequestTimeout()`.
 // This sets the timeout for the request, including all the retries.
 ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
 defer cancel()
-client.Files.UploadV1(
+client.Files.Upload(
 	ctx,
-	imagekit.FileUploadV1Params{
-		File:     "https://www.example.com/rest-of-the-image-path.jpg",
+	imagekit.FileUploadParams{
+		File:     io.Reader(bytes.NewBuffer([]byte("some file contents"))),
 		FileName: "fileName",
 	},
 	// This sets the per-retry timeout
@@ -341,6 +343,27 @@ file returned by `os.Open` will be sent with the file name on disk.
 We also provide a helper `imagekit.File(reader io.Reader, filename string, contentType string)`
 which can be used to wrap any `io.Reader` with the appropriate file name and content type.
 
+```go
+// A file from the file system
+file, err := os.Open("/path/to/file")
+imagekit.FileUploadParams{
+	File:     file,
+	FileName: "fileName",
+}
+
+// A file from a string
+imagekit.FileUploadParams{
+	File:     strings.NewReader("my file contents"),
+	FileName: "fileName",
+}
+
+// With a custom filename and contentType
+imagekit.FileUploadParams{
+	File:     imagekit.File(strings.NewReader(`{"hello": "foo"}`), "file.go", "application/json"),
+	FileName: "fileName",
+}
+```
+
 ### Retries
 
 Certain errors will be automatically retried 2 times by default, with a short exponential backoff.
@@ -356,10 +379,10 @@ client := imagekit.NewClient(
 )
 
 // Override per-request:
-client.Files.UploadV1(
+client.Files.Upload(
 	context.TODO(),
-	imagekit.FileUploadV1Params{
-		File:     "https://www.example.com/rest-of-the-image-path.jpg",
+	imagekit.FileUploadParams{
+		File:     io.Reader(bytes.NewBuffer([]byte("some file contents"))),
 		FileName: "fileName",
 	},
 	option.WithMaxRetries(5),
@@ -374,10 +397,10 @@ you need to examine response headers, status codes, or other details.
 ```go
 // Create a variable to store the HTTP response
 var response *http.Response
-response, err := client.Files.UploadV1(
+response, err := client.Files.Upload(
 	context.TODO(),
-	imagekit.FileUploadV1Params{
-		File:     "https://www.example.com/rest-of-the-image-path.jpg",
+	imagekit.FileUploadParams{
+		File:     io.Reader(bytes.NewBuffer([]byte("some file contents"))),
 		FileName: "fileName",
 	},
 	option.WithResponseInto(&response),

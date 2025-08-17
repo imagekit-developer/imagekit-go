@@ -3,7 +3,9 @@
 package imagekit_test
 
 import (
+	"bytes"
 	"context"
+	"io"
 	"os"
 	"testing"
 
@@ -25,8 +27,8 @@ func TestUsage(t *testing.T) {
 		option.WithPrivateAPIKey("My Private API Key"),
 		option.WithPassword("My Password"),
 	)
-	response, err := client.Files.UploadV1(context.TODO(), imagekit.FileUploadV1Params{
-		File:     "https://www.example.com/rest-of-the-image-path.jpg",
+	response, err := client.Files.Upload(context.TODO(), imagekit.FileUploadParams{
+		File:     io.Reader(bytes.NewBuffer([]byte("some file contents"))),
 		FileName: "fileName",
 	})
 	if err != nil {
