@@ -107,14 +107,14 @@ type AccountOriginNewResponseUnion struct {
 	Bucket                    string `json:"bucket"`
 	IncludeCanonicalHeader    bool   `json:"includeCanonicalHeader"`
 	Name                      string `json:"name"`
-	Prefix                    any    `json:"prefix"`
+	Prefix                    string `json:"prefix"`
 	Type                      string `json:"type"`
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader"`
 	// This field is from variant [AccountOriginNewResponseS3Compatible].
 	Endpoint string `json:"endpoint"`
 	// This field is from variant [AccountOriginNewResponseS3Compatible].
-	S3ForcePathStyle bool `json:"s3ForcePathStyle"`
-	BaseURL          any  `json:"baseUrl"`
+	S3ForcePathStyle bool   `json:"s3ForcePathStyle"`
+	BaseURL          string `json:"baseUrl"`
 	// This field is from variant [AccountOriginNewResponseWebFolder].
 	ForwardHostHeaderToOrigin bool `json:"forwardHostHeaderToOrigin"`
 	// This field is from variant [AccountOriginNewResponseGoogleCloudStorageGcs].
@@ -200,7 +200,7 @@ type AccountOriginNewResponseS3 struct {
 	// Display name of the origin.
 	Name string `json:"name,required"`
 	// Path prefix inside the bucket.
-	Prefix any `json:"prefix,required"`
+	Prefix string `json:"prefix,required"`
 	// Any of "S3".
 	Type string `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
@@ -238,7 +238,7 @@ type AccountOriginNewResponseS3Compatible struct {
 	// Display name of the origin.
 	Name string `json:"name,required"`
 	// Path prefix inside the bucket.
-	Prefix any `json:"prefix,required"`
+	Prefix string `json:"prefix,required"`
 	// Use path-style S3 URLs?
 	S3ForcePathStyle bool `json:"s3ForcePathStyle,required"`
 	// Any of "S3_COMPATIBLE".
@@ -278,7 +278,7 @@ type AccountOriginNewResponseCloudinaryBackup struct {
 	// Display name of the origin.
 	Name string `json:"name,required"`
 	// Path prefix inside the bucket.
-	Prefix any `json:"prefix,required"`
+	Prefix string `json:"prefix,required"`
 	// Any of "CLOUDINARY_BACKUP".
 	Type string `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
@@ -308,7 +308,7 @@ type AccountOriginNewResponseWebFolder struct {
 	// a new origin.
 	ID string `json:"id,required"`
 	// Root URL for the web folder origin.
-	BaseURL any `json:"baseUrl,required"`
+	BaseURL string `json:"baseUrl,required" format:"uri"`
 	// Forward the Host header to origin?
 	ForwardHostHeaderToOrigin bool `json:"forwardHostHeaderToOrigin,required"`
 	// Whether to send a Canonical header.
@@ -379,7 +379,7 @@ type AccountOriginNewResponseGoogleCloudStorageGcs struct {
 	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
 	Name   string `json:"name,required"`
-	Prefix any    `json:"prefix,required"`
+	Prefix string `json:"prefix,required"`
 	// Any of "GCS".
 	Type string `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
@@ -415,7 +415,7 @@ type AccountOriginNewResponseAzureBlobStorage struct {
 	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
 	Name   string `json:"name,required"`
-	Prefix any    `json:"prefix,required"`
+	Prefix string `json:"prefix,required"`
 	// Any of "AZURE_BLOB".
 	Type string `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
@@ -446,7 +446,7 @@ type AccountOriginNewResponseAkeneoPim struct {
 	// a new origin.
 	ID string `json:"id,required"`
 	// Akeneo instance base URL.
-	BaseURL any `json:"baseUrl,required"`
+	BaseURL string `json:"baseUrl,required" format:"uri"`
 	// Whether to send a Canonical header.
 	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
@@ -488,14 +488,14 @@ type AccountOriginUpdateResponseUnion struct {
 	Bucket                    string `json:"bucket"`
 	IncludeCanonicalHeader    bool   `json:"includeCanonicalHeader"`
 	Name                      string `json:"name"`
-	Prefix                    any    `json:"prefix"`
+	Prefix                    string `json:"prefix"`
 	Type                      string `json:"type"`
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader"`
 	// This field is from variant [AccountOriginUpdateResponseS3Compatible].
 	Endpoint string `json:"endpoint"`
 	// This field is from variant [AccountOriginUpdateResponseS3Compatible].
-	S3ForcePathStyle bool `json:"s3ForcePathStyle"`
-	BaseURL          any  `json:"baseUrl"`
+	S3ForcePathStyle bool   `json:"s3ForcePathStyle"`
+	BaseURL          string `json:"baseUrl"`
 	// This field is from variant [AccountOriginUpdateResponseWebFolder].
 	ForwardHostHeaderToOrigin bool `json:"forwardHostHeaderToOrigin"`
 	// This field is from variant [AccountOriginUpdateResponseGoogleCloudStorageGcs].
@@ -581,7 +581,7 @@ type AccountOriginUpdateResponseS3 struct {
 	// Display name of the origin.
 	Name string `json:"name,required"`
 	// Path prefix inside the bucket.
-	Prefix any `json:"prefix,required"`
+	Prefix string `json:"prefix,required"`
 	// Any of "S3".
 	Type string `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
@@ -619,7 +619,7 @@ type AccountOriginUpdateResponseS3Compatible struct {
 	// Display name of the origin.
 	Name string `json:"name,required"`
 	// Path prefix inside the bucket.
-	Prefix any `json:"prefix,required"`
+	Prefix string `json:"prefix,required"`
 	// Use path-style S3 URLs?
 	S3ForcePathStyle bool `json:"s3ForcePathStyle,required"`
 	// Any of "S3_COMPATIBLE".
@@ -659,7 +659,7 @@ type AccountOriginUpdateResponseCloudinaryBackup struct {
 	// Display name of the origin.
 	Name string `json:"name,required"`
 	// Path prefix inside the bucket.
-	Prefix any `json:"prefix,required"`
+	Prefix string `json:"prefix,required"`
 	// Any of "CLOUDINARY_BACKUP".
 	Type string `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
@@ -689,7 +689,7 @@ type AccountOriginUpdateResponseWebFolder struct {
 	// a new origin.
 	ID string `json:"id,required"`
 	// Root URL for the web folder origin.
-	BaseURL any `json:"baseUrl,required"`
+	BaseURL string `json:"baseUrl,required" format:"uri"`
 	// Forward the Host header to origin?
 	ForwardHostHeaderToOrigin bool `json:"forwardHostHeaderToOrigin,required"`
 	// Whether to send a Canonical header.
@@ -760,7 +760,7 @@ type AccountOriginUpdateResponseGoogleCloudStorageGcs struct {
 	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
 	Name   string `json:"name,required"`
-	Prefix any    `json:"prefix,required"`
+	Prefix string `json:"prefix,required"`
 	// Any of "GCS".
 	Type string `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
@@ -796,7 +796,7 @@ type AccountOriginUpdateResponseAzureBlobStorage struct {
 	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
 	Name   string `json:"name,required"`
-	Prefix any    `json:"prefix,required"`
+	Prefix string `json:"prefix,required"`
 	// Any of "AZURE_BLOB".
 	Type string `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
@@ -827,7 +827,7 @@ type AccountOriginUpdateResponseAkeneoPim struct {
 	// a new origin.
 	ID string `json:"id,required"`
 	// Akeneo instance base URL.
-	BaseURL any `json:"baseUrl,required"`
+	BaseURL string `json:"baseUrl,required" format:"uri"`
 	// Whether to send a Canonical header.
 	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
@@ -869,14 +869,14 @@ type AccountOriginListResponseUnion struct {
 	Bucket                    string `json:"bucket"`
 	IncludeCanonicalHeader    bool   `json:"includeCanonicalHeader"`
 	Name                      string `json:"name"`
-	Prefix                    any    `json:"prefix"`
+	Prefix                    string `json:"prefix"`
 	Type                      string `json:"type"`
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader"`
 	// This field is from variant [AccountOriginListResponseS3Compatible].
 	Endpoint string `json:"endpoint"`
 	// This field is from variant [AccountOriginListResponseS3Compatible].
-	S3ForcePathStyle bool `json:"s3ForcePathStyle"`
-	BaseURL          any  `json:"baseUrl"`
+	S3ForcePathStyle bool   `json:"s3ForcePathStyle"`
+	BaseURL          string `json:"baseUrl"`
 	// This field is from variant [AccountOriginListResponseWebFolder].
 	ForwardHostHeaderToOrigin bool `json:"forwardHostHeaderToOrigin"`
 	// This field is from variant [AccountOriginListResponseGoogleCloudStorageGcs].
@@ -962,7 +962,7 @@ type AccountOriginListResponseS3 struct {
 	// Display name of the origin.
 	Name string `json:"name,required"`
 	// Path prefix inside the bucket.
-	Prefix any `json:"prefix,required"`
+	Prefix string `json:"prefix,required"`
 	// Any of "S3".
 	Type string `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
@@ -1000,7 +1000,7 @@ type AccountOriginListResponseS3Compatible struct {
 	// Display name of the origin.
 	Name string `json:"name,required"`
 	// Path prefix inside the bucket.
-	Prefix any `json:"prefix,required"`
+	Prefix string `json:"prefix,required"`
 	// Use path-style S3 URLs?
 	S3ForcePathStyle bool `json:"s3ForcePathStyle,required"`
 	// Any of "S3_COMPATIBLE".
@@ -1040,7 +1040,7 @@ type AccountOriginListResponseCloudinaryBackup struct {
 	// Display name of the origin.
 	Name string `json:"name,required"`
 	// Path prefix inside the bucket.
-	Prefix any `json:"prefix,required"`
+	Prefix string `json:"prefix,required"`
 	// Any of "CLOUDINARY_BACKUP".
 	Type string `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
@@ -1070,7 +1070,7 @@ type AccountOriginListResponseWebFolder struct {
 	// a new origin.
 	ID string `json:"id,required"`
 	// Root URL for the web folder origin.
-	BaseURL any `json:"baseUrl,required"`
+	BaseURL string `json:"baseUrl,required" format:"uri"`
 	// Forward the Host header to origin?
 	ForwardHostHeaderToOrigin bool `json:"forwardHostHeaderToOrigin,required"`
 	// Whether to send a Canonical header.
@@ -1141,7 +1141,7 @@ type AccountOriginListResponseGoogleCloudStorageGcs struct {
 	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
 	Name   string `json:"name,required"`
-	Prefix any    `json:"prefix,required"`
+	Prefix string `json:"prefix,required"`
 	// Any of "GCS".
 	Type string `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
@@ -1177,7 +1177,7 @@ type AccountOriginListResponseAzureBlobStorage struct {
 	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
 	Name   string `json:"name,required"`
-	Prefix any    `json:"prefix,required"`
+	Prefix string `json:"prefix,required"`
 	// Any of "AZURE_BLOB".
 	Type string `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
@@ -1208,7 +1208,7 @@ type AccountOriginListResponseAkeneoPim struct {
 	// a new origin.
 	ID string `json:"id,required"`
 	// Akeneo instance base URL.
-	BaseURL any `json:"baseUrl,required"`
+	BaseURL string `json:"baseUrl,required" format:"uri"`
 	// Whether to send a Canonical header.
 	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
@@ -1249,14 +1249,14 @@ type AccountOriginGetResponseUnion struct {
 	Bucket                    string `json:"bucket"`
 	IncludeCanonicalHeader    bool   `json:"includeCanonicalHeader"`
 	Name                      string `json:"name"`
-	Prefix                    any    `json:"prefix"`
+	Prefix                    string `json:"prefix"`
 	Type                      string `json:"type"`
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader"`
 	// This field is from variant [AccountOriginGetResponseS3Compatible].
 	Endpoint string `json:"endpoint"`
 	// This field is from variant [AccountOriginGetResponseS3Compatible].
-	S3ForcePathStyle bool `json:"s3ForcePathStyle"`
-	BaseURL          any  `json:"baseUrl"`
+	S3ForcePathStyle bool   `json:"s3ForcePathStyle"`
+	BaseURL          string `json:"baseUrl"`
 	// This field is from variant [AccountOriginGetResponseWebFolder].
 	ForwardHostHeaderToOrigin bool `json:"forwardHostHeaderToOrigin"`
 	// This field is from variant [AccountOriginGetResponseGoogleCloudStorageGcs].
@@ -1342,7 +1342,7 @@ type AccountOriginGetResponseS3 struct {
 	// Display name of the origin.
 	Name string `json:"name,required"`
 	// Path prefix inside the bucket.
-	Prefix any `json:"prefix,required"`
+	Prefix string `json:"prefix,required"`
 	// Any of "S3".
 	Type string `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
@@ -1380,7 +1380,7 @@ type AccountOriginGetResponseS3Compatible struct {
 	// Display name of the origin.
 	Name string `json:"name,required"`
 	// Path prefix inside the bucket.
-	Prefix any `json:"prefix,required"`
+	Prefix string `json:"prefix,required"`
 	// Use path-style S3 URLs?
 	S3ForcePathStyle bool `json:"s3ForcePathStyle,required"`
 	// Any of "S3_COMPATIBLE".
@@ -1420,7 +1420,7 @@ type AccountOriginGetResponseCloudinaryBackup struct {
 	// Display name of the origin.
 	Name string `json:"name,required"`
 	// Path prefix inside the bucket.
-	Prefix any `json:"prefix,required"`
+	Prefix string `json:"prefix,required"`
 	// Any of "CLOUDINARY_BACKUP".
 	Type string `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
@@ -1450,7 +1450,7 @@ type AccountOriginGetResponseWebFolder struct {
 	// a new origin.
 	ID string `json:"id,required"`
 	// Root URL for the web folder origin.
-	BaseURL any `json:"baseUrl,required"`
+	BaseURL string `json:"baseUrl,required" format:"uri"`
 	// Forward the Host header to origin?
 	ForwardHostHeaderToOrigin bool `json:"forwardHostHeaderToOrigin,required"`
 	// Whether to send a Canonical header.
@@ -1521,7 +1521,7 @@ type AccountOriginGetResponseGoogleCloudStorageGcs struct {
 	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
 	Name   string `json:"name,required"`
-	Prefix any    `json:"prefix,required"`
+	Prefix string `json:"prefix,required"`
 	// Any of "GCS".
 	Type string `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
@@ -1557,7 +1557,7 @@ type AccountOriginGetResponseAzureBlobStorage struct {
 	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
 	Name   string `json:"name,required"`
-	Prefix any    `json:"prefix,required"`
+	Prefix string `json:"prefix,required"`
 	// Any of "AZURE_BLOB".
 	Type string `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
@@ -1588,7 +1588,7 @@ type AccountOriginGetResponseAkeneoPim struct {
 	// a new origin.
 	ID string `json:"id,required"`
 	// Akeneo instance base URL.
-	BaseURL any `json:"baseUrl,required"`
+	BaseURL string `json:"baseUrl,required" format:"uri"`
 	// Whether to send a Canonical header.
 	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
