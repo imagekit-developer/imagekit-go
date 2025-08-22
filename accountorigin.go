@@ -201,9 +201,8 @@ type AccountOriginNewResponseS3 struct {
 	// Display name of the origin.
 	Name string `json:"name,required"`
 	// Path prefix inside the bucket.
-	Prefix string `json:"prefix,required"`
-	// Any of "S3".
-	Type string `json:"type,required"`
+	Prefix string      `json:"prefix,required"`
+	Type   constant.S3 `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -241,9 +240,8 @@ type AccountOriginNewResponseS3Compatible struct {
 	// Path prefix inside the bucket.
 	Prefix string `json:"prefix,required"`
 	// Use path-style S3 URLs?
-	S3ForcePathStyle bool `json:"s3ForcePathStyle,required"`
-	// Any of "S3_COMPATIBLE".
-	Type string `json:"type,required"`
+	S3ForcePathStyle bool                  `json:"s3ForcePathStyle,required"`
+	Type             constant.S3Compatible `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -576,9 +574,8 @@ type AccountOriginUpdateResponseS3 struct {
 	// Display name of the origin.
 	Name string `json:"name,required"`
 	// Path prefix inside the bucket.
-	Prefix string `json:"prefix,required"`
-	// Any of "S3".
-	Type string `json:"type,required"`
+	Prefix string      `json:"prefix,required"`
+	Type   constant.S3 `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -616,9 +613,8 @@ type AccountOriginUpdateResponseS3Compatible struct {
 	// Path prefix inside the bucket.
 	Prefix string `json:"prefix,required"`
 	// Use path-style S3 URLs?
-	S3ForcePathStyle bool `json:"s3ForcePathStyle,required"`
-	// Any of "S3_COMPATIBLE".
-	Type string `json:"type,required"`
+	S3ForcePathStyle bool                  `json:"s3ForcePathStyle,required"`
+	Type             constant.S3Compatible `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -951,9 +947,8 @@ type AccountOriginListResponseS3 struct {
 	// Display name of the origin.
 	Name string `json:"name,required"`
 	// Path prefix inside the bucket.
-	Prefix string `json:"prefix,required"`
-	// Any of "S3".
-	Type string `json:"type,required"`
+	Prefix string      `json:"prefix,required"`
+	Type   constant.S3 `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -991,9 +986,8 @@ type AccountOriginListResponseS3Compatible struct {
 	// Path prefix inside the bucket.
 	Prefix string `json:"prefix,required"`
 	// Use path-style S3 URLs?
-	S3ForcePathStyle bool `json:"s3ForcePathStyle,required"`
-	// Any of "S3_COMPATIBLE".
-	Type string `json:"type,required"`
+	S3ForcePathStyle bool                  `json:"s3ForcePathStyle,required"`
+	Type             constant.S3Compatible `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1325,9 +1319,8 @@ type AccountOriginGetResponseS3 struct {
 	// Display name of the origin.
 	Name string `json:"name,required"`
 	// Path prefix inside the bucket.
-	Prefix string `json:"prefix,required"`
-	// Any of "S3".
-	Type string `json:"type,required"`
+	Prefix string      `json:"prefix,required"`
+	Type   constant.S3 `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1365,9 +1358,8 @@ type AccountOriginGetResponseS3Compatible struct {
 	// Path prefix inside the bucket.
 	Prefix string `json:"prefix,required"`
 	// Use path-style S3 URLs?
-	S3ForcePathStyle bool `json:"s3ForcePathStyle,required"`
-	// Any of "S3_COMPATIBLE".
-	Type string `json:"type,required"`
+	S3ForcePathStyle bool                  `json:"s3ForcePathStyle,required"`
+	Type             constant.S3Compatible `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].

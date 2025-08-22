@@ -12,6 +12,7 @@ import (
 	"github.com/stainless-sdks/imagekit-go/internal/requestconfig"
 	"github.com/stainless-sdks/imagekit-go/option"
 	"github.com/stainless-sdks/imagekit-go/packages/respjson"
+	"github.com/stainless-sdks/imagekit-go/shared/constant"
 	standardwebhooks "github.com/standard-webhooks/standard-webhooks/libraries/go"
 )
 
@@ -75,8 +76,7 @@ type VideoTransformationAcceptedWebhookEvent struct {
 	CreatedAt time.Time                                      `json:"created_at,required" format:"date-time"`
 	Data      VideoTransformationAcceptedWebhookEventData    `json:"data,required"`
 	Request   VideoTransformationAcceptedWebhookEventRequest `json:"request,required"`
-	// Any of "video.transformation.accepted".
-	Type VideoTransformationAcceptedWebhookEventType `json:"type,required"`
+	Type      constant.VideoTransformationAccepted           `json:"type,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -208,21 +208,14 @@ func (r *VideoTransformationAcceptedWebhookEventRequest) UnmarshalJSON(data []by
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type VideoTransformationAcceptedWebhookEventType string
-
-const (
-	VideoTransformationAcceptedWebhookEventTypeVideoTransformationAccepted VideoTransformationAcceptedWebhookEventType = "video.transformation.accepted"
-)
-
 type VideoTransformationReadyWebhookEvent struct {
 	// Unique identifier for the event.
 	ID        string                                      `json:"id,required"`
 	CreatedAt time.Time                                   `json:"created_at,required" format:"date-time"`
 	Data      VideoTransformationReadyWebhookEventData    `json:"data,required"`
 	Request   VideoTransformationReadyWebhookEventRequest `json:"request,required"`
-	// Any of "video.transformation.ready".
-	Type    VideoTransformationReadyWebhookEventType    `json:"type,required"`
-	Timings VideoTransformationReadyWebhookEventTimings `json:"timings"`
+	Type      constant.VideoTransformationReady           `json:"type,required"`
+	Timings   VideoTransformationReadyWebhookEventTimings `json:"timings"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -399,12 +392,6 @@ func (r *VideoTransformationReadyWebhookEventRequest) UnmarshalJSON(data []byte)
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type VideoTransformationReadyWebhookEventType string
-
-const (
-	VideoTransformationReadyWebhookEventTypeVideoTransformationReady VideoTransformationReadyWebhookEventType = "video.transformation.ready"
-)
-
 type VideoTransformationReadyWebhookEventTimings struct {
 	// Milliseconds spent downloading the source.
 	DownloadDuration int64 `json:"download_duration"`
@@ -431,8 +418,7 @@ type VideoTransformationErrorWebhookEvent struct {
 	CreatedAt time.Time                                   `json:"created_at,required" format:"date-time"`
 	Data      VideoTransformationErrorWebhookEventData    `json:"data,required"`
 	Request   VideoTransformationErrorWebhookEventRequest `json:"request,required"`
-	// Any of "video.transformation.error".
-	Type VideoTransformationErrorWebhookEventType `json:"type,required"`
+	Type      constant.VideoTransformationError           `json:"type,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -582,12 +568,6 @@ func (r VideoTransformationErrorWebhookEventRequest) RawJSON() string { return r
 func (r *VideoTransformationErrorWebhookEventRequest) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type VideoTransformationErrorWebhookEventType string
-
-const (
-	VideoTransformationErrorWebhookEventTypeVideoTransformationError VideoTransformationErrorWebhookEventType = "video.transformation.error"
-)
 
 // UnsafeUnwrapWebhookEventUnion contains all possible properties and values from
 // [VideoTransformationAcceptedWebhookEvent],
