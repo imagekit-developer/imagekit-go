@@ -34,6 +34,15 @@ func NewWebhookService(opts ...option.RequestOption) (r WebhookService) {
 	return
 }
 
+func (r *WebhookService) UnsafeUnwrap(payload []byte, opts ...option.RequestOption) (*UnsafeUnwrapWebhookEventUnion, error) {
+	res := &UnsafeUnwrapWebhookEventUnion{}
+	err := res.UnmarshalJSON(payload)
+	if err != nil {
+		return res, err
+	}
+	return res, nil
+}
+
 func (r *WebhookService) Unwrap(payload []byte, headers http.Header, opts ...option.RequestOption) (*UnwrapWebhookEventUnion, error) {
 	opts = append(opts, r.Options...)
 	cfg, err := requestconfig.PreRequestOptions(opts...)
@@ -579,6 +588,188 @@ type VideoTransformationErrorWebhookEventType string
 const (
 	VideoTransformationErrorWebhookEventTypeVideoTransformationError VideoTransformationErrorWebhookEventType = "video.transformation.error"
 )
+
+// UnsafeUnwrapWebhookEventUnion contains all possible properties and values from
+// [VideoTransformationAcceptedWebhookEvent],
+// [VideoTransformationReadyWebhookEvent], [VideoTransformationErrorWebhookEvent].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type UnsafeUnwrapWebhookEventUnion struct {
+	ID        string    `json:"id"`
+	CreatedAt time.Time `json:"created_at"`
+	// This field is a union of [VideoTransformationAcceptedWebhookEventData],
+	// [VideoTransformationReadyWebhookEventData],
+	// [VideoTransformationErrorWebhookEventData]
+	Data UnsafeUnwrapWebhookEventUnionData `json:"data"`
+	// This field is a union of [VideoTransformationAcceptedWebhookEventRequest],
+	// [VideoTransformationReadyWebhookEventRequest],
+	// [VideoTransformationErrorWebhookEventRequest]
+	Request UnsafeUnwrapWebhookEventUnionRequest `json:"request"`
+	Type    string                               `json:"type"`
+	// This field is from variant [VideoTransformationReadyWebhookEvent].
+	Timings VideoTransformationReadyWebhookEventTimings `json:"timings"`
+	JSON    struct {
+		ID        respjson.Field
+		CreatedAt respjson.Field
+		Data      respjson.Field
+		Request   respjson.Field
+		Type      respjson.Field
+		Timings   respjson.Field
+		raw       string
+	} `json:"-"`
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsVideoTransformationAcceptedWebhookEvent() (v VideoTransformationAcceptedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsVideoTransformationReadyWebhookEvent() (v VideoTransformationReadyWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsVideoTransformationErrorWebhookEvent() (v VideoTransformationErrorWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u UnsafeUnwrapWebhookEventUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *UnsafeUnwrapWebhookEventUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// UnsafeUnwrapWebhookEventUnionData is an implicit subunion of
+// [UnsafeUnwrapWebhookEventUnion]. UnsafeUnwrapWebhookEventUnionData provides
+// convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [UnsafeUnwrapWebhookEventUnion].
+type UnsafeUnwrapWebhookEventUnionData struct {
+	// This field is a union of [VideoTransformationAcceptedWebhookEventDataAsset],
+	// [VideoTransformationReadyWebhookEventDataAsset],
+	// [VideoTransformationErrorWebhookEventDataAsset]
+	Asset UnsafeUnwrapWebhookEventUnionDataAsset `json:"asset"`
+	// This field is a union of
+	// [VideoTransformationAcceptedWebhookEventDataTransformation],
+	// [VideoTransformationReadyWebhookEventDataTransformation],
+	// [VideoTransformationErrorWebhookEventDataTransformation]
+	Transformation UnsafeUnwrapWebhookEventUnionDataTransformation `json:"transformation"`
+	JSON           struct {
+		Asset          respjson.Field
+		Transformation respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+func (r *UnsafeUnwrapWebhookEventUnionData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// UnsafeUnwrapWebhookEventUnionDataAsset is an implicit subunion of
+// [UnsafeUnwrapWebhookEventUnion]. UnsafeUnwrapWebhookEventUnionDataAsset provides
+// convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [UnsafeUnwrapWebhookEventUnion].
+type UnsafeUnwrapWebhookEventUnionDataAsset struct {
+	URL  string `json:"url"`
+	JSON struct {
+		URL respjson.Field
+		raw string
+	} `json:"-"`
+}
+
+func (r *UnsafeUnwrapWebhookEventUnionDataAsset) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// UnsafeUnwrapWebhookEventUnionDataTransformation is an implicit subunion of
+// [UnsafeUnwrapWebhookEventUnion]. UnsafeUnwrapWebhookEventUnionDataTransformation
+// provides convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [UnsafeUnwrapWebhookEventUnion].
+type UnsafeUnwrapWebhookEventUnionDataTransformation struct {
+	Type string `json:"type"`
+	// This field is a union of
+	// [VideoTransformationAcceptedWebhookEventDataTransformationOptions],
+	// [VideoTransformationReadyWebhookEventDataTransformationOptions],
+	// [VideoTransformationErrorWebhookEventDataTransformationOptions]
+	Options UnsafeUnwrapWebhookEventUnionDataTransformationOptions `json:"options"`
+	// This field is from variant
+	// [VideoTransformationReadyWebhookEventDataTransformation].
+	Output VideoTransformationReadyWebhookEventDataTransformationOutput `json:"output"`
+	// This field is from variant
+	// [VideoTransformationErrorWebhookEventDataTransformation].
+	Error VideoTransformationErrorWebhookEventDataTransformationError `json:"error"`
+	JSON  struct {
+		Type    respjson.Field
+		Options respjson.Field
+		Output  respjson.Field
+		Error   respjson.Field
+		raw     string
+	} `json:"-"`
+}
+
+func (r *UnsafeUnwrapWebhookEventUnionDataTransformation) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// UnsafeUnwrapWebhookEventUnionDataTransformationOptions is an implicit subunion
+// of [UnsafeUnwrapWebhookEventUnion].
+// UnsafeUnwrapWebhookEventUnionDataTransformationOptions provides convenient
+// access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [UnsafeUnwrapWebhookEventUnion].
+type UnsafeUnwrapWebhookEventUnionDataTransformationOptions struct {
+	AudioCodec     string   `json:"audio_codec"`
+	AutoRotate     bool     `json:"auto_rotate"`
+	Format         string   `json:"format"`
+	Quality        int64    `json:"quality"`
+	StreamProtocol string   `json:"stream_protocol"`
+	Variants       []string `json:"variants"`
+	VideoCodec     string   `json:"video_codec"`
+	JSON           struct {
+		AudioCodec     respjson.Field
+		AutoRotate     respjson.Field
+		Format         respjson.Field
+		Quality        respjson.Field
+		StreamProtocol respjson.Field
+		Variants       respjson.Field
+		VideoCodec     respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+func (r *UnsafeUnwrapWebhookEventUnionDataTransformationOptions) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// UnsafeUnwrapWebhookEventUnionRequest is an implicit subunion of
+// [UnsafeUnwrapWebhookEventUnion]. UnsafeUnwrapWebhookEventUnionRequest provides
+// convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [UnsafeUnwrapWebhookEventUnion].
+type UnsafeUnwrapWebhookEventUnionRequest struct {
+	URL        string `json:"url"`
+	XRequestID string `json:"x_request_id"`
+	UserAgent  string `json:"user_agent"`
+	JSON       struct {
+		URL        respjson.Field
+		XRequestID respjson.Field
+		UserAgent  respjson.Field
+		raw        string
+	} `json:"-"`
+}
+
+func (r *UnsafeUnwrapWebhookEventUnionRequest) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // UnwrapWebhookEventUnion contains all possible properties and values from
 // [VideoTransformationAcceptedWebhookEvent],
