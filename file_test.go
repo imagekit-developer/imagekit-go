@@ -239,9 +239,8 @@ func TestFileUploadWithOptionalParams(t *testing.T) {
 		Description: imagekit.String("Running shoes"),
 		Expire:      imagekit.Int(0),
 		Extensions: []imagekit.FileUploadParamsExtensionUnion{{
-			OfRemoveBackground: &imagekit.FileUploadParamsExtensionRemoveBackground{
-				Name: "remove-bg",
-				Options: imagekit.FileUploadParamsExtensionRemoveBackgroundOptions{
+			OfRemoveBg: &imagekit.FileUploadParamsExtensionRemoveBg{
+				Options: imagekit.FileUploadParamsExtensionRemoveBgOptions{
 					AddShadow:        imagekit.Bool(true),
 					BgColor:          imagekit.String("bg_color"),
 					BgImageURL:       imagekit.String("bg_image_url"),
@@ -268,14 +267,12 @@ func TestFileUploadWithOptionalParams(t *testing.T) {
 		Tags:                    []string{"t-shirt", "round-neck", "men"},
 		Transformation: imagekit.FileUploadParamsTransformation{
 			Post: []imagekit.FileUploadParamsTransformationPostUnion{{
-				OfGenerateAThumbnail: &imagekit.FileUploadParamsTransformationPostGenerateAThumbnail{
-					Type:  "thumbnail",
+				OfThumbnail: &imagekit.FileUploadParamsTransformationPostThumbnail{
 					Value: imagekit.String("w-150,h-150"),
 				},
 			}, {
-				OfAdaptiveBitrateStreaming: &imagekit.FileUploadParamsTransformationPostAdaptiveBitrateStreaming{
+				OfAbs: &imagekit.FileUploadParamsTransformationPostAbs{
 					Protocol: "dash",
-					Type:     "abs",
 					Value:    "sr-240_360_480_720_1080",
 				},
 			}},

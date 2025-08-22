@@ -18,14 +18,35 @@ func ValueOf[T Constant[T]]() T {
 	return t.Default()
 }
 
+type Abs string               // Always "abs"
 type AIAutoDescription string // Always "ai-auto-description"
+type Akamai string            // Always "AKAMAI"
+type Cloudinary string        // Always "CLOUDINARY"
+type GifToVideo string        // Always "gif-to-video"
+type Imgix string             // Always "IMGIX"
 type RemoveBg string          // Always "remove-bg"
+type Thumbnail string         // Always "thumbnail"
+type Transformation string    // Always "transformation"
 
+func (c Abs) Default() Abs                             { return "abs" }
 func (c AIAutoDescription) Default() AIAutoDescription { return "ai-auto-description" }
+func (c Akamai) Default() Akamai                       { return "AKAMAI" }
+func (c Cloudinary) Default() Cloudinary               { return "CLOUDINARY" }
+func (c GifToVideo) Default() GifToVideo               { return "gif-to-video" }
+func (c Imgix) Default() Imgix                         { return "IMGIX" }
 func (c RemoveBg) Default() RemoveBg                   { return "remove-bg" }
+func (c Thumbnail) Default() Thumbnail                 { return "thumbnail" }
+func (c Transformation) Default() Transformation       { return "transformation" }
 
+func (c Abs) MarshalJSON() ([]byte, error)               { return marshalString(c) }
 func (c AIAutoDescription) MarshalJSON() ([]byte, error) { return marshalString(c) }
+func (c Akamai) MarshalJSON() ([]byte, error)            { return marshalString(c) }
+func (c Cloudinary) MarshalJSON() ([]byte, error)        { return marshalString(c) }
+func (c GifToVideo) MarshalJSON() ([]byte, error)        { return marshalString(c) }
+func (c Imgix) MarshalJSON() ([]byte, error)             { return marshalString(c) }
 func (c RemoveBg) MarshalJSON() ([]byte, error)          { return marshalString(c) }
+func (c Thumbnail) MarshalJSON() ([]byte, error)         { return marshalString(c) }
+func (c Transformation) MarshalJSON() ([]byte, error)    { return marshalString(c) }
 
 type constant[T any] interface {
 	Constant[T]

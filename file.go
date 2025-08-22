@@ -1463,33 +1463,33 @@ func (r FileUploadParams) MarshalMultipart() (data []byte, contentType string, e
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type FileUploadParamsExtensionUnion struct {
-	OfRemoveBackground *FileUploadParamsExtensionRemoveBackground `json:",omitzero,inline"`
-	OfAutoTagging      *FileUploadParamsExtensionAutoTagging      `json:",omitzero,inline"`
-	OfAutoDescription  *FileUploadParamsExtensionAutoDescription  `json:",omitzero,inline"`
+	OfRemoveBg          *FileUploadParamsExtensionRemoveBg          `json:",omitzero,inline"`
+	OfAutoTagging       *FileUploadParamsExtensionAutoTagging       `json:",omitzero,inline"`
+	OfAIAutoDescription *FileUploadParamsExtensionAIAutoDescription `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u FileUploadParamsExtensionUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfRemoveBackground, u.OfAutoTagging, u.OfAutoDescription)
+	return param.MarshalUnion(u, u.OfRemoveBg, u.OfAutoTagging, u.OfAIAutoDescription)
 }
 func (u *FileUploadParamsExtensionUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *FileUploadParamsExtensionUnion) asAny() any {
-	if !param.IsOmitted(u.OfRemoveBackground) {
-		return u.OfRemoveBackground
+	if !param.IsOmitted(u.OfRemoveBg) {
+		return u.OfRemoveBg
 	} else if !param.IsOmitted(u.OfAutoTagging) {
 		return u.OfAutoTagging
-	} else if !param.IsOmitted(u.OfAutoDescription) {
-		return u.OfAutoDescription
+	} else if !param.IsOmitted(u.OfAIAutoDescription) {
+		return u.OfAIAutoDescription
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u FileUploadParamsExtensionUnion) GetOptions() *FileUploadParamsExtensionRemoveBackgroundOptions {
-	if vt := u.OfRemoveBackground; vt != nil {
+func (u FileUploadParamsExtensionUnion) GetOptions() *FileUploadParamsExtensionRemoveBgOptions {
+	if vt := u.OfRemoveBg; vt != nil {
 		return &vt.Options
 	}
 	return nil
@@ -1513,41 +1513,45 @@ func (u FileUploadParamsExtensionUnion) GetMinConfidence() *int64 {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u FileUploadParamsExtensionUnion) GetName() *string {
-	if vt := u.OfRemoveBackground; vt != nil {
+	if vt := u.OfRemoveBg; vt != nil {
 		return (*string)(&vt.Name)
 	} else if vt := u.OfAutoTagging; vt != nil {
 		return (*string)(&vt.Name)
-	} else if vt := u.OfAutoDescription; vt != nil {
+	} else if vt := u.OfAIAutoDescription; vt != nil {
 		return (*string)(&vt.Name)
 	}
 	return nil
 }
 
-// The property Name is required.
-type FileUploadParamsExtensionRemoveBackground struct {
-	// Specifies the background removal extension.
-	//
-	// Any of "remove-bg".
-	Name    string                                           `json:"name,omitzero,required"`
-	Options FileUploadParamsExtensionRemoveBackgroundOptions `json:"options,omitzero"`
-	paramObj
-}
-
-func (r FileUploadParamsExtensionRemoveBackground) MarshalJSON() (data []byte, err error) {
-	type shadow FileUploadParamsExtensionRemoveBackground
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *FileUploadParamsExtensionRemoveBackground) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 func init() {
-	apijson.RegisterFieldValidator[FileUploadParamsExtensionRemoveBackground](
-		"name", "remove-bg",
+	apijson.RegisterUnion[FileUploadParamsExtensionUnion](
+		"name",
+		apijson.Discriminator[FileUploadParamsExtensionRemoveBg]("remove-bg"),
+		apijson.Discriminator[FileUploadParamsExtensionAutoTagging]("google-auto-tagging"),
+		apijson.Discriminator[FileUploadParamsExtensionAutoTagging]("aws-auto-tagging"),
+		apijson.Discriminator[FileUploadParamsExtensionAIAutoDescription]("ai-auto-description"),
 	)
 }
 
-type FileUploadParamsExtensionRemoveBackgroundOptions struct {
+// The property Name is required.
+type FileUploadParamsExtensionRemoveBg struct {
+	Options FileUploadParamsExtensionRemoveBgOptions `json:"options,omitzero"`
+	// Specifies the background removal extension.
+	//
+	// This field can be elided, and will marshal its zero value as "remove-bg".
+	Name constant.RemoveBg `json:"name,required"`
+	paramObj
+}
+
+func (r FileUploadParamsExtensionRemoveBg) MarshalJSON() (data []byte, err error) {
+	type shadow FileUploadParamsExtensionRemoveBg
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *FileUploadParamsExtensionRemoveBg) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type FileUploadParamsExtensionRemoveBgOptions struct {
 	// Whether to add an artificial shadow to the result. Default is false. Note:
 	// Adding shadows is currently only supported for car photos.
 	AddShadow param.Opt[bool] `json:"add_shadow,omitzero"`
@@ -1564,11 +1568,11 @@ type FileUploadParamsExtensionRemoveBackgroundOptions struct {
 	paramObj
 }
 
-func (r FileUploadParamsExtensionRemoveBackgroundOptions) MarshalJSON() (data []byte, err error) {
-	type shadow FileUploadParamsExtensionRemoveBackgroundOptions
+func (r FileUploadParamsExtensionRemoveBgOptions) MarshalJSON() (data []byte, err error) {
+	type shadow FileUploadParamsExtensionRemoveBgOptions
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *FileUploadParamsExtensionRemoveBackgroundOptions) UnmarshalJSON(data []byte) error {
+func (r *FileUploadParamsExtensionRemoveBgOptions) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1599,27 +1603,26 @@ func init() {
 	)
 }
 
-// The property Name is required.
-type FileUploadParamsExtensionAutoDescription struct {
+func NewFileUploadParamsExtensionAIAutoDescription() FileUploadParamsExtensionAIAutoDescription {
+	return FileUploadParamsExtensionAIAutoDescription{
+		Name: "ai-auto-description",
+	}
+}
+
+// This struct has a constant value, construct it with
+// [NewFileUploadParamsExtensionAIAutoDescription].
+type FileUploadParamsExtensionAIAutoDescription struct {
 	// Specifies the auto description extension.
-	//
-	// Any of "ai-auto-description".
-	Name string `json:"name,omitzero,required"`
+	Name constant.AIAutoDescription `json:"name,required"`
 	paramObj
 }
 
-func (r FileUploadParamsExtensionAutoDescription) MarshalJSON() (data []byte, err error) {
-	type shadow FileUploadParamsExtensionAutoDescription
+func (r FileUploadParamsExtensionAIAutoDescription) MarshalJSON() (data []byte, err error) {
+	type shadow FileUploadParamsExtensionAIAutoDescription
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *FileUploadParamsExtensionAutoDescription) UnmarshalJSON(data []byte) error {
+func (r *FileUploadParamsExtensionAIAutoDescription) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[FileUploadParamsExtensionAutoDescription](
-		"name", "ai-auto-description",
-	)
 }
 
 // Configure pre-processing (`pre`) and post-processing (`post`) transformations.
@@ -1656,36 +1659,36 @@ func (r *FileUploadParamsTransformation) UnmarshalJSON(data []byte) error {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type FileUploadParamsTransformationPostUnion struct {
-	OfSimplePostTransformation *FileUploadParamsTransformationPostSimplePostTransformation `json:",omitzero,inline"`
-	OfConvertGifToVideo        *FileUploadParamsTransformationPostConvertGifToVideo        `json:",omitzero,inline"`
-	OfGenerateAThumbnail       *FileUploadParamsTransformationPostGenerateAThumbnail       `json:",omitzero,inline"`
-	OfAdaptiveBitrateStreaming *FileUploadParamsTransformationPostAdaptiveBitrateStreaming `json:",omitzero,inline"`
+	OfTransformation *FileUploadParamsTransformationPostTransformation `json:",omitzero,inline"`
+	OfGifToVideo     *FileUploadParamsTransformationPostGifToVideo     `json:",omitzero,inline"`
+	OfThumbnail      *FileUploadParamsTransformationPostThumbnail      `json:",omitzero,inline"`
+	OfAbs            *FileUploadParamsTransformationPostAbs            `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u FileUploadParamsTransformationPostUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfSimplePostTransformation, u.OfConvertGifToVideo, u.OfGenerateAThumbnail, u.OfAdaptiveBitrateStreaming)
+	return param.MarshalUnion(u, u.OfTransformation, u.OfGifToVideo, u.OfThumbnail, u.OfAbs)
 }
 func (u *FileUploadParamsTransformationPostUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *FileUploadParamsTransformationPostUnion) asAny() any {
-	if !param.IsOmitted(u.OfSimplePostTransformation) {
-		return u.OfSimplePostTransformation
-	} else if !param.IsOmitted(u.OfConvertGifToVideo) {
-		return u.OfConvertGifToVideo
-	} else if !param.IsOmitted(u.OfGenerateAThumbnail) {
-		return u.OfGenerateAThumbnail
-	} else if !param.IsOmitted(u.OfAdaptiveBitrateStreaming) {
-		return u.OfAdaptiveBitrateStreaming
+	if !param.IsOmitted(u.OfTransformation) {
+		return u.OfTransformation
+	} else if !param.IsOmitted(u.OfGifToVideo) {
+		return u.OfGifToVideo
+	} else if !param.IsOmitted(u.OfThumbnail) {
+		return u.OfThumbnail
+	} else if !param.IsOmitted(u.OfAbs) {
+		return u.OfAbs
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u FileUploadParamsTransformationPostUnion) GetProtocol() *string {
-	if vt := u.OfAdaptiveBitrateStreaming; vt != nil {
+	if vt := u.OfAbs; vt != nil {
 		return &vt.Protocol
 	}
 	return nil
@@ -1693,13 +1696,13 @@ func (u FileUploadParamsTransformationPostUnion) GetProtocol() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u FileUploadParamsTransformationPostUnion) GetType() *string {
-	if vt := u.OfSimplePostTransformation; vt != nil {
+	if vt := u.OfTransformation; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfConvertGifToVideo; vt != nil {
+	} else if vt := u.OfGifToVideo; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfGenerateAThumbnail; vt != nil {
+	} else if vt := u.OfThumbnail; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfAdaptiveBitrateStreaming; vt != nil {
+	} else if vt := u.OfAbs; vt != nil {
 		return (*string)(&vt.Type)
 	}
 	return nil
@@ -1707,124 +1710,113 @@ func (u FileUploadParamsTransformationPostUnion) GetType() *string {
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u FileUploadParamsTransformationPostUnion) GetValue() *string {
-	if vt := u.OfSimplePostTransformation; vt != nil {
+	if vt := u.OfTransformation; vt != nil {
 		return (*string)(&vt.Value)
-	} else if vt := u.OfConvertGifToVideo; vt != nil && vt.Value.Valid() {
+	} else if vt := u.OfGifToVideo; vt != nil && vt.Value.Valid() {
 		return &vt.Value.Value
-	} else if vt := u.OfGenerateAThumbnail; vt != nil && vt.Value.Valid() {
+	} else if vt := u.OfThumbnail; vt != nil && vt.Value.Valid() {
 		return &vt.Value.Value
-	} else if vt := u.OfAdaptiveBitrateStreaming; vt != nil {
+	} else if vt := u.OfAbs; vt != nil {
 		return (*string)(&vt.Value)
 	}
 	return nil
 }
 
+func init() {
+	apijson.RegisterUnion[FileUploadParamsTransformationPostUnion](
+		"type",
+		apijson.Discriminator[FileUploadParamsTransformationPostTransformation]("transformation"),
+		apijson.Discriminator[FileUploadParamsTransformationPostGifToVideo]("gif-to-video"),
+		apijson.Discriminator[FileUploadParamsTransformationPostThumbnail]("thumbnail"),
+		apijson.Discriminator[FileUploadParamsTransformationPostAbs]("abs"),
+	)
+}
+
 // The properties Type, Value are required.
-type FileUploadParamsTransformationPostSimplePostTransformation struct {
-	// Transformation type.
-	//
-	// Any of "transformation".
-	Type string `json:"type,omitzero,required"`
+type FileUploadParamsTransformationPostTransformation struct {
 	// Transformation string (e.g. `w-200,h-200`).
 	// Same syntax as ImageKit URL-based transformations.
 	Value string `json:"value,required"`
+	// Transformation type.
+	//
+	// This field can be elided, and will marshal its zero value as "transformation".
+	Type constant.Transformation `json:"type,required"`
 	paramObj
 }
 
-func (r FileUploadParamsTransformationPostSimplePostTransformation) MarshalJSON() (data []byte, err error) {
-	type shadow FileUploadParamsTransformationPostSimplePostTransformation
+func (r FileUploadParamsTransformationPostTransformation) MarshalJSON() (data []byte, err error) {
+	type shadow FileUploadParamsTransformationPostTransformation
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *FileUploadParamsTransformationPostSimplePostTransformation) UnmarshalJSON(data []byte) error {
+func (r *FileUploadParamsTransformationPostTransformation) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[FileUploadParamsTransformationPostSimplePostTransformation](
-		"type", "transformation",
-	)
-}
-
 // The property Type is required.
-type FileUploadParamsTransformationPostConvertGifToVideo struct {
-	// Converts an animated GIF into an MP4.
-	//
-	// Any of "gif-to-video".
-	Type string `json:"type,omitzero,required"`
+type FileUploadParamsTransformationPostGifToVideo struct {
 	// Optional transformation string to apply to the output video.
 	// **Example**: `q-80`
 	Value param.Opt[string] `json:"value,omitzero"`
+	// Converts an animated GIF into an MP4.
+	//
+	// This field can be elided, and will marshal its zero value as "gif-to-video".
+	Type constant.GifToVideo `json:"type,required"`
 	paramObj
 }
 
-func (r FileUploadParamsTransformationPostConvertGifToVideo) MarshalJSON() (data []byte, err error) {
-	type shadow FileUploadParamsTransformationPostConvertGifToVideo
+func (r FileUploadParamsTransformationPostGifToVideo) MarshalJSON() (data []byte, err error) {
+	type shadow FileUploadParamsTransformationPostGifToVideo
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *FileUploadParamsTransformationPostConvertGifToVideo) UnmarshalJSON(data []byte) error {
+func (r *FileUploadParamsTransformationPostGifToVideo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[FileUploadParamsTransformationPostConvertGifToVideo](
-		"type", "gif-to-video",
-	)
 }
 
 // The property Type is required.
-type FileUploadParamsTransformationPostGenerateAThumbnail struct {
-	// Generates a thumbnail image.
-	//
-	// Any of "thumbnail".
-	Type string `json:"type,omitzero,required"`
+type FileUploadParamsTransformationPostThumbnail struct {
 	// Optional transformation string.
 	// **Example**: `w-150,h-150`
 	Value param.Opt[string] `json:"value,omitzero"`
+	// Generates a thumbnail image.
+	//
+	// This field can be elided, and will marshal its zero value as "thumbnail".
+	Type constant.Thumbnail `json:"type,required"`
 	paramObj
 }
 
-func (r FileUploadParamsTransformationPostGenerateAThumbnail) MarshalJSON() (data []byte, err error) {
-	type shadow FileUploadParamsTransformationPostGenerateAThumbnail
+func (r FileUploadParamsTransformationPostThumbnail) MarshalJSON() (data []byte, err error) {
+	type shadow FileUploadParamsTransformationPostThumbnail
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *FileUploadParamsTransformationPostGenerateAThumbnail) UnmarshalJSON(data []byte) error {
+func (r *FileUploadParamsTransformationPostThumbnail) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[FileUploadParamsTransformationPostGenerateAThumbnail](
-		"type", "thumbnail",
-	)
-}
-
 // The properties Protocol, Type, Value are required.
-type FileUploadParamsTransformationPostAdaptiveBitrateStreaming struct {
+type FileUploadParamsTransformationPostAbs struct {
 	// Streaming protocol to use (`hls` or `dash`).
 	//
 	// Any of "hls", "dash".
 	Protocol string `json:"protocol,omitzero,required"`
-	// Adaptive Bitrate Streaming (ABS) setup.
-	//
-	// Any of "abs".
-	Type string `json:"type,omitzero,required"`
 	// List of different representations you want to create separated by an underscore.
 	Value string `json:"value,required"`
+	// Adaptive Bitrate Streaming (ABS) setup.
+	//
+	// This field can be elided, and will marshal its zero value as "abs".
+	Type constant.Abs `json:"type,required"`
 	paramObj
 }
 
-func (r FileUploadParamsTransformationPostAdaptiveBitrateStreaming) MarshalJSON() (data []byte, err error) {
-	type shadow FileUploadParamsTransformationPostAdaptiveBitrateStreaming
+func (r FileUploadParamsTransformationPostAbs) MarshalJSON() (data []byte, err error) {
+	type shadow FileUploadParamsTransformationPostAbs
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *FileUploadParamsTransformationPostAdaptiveBitrateStreaming) UnmarshalJSON(data []byte) error {
+func (r *FileUploadParamsTransformationPostAbs) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[FileUploadParamsTransformationPostAdaptiveBitrateStreaming](
+	apijson.RegisterFieldValidator[FileUploadParamsTransformationPostAbs](
 		"protocol", "hls", "dash",
-	)
-	apijson.RegisterFieldValidator[FileUploadParamsTransformationPostAdaptiveBitrateStreaming](
-		"type", "abs",
 	)
 }

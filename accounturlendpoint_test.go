@@ -32,8 +32,7 @@ func TestAccountURLEndpointNewWithOptionalParams(t *testing.T) {
 		Origins:     []string{"origin-id-1"},
 		URLPrefix:   imagekit.String("product-images"),
 		URLRewriter: imagekit.AccountURLEndpointNewParamsURLRewriterUnion{
-			OfCloudinaryURLRewriter: &imagekit.AccountURLEndpointNewParamsURLRewriterCloudinaryURLRewriter{
-				Type:                       "CLOUDINARY",
+			OfCloudinary: &imagekit.AccountURLEndpointNewParamsURLRewriterCloudinary{
 				PreserveAssetDeliveryTypes: imagekit.Bool(true),
 			},
 		},
@@ -69,8 +68,7 @@ func TestAccountURLEndpointUpdateWithOptionalParams(t *testing.T) {
 			Origins:     []string{"origin-id-1"},
 			URLPrefix:   imagekit.String("product-images"),
 			URLRewriter: imagekit.AccountURLEndpointUpdateParamsURLRewriterUnion{
-				OfCloudinaryURLRewriter: &imagekit.AccountURLEndpointUpdateParamsURLRewriterCloudinaryURLRewriter{
-					Type:                       "CLOUDINARY",
+				OfCloudinary: &imagekit.AccountURLEndpointUpdateParamsURLRewriterCloudinary{
 					PreserveAssetDeliveryTypes: imagekit.Bool(true),
 				},
 			},

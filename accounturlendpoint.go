@@ -14,6 +14,7 @@ import (
 	"github.com/stainless-sdks/imagekit-go/option"
 	"github.com/stainless-sdks/imagekit-go/packages/param"
 	"github.com/stainless-sdks/imagekit-go/packages/respjson"
+	"github.com/stainless-sdks/imagekit-go/shared/constant"
 )
 
 // AccountURLEndpointService contains methods and other services that help with
@@ -660,33 +661,33 @@ func (r *AccountURLEndpointNewParams) UnmarshalJSON(data []byte) error {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type AccountURLEndpointNewParamsURLRewriterUnion struct {
-	OfCloudinaryURLRewriter *AccountURLEndpointNewParamsURLRewriterCloudinaryURLRewriter `json:",omitzero,inline"`
-	OfImgixURLRewriter      *AccountURLEndpointNewParamsURLRewriterImgixURLRewriter      `json:",omitzero,inline"`
-	OfAkamaiURLRewriter     *AccountURLEndpointNewParamsURLRewriterAkamaiURLRewriter     `json:",omitzero,inline"`
+	OfCloudinary *AccountURLEndpointNewParamsURLRewriterCloudinary `json:",omitzero,inline"`
+	OfImgix      *AccountURLEndpointNewParamsURLRewriterImgix      `json:",omitzero,inline"`
+	OfAkamai     *AccountURLEndpointNewParamsURLRewriterAkamai     `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u AccountURLEndpointNewParamsURLRewriterUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfCloudinaryURLRewriter, u.OfImgixURLRewriter, u.OfAkamaiURLRewriter)
+	return param.MarshalUnion(u, u.OfCloudinary, u.OfImgix, u.OfAkamai)
 }
 func (u *AccountURLEndpointNewParamsURLRewriterUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *AccountURLEndpointNewParamsURLRewriterUnion) asAny() any {
-	if !param.IsOmitted(u.OfCloudinaryURLRewriter) {
-		return u.OfCloudinaryURLRewriter
-	} else if !param.IsOmitted(u.OfImgixURLRewriter) {
-		return u.OfImgixURLRewriter
-	} else if !param.IsOmitted(u.OfAkamaiURLRewriter) {
-		return u.OfAkamaiURLRewriter
+	if !param.IsOmitted(u.OfCloudinary) {
+		return u.OfCloudinary
+	} else if !param.IsOmitted(u.OfImgix) {
+		return u.OfImgix
+	} else if !param.IsOmitted(u.OfAkamai) {
+		return u.OfAkamai
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u AccountURLEndpointNewParamsURLRewriterUnion) GetPreserveAssetDeliveryTypes() *bool {
-	if vt := u.OfCloudinaryURLRewriter; vt != nil && vt.PreserveAssetDeliveryTypes.Valid() {
+	if vt := u.OfCloudinary; vt != nil && vt.PreserveAssetDeliveryTypes.Valid() {
 		return &vt.PreserveAssetDeliveryTypes.Value
 	}
 	return nil
@@ -694,79 +695,82 @@ func (u AccountURLEndpointNewParamsURLRewriterUnion) GetPreserveAssetDeliveryTyp
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u AccountURLEndpointNewParamsURLRewriterUnion) GetType() *string {
-	if vt := u.OfCloudinaryURLRewriter; vt != nil {
+	if vt := u.OfCloudinary; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfImgixURLRewriter; vt != nil {
+	} else if vt := u.OfImgix; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfAkamaiURLRewriter; vt != nil {
+	} else if vt := u.OfAkamai; vt != nil {
 		return (*string)(&vt.Type)
 	}
 	return nil
 }
 
+func init() {
+	apijson.RegisterUnion[AccountURLEndpointNewParamsURLRewriterUnion](
+		"type",
+		apijson.Discriminator[AccountURLEndpointNewParamsURLRewriterCloudinary]("CLOUDINARY"),
+		apijson.Discriminator[AccountURLEndpointNewParamsURLRewriterImgix]("IMGIX"),
+		apijson.Discriminator[AccountURLEndpointNewParamsURLRewriterAkamai]("AKAMAI"),
+	)
+}
+
 // The property Type is required.
-type AccountURLEndpointNewParamsURLRewriterCloudinaryURLRewriter struct {
-	// Any of "CLOUDINARY".
-	Type string `json:"type,omitzero,required"`
+type AccountURLEndpointNewParamsURLRewriterCloudinary struct {
 	// Whether to preserve `<asset_type>/<delivery_type>` in the rewritten URL.
 	PreserveAssetDeliveryTypes param.Opt[bool] `json:"preserveAssetDeliveryTypes,omitzero"`
+	// This field can be elided, and will marshal its zero value as "CLOUDINARY".
+	Type constant.Cloudinary `json:"type,required"`
 	paramObj
 }
 
-func (r AccountURLEndpointNewParamsURLRewriterCloudinaryURLRewriter) MarshalJSON() (data []byte, err error) {
-	type shadow AccountURLEndpointNewParamsURLRewriterCloudinaryURLRewriter
+func (r AccountURLEndpointNewParamsURLRewriterCloudinary) MarshalJSON() (data []byte, err error) {
+	type shadow AccountURLEndpointNewParamsURLRewriterCloudinary
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *AccountURLEndpointNewParamsURLRewriterCloudinaryURLRewriter) UnmarshalJSON(data []byte) error {
+func (r *AccountURLEndpointNewParamsURLRewriterCloudinary) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[AccountURLEndpointNewParamsURLRewriterCloudinaryURLRewriter](
-		"type", "CLOUDINARY",
-	)
+func NewAccountURLEndpointNewParamsURLRewriterImgix() AccountURLEndpointNewParamsURLRewriterImgix {
+	return AccountURLEndpointNewParamsURLRewriterImgix{
+		Type: "IMGIX",
+	}
 }
 
-// The property Type is required.
-type AccountURLEndpointNewParamsURLRewriterImgixURLRewriter struct {
-	// Any of "IMGIX".
-	Type string `json:"type,omitzero,required"`
+// This struct has a constant value, construct it with
+// [NewAccountURLEndpointNewParamsURLRewriterImgix].
+type AccountURLEndpointNewParamsURLRewriterImgix struct {
+	Type constant.Imgix `json:"type,required"`
 	paramObj
 }
 
-func (r AccountURLEndpointNewParamsURLRewriterImgixURLRewriter) MarshalJSON() (data []byte, err error) {
-	type shadow AccountURLEndpointNewParamsURLRewriterImgixURLRewriter
+func (r AccountURLEndpointNewParamsURLRewriterImgix) MarshalJSON() (data []byte, err error) {
+	type shadow AccountURLEndpointNewParamsURLRewriterImgix
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *AccountURLEndpointNewParamsURLRewriterImgixURLRewriter) UnmarshalJSON(data []byte) error {
+func (r *AccountURLEndpointNewParamsURLRewriterImgix) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[AccountURLEndpointNewParamsURLRewriterImgixURLRewriter](
-		"type", "IMGIX",
-	)
+func NewAccountURLEndpointNewParamsURLRewriterAkamai() AccountURLEndpointNewParamsURLRewriterAkamai {
+	return AccountURLEndpointNewParamsURLRewriterAkamai{
+		Type: "AKAMAI",
+	}
 }
 
-// The property Type is required.
-type AccountURLEndpointNewParamsURLRewriterAkamaiURLRewriter struct {
-	// Any of "AKAMAI".
-	Type string `json:"type,omitzero,required"`
+// This struct has a constant value, construct it with
+// [NewAccountURLEndpointNewParamsURLRewriterAkamai].
+type AccountURLEndpointNewParamsURLRewriterAkamai struct {
+	Type constant.Akamai `json:"type,required"`
 	paramObj
 }
 
-func (r AccountURLEndpointNewParamsURLRewriterAkamaiURLRewriter) MarshalJSON() (data []byte, err error) {
-	type shadow AccountURLEndpointNewParamsURLRewriterAkamaiURLRewriter
+func (r AccountURLEndpointNewParamsURLRewriterAkamai) MarshalJSON() (data []byte, err error) {
+	type shadow AccountURLEndpointNewParamsURLRewriterAkamai
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *AccountURLEndpointNewParamsURLRewriterAkamaiURLRewriter) UnmarshalJSON(data []byte) error {
+func (r *AccountURLEndpointNewParamsURLRewriterAkamai) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[AccountURLEndpointNewParamsURLRewriterAkamaiURLRewriter](
-		"type", "AKAMAI",
-	)
 }
 
 type AccountURLEndpointUpdateParams struct {
@@ -796,33 +800,33 @@ func (r *AccountURLEndpointUpdateParams) UnmarshalJSON(data []byte) error {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type AccountURLEndpointUpdateParamsURLRewriterUnion struct {
-	OfCloudinaryURLRewriter *AccountURLEndpointUpdateParamsURLRewriterCloudinaryURLRewriter `json:",omitzero,inline"`
-	OfImgixURLRewriter      *AccountURLEndpointUpdateParamsURLRewriterImgixURLRewriter      `json:",omitzero,inline"`
-	OfAkamaiURLRewriter     *AccountURLEndpointUpdateParamsURLRewriterAkamaiURLRewriter     `json:",omitzero,inline"`
+	OfCloudinary *AccountURLEndpointUpdateParamsURLRewriterCloudinary `json:",omitzero,inline"`
+	OfImgix      *AccountURLEndpointUpdateParamsURLRewriterImgix      `json:",omitzero,inline"`
+	OfAkamai     *AccountURLEndpointUpdateParamsURLRewriterAkamai     `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u AccountURLEndpointUpdateParamsURLRewriterUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfCloudinaryURLRewriter, u.OfImgixURLRewriter, u.OfAkamaiURLRewriter)
+	return param.MarshalUnion(u, u.OfCloudinary, u.OfImgix, u.OfAkamai)
 }
 func (u *AccountURLEndpointUpdateParamsURLRewriterUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *AccountURLEndpointUpdateParamsURLRewriterUnion) asAny() any {
-	if !param.IsOmitted(u.OfCloudinaryURLRewriter) {
-		return u.OfCloudinaryURLRewriter
-	} else if !param.IsOmitted(u.OfImgixURLRewriter) {
-		return u.OfImgixURLRewriter
-	} else if !param.IsOmitted(u.OfAkamaiURLRewriter) {
-		return u.OfAkamaiURLRewriter
+	if !param.IsOmitted(u.OfCloudinary) {
+		return u.OfCloudinary
+	} else if !param.IsOmitted(u.OfImgix) {
+		return u.OfImgix
+	} else if !param.IsOmitted(u.OfAkamai) {
+		return u.OfAkamai
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u AccountURLEndpointUpdateParamsURLRewriterUnion) GetPreserveAssetDeliveryTypes() *bool {
-	if vt := u.OfCloudinaryURLRewriter; vt != nil && vt.PreserveAssetDeliveryTypes.Valid() {
+	if vt := u.OfCloudinary; vt != nil && vt.PreserveAssetDeliveryTypes.Valid() {
 		return &vt.PreserveAssetDeliveryTypes.Value
 	}
 	return nil
@@ -830,77 +834,80 @@ func (u AccountURLEndpointUpdateParamsURLRewriterUnion) GetPreserveAssetDelivery
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u AccountURLEndpointUpdateParamsURLRewriterUnion) GetType() *string {
-	if vt := u.OfCloudinaryURLRewriter; vt != nil {
+	if vt := u.OfCloudinary; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfImgixURLRewriter; vt != nil {
+	} else if vt := u.OfImgix; vt != nil {
 		return (*string)(&vt.Type)
-	} else if vt := u.OfAkamaiURLRewriter; vt != nil {
+	} else if vt := u.OfAkamai; vt != nil {
 		return (*string)(&vt.Type)
 	}
 	return nil
 }
 
+func init() {
+	apijson.RegisterUnion[AccountURLEndpointUpdateParamsURLRewriterUnion](
+		"type",
+		apijson.Discriminator[AccountURLEndpointUpdateParamsURLRewriterCloudinary]("CLOUDINARY"),
+		apijson.Discriminator[AccountURLEndpointUpdateParamsURLRewriterImgix]("IMGIX"),
+		apijson.Discriminator[AccountURLEndpointUpdateParamsURLRewriterAkamai]("AKAMAI"),
+	)
+}
+
 // The property Type is required.
-type AccountURLEndpointUpdateParamsURLRewriterCloudinaryURLRewriter struct {
-	// Any of "CLOUDINARY".
-	Type string `json:"type,omitzero,required"`
+type AccountURLEndpointUpdateParamsURLRewriterCloudinary struct {
 	// Whether to preserve `<asset_type>/<delivery_type>` in the rewritten URL.
 	PreserveAssetDeliveryTypes param.Opt[bool] `json:"preserveAssetDeliveryTypes,omitzero"`
+	// This field can be elided, and will marshal its zero value as "CLOUDINARY".
+	Type constant.Cloudinary `json:"type,required"`
 	paramObj
 }
 
-func (r AccountURLEndpointUpdateParamsURLRewriterCloudinaryURLRewriter) MarshalJSON() (data []byte, err error) {
-	type shadow AccountURLEndpointUpdateParamsURLRewriterCloudinaryURLRewriter
+func (r AccountURLEndpointUpdateParamsURLRewriterCloudinary) MarshalJSON() (data []byte, err error) {
+	type shadow AccountURLEndpointUpdateParamsURLRewriterCloudinary
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *AccountURLEndpointUpdateParamsURLRewriterCloudinaryURLRewriter) UnmarshalJSON(data []byte) error {
+func (r *AccountURLEndpointUpdateParamsURLRewriterCloudinary) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[AccountURLEndpointUpdateParamsURLRewriterCloudinaryURLRewriter](
-		"type", "CLOUDINARY",
-	)
+func NewAccountURLEndpointUpdateParamsURLRewriterImgix() AccountURLEndpointUpdateParamsURLRewriterImgix {
+	return AccountURLEndpointUpdateParamsURLRewriterImgix{
+		Type: "IMGIX",
+	}
 }
 
-// The property Type is required.
-type AccountURLEndpointUpdateParamsURLRewriterImgixURLRewriter struct {
-	// Any of "IMGIX".
-	Type string `json:"type,omitzero,required"`
+// This struct has a constant value, construct it with
+// [NewAccountURLEndpointUpdateParamsURLRewriterImgix].
+type AccountURLEndpointUpdateParamsURLRewriterImgix struct {
+	Type constant.Imgix `json:"type,required"`
 	paramObj
 }
 
-func (r AccountURLEndpointUpdateParamsURLRewriterImgixURLRewriter) MarshalJSON() (data []byte, err error) {
-	type shadow AccountURLEndpointUpdateParamsURLRewriterImgixURLRewriter
+func (r AccountURLEndpointUpdateParamsURLRewriterImgix) MarshalJSON() (data []byte, err error) {
+	type shadow AccountURLEndpointUpdateParamsURLRewriterImgix
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *AccountURLEndpointUpdateParamsURLRewriterImgixURLRewriter) UnmarshalJSON(data []byte) error {
+func (r *AccountURLEndpointUpdateParamsURLRewriterImgix) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[AccountURLEndpointUpdateParamsURLRewriterImgixURLRewriter](
-		"type", "IMGIX",
-	)
+func NewAccountURLEndpointUpdateParamsURLRewriterAkamai() AccountURLEndpointUpdateParamsURLRewriterAkamai {
+	return AccountURLEndpointUpdateParamsURLRewriterAkamai{
+		Type: "AKAMAI",
+	}
 }
 
-// The property Type is required.
-type AccountURLEndpointUpdateParamsURLRewriterAkamaiURLRewriter struct {
-	// Any of "AKAMAI".
-	Type string `json:"type,omitzero,required"`
+// This struct has a constant value, construct it with
+// [NewAccountURLEndpointUpdateParamsURLRewriterAkamai].
+type AccountURLEndpointUpdateParamsURLRewriterAkamai struct {
+	Type constant.Akamai `json:"type,required"`
 	paramObj
 }
 
-func (r AccountURLEndpointUpdateParamsURLRewriterAkamaiURLRewriter) MarshalJSON() (data []byte, err error) {
-	type shadow AccountURLEndpointUpdateParamsURLRewriterAkamaiURLRewriter
+func (r AccountURLEndpointUpdateParamsURLRewriterAkamai) MarshalJSON() (data []byte, err error) {
+	type shadow AccountURLEndpointUpdateParamsURLRewriterAkamai
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *AccountURLEndpointUpdateParamsURLRewriterAkamaiURLRewriter) UnmarshalJSON(data []byte) error {
+func (r *AccountURLEndpointUpdateParamsURLRewriterAkamai) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[AccountURLEndpointUpdateParamsURLRewriterAkamaiURLRewriter](
-		"type", "AKAMAI",
-	)
 }

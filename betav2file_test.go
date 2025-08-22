@@ -41,9 +41,8 @@ func TestBetaV2FileUploadWithOptionalParams(t *testing.T) {
 		},
 		Description: imagekit.String("Running shoes"),
 		Extensions: []imagekit.BetaV2FileUploadParamsExtensionUnion{{
-			OfRemoveBackground: &imagekit.BetaV2FileUploadParamsExtensionRemoveBackground{
-				Name: "remove-bg",
-				Options: imagekit.BetaV2FileUploadParamsExtensionRemoveBackgroundOptions{
+			OfRemoveBg: &imagekit.BetaV2FileUploadParamsExtensionRemoveBg{
+				Options: imagekit.BetaV2FileUploadParamsExtensionRemoveBgOptions{
 					AddShadow:        imagekit.Bool(true),
 					BgColor:          imagekit.String("bg_color"),
 					BgImageURL:       imagekit.String("bg_image_url"),
@@ -68,14 +67,12 @@ func TestBetaV2FileUploadWithOptionalParams(t *testing.T) {
 		Tags:                    []string{"t-shirt", "round-neck", "men"},
 		Transformation: imagekit.BetaV2FileUploadParamsTransformation{
 			Post: []imagekit.BetaV2FileUploadParamsTransformationPostUnion{{
-				OfGenerateAThumbnail: &imagekit.BetaV2FileUploadParamsTransformationPostGenerateAThumbnail{
-					Type:  "thumbnail",
+				OfThumbnail: &imagekit.BetaV2FileUploadParamsTransformationPostThumbnail{
 					Value: imagekit.String("w-150,h-150"),
 				},
 			}, {
-				OfAdaptiveBitrateStreaming: &imagekit.BetaV2FileUploadParamsTransformationPostAdaptiveBitrateStreaming{
+				OfAbs: &imagekit.BetaV2FileUploadParamsTransformationPostAbs{
 					Protocol: "dash",
-					Type:     "abs",
 					Value:    "sr-240_360_480_720_1080",
 				},
 			}},
