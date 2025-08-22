@@ -17,6 +17,7 @@ import (
 	"github.com/stainless-sdks/imagekit-go/option"
 	"github.com/stainless-sdks/imagekit-go/packages/param"
 	"github.com/stainless-sdks/imagekit-go/packages/respjson"
+	"github.com/stainless-sdks/imagekit-go/shared/constant"
 )
 
 // FileService contains methods and other services that help with interacting with
@@ -1000,33 +1001,33 @@ func (r *FileUpdateParamsBodyUpdateFileDetails) UnmarshalJSON(data []byte) error
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type FileUpdateParamsBodyUpdateFileDetailsExtensionUnion struct {
-	OfRemoveBackground *FileUpdateParamsBodyUpdateFileDetailsExtensionRemoveBackground `json:",omitzero,inline"`
-	OfAutoTagging      *FileUpdateParamsBodyUpdateFileDetailsExtensionAutoTagging      `json:",omitzero,inline"`
-	OfAutoDescription  *FileUpdateParamsBodyUpdateFileDetailsExtensionAutoDescription  `json:",omitzero,inline"`
+	OfRemoveBg          *FileUpdateParamsBodyUpdateFileDetailsExtensionRemoveBg          `json:",omitzero,inline"`
+	OfAutoTagging       *FileUpdateParamsBodyUpdateFileDetailsExtensionAutoTagging       `json:",omitzero,inline"`
+	OfAIAutoDescription *FileUpdateParamsBodyUpdateFileDetailsExtensionAIAutoDescription `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u FileUpdateParamsBodyUpdateFileDetailsExtensionUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfRemoveBackground, u.OfAutoTagging, u.OfAutoDescription)
+	return param.MarshalUnion(u, u.OfRemoveBg, u.OfAutoTagging, u.OfAIAutoDescription)
 }
 func (u *FileUpdateParamsBodyUpdateFileDetailsExtensionUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *FileUpdateParamsBodyUpdateFileDetailsExtensionUnion) asAny() any {
-	if !param.IsOmitted(u.OfRemoveBackground) {
-		return u.OfRemoveBackground
+	if !param.IsOmitted(u.OfRemoveBg) {
+		return u.OfRemoveBg
 	} else if !param.IsOmitted(u.OfAutoTagging) {
 		return u.OfAutoTagging
-	} else if !param.IsOmitted(u.OfAutoDescription) {
-		return u.OfAutoDescription
+	} else if !param.IsOmitted(u.OfAIAutoDescription) {
+		return u.OfAIAutoDescription
 	}
 	return nil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u FileUpdateParamsBodyUpdateFileDetailsExtensionUnion) GetOptions() *FileUpdateParamsBodyUpdateFileDetailsExtensionRemoveBackgroundOptions {
-	if vt := u.OfRemoveBackground; vt != nil {
+func (u FileUpdateParamsBodyUpdateFileDetailsExtensionUnion) GetOptions() *FileUpdateParamsBodyUpdateFileDetailsExtensionRemoveBgOptions {
+	if vt := u.OfRemoveBg; vt != nil {
 		return &vt.Options
 	}
 	return nil
@@ -1050,41 +1051,45 @@ func (u FileUpdateParamsBodyUpdateFileDetailsExtensionUnion) GetMinConfidence() 
 
 // Returns a pointer to the underlying variant's property, if present.
 func (u FileUpdateParamsBodyUpdateFileDetailsExtensionUnion) GetName() *string {
-	if vt := u.OfRemoveBackground; vt != nil {
+	if vt := u.OfRemoveBg; vt != nil {
 		return (*string)(&vt.Name)
 	} else if vt := u.OfAutoTagging; vt != nil {
 		return (*string)(&vt.Name)
-	} else if vt := u.OfAutoDescription; vt != nil {
+	} else if vt := u.OfAIAutoDescription; vt != nil {
 		return (*string)(&vt.Name)
 	}
 	return nil
 }
 
-// The property Name is required.
-type FileUpdateParamsBodyUpdateFileDetailsExtensionRemoveBackground struct {
-	// Specifies the background removal extension.
-	//
-	// Any of "remove-bg".
-	Name    string                                                                `json:"name,omitzero,required"`
-	Options FileUpdateParamsBodyUpdateFileDetailsExtensionRemoveBackgroundOptions `json:"options,omitzero"`
-	paramObj
-}
-
-func (r FileUpdateParamsBodyUpdateFileDetailsExtensionRemoveBackground) MarshalJSON() (data []byte, err error) {
-	type shadow FileUpdateParamsBodyUpdateFileDetailsExtensionRemoveBackground
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *FileUpdateParamsBodyUpdateFileDetailsExtensionRemoveBackground) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 func init() {
-	apijson.RegisterFieldValidator[FileUpdateParamsBodyUpdateFileDetailsExtensionRemoveBackground](
-		"name", "remove-bg",
+	apijson.RegisterUnion[FileUpdateParamsBodyUpdateFileDetailsExtensionUnion](
+		"name",
+		apijson.Discriminator[FileUpdateParamsBodyUpdateFileDetailsExtensionRemoveBg]("remove-bg"),
+		apijson.Discriminator[FileUpdateParamsBodyUpdateFileDetailsExtensionAutoTagging]("google-auto-tagging"),
+		apijson.Discriminator[FileUpdateParamsBodyUpdateFileDetailsExtensionAutoTagging]("aws-auto-tagging"),
+		apijson.Discriminator[FileUpdateParamsBodyUpdateFileDetailsExtensionAIAutoDescription]("ai-auto-description"),
 	)
 }
 
-type FileUpdateParamsBodyUpdateFileDetailsExtensionRemoveBackgroundOptions struct {
+// The property Name is required.
+type FileUpdateParamsBodyUpdateFileDetailsExtensionRemoveBg struct {
+	Options FileUpdateParamsBodyUpdateFileDetailsExtensionRemoveBgOptions `json:"options,omitzero"`
+	// Specifies the background removal extension.
+	//
+	// This field can be elided, and will marshal its zero value as "remove-bg".
+	Name constant.RemoveBg `json:"name,required"`
+	paramObj
+}
+
+func (r FileUpdateParamsBodyUpdateFileDetailsExtensionRemoveBg) MarshalJSON() (data []byte, err error) {
+	type shadow FileUpdateParamsBodyUpdateFileDetailsExtensionRemoveBg
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *FileUpdateParamsBodyUpdateFileDetailsExtensionRemoveBg) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type FileUpdateParamsBodyUpdateFileDetailsExtensionRemoveBgOptions struct {
 	// Whether to add an artificial shadow to the result. Default is false. Note:
 	// Adding shadows is currently only supported for car photos.
 	AddShadow param.Opt[bool] `json:"add_shadow,omitzero"`
@@ -1101,11 +1106,11 @@ type FileUpdateParamsBodyUpdateFileDetailsExtensionRemoveBackgroundOptions struc
 	paramObj
 }
 
-func (r FileUpdateParamsBodyUpdateFileDetailsExtensionRemoveBackgroundOptions) MarshalJSON() (data []byte, err error) {
-	type shadow FileUpdateParamsBodyUpdateFileDetailsExtensionRemoveBackgroundOptions
+func (r FileUpdateParamsBodyUpdateFileDetailsExtensionRemoveBgOptions) MarshalJSON() (data []byte, err error) {
+	type shadow FileUpdateParamsBodyUpdateFileDetailsExtensionRemoveBgOptions
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *FileUpdateParamsBodyUpdateFileDetailsExtensionRemoveBackgroundOptions) UnmarshalJSON(data []byte) error {
+func (r *FileUpdateParamsBodyUpdateFileDetailsExtensionRemoveBgOptions) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1136,27 +1141,26 @@ func init() {
 	)
 }
 
-// The property Name is required.
-type FileUpdateParamsBodyUpdateFileDetailsExtensionAutoDescription struct {
+func NewFileUpdateParamsBodyUpdateFileDetailsExtensionAIAutoDescription() FileUpdateParamsBodyUpdateFileDetailsExtensionAIAutoDescription {
+	return FileUpdateParamsBodyUpdateFileDetailsExtensionAIAutoDescription{
+		Name: "ai-auto-description",
+	}
+}
+
+// This struct has a constant value, construct it with
+// [NewFileUpdateParamsBodyUpdateFileDetailsExtensionAIAutoDescription].
+type FileUpdateParamsBodyUpdateFileDetailsExtensionAIAutoDescription struct {
 	// Specifies the auto description extension.
-	//
-	// Any of "ai-auto-description".
-	Name string `json:"name,omitzero,required"`
+	Name constant.AIAutoDescription `json:"name,required"`
 	paramObj
 }
 
-func (r FileUpdateParamsBodyUpdateFileDetailsExtensionAutoDescription) MarshalJSON() (data []byte, err error) {
-	type shadow FileUpdateParamsBodyUpdateFileDetailsExtensionAutoDescription
+func (r FileUpdateParamsBodyUpdateFileDetailsExtensionAIAutoDescription) MarshalJSON() (data []byte, err error) {
+	type shadow FileUpdateParamsBodyUpdateFileDetailsExtensionAIAutoDescription
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *FileUpdateParamsBodyUpdateFileDetailsExtensionAutoDescription) UnmarshalJSON(data []byte) error {
+func (r *FileUpdateParamsBodyUpdateFileDetailsExtensionAIAutoDescription) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[FileUpdateParamsBodyUpdateFileDetailsExtensionAutoDescription](
-		"name", "ai-auto-description",
-	)
 }
 
 // Only one field can be non-zero.

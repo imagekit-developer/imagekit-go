@@ -41,9 +41,8 @@ func TestFileUpdateWithOptionalParams(t *testing.T) {
 				},
 				Description: imagekit.String("description"),
 				Extensions: []imagekit.FileUpdateParamsBodyUpdateFileDetailsExtensionUnion{{
-					OfRemoveBackground: &imagekit.FileUpdateParamsBodyUpdateFileDetailsExtensionRemoveBackground{
-						Name: "remove-bg",
-						Options: imagekit.FileUpdateParamsBodyUpdateFileDetailsExtensionRemoveBackgroundOptions{
+					OfRemoveBg: &imagekit.FileUpdateParamsBodyUpdateFileDetailsExtensionRemoveBg{
+						Options: imagekit.FileUpdateParamsBodyUpdateFileDetailsExtensionRemoveBgOptions{
 							AddShadow:        imagekit.Bool(true),
 							BgColor:          imagekit.String("bg_color"),
 							BgImageURL:       imagekit.String("bg_image_url"),
@@ -63,9 +62,7 @@ func TestFileUpdateWithOptionalParams(t *testing.T) {
 						Name:          "aws-auto-tagging",
 					},
 				}, {
-					OfAutoDescription: &imagekit.FileUpdateParamsBodyUpdateFileDetailsExtensionAutoDescription{
-						Name: "ai-auto-description",
-					},
+					OfAIAutoDescription: &imagekit.FileUpdateParamsBodyUpdateFileDetailsExtensionAIAutoDescription{},
 				}},
 				RemoveAITags: imagekit.FileUpdateParamsBodyUpdateFileDetailsRemoveAITagsUnion{
 					OfStringArray: []string{"car", "vehicle", "motorsports"},

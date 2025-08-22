@@ -18,6 +18,15 @@ func ValueOf[T Constant[T]]() T {
 	return t.Default()
 }
 
+type AIAutoDescription string // Always "ai-auto-description"
+type RemoveBg string          // Always "remove-bg"
+
+func (c AIAutoDescription) Default() AIAutoDescription { return "ai-auto-description" }
+func (c RemoveBg) Default() RemoveBg                   { return "remove-bg" }
+
+func (c AIAutoDescription) MarshalJSON() ([]byte, error) { return marshalString(c) }
+func (c RemoveBg) MarshalJSON() ([]byte, error)          { return marshalString(c) }
+
 type constant[T any] interface {
 	Constant[T]
 	*T
