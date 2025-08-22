@@ -1056,15 +1056,15 @@ func init() {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type CustomMetadataFieldNewParamsSchemaDefaultValueUnion struct {
-	OfString                                         param.Opt[string]                                              `json:",omitzero,inline"`
-	OfFloat                                          param.Opt[float64]                                             `json:",omitzero,inline"`
-	OfBool                                           param.Opt[bool]                                                `json:",omitzero,inline"`
-	OfCustomMetadataFieldNewsSchemaDefaultValueArray []CustomMetadataFieldNewParamsSchemaDefaultValueArrayItemUnion `json:",omitzero,inline"`
+	OfString                        param.Opt[string]                                                                      `json:",omitzero,inline"`
+	OfFloat                         param.Opt[float64]                                                                     `json:",omitzero,inline"`
+	OfBool                          param.Opt[bool]                                                                        `json:",omitzero,inline"`
+	OfArrayForMultiSelectTypeFields []CustomMetadataFieldNewParamsSchemaDefaultValueArrayForMultiSelectTypeFieldsItemUnion `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u CustomMetadataFieldNewParamsSchemaDefaultValueUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfString, u.OfFloat, u.OfBool, u.OfCustomMetadataFieldNewsSchemaDefaultValueArray)
+	return param.MarshalUnion(u, u.OfString, u.OfFloat, u.OfBool, u.OfArrayForMultiSelectTypeFields)
 }
 func (u *CustomMetadataFieldNewParamsSchemaDefaultValueUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -1077,8 +1077,8 @@ func (u *CustomMetadataFieldNewParamsSchemaDefaultValueUnion) asAny() any {
 		return &u.OfFloat.Value
 	} else if !param.IsOmitted(u.OfBool) {
 		return &u.OfBool.Value
-	} else if !param.IsOmitted(u.OfCustomMetadataFieldNewsSchemaDefaultValueArray) {
-		return &u.OfCustomMetadataFieldNewsSchemaDefaultValueArray
+	} else if !param.IsOmitted(u.OfArrayForMultiSelectTypeFields) {
+		return &u.OfArrayForMultiSelectTypeFields
 	}
 	return nil
 }
@@ -1086,21 +1086,21 @@ func (u *CustomMetadataFieldNewParamsSchemaDefaultValueUnion) asAny() any {
 // Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
-type CustomMetadataFieldNewParamsSchemaDefaultValueArrayItemUnion struct {
+type CustomMetadataFieldNewParamsSchemaDefaultValueArrayForMultiSelectTypeFieldsItemUnion struct {
 	OfString param.Opt[string]  `json:",omitzero,inline"`
 	OfFloat  param.Opt[float64] `json:",omitzero,inline"`
 	OfBool   param.Opt[bool]    `json:",omitzero,inline"`
 	paramUnion
 }
 
-func (u CustomMetadataFieldNewParamsSchemaDefaultValueArrayItemUnion) MarshalJSON() ([]byte, error) {
+func (u CustomMetadataFieldNewParamsSchemaDefaultValueArrayForMultiSelectTypeFieldsItemUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion(u, u.OfString, u.OfFloat, u.OfBool)
 }
-func (u *CustomMetadataFieldNewParamsSchemaDefaultValueArrayItemUnion) UnmarshalJSON(data []byte) error {
+func (u *CustomMetadataFieldNewParamsSchemaDefaultValueArrayForMultiSelectTypeFieldsItemUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
-func (u *CustomMetadataFieldNewParamsSchemaDefaultValueArrayItemUnion) asAny() any {
+func (u *CustomMetadataFieldNewParamsSchemaDefaultValueArrayForMultiSelectTypeFieldsItemUnion) asAny() any {
 	if !param.IsOmitted(u.OfString) {
 		return &u.OfString.Value
 	} else if !param.IsOmitted(u.OfFloat) {
