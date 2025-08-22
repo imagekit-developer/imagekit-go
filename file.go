@@ -1168,14 +1168,13 @@ func (r *FileUpdateParamsBodyUpdateFileDetailsExtensionAIAutoDescription) Unmars
 // Use [param.IsOmitted] to confirm if a field is set.
 type FileUpdateParamsBodyUpdateFileDetailsRemoveAITagsUnion struct {
 	OfStringArray []string `json:",omitzero,inline"`
-	// Check if union is this variant with
-	// !param.IsOmitted(union.OfFileUpdatesBodyUpdateFileDetailsRemoveAITagsString)
-	OfFileUpdatesBodyUpdateFileDetailsRemoveAITagsString param.Opt[string] `json:",omitzero,inline"`
+	// Construct this variant with constant.ValueOf[constant.All]()
+	OfAll constant.All `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u FileUpdateParamsBodyUpdateFileDetailsRemoveAITagsUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfStringArray, u.OfFileUpdatesBodyUpdateFileDetailsRemoveAITagsString)
+	return param.MarshalUnion(u, u.OfStringArray, u.OfAll)
 }
 func (u *FileUpdateParamsBodyUpdateFileDetailsRemoveAITagsUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -1184,17 +1183,11 @@ func (u *FileUpdateParamsBodyUpdateFileDetailsRemoveAITagsUnion) UnmarshalJSON(d
 func (u *FileUpdateParamsBodyUpdateFileDetailsRemoveAITagsUnion) asAny() any {
 	if !param.IsOmitted(u.OfStringArray) {
 		return &u.OfStringArray
-	} else if !param.IsOmitted(u.OfFileUpdatesBodyUpdateFileDetailsRemoveAITagsString) {
-		return &u.OfFileUpdatesBodyUpdateFileDetailsRemoveAITagsString
+	} else if !param.IsOmitted(u.OfAll) {
+		return &u.OfAll
 	}
 	return nil
 }
-
-type FileUpdateParamsBodyUpdateFileDetailsRemoveAITagsString string
-
-const (
-	FileUpdateParamsBodyUpdateFileDetailsRemoveAITagsStringAll FileUpdateParamsBodyUpdateFileDetailsRemoveAITagsString = "all"
-)
 
 type FileUpdateParamsBodyChangePublicationStatus struct {
 	// Configure the publication status of a file and its versions.

@@ -173,9 +173,8 @@ func (r *AccountURLEndpointNewResponseURLRewriterUnion) UnmarshalJSON(data []byt
 
 type AccountURLEndpointNewResponseURLRewriterCloudinaryURLRewriter struct {
 	// Whether to preserve `<asset_type>/<delivery_type>` in the rewritten URL.
-	PreserveAssetDeliveryTypes bool `json:"preserveAssetDeliveryTypes,required"`
-	// Any of "CLOUDINARY".
-	Type string `json:"type,required"`
+	PreserveAssetDeliveryTypes bool                `json:"preserveAssetDeliveryTypes,required"`
+	Type                       constant.Cloudinary `json:"type,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		PreserveAssetDeliveryTypes respjson.Field
@@ -194,8 +193,7 @@ func (r *AccountURLEndpointNewResponseURLRewriterCloudinaryURLRewriter) Unmarsha
 }
 
 type AccountURLEndpointNewResponseURLRewriterImgixURLRewriter struct {
-	// Any of "IMGIX".
-	Type string `json:"type,required"`
+	Type constant.Imgix `json:"type,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Type        respjson.Field
@@ -211,8 +209,7 @@ func (r *AccountURLEndpointNewResponseURLRewriterImgixURLRewriter) UnmarshalJSON
 }
 
 type AccountURLEndpointNewResponseURLRewriterAkamaiURLRewriter struct {
-	// Any of "AKAMAI".
-	Type string `json:"type,required"`
+	Type constant.Akamai `json:"type,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Type        respjson.Field
@@ -307,9 +304,8 @@ func (r *AccountURLEndpointUpdateResponseURLRewriterUnion) UnmarshalJSON(data []
 
 type AccountURLEndpointUpdateResponseURLRewriterCloudinaryURLRewriter struct {
 	// Whether to preserve `<asset_type>/<delivery_type>` in the rewritten URL.
-	PreserveAssetDeliveryTypes bool `json:"preserveAssetDeliveryTypes,required"`
-	// Any of "CLOUDINARY".
-	Type string `json:"type,required"`
+	PreserveAssetDeliveryTypes bool                `json:"preserveAssetDeliveryTypes,required"`
+	Type                       constant.Cloudinary `json:"type,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		PreserveAssetDeliveryTypes respjson.Field
@@ -328,8 +324,7 @@ func (r *AccountURLEndpointUpdateResponseURLRewriterCloudinaryURLRewriter) Unmar
 }
 
 type AccountURLEndpointUpdateResponseURLRewriterImgixURLRewriter struct {
-	// Any of "IMGIX".
-	Type string `json:"type,required"`
+	Type constant.Imgix `json:"type,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Type        respjson.Field
@@ -347,8 +342,7 @@ func (r *AccountURLEndpointUpdateResponseURLRewriterImgixURLRewriter) UnmarshalJ
 }
 
 type AccountURLEndpointUpdateResponseURLRewriterAkamaiURLRewriter struct {
-	// Any of "AKAMAI".
-	Type string `json:"type,required"`
+	Type constant.Akamai `json:"type,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Type        respjson.Field
@@ -443,9 +437,8 @@ func (r *AccountURLEndpointListResponseURLRewriterUnion) UnmarshalJSON(data []by
 
 type AccountURLEndpointListResponseURLRewriterCloudinaryURLRewriter struct {
 	// Whether to preserve `<asset_type>/<delivery_type>` in the rewritten URL.
-	PreserveAssetDeliveryTypes bool `json:"preserveAssetDeliveryTypes,required"`
-	// Any of "CLOUDINARY".
-	Type string `json:"type,required"`
+	PreserveAssetDeliveryTypes bool                `json:"preserveAssetDeliveryTypes,required"`
+	Type                       constant.Cloudinary `json:"type,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		PreserveAssetDeliveryTypes respjson.Field
@@ -464,8 +457,7 @@ func (r *AccountURLEndpointListResponseURLRewriterCloudinaryURLRewriter) Unmarsh
 }
 
 type AccountURLEndpointListResponseURLRewriterImgixURLRewriter struct {
-	// Any of "IMGIX".
-	Type string `json:"type,required"`
+	Type constant.Imgix `json:"type,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Type        respjson.Field
@@ -483,8 +475,7 @@ func (r *AccountURLEndpointListResponseURLRewriterImgixURLRewriter) UnmarshalJSO
 }
 
 type AccountURLEndpointListResponseURLRewriterAkamaiURLRewriter struct {
-	// Any of "AKAMAI".
-	Type string `json:"type,required"`
+	Type constant.Akamai `json:"type,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Type        respjson.Field
@@ -578,9 +569,8 @@ func (r *AccountURLEndpointGetResponseURLRewriterUnion) UnmarshalJSON(data []byt
 
 type AccountURLEndpointGetResponseURLRewriterCloudinaryURLRewriter struct {
 	// Whether to preserve `<asset_type>/<delivery_type>` in the rewritten URL.
-	PreserveAssetDeliveryTypes bool `json:"preserveAssetDeliveryTypes,required"`
-	// Any of "CLOUDINARY".
-	Type string `json:"type,required"`
+	PreserveAssetDeliveryTypes bool                `json:"preserveAssetDeliveryTypes,required"`
+	Type                       constant.Cloudinary `json:"type,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		PreserveAssetDeliveryTypes respjson.Field
@@ -599,8 +589,7 @@ func (r *AccountURLEndpointGetResponseURLRewriterCloudinaryURLRewriter) Unmarsha
 }
 
 type AccountURLEndpointGetResponseURLRewriterImgixURLRewriter struct {
-	// Any of "IMGIX".
-	Type string `json:"type,required"`
+	Type constant.Imgix `json:"type,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Type        respjson.Field
@@ -616,8 +605,7 @@ func (r *AccountURLEndpointGetResponseURLRewriterImgixURLRewriter) UnmarshalJSON
 }
 
 type AccountURLEndpointGetResponseURLRewriterAkamaiURLRewriter struct {
-	// Any of "AKAMAI".
-	Type string `json:"type,required"`
+	Type constant.Akamai `json:"type,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Type        respjson.Field

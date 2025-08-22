@@ -14,6 +14,7 @@ import (
 	"github.com/stainless-sdks/imagekit-go/option"
 	"github.com/stainless-sdks/imagekit-go/packages/param"
 	"github.com/stainless-sdks/imagekit-go/packages/respjson"
+	"github.com/stainless-sdks/imagekit-go/shared/constant"
 )
 
 // AccountOriginService contains methods and other services that help with
@@ -278,9 +279,8 @@ type AccountOriginNewResponseCloudinaryBackup struct {
 	// Display name of the origin.
 	Name string `json:"name,required"`
 	// Path prefix inside the bucket.
-	Prefix string `json:"prefix,required"`
-	// Any of "CLOUDINARY_BACKUP".
-	Type string `json:"type,required"`
+	Prefix string                    `json:"prefix,required"`
+	Type   constant.CloudinaryBackup `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -314,9 +314,8 @@ type AccountOriginNewResponseWebFolder struct {
 	// Whether to send a Canonical header.
 	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
-	Name string `json:"name,required"`
-	// Any of "WEB_FOLDER".
-	Type string `json:"type,required"`
+	Name string             `json:"name,required"`
+	Type constant.WebFolder `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -346,9 +345,8 @@ type AccountOriginNewResponseWebProxy struct {
 	// Whether to send a Canonical header.
 	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
-	Name string `json:"name,required"`
-	// Any of "WEB_PROXY".
-	Type string `json:"type,required"`
+	Name string            `json:"name,required"`
+	Type constant.WebProxy `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -378,10 +376,9 @@ type AccountOriginNewResponseGoogleCloudStorageGcs struct {
 	// Whether to send a Canonical header.
 	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
-	Name   string `json:"name,required"`
-	Prefix string `json:"prefix,required"`
-	// Any of "GCS".
-	Type string `json:"type,required"`
+	Name   string       `json:"name,required"`
+	Prefix string       `json:"prefix,required"`
+	Type   constant.Gcs `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -414,10 +411,9 @@ type AccountOriginNewResponseAzureBlobStorage struct {
 	// Whether to send a Canonical header.
 	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
-	Name   string `json:"name,required"`
-	Prefix string `json:"prefix,required"`
-	// Any of "AZURE_BLOB".
-	Type string `json:"type,required"`
+	Name   string             `json:"name,required"`
+	Prefix string             `json:"prefix,required"`
+	Type   constant.AzureBlob `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -450,9 +446,8 @@ type AccountOriginNewResponseAkeneoPim struct {
 	// Whether to send a Canonical header.
 	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
-	Name string `json:"name,required"`
-	// Any of "AKENEO_PIM".
-	Type string `json:"type,required"`
+	Name string             `json:"name,required"`
+	Type constant.AkeneoPim `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -659,9 +654,8 @@ type AccountOriginUpdateResponseCloudinaryBackup struct {
 	// Display name of the origin.
 	Name string `json:"name,required"`
 	// Path prefix inside the bucket.
-	Prefix string `json:"prefix,required"`
-	// Any of "CLOUDINARY_BACKUP".
-	Type string `json:"type,required"`
+	Prefix string                    `json:"prefix,required"`
+	Type   constant.CloudinaryBackup `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -695,9 +689,8 @@ type AccountOriginUpdateResponseWebFolder struct {
 	// Whether to send a Canonical header.
 	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
-	Name string `json:"name,required"`
-	// Any of "WEB_FOLDER".
-	Type string `json:"type,required"`
+	Name string             `json:"name,required"`
+	Type constant.WebFolder `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -727,9 +720,8 @@ type AccountOriginUpdateResponseWebProxy struct {
 	// Whether to send a Canonical header.
 	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
-	Name string `json:"name,required"`
-	// Any of "WEB_PROXY".
-	Type string `json:"type,required"`
+	Name string            `json:"name,required"`
+	Type constant.WebProxy `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -759,10 +751,9 @@ type AccountOriginUpdateResponseGoogleCloudStorageGcs struct {
 	// Whether to send a Canonical header.
 	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
-	Name   string `json:"name,required"`
-	Prefix string `json:"prefix,required"`
-	// Any of "GCS".
-	Type string `json:"type,required"`
+	Name   string       `json:"name,required"`
+	Prefix string       `json:"prefix,required"`
+	Type   constant.Gcs `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -795,10 +786,9 @@ type AccountOriginUpdateResponseAzureBlobStorage struct {
 	// Whether to send a Canonical header.
 	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
-	Name   string `json:"name,required"`
-	Prefix string `json:"prefix,required"`
-	// Any of "AZURE_BLOB".
-	Type string `json:"type,required"`
+	Name   string             `json:"name,required"`
+	Prefix string             `json:"prefix,required"`
+	Type   constant.AzureBlob `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -831,9 +821,8 @@ type AccountOriginUpdateResponseAkeneoPim struct {
 	// Whether to send a Canonical header.
 	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
-	Name string `json:"name,required"`
-	// Any of "AKENEO_PIM".
-	Type string `json:"type,required"`
+	Name string             `json:"name,required"`
+	Type constant.AkeneoPim `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1040,9 +1029,8 @@ type AccountOriginListResponseCloudinaryBackup struct {
 	// Display name of the origin.
 	Name string `json:"name,required"`
 	// Path prefix inside the bucket.
-	Prefix string `json:"prefix,required"`
-	// Any of "CLOUDINARY_BACKUP".
-	Type string `json:"type,required"`
+	Prefix string                    `json:"prefix,required"`
+	Type   constant.CloudinaryBackup `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1076,9 +1064,8 @@ type AccountOriginListResponseWebFolder struct {
 	// Whether to send a Canonical header.
 	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
-	Name string `json:"name,required"`
-	// Any of "WEB_FOLDER".
-	Type string `json:"type,required"`
+	Name string             `json:"name,required"`
+	Type constant.WebFolder `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1108,9 +1095,8 @@ type AccountOriginListResponseWebProxy struct {
 	// Whether to send a Canonical header.
 	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
-	Name string `json:"name,required"`
-	// Any of "WEB_PROXY".
-	Type string `json:"type,required"`
+	Name string            `json:"name,required"`
+	Type constant.WebProxy `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1140,10 +1126,9 @@ type AccountOriginListResponseGoogleCloudStorageGcs struct {
 	// Whether to send a Canonical header.
 	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
-	Name   string `json:"name,required"`
-	Prefix string `json:"prefix,required"`
-	// Any of "GCS".
-	Type string `json:"type,required"`
+	Name   string       `json:"name,required"`
+	Prefix string       `json:"prefix,required"`
+	Type   constant.Gcs `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1176,10 +1161,9 @@ type AccountOriginListResponseAzureBlobStorage struct {
 	// Whether to send a Canonical header.
 	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
-	Name   string `json:"name,required"`
-	Prefix string `json:"prefix,required"`
-	// Any of "AZURE_BLOB".
-	Type string `json:"type,required"`
+	Name   string             `json:"name,required"`
+	Prefix string             `json:"prefix,required"`
+	Type   constant.AzureBlob `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1212,9 +1196,8 @@ type AccountOriginListResponseAkeneoPim struct {
 	// Whether to send a Canonical header.
 	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
-	Name string `json:"name,required"`
-	// Any of "AKENEO_PIM".
-	Type string `json:"type,required"`
+	Name string             `json:"name,required"`
+	Type constant.AkeneoPim `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1420,9 +1403,8 @@ type AccountOriginGetResponseCloudinaryBackup struct {
 	// Display name of the origin.
 	Name string `json:"name,required"`
 	// Path prefix inside the bucket.
-	Prefix string `json:"prefix,required"`
-	// Any of "CLOUDINARY_BACKUP".
-	Type string `json:"type,required"`
+	Prefix string                    `json:"prefix,required"`
+	Type   constant.CloudinaryBackup `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1456,9 +1438,8 @@ type AccountOriginGetResponseWebFolder struct {
 	// Whether to send a Canonical header.
 	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
-	Name string `json:"name,required"`
-	// Any of "WEB_FOLDER".
-	Type string `json:"type,required"`
+	Name string             `json:"name,required"`
+	Type constant.WebFolder `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1488,9 +1469,8 @@ type AccountOriginGetResponseWebProxy struct {
 	// Whether to send a Canonical header.
 	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
-	Name string `json:"name,required"`
-	// Any of "WEB_PROXY".
-	Type string `json:"type,required"`
+	Name string            `json:"name,required"`
+	Type constant.WebProxy `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1520,10 +1500,9 @@ type AccountOriginGetResponseGoogleCloudStorageGcs struct {
 	// Whether to send a Canonical header.
 	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
-	Name   string `json:"name,required"`
-	Prefix string `json:"prefix,required"`
-	// Any of "GCS".
-	Type string `json:"type,required"`
+	Name   string       `json:"name,required"`
+	Prefix string       `json:"prefix,required"`
+	Type   constant.Gcs `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1556,10 +1535,9 @@ type AccountOriginGetResponseAzureBlobStorage struct {
 	// Whether to send a Canonical header.
 	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
-	Name   string `json:"name,required"`
-	Prefix string `json:"prefix,required"`
-	// Any of "AZURE_BLOB".
-	Type string `json:"type,required"`
+	Name   string             `json:"name,required"`
+	Prefix string             `json:"prefix,required"`
+	Type   constant.AzureBlob `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1592,9 +1570,8 @@ type AccountOriginGetResponseAkeneoPim struct {
 	// Whether to send a Canonical header.
 	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
-	Name string `json:"name,required"`
-	// Any of "AKENEO_PIM".
-	Type string `json:"type,required"`
+	Name string             `json:"name,required"`
+	Type constant.AkeneoPim `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1666,14 +1643,14 @@ type AccountOriginNewParamsBodyS3 struct {
 	Name string `json:"name,required"`
 	// Secret key for the bucket.
 	SecretKey string `json:"secretKey,required"`
-	// Any of "S3".
-	Type string `json:"type,omitzero,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader param.Opt[string] `json:"baseUrlForCanonicalHeader,omitzero" format:"uri"`
 	// Whether to send a Canonical header.
 	IncludeCanonicalHeader param.Opt[bool] `json:"includeCanonicalHeader,omitzero"`
 	// Path prefix inside the bucket.
 	Prefix param.Opt[string] `json:"prefix,omitzero"`
+	// This field can be elided, and will marshal its zero value as "S3".
+	Type constant.S3 `json:"type,required"`
 	paramObj
 }
 
@@ -1683,12 +1660,6 @@ func (r AccountOriginNewParamsBodyS3) MarshalJSON() (data []byte, err error) {
 }
 func (r *AccountOriginNewParamsBodyS3) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[AccountOriginNewParamsBodyS3](
-		"type", "S3",
-	)
 }
 
 // The properties AccessKey, Bucket, Endpoint, Name, SecretKey, Type are required.
@@ -1703,8 +1674,6 @@ type AccountOriginNewParamsBodyS3Compatible struct {
 	Name string `json:"name,required"`
 	// Secret key for the bucket.
 	SecretKey string `json:"secretKey,required"`
-	// Any of "S3_COMPATIBLE".
-	Type string `json:"type,omitzero,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader param.Opt[string] `json:"baseUrlForCanonicalHeader,omitzero" format:"uri"`
 	// Whether to send a Canonical header.
@@ -1713,6 +1682,8 @@ type AccountOriginNewParamsBodyS3Compatible struct {
 	Prefix param.Opt[string] `json:"prefix,omitzero"`
 	// Use path-style S3 URLs?
 	S3ForcePathStyle param.Opt[bool] `json:"s3ForcePathStyle,omitzero"`
+	// This field can be elided, and will marshal its zero value as "S3_COMPATIBLE".
+	Type constant.S3Compatible `json:"type,required"`
 	paramObj
 }
 
@@ -1722,12 +1693,6 @@ func (r AccountOriginNewParamsBodyS3Compatible) MarshalJSON() (data []byte, err 
 }
 func (r *AccountOriginNewParamsBodyS3Compatible) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[AccountOriginNewParamsBodyS3Compatible](
-		"type", "S3_COMPATIBLE",
-	)
 }
 
 // The properties AccessKey, Bucket, Name, SecretKey, Type are required.
@@ -1740,14 +1705,15 @@ type AccountOriginNewParamsBodyCloudinaryBackup struct {
 	Name string `json:"name,required"`
 	// Secret key for the bucket.
 	SecretKey string `json:"secretKey,required"`
-	// Any of "CLOUDINARY_BACKUP".
-	Type string `json:"type,omitzero,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader param.Opt[string] `json:"baseUrlForCanonicalHeader,omitzero" format:"uri"`
 	// Whether to send a Canonical header.
 	IncludeCanonicalHeader param.Opt[bool] `json:"includeCanonicalHeader,omitzero"`
 	// Path prefix inside the bucket.
 	Prefix param.Opt[string] `json:"prefix,omitzero"`
+	// This field can be elided, and will marshal its zero value as
+	// "CLOUDINARY_BACKUP".
+	Type constant.CloudinaryBackup `json:"type,required"`
 	paramObj
 }
 
@@ -1759,26 +1725,20 @@ func (r *AccountOriginNewParamsBodyCloudinaryBackup) UnmarshalJSON(data []byte) 
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[AccountOriginNewParamsBodyCloudinaryBackup](
-		"type", "CLOUDINARY_BACKUP",
-	)
-}
-
 // The properties BaseURL, Name, Type are required.
 type AccountOriginNewParamsBodyWebFolder struct {
 	// Root URL for the web folder origin.
 	BaseURL string `json:"baseUrl,required" format:"uri"`
 	// Display name of the origin.
 	Name string `json:"name,required"`
-	// Any of "WEB_FOLDER".
-	Type string `json:"type,omitzero,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader param.Opt[string] `json:"baseUrlForCanonicalHeader,omitzero" format:"uri"`
 	// Forward the Host header to origin?
 	ForwardHostHeaderToOrigin param.Opt[bool] `json:"forwardHostHeaderToOrigin,omitzero"`
 	// Whether to send a Canonical header.
 	IncludeCanonicalHeader param.Opt[bool] `json:"includeCanonicalHeader,omitzero"`
+	// This field can be elided, and will marshal its zero value as "WEB_FOLDER".
+	Type constant.WebFolder `json:"type,required"`
 	paramObj
 }
 
@@ -1790,22 +1750,16 @@ func (r *AccountOriginNewParamsBodyWebFolder) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[AccountOriginNewParamsBodyWebFolder](
-		"type", "WEB_FOLDER",
-	)
-}
-
 // The properties Name, Type are required.
 type AccountOriginNewParamsBodyWebProxy struct {
 	// Display name of the origin.
 	Name string `json:"name,required"`
-	// Any of "WEB_PROXY".
-	Type string `json:"type,omitzero,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader param.Opt[string] `json:"baseUrlForCanonicalHeader,omitzero" format:"uri"`
 	// Whether to send a Canonical header.
 	IncludeCanonicalHeader param.Opt[bool] `json:"includeCanonicalHeader,omitzero"`
+	// This field can be elided, and will marshal its zero value as "WEB_PROXY".
+	Type constant.WebProxy `json:"type,required"`
 	paramObj
 }
 
@@ -1817,12 +1771,6 @@ func (r *AccountOriginNewParamsBodyWebProxy) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[AccountOriginNewParamsBodyWebProxy](
-		"type", "WEB_PROXY",
-	)
-}
-
 // The properties Bucket, ClientEmail, Name, PrivateKey, Type are required.
 type AccountOriginNewParamsBodyGoogleCloudStorageGcs struct {
 	Bucket      string `json:"bucket,required"`
@@ -1830,13 +1778,13 @@ type AccountOriginNewParamsBodyGoogleCloudStorageGcs struct {
 	// Display name of the origin.
 	Name       string `json:"name,required"`
 	PrivateKey string `json:"privateKey,required"`
-	// Any of "GCS".
-	Type string `json:"type,omitzero,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader param.Opt[string] `json:"baseUrlForCanonicalHeader,omitzero" format:"uri"`
 	// Whether to send a Canonical header.
 	IncludeCanonicalHeader param.Opt[bool]   `json:"includeCanonicalHeader,omitzero"`
 	Prefix                 param.Opt[string] `json:"prefix,omitzero"`
+	// This field can be elided, and will marshal its zero value as "GCS".
+	Type constant.Gcs `json:"type,required"`
 	paramObj
 }
 
@@ -1848,12 +1796,6 @@ func (r *AccountOriginNewParamsBodyGoogleCloudStorageGcs) UnmarshalJSON(data []b
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[AccountOriginNewParamsBodyGoogleCloudStorageGcs](
-		"type", "GCS",
-	)
-}
-
 // The properties AccountName, Container, Name, SasToken, Type are required.
 type AccountOriginNewParamsBodyAzureBlobStorage struct {
 	AccountName string `json:"accountName,required"`
@@ -1861,13 +1803,13 @@ type AccountOriginNewParamsBodyAzureBlobStorage struct {
 	// Display name of the origin.
 	Name     string `json:"name,required"`
 	SasToken string `json:"sasToken,required"`
-	// Any of "AZURE_BLOB".
-	Type string `json:"type,omitzero,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader param.Opt[string] `json:"baseUrlForCanonicalHeader,omitzero" format:"uri"`
 	// Whether to send a Canonical header.
 	IncludeCanonicalHeader param.Opt[bool]   `json:"includeCanonicalHeader,omitzero"`
 	Prefix                 param.Opt[string] `json:"prefix,omitzero"`
+	// This field can be elided, and will marshal its zero value as "AZURE_BLOB".
+	Type constant.AzureBlob `json:"type,required"`
 	paramObj
 }
 
@@ -1877,12 +1819,6 @@ func (r AccountOriginNewParamsBodyAzureBlobStorage) MarshalJSON() (data []byte, 
 }
 func (r *AccountOriginNewParamsBodyAzureBlobStorage) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[AccountOriginNewParamsBodyAzureBlobStorage](
-		"type", "AZURE_BLOB",
-	)
 }
 
 // The properties BaseURL, ClientID, ClientSecret, Name, Password, Type, Username
@@ -1898,14 +1834,14 @@ type AccountOriginNewParamsBodyAkeneoPim struct {
 	Name string `json:"name,required"`
 	// Akeneo API password.
 	Password string `json:"password,required"`
-	// Any of "AKENEO_PIM".
-	Type string `json:"type,omitzero,required"`
 	// Akeneo API username.
 	Username string `json:"username,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader param.Opt[string] `json:"baseUrlForCanonicalHeader,omitzero" format:"uri"`
 	// Whether to send a Canonical header.
 	IncludeCanonicalHeader param.Opt[bool] `json:"includeCanonicalHeader,omitzero"`
+	// This field can be elided, and will marshal its zero value as "AKENEO_PIM".
+	Type constant.AkeneoPim `json:"type,required"`
 	paramObj
 }
 
@@ -1915,12 +1851,6 @@ func (r AccountOriginNewParamsBodyAkeneoPim) MarshalJSON() (data []byte, err err
 }
 func (r *AccountOriginNewParamsBodyAkeneoPim) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[AccountOriginNewParamsBodyAkeneoPim](
-		"type", "AKENEO_PIM",
-	)
 }
 
 type AccountOriginUpdateParams struct {
@@ -1973,14 +1903,14 @@ type AccountOriginUpdateParamsBodyS3 struct {
 	Name string `json:"name,required"`
 	// Secret key for the bucket.
 	SecretKey string `json:"secretKey,required"`
-	// Any of "S3".
-	Type string `json:"type,omitzero,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader param.Opt[string] `json:"baseUrlForCanonicalHeader,omitzero" format:"uri"`
 	// Whether to send a Canonical header.
 	IncludeCanonicalHeader param.Opt[bool] `json:"includeCanonicalHeader,omitzero"`
 	// Path prefix inside the bucket.
 	Prefix param.Opt[string] `json:"prefix,omitzero"`
+	// This field can be elided, and will marshal its zero value as "S3".
+	Type constant.S3 `json:"type,required"`
 	paramObj
 }
 
@@ -1990,12 +1920,6 @@ func (r AccountOriginUpdateParamsBodyS3) MarshalJSON() (data []byte, err error) 
 }
 func (r *AccountOriginUpdateParamsBodyS3) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[AccountOriginUpdateParamsBodyS3](
-		"type", "S3",
-	)
 }
 
 // The properties AccessKey, Bucket, Endpoint, Name, SecretKey, Type are required.
@@ -2010,8 +1934,6 @@ type AccountOriginUpdateParamsBodyS3Compatible struct {
 	Name string `json:"name,required"`
 	// Secret key for the bucket.
 	SecretKey string `json:"secretKey,required"`
-	// Any of "S3_COMPATIBLE".
-	Type string `json:"type,omitzero,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader param.Opt[string] `json:"baseUrlForCanonicalHeader,omitzero" format:"uri"`
 	// Whether to send a Canonical header.
@@ -2020,6 +1942,8 @@ type AccountOriginUpdateParamsBodyS3Compatible struct {
 	Prefix param.Opt[string] `json:"prefix,omitzero"`
 	// Use path-style S3 URLs?
 	S3ForcePathStyle param.Opt[bool] `json:"s3ForcePathStyle,omitzero"`
+	// This field can be elided, and will marshal its zero value as "S3_COMPATIBLE".
+	Type constant.S3Compatible `json:"type,required"`
 	paramObj
 }
 
@@ -2029,12 +1953,6 @@ func (r AccountOriginUpdateParamsBodyS3Compatible) MarshalJSON() (data []byte, e
 }
 func (r *AccountOriginUpdateParamsBodyS3Compatible) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[AccountOriginUpdateParamsBodyS3Compatible](
-		"type", "S3_COMPATIBLE",
-	)
 }
 
 // The properties AccessKey, Bucket, Name, SecretKey, Type are required.
@@ -2047,14 +1965,15 @@ type AccountOriginUpdateParamsBodyCloudinaryBackup struct {
 	Name string `json:"name,required"`
 	// Secret key for the bucket.
 	SecretKey string `json:"secretKey,required"`
-	// Any of "CLOUDINARY_BACKUP".
-	Type string `json:"type,omitzero,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader param.Opt[string] `json:"baseUrlForCanonicalHeader,omitzero" format:"uri"`
 	// Whether to send a Canonical header.
 	IncludeCanonicalHeader param.Opt[bool] `json:"includeCanonicalHeader,omitzero"`
 	// Path prefix inside the bucket.
 	Prefix param.Opt[string] `json:"prefix,omitzero"`
+	// This field can be elided, and will marshal its zero value as
+	// "CLOUDINARY_BACKUP".
+	Type constant.CloudinaryBackup `json:"type,required"`
 	paramObj
 }
 
@@ -2066,26 +1985,20 @@ func (r *AccountOriginUpdateParamsBodyCloudinaryBackup) UnmarshalJSON(data []byt
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[AccountOriginUpdateParamsBodyCloudinaryBackup](
-		"type", "CLOUDINARY_BACKUP",
-	)
-}
-
 // The properties BaseURL, Name, Type are required.
 type AccountOriginUpdateParamsBodyWebFolder struct {
 	// Root URL for the web folder origin.
 	BaseURL string `json:"baseUrl,required" format:"uri"`
 	// Display name of the origin.
 	Name string `json:"name,required"`
-	// Any of "WEB_FOLDER".
-	Type string `json:"type,omitzero,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader param.Opt[string] `json:"baseUrlForCanonicalHeader,omitzero" format:"uri"`
 	// Forward the Host header to origin?
 	ForwardHostHeaderToOrigin param.Opt[bool] `json:"forwardHostHeaderToOrigin,omitzero"`
 	// Whether to send a Canonical header.
 	IncludeCanonicalHeader param.Opt[bool] `json:"includeCanonicalHeader,omitzero"`
+	// This field can be elided, and will marshal its zero value as "WEB_FOLDER".
+	Type constant.WebFolder `json:"type,required"`
 	paramObj
 }
 
@@ -2097,22 +2010,16 @@ func (r *AccountOriginUpdateParamsBodyWebFolder) UnmarshalJSON(data []byte) erro
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[AccountOriginUpdateParamsBodyWebFolder](
-		"type", "WEB_FOLDER",
-	)
-}
-
 // The properties Name, Type are required.
 type AccountOriginUpdateParamsBodyWebProxy struct {
 	// Display name of the origin.
 	Name string `json:"name,required"`
-	// Any of "WEB_PROXY".
-	Type string `json:"type,omitzero,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader param.Opt[string] `json:"baseUrlForCanonicalHeader,omitzero" format:"uri"`
 	// Whether to send a Canonical header.
 	IncludeCanonicalHeader param.Opt[bool] `json:"includeCanonicalHeader,omitzero"`
+	// This field can be elided, and will marshal its zero value as "WEB_PROXY".
+	Type constant.WebProxy `json:"type,required"`
 	paramObj
 }
 
@@ -2124,12 +2031,6 @@ func (r *AccountOriginUpdateParamsBodyWebProxy) UnmarshalJSON(data []byte) error
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[AccountOriginUpdateParamsBodyWebProxy](
-		"type", "WEB_PROXY",
-	)
-}
-
 // The properties Bucket, ClientEmail, Name, PrivateKey, Type are required.
 type AccountOriginUpdateParamsBodyGoogleCloudStorageGcs struct {
 	Bucket      string `json:"bucket,required"`
@@ -2137,13 +2038,13 @@ type AccountOriginUpdateParamsBodyGoogleCloudStorageGcs struct {
 	// Display name of the origin.
 	Name       string `json:"name,required"`
 	PrivateKey string `json:"privateKey,required"`
-	// Any of "GCS".
-	Type string `json:"type,omitzero,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader param.Opt[string] `json:"baseUrlForCanonicalHeader,omitzero" format:"uri"`
 	// Whether to send a Canonical header.
 	IncludeCanonicalHeader param.Opt[bool]   `json:"includeCanonicalHeader,omitzero"`
 	Prefix                 param.Opt[string] `json:"prefix,omitzero"`
+	// This field can be elided, and will marshal its zero value as "GCS".
+	Type constant.Gcs `json:"type,required"`
 	paramObj
 }
 
@@ -2155,12 +2056,6 @@ func (r *AccountOriginUpdateParamsBodyGoogleCloudStorageGcs) UnmarshalJSON(data 
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[AccountOriginUpdateParamsBodyGoogleCloudStorageGcs](
-		"type", "GCS",
-	)
-}
-
 // The properties AccountName, Container, Name, SasToken, Type are required.
 type AccountOriginUpdateParamsBodyAzureBlobStorage struct {
 	AccountName string `json:"accountName,required"`
@@ -2168,13 +2063,13 @@ type AccountOriginUpdateParamsBodyAzureBlobStorage struct {
 	// Display name of the origin.
 	Name     string `json:"name,required"`
 	SasToken string `json:"sasToken,required"`
-	// Any of "AZURE_BLOB".
-	Type string `json:"type,omitzero,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader param.Opt[string] `json:"baseUrlForCanonicalHeader,omitzero" format:"uri"`
 	// Whether to send a Canonical header.
 	IncludeCanonicalHeader param.Opt[bool]   `json:"includeCanonicalHeader,omitzero"`
 	Prefix                 param.Opt[string] `json:"prefix,omitzero"`
+	// This field can be elided, and will marshal its zero value as "AZURE_BLOB".
+	Type constant.AzureBlob `json:"type,required"`
 	paramObj
 }
 
@@ -2184,12 +2079,6 @@ func (r AccountOriginUpdateParamsBodyAzureBlobStorage) MarshalJSON() (data []byt
 }
 func (r *AccountOriginUpdateParamsBodyAzureBlobStorage) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[AccountOriginUpdateParamsBodyAzureBlobStorage](
-		"type", "AZURE_BLOB",
-	)
 }
 
 // The properties BaseURL, ClientID, ClientSecret, Name, Password, Type, Username
@@ -2205,14 +2094,14 @@ type AccountOriginUpdateParamsBodyAkeneoPim struct {
 	Name string `json:"name,required"`
 	// Akeneo API password.
 	Password string `json:"password,required"`
-	// Any of "AKENEO_PIM".
-	Type string `json:"type,omitzero,required"`
 	// Akeneo API username.
 	Username string `json:"username,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader param.Opt[string] `json:"baseUrlForCanonicalHeader,omitzero" format:"uri"`
 	// Whether to send a Canonical header.
 	IncludeCanonicalHeader param.Opt[bool] `json:"includeCanonicalHeader,omitzero"`
+	// This field can be elided, and will marshal its zero value as "AKENEO_PIM".
+	Type constant.AkeneoPim `json:"type,required"`
 	paramObj
 }
 
@@ -2222,10 +2111,4 @@ func (r AccountOriginUpdateParamsBodyAkeneoPim) MarshalJSON() (data []byte, err 
 }
 func (r *AccountOriginUpdateParamsBodyAkeneoPim) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[AccountOriginUpdateParamsBodyAkeneoPim](
-		"type", "AKENEO_PIM",
-	)
 }
