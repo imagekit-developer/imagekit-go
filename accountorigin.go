@@ -98,17 +98,20 @@ func (r *AccountOriginService) Get(ctx context.Context, id string, opts ...optio
 // AccountOriginNewResponseUnion contains all possible properties and values from
 // [AccountOriginNewResponseS3], [AccountOriginNewResponseS3Compatible],
 // [AccountOriginNewResponseCloudinaryBackup], [AccountOriginNewResponseWebFolder],
-// [AccountOriginNewResponseWebProxy],
-// [AccountOriginNewResponseGoogleCloudStorageGcs],
-// [AccountOriginNewResponseAzureBlobStorage], [AccountOriginNewResponseAkeneoPim].
+// [AccountOriginNewResponseWebProxy], [AccountOriginNewResponseGcs],
+// [AccountOriginNewResponseAzureBlob], [AccountOriginNewResponseAkeneoPim].
+//
+// Use the [AccountOriginNewResponseUnion.AsAny] method to switch on the variant.
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type AccountOriginNewResponseUnion struct {
-	ID                        string `json:"id"`
-	Bucket                    string `json:"bucket"`
-	IncludeCanonicalHeader    bool   `json:"includeCanonicalHeader"`
-	Name                      string `json:"name"`
-	Prefix                    string `json:"prefix"`
+	ID                     string `json:"id"`
+	Bucket                 string `json:"bucket"`
+	IncludeCanonicalHeader bool   `json:"includeCanonicalHeader"`
+	Name                   string `json:"name"`
+	Prefix                 string `json:"prefix"`
+	// Any of "S3", "S3_COMPATIBLE", "CLOUDINARY_BACKUP", "WEB_FOLDER", "WEB_PROXY",
+	// "GCS", "AZURE_BLOB", "AKENEO_PIM".
 	Type                      string `json:"type"`
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader"`
 	// This field is from variant [AccountOriginNewResponseS3Compatible].
@@ -118,11 +121,11 @@ type AccountOriginNewResponseUnion struct {
 	BaseURL          string `json:"baseUrl"`
 	// This field is from variant [AccountOriginNewResponseWebFolder].
 	ForwardHostHeaderToOrigin bool `json:"forwardHostHeaderToOrigin"`
-	// This field is from variant [AccountOriginNewResponseGoogleCloudStorageGcs].
+	// This field is from variant [AccountOriginNewResponseGcs].
 	ClientEmail string `json:"clientEmail"`
-	// This field is from variant [AccountOriginNewResponseAzureBlobStorage].
+	// This field is from variant [AccountOriginNewResponseAzureBlob].
 	AccountName string `json:"accountName"`
-	// This field is from variant [AccountOriginNewResponseAzureBlobStorage].
+	// This field is from variant [AccountOriginNewResponseAzureBlob].
 	Container string `json:"container"`
 	JSON      struct {
 		ID                        respjson.Field
@@ -141,6 +144,58 @@ type AccountOriginNewResponseUnion struct {
 		Container                 respjson.Field
 		raw                       string
 	} `json:"-"`
+}
+
+// anyAccountOriginNewResponse is implemented by each variant of
+// [AccountOriginNewResponseUnion] to add type safety for the return type of
+// [AccountOriginNewResponseUnion.AsAny]
+type anyAccountOriginNewResponse interface {
+	implAccountOriginNewResponseUnion()
+}
+
+func (AccountOriginNewResponseS3) implAccountOriginNewResponseUnion()               {}
+func (AccountOriginNewResponseS3Compatible) implAccountOriginNewResponseUnion()     {}
+func (AccountOriginNewResponseCloudinaryBackup) implAccountOriginNewResponseUnion() {}
+func (AccountOriginNewResponseWebFolder) implAccountOriginNewResponseUnion()        {}
+func (AccountOriginNewResponseWebProxy) implAccountOriginNewResponseUnion()         {}
+func (AccountOriginNewResponseGcs) implAccountOriginNewResponseUnion()              {}
+func (AccountOriginNewResponseAzureBlob) implAccountOriginNewResponseUnion()        {}
+func (AccountOriginNewResponseAkeneoPim) implAccountOriginNewResponseUnion()        {}
+
+// Use the following switch statement to find the correct variant
+//
+//	switch variant := AccountOriginNewResponseUnion.AsAny().(type) {
+//	case imagekit.AccountOriginNewResponseS3:
+//	case imagekit.AccountOriginNewResponseS3Compatible:
+//	case imagekit.AccountOriginNewResponseCloudinaryBackup:
+//	case imagekit.AccountOriginNewResponseWebFolder:
+//	case imagekit.AccountOriginNewResponseWebProxy:
+//	case imagekit.AccountOriginNewResponseGcs:
+//	case imagekit.AccountOriginNewResponseAzureBlob:
+//	case imagekit.AccountOriginNewResponseAkeneoPim:
+//	default:
+//	  fmt.Errorf("no variant present")
+//	}
+func (u AccountOriginNewResponseUnion) AsAny() anyAccountOriginNewResponse {
+	switch u.Type {
+	case "S3":
+		return u.AsS3()
+	case "S3_COMPATIBLE":
+		return u.AsS3Compatible()
+	case "CLOUDINARY_BACKUP":
+		return u.AsCloudinaryBackup()
+	case "WEB_FOLDER":
+		return u.AsWebFolder()
+	case "WEB_PROXY":
+		return u.AsWebProxy()
+	case "GCS":
+		return u.AsGcs()
+	case "AZURE_BLOB":
+		return u.AsAzureBlob()
+	case "AKENEO_PIM":
+		return u.AsAkeneoPim()
+	}
+	return nil
 }
 
 func (u AccountOriginNewResponseUnion) AsS3() (v AccountOriginNewResponseS3) {
@@ -168,12 +223,12 @@ func (u AccountOriginNewResponseUnion) AsWebProxy() (v AccountOriginNewResponseW
 	return
 }
 
-func (u AccountOriginNewResponseUnion) AsGoogleCloudStorageGcs() (v AccountOriginNewResponseGoogleCloudStorageGcs) {
+func (u AccountOriginNewResponseUnion) AsGcs() (v AccountOriginNewResponseGcs) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u AccountOriginNewResponseUnion) AsAzureBlobStorage() (v AccountOriginNewResponseAzureBlobStorage) {
+func (u AccountOriginNewResponseUnion) AsAzureBlob() (v AccountOriginNewResponseAzureBlob) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -365,7 +420,7 @@ func (r *AccountOriginNewResponseWebProxy) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AccountOriginNewResponseGoogleCloudStorageGcs struct {
+type AccountOriginNewResponseGcs struct {
 	// Unique identifier for the origin. This is generated by ImageKit when you create
 	// a new origin.
 	ID          string `json:"id,required"`
@@ -395,12 +450,12 @@ type AccountOriginNewResponseGoogleCloudStorageGcs struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AccountOriginNewResponseGoogleCloudStorageGcs) RawJSON() string { return r.JSON.raw }
-func (r *AccountOriginNewResponseGoogleCloudStorageGcs) UnmarshalJSON(data []byte) error {
+func (r AccountOriginNewResponseGcs) RawJSON() string { return r.JSON.raw }
+func (r *AccountOriginNewResponseGcs) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AccountOriginNewResponseAzureBlobStorage struct {
+type AccountOriginNewResponseAzureBlob struct {
 	// Unique identifier for the origin. This is generated by ImageKit when you create
 	// a new origin.
 	ID          string `json:"id,required"`
@@ -430,8 +485,8 @@ type AccountOriginNewResponseAzureBlobStorage struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AccountOriginNewResponseAzureBlobStorage) RawJSON() string { return r.JSON.raw }
-func (r *AccountOriginNewResponseAzureBlobStorage) UnmarshalJSON(data []byte) error {
+func (r AccountOriginNewResponseAzureBlob) RawJSON() string { return r.JSON.raw }
+func (r *AccountOriginNewResponseAzureBlob) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -471,17 +526,21 @@ func (r *AccountOriginNewResponseAkeneoPim) UnmarshalJSON(data []byte) error {
 // from [AccountOriginUpdateResponseS3], [AccountOriginUpdateResponseS3Compatible],
 // [AccountOriginUpdateResponseCloudinaryBackup],
 // [AccountOriginUpdateResponseWebFolder], [AccountOriginUpdateResponseWebProxy],
-// [AccountOriginUpdateResponseGoogleCloudStorageGcs],
-// [AccountOriginUpdateResponseAzureBlobStorage],
+// [AccountOriginUpdateResponseGcs], [AccountOriginUpdateResponseAzureBlob],
 // [AccountOriginUpdateResponseAkeneoPim].
+//
+// Use the [AccountOriginUpdateResponseUnion.AsAny] method to switch on the
+// variant.
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type AccountOriginUpdateResponseUnion struct {
-	ID                        string `json:"id"`
-	Bucket                    string `json:"bucket"`
-	IncludeCanonicalHeader    bool   `json:"includeCanonicalHeader"`
-	Name                      string `json:"name"`
-	Prefix                    string `json:"prefix"`
+	ID                     string `json:"id"`
+	Bucket                 string `json:"bucket"`
+	IncludeCanonicalHeader bool   `json:"includeCanonicalHeader"`
+	Name                   string `json:"name"`
+	Prefix                 string `json:"prefix"`
+	// Any of "S3", "S3_COMPATIBLE", "CLOUDINARY_BACKUP", "WEB_FOLDER", "WEB_PROXY",
+	// "GCS", "AZURE_BLOB", "AKENEO_PIM".
 	Type                      string `json:"type"`
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader"`
 	// This field is from variant [AccountOriginUpdateResponseS3Compatible].
@@ -491,11 +550,11 @@ type AccountOriginUpdateResponseUnion struct {
 	BaseURL          string `json:"baseUrl"`
 	// This field is from variant [AccountOriginUpdateResponseWebFolder].
 	ForwardHostHeaderToOrigin bool `json:"forwardHostHeaderToOrigin"`
-	// This field is from variant [AccountOriginUpdateResponseGoogleCloudStorageGcs].
+	// This field is from variant [AccountOriginUpdateResponseGcs].
 	ClientEmail string `json:"clientEmail"`
-	// This field is from variant [AccountOriginUpdateResponseAzureBlobStorage].
+	// This field is from variant [AccountOriginUpdateResponseAzureBlob].
 	AccountName string `json:"accountName"`
-	// This field is from variant [AccountOriginUpdateResponseAzureBlobStorage].
+	// This field is from variant [AccountOriginUpdateResponseAzureBlob].
 	Container string `json:"container"`
 	JSON      struct {
 		ID                        respjson.Field
@@ -514,6 +573,58 @@ type AccountOriginUpdateResponseUnion struct {
 		Container                 respjson.Field
 		raw                       string
 	} `json:"-"`
+}
+
+// anyAccountOriginUpdateResponse is implemented by each variant of
+// [AccountOriginUpdateResponseUnion] to add type safety for the return type of
+// [AccountOriginUpdateResponseUnion.AsAny]
+type anyAccountOriginUpdateResponse interface {
+	implAccountOriginUpdateResponseUnion()
+}
+
+func (AccountOriginUpdateResponseS3) implAccountOriginUpdateResponseUnion()               {}
+func (AccountOriginUpdateResponseS3Compatible) implAccountOriginUpdateResponseUnion()     {}
+func (AccountOriginUpdateResponseCloudinaryBackup) implAccountOriginUpdateResponseUnion() {}
+func (AccountOriginUpdateResponseWebFolder) implAccountOriginUpdateResponseUnion()        {}
+func (AccountOriginUpdateResponseWebProxy) implAccountOriginUpdateResponseUnion()         {}
+func (AccountOriginUpdateResponseGcs) implAccountOriginUpdateResponseUnion()              {}
+func (AccountOriginUpdateResponseAzureBlob) implAccountOriginUpdateResponseUnion()        {}
+func (AccountOriginUpdateResponseAkeneoPim) implAccountOriginUpdateResponseUnion()        {}
+
+// Use the following switch statement to find the correct variant
+//
+//	switch variant := AccountOriginUpdateResponseUnion.AsAny().(type) {
+//	case imagekit.AccountOriginUpdateResponseS3:
+//	case imagekit.AccountOriginUpdateResponseS3Compatible:
+//	case imagekit.AccountOriginUpdateResponseCloudinaryBackup:
+//	case imagekit.AccountOriginUpdateResponseWebFolder:
+//	case imagekit.AccountOriginUpdateResponseWebProxy:
+//	case imagekit.AccountOriginUpdateResponseGcs:
+//	case imagekit.AccountOriginUpdateResponseAzureBlob:
+//	case imagekit.AccountOriginUpdateResponseAkeneoPim:
+//	default:
+//	  fmt.Errorf("no variant present")
+//	}
+func (u AccountOriginUpdateResponseUnion) AsAny() anyAccountOriginUpdateResponse {
+	switch u.Type {
+	case "S3":
+		return u.AsS3()
+	case "S3_COMPATIBLE":
+		return u.AsS3Compatible()
+	case "CLOUDINARY_BACKUP":
+		return u.AsCloudinaryBackup()
+	case "WEB_FOLDER":
+		return u.AsWebFolder()
+	case "WEB_PROXY":
+		return u.AsWebProxy()
+	case "GCS":
+		return u.AsGcs()
+	case "AZURE_BLOB":
+		return u.AsAzureBlob()
+	case "AKENEO_PIM":
+		return u.AsAkeneoPim()
+	}
+	return nil
 }
 
 func (u AccountOriginUpdateResponseUnion) AsS3() (v AccountOriginUpdateResponseS3) {
@@ -541,12 +652,12 @@ func (u AccountOriginUpdateResponseUnion) AsWebProxy() (v AccountOriginUpdateRes
 	return
 }
 
-func (u AccountOriginUpdateResponseUnion) AsGoogleCloudStorageGcs() (v AccountOriginUpdateResponseGoogleCloudStorageGcs) {
+func (u AccountOriginUpdateResponseUnion) AsGcs() (v AccountOriginUpdateResponseGcs) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u AccountOriginUpdateResponseUnion) AsAzureBlobStorage() (v AccountOriginUpdateResponseAzureBlobStorage) {
+func (u AccountOriginUpdateResponseUnion) AsAzureBlob() (v AccountOriginUpdateResponseAzureBlob) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -738,7 +849,7 @@ func (r *AccountOriginUpdateResponseWebProxy) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AccountOriginUpdateResponseGoogleCloudStorageGcs struct {
+type AccountOriginUpdateResponseGcs struct {
 	// Unique identifier for the origin. This is generated by ImageKit when you create
 	// a new origin.
 	ID          string `json:"id,required"`
@@ -768,12 +879,12 @@ type AccountOriginUpdateResponseGoogleCloudStorageGcs struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AccountOriginUpdateResponseGoogleCloudStorageGcs) RawJSON() string { return r.JSON.raw }
-func (r *AccountOriginUpdateResponseGoogleCloudStorageGcs) UnmarshalJSON(data []byte) error {
+func (r AccountOriginUpdateResponseGcs) RawJSON() string { return r.JSON.raw }
+func (r *AccountOriginUpdateResponseGcs) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AccountOriginUpdateResponseAzureBlobStorage struct {
+type AccountOriginUpdateResponseAzureBlob struct {
 	// Unique identifier for the origin. This is generated by ImageKit when you create
 	// a new origin.
 	ID          string `json:"id,required"`
@@ -803,8 +914,8 @@ type AccountOriginUpdateResponseAzureBlobStorage struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AccountOriginUpdateResponseAzureBlobStorage) RawJSON() string { return r.JSON.raw }
-func (r *AccountOriginUpdateResponseAzureBlobStorage) UnmarshalJSON(data []byte) error {
+func (r AccountOriginUpdateResponseAzureBlob) RawJSON() string { return r.JSON.raw }
+func (r *AccountOriginUpdateResponseAzureBlob) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -844,17 +955,20 @@ func (r *AccountOriginUpdateResponseAkeneoPim) UnmarshalJSON(data []byte) error 
 // [AccountOriginListResponseS3], [AccountOriginListResponseS3Compatible],
 // [AccountOriginListResponseCloudinaryBackup],
 // [AccountOriginListResponseWebFolder], [AccountOriginListResponseWebProxy],
-// [AccountOriginListResponseGoogleCloudStorageGcs],
-// [AccountOriginListResponseAzureBlobStorage],
+// [AccountOriginListResponseGcs], [AccountOriginListResponseAzureBlob],
 // [AccountOriginListResponseAkeneoPim].
+//
+// Use the [AccountOriginListResponseUnion.AsAny] method to switch on the variant.
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type AccountOriginListResponseUnion struct {
-	ID                        string `json:"id"`
-	Bucket                    string `json:"bucket"`
-	IncludeCanonicalHeader    bool   `json:"includeCanonicalHeader"`
-	Name                      string `json:"name"`
-	Prefix                    string `json:"prefix"`
+	ID                     string `json:"id"`
+	Bucket                 string `json:"bucket"`
+	IncludeCanonicalHeader bool   `json:"includeCanonicalHeader"`
+	Name                   string `json:"name"`
+	Prefix                 string `json:"prefix"`
+	// Any of "S3", "S3_COMPATIBLE", "CLOUDINARY_BACKUP", "WEB_FOLDER", "WEB_PROXY",
+	// "GCS", "AZURE_BLOB", "AKENEO_PIM".
 	Type                      string `json:"type"`
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader"`
 	// This field is from variant [AccountOriginListResponseS3Compatible].
@@ -864,11 +978,11 @@ type AccountOriginListResponseUnion struct {
 	BaseURL          string `json:"baseUrl"`
 	// This field is from variant [AccountOriginListResponseWebFolder].
 	ForwardHostHeaderToOrigin bool `json:"forwardHostHeaderToOrigin"`
-	// This field is from variant [AccountOriginListResponseGoogleCloudStorageGcs].
+	// This field is from variant [AccountOriginListResponseGcs].
 	ClientEmail string `json:"clientEmail"`
-	// This field is from variant [AccountOriginListResponseAzureBlobStorage].
+	// This field is from variant [AccountOriginListResponseAzureBlob].
 	AccountName string `json:"accountName"`
-	// This field is from variant [AccountOriginListResponseAzureBlobStorage].
+	// This field is from variant [AccountOriginListResponseAzureBlob].
 	Container string `json:"container"`
 	JSON      struct {
 		ID                        respjson.Field
@@ -887,6 +1001,58 @@ type AccountOriginListResponseUnion struct {
 		Container                 respjson.Field
 		raw                       string
 	} `json:"-"`
+}
+
+// anyAccountOriginListResponse is implemented by each variant of
+// [AccountOriginListResponseUnion] to add type safety for the return type of
+// [AccountOriginListResponseUnion.AsAny]
+type anyAccountOriginListResponse interface {
+	implAccountOriginListResponseUnion()
+}
+
+func (AccountOriginListResponseS3) implAccountOriginListResponseUnion()               {}
+func (AccountOriginListResponseS3Compatible) implAccountOriginListResponseUnion()     {}
+func (AccountOriginListResponseCloudinaryBackup) implAccountOriginListResponseUnion() {}
+func (AccountOriginListResponseWebFolder) implAccountOriginListResponseUnion()        {}
+func (AccountOriginListResponseWebProxy) implAccountOriginListResponseUnion()         {}
+func (AccountOriginListResponseGcs) implAccountOriginListResponseUnion()              {}
+func (AccountOriginListResponseAzureBlob) implAccountOriginListResponseUnion()        {}
+func (AccountOriginListResponseAkeneoPim) implAccountOriginListResponseUnion()        {}
+
+// Use the following switch statement to find the correct variant
+//
+//	switch variant := AccountOriginListResponseUnion.AsAny().(type) {
+//	case imagekit.AccountOriginListResponseS3:
+//	case imagekit.AccountOriginListResponseS3Compatible:
+//	case imagekit.AccountOriginListResponseCloudinaryBackup:
+//	case imagekit.AccountOriginListResponseWebFolder:
+//	case imagekit.AccountOriginListResponseWebProxy:
+//	case imagekit.AccountOriginListResponseGcs:
+//	case imagekit.AccountOriginListResponseAzureBlob:
+//	case imagekit.AccountOriginListResponseAkeneoPim:
+//	default:
+//	  fmt.Errorf("no variant present")
+//	}
+func (u AccountOriginListResponseUnion) AsAny() anyAccountOriginListResponse {
+	switch u.Type {
+	case "S3":
+		return u.AsS3()
+	case "S3_COMPATIBLE":
+		return u.AsS3Compatible()
+	case "CLOUDINARY_BACKUP":
+		return u.AsCloudinaryBackup()
+	case "WEB_FOLDER":
+		return u.AsWebFolder()
+	case "WEB_PROXY":
+		return u.AsWebProxy()
+	case "GCS":
+		return u.AsGcs()
+	case "AZURE_BLOB":
+		return u.AsAzureBlob()
+	case "AKENEO_PIM":
+		return u.AsAkeneoPim()
+	}
+	return nil
 }
 
 func (u AccountOriginListResponseUnion) AsS3() (v AccountOriginListResponseS3) {
@@ -914,12 +1080,12 @@ func (u AccountOriginListResponseUnion) AsWebProxy() (v AccountOriginListRespons
 	return
 }
 
-func (u AccountOriginListResponseUnion) AsGoogleCloudStorageGcs() (v AccountOriginListResponseGoogleCloudStorageGcs) {
+func (u AccountOriginListResponseUnion) AsGcs() (v AccountOriginListResponseGcs) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u AccountOriginListResponseUnion) AsAzureBlobStorage() (v AccountOriginListResponseAzureBlobStorage) {
+func (u AccountOriginListResponseUnion) AsAzureBlob() (v AccountOriginListResponseAzureBlob) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -1111,7 +1277,7 @@ func (r *AccountOriginListResponseWebProxy) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AccountOriginListResponseGoogleCloudStorageGcs struct {
+type AccountOriginListResponseGcs struct {
 	// Unique identifier for the origin. This is generated by ImageKit when you create
 	// a new origin.
 	ID          string `json:"id,required"`
@@ -1141,12 +1307,12 @@ type AccountOriginListResponseGoogleCloudStorageGcs struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AccountOriginListResponseGoogleCloudStorageGcs) RawJSON() string { return r.JSON.raw }
-func (r *AccountOriginListResponseGoogleCloudStorageGcs) UnmarshalJSON(data []byte) error {
+func (r AccountOriginListResponseGcs) RawJSON() string { return r.JSON.raw }
+func (r *AccountOriginListResponseGcs) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AccountOriginListResponseAzureBlobStorage struct {
+type AccountOriginListResponseAzureBlob struct {
 	// Unique identifier for the origin. This is generated by ImageKit when you create
 	// a new origin.
 	ID          string `json:"id,required"`
@@ -1176,8 +1342,8 @@ type AccountOriginListResponseAzureBlobStorage struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AccountOriginListResponseAzureBlobStorage) RawJSON() string { return r.JSON.raw }
-func (r *AccountOriginListResponseAzureBlobStorage) UnmarshalJSON(data []byte) error {
+func (r AccountOriginListResponseAzureBlob) RawJSON() string { return r.JSON.raw }
+func (r *AccountOriginListResponseAzureBlob) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1216,17 +1382,20 @@ func (r *AccountOriginListResponseAkeneoPim) UnmarshalJSON(data []byte) error {
 // AccountOriginGetResponseUnion contains all possible properties and values from
 // [AccountOriginGetResponseS3], [AccountOriginGetResponseS3Compatible],
 // [AccountOriginGetResponseCloudinaryBackup], [AccountOriginGetResponseWebFolder],
-// [AccountOriginGetResponseWebProxy],
-// [AccountOriginGetResponseGoogleCloudStorageGcs],
-// [AccountOriginGetResponseAzureBlobStorage], [AccountOriginGetResponseAkeneoPim].
+// [AccountOriginGetResponseWebProxy], [AccountOriginGetResponseGcs],
+// [AccountOriginGetResponseAzureBlob], [AccountOriginGetResponseAkeneoPim].
+//
+// Use the [AccountOriginGetResponseUnion.AsAny] method to switch on the variant.
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type AccountOriginGetResponseUnion struct {
-	ID                        string `json:"id"`
-	Bucket                    string `json:"bucket"`
-	IncludeCanonicalHeader    bool   `json:"includeCanonicalHeader"`
-	Name                      string `json:"name"`
-	Prefix                    string `json:"prefix"`
+	ID                     string `json:"id"`
+	Bucket                 string `json:"bucket"`
+	IncludeCanonicalHeader bool   `json:"includeCanonicalHeader"`
+	Name                   string `json:"name"`
+	Prefix                 string `json:"prefix"`
+	// Any of "S3", "S3_COMPATIBLE", "CLOUDINARY_BACKUP", "WEB_FOLDER", "WEB_PROXY",
+	// "GCS", "AZURE_BLOB", "AKENEO_PIM".
 	Type                      string `json:"type"`
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader"`
 	// This field is from variant [AccountOriginGetResponseS3Compatible].
@@ -1236,11 +1405,11 @@ type AccountOriginGetResponseUnion struct {
 	BaseURL          string `json:"baseUrl"`
 	// This field is from variant [AccountOriginGetResponseWebFolder].
 	ForwardHostHeaderToOrigin bool `json:"forwardHostHeaderToOrigin"`
-	// This field is from variant [AccountOriginGetResponseGoogleCloudStorageGcs].
+	// This field is from variant [AccountOriginGetResponseGcs].
 	ClientEmail string `json:"clientEmail"`
-	// This field is from variant [AccountOriginGetResponseAzureBlobStorage].
+	// This field is from variant [AccountOriginGetResponseAzureBlob].
 	AccountName string `json:"accountName"`
-	// This field is from variant [AccountOriginGetResponseAzureBlobStorage].
+	// This field is from variant [AccountOriginGetResponseAzureBlob].
 	Container string `json:"container"`
 	JSON      struct {
 		ID                        respjson.Field
@@ -1259,6 +1428,58 @@ type AccountOriginGetResponseUnion struct {
 		Container                 respjson.Field
 		raw                       string
 	} `json:"-"`
+}
+
+// anyAccountOriginGetResponse is implemented by each variant of
+// [AccountOriginGetResponseUnion] to add type safety for the return type of
+// [AccountOriginGetResponseUnion.AsAny]
+type anyAccountOriginGetResponse interface {
+	implAccountOriginGetResponseUnion()
+}
+
+func (AccountOriginGetResponseS3) implAccountOriginGetResponseUnion()               {}
+func (AccountOriginGetResponseS3Compatible) implAccountOriginGetResponseUnion()     {}
+func (AccountOriginGetResponseCloudinaryBackup) implAccountOriginGetResponseUnion() {}
+func (AccountOriginGetResponseWebFolder) implAccountOriginGetResponseUnion()        {}
+func (AccountOriginGetResponseWebProxy) implAccountOriginGetResponseUnion()         {}
+func (AccountOriginGetResponseGcs) implAccountOriginGetResponseUnion()              {}
+func (AccountOriginGetResponseAzureBlob) implAccountOriginGetResponseUnion()        {}
+func (AccountOriginGetResponseAkeneoPim) implAccountOriginGetResponseUnion()        {}
+
+// Use the following switch statement to find the correct variant
+//
+//	switch variant := AccountOriginGetResponseUnion.AsAny().(type) {
+//	case imagekit.AccountOriginGetResponseS3:
+//	case imagekit.AccountOriginGetResponseS3Compatible:
+//	case imagekit.AccountOriginGetResponseCloudinaryBackup:
+//	case imagekit.AccountOriginGetResponseWebFolder:
+//	case imagekit.AccountOriginGetResponseWebProxy:
+//	case imagekit.AccountOriginGetResponseGcs:
+//	case imagekit.AccountOriginGetResponseAzureBlob:
+//	case imagekit.AccountOriginGetResponseAkeneoPim:
+//	default:
+//	  fmt.Errorf("no variant present")
+//	}
+func (u AccountOriginGetResponseUnion) AsAny() anyAccountOriginGetResponse {
+	switch u.Type {
+	case "S3":
+		return u.AsS3()
+	case "S3_COMPATIBLE":
+		return u.AsS3Compatible()
+	case "CLOUDINARY_BACKUP":
+		return u.AsCloudinaryBackup()
+	case "WEB_FOLDER":
+		return u.AsWebFolder()
+	case "WEB_PROXY":
+		return u.AsWebProxy()
+	case "GCS":
+		return u.AsGcs()
+	case "AZURE_BLOB":
+		return u.AsAzureBlob()
+	case "AKENEO_PIM":
+		return u.AsAkeneoPim()
+	}
+	return nil
 }
 
 func (u AccountOriginGetResponseUnion) AsS3() (v AccountOriginGetResponseS3) {
@@ -1286,12 +1507,12 @@ func (u AccountOriginGetResponseUnion) AsWebProxy() (v AccountOriginGetResponseW
 	return
 }
 
-func (u AccountOriginGetResponseUnion) AsGoogleCloudStorageGcs() (v AccountOriginGetResponseGoogleCloudStorageGcs) {
+func (u AccountOriginGetResponseUnion) AsGcs() (v AccountOriginGetResponseGcs) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u AccountOriginGetResponseUnion) AsAzureBlobStorage() (v AccountOriginGetResponseAzureBlobStorage) {
+func (u AccountOriginGetResponseUnion) AsAzureBlob() (v AccountOriginGetResponseAzureBlob) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -1483,7 +1704,7 @@ func (r *AccountOriginGetResponseWebProxy) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AccountOriginGetResponseGoogleCloudStorageGcs struct {
+type AccountOriginGetResponseGcs struct {
 	// Unique identifier for the origin. This is generated by ImageKit when you create
 	// a new origin.
 	ID          string `json:"id,required"`
@@ -1513,12 +1734,12 @@ type AccountOriginGetResponseGoogleCloudStorageGcs struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AccountOriginGetResponseGoogleCloudStorageGcs) RawJSON() string { return r.JSON.raw }
-func (r *AccountOriginGetResponseGoogleCloudStorageGcs) UnmarshalJSON(data []byte) error {
+func (r AccountOriginGetResponseGcs) RawJSON() string { return r.JSON.raw }
+func (r *AccountOriginGetResponseGcs) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AccountOriginGetResponseAzureBlobStorage struct {
+type AccountOriginGetResponseAzureBlob struct {
 	// Unique identifier for the origin. This is generated by ImageKit when you create
 	// a new origin.
 	ID          string `json:"id,required"`
@@ -1548,8 +1769,8 @@ type AccountOriginGetResponseAzureBlobStorage struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AccountOriginGetResponseAzureBlobStorage) RawJSON() string { return r.JSON.raw }
-func (r *AccountOriginGetResponseAzureBlobStorage) UnmarshalJSON(data []byte) error {
+func (r AccountOriginGetResponseAzureBlob) RawJSON() string { return r.JSON.raw }
+func (r *AccountOriginGetResponseAzureBlob) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1602,9 +1823,9 @@ type AccountOriginNewParams struct {
 	// This field is a request body variant, only one variant field can be set.
 	OfWebProxy *AccountOriginNewParamsOriginWebProxy `json:",inline"`
 	// This field is a request body variant, only one variant field can be set.
-	OfGoogleCloudStorageGcs *AccountOriginNewParamsOriginGoogleCloudStorageGcs `json:",inline"`
+	OfGcs *AccountOriginNewParamsOriginGcs `json:",inline"`
 	// This field is a request body variant, only one variant field can be set.
-	OfAzureBlobStorage *AccountOriginNewParamsOriginAzureBlobStorage `json:",inline"`
+	OfAzureBlob *AccountOriginNewParamsOriginAzureBlob `json:",inline"`
 	// This field is a request body variant, only one variant field can be set.
 	OfAkeneoPim *AccountOriginNewParamsOriginAkeneoPim `json:",inline"`
 
@@ -1617,8 +1838,8 @@ func (u AccountOriginNewParams) MarshalJSON() ([]byte, error) {
 		u.OfCloudinaryBackup,
 		u.OfWebFolder,
 		u.OfWebProxy,
-		u.OfGoogleCloudStorageGcs,
-		u.OfAzureBlobStorage,
+		u.OfGcs,
+		u.OfAzureBlob,
 		u.OfAkeneoPim)
 }
 func (r *AccountOriginNewParams) UnmarshalJSON(data []byte) error {
@@ -1764,7 +1985,7 @@ func (r *AccountOriginNewParamsOriginWebProxy) UnmarshalJSON(data []byte) error 
 }
 
 // The properties Bucket, ClientEmail, Name, PrivateKey, Type are required.
-type AccountOriginNewParamsOriginGoogleCloudStorageGcs struct {
+type AccountOriginNewParamsOriginGcs struct {
 	Bucket      string `json:"bucket,required"`
 	ClientEmail string `json:"clientEmail,required" format:"email"`
 	// Display name of the origin.
@@ -1780,16 +2001,16 @@ type AccountOriginNewParamsOriginGoogleCloudStorageGcs struct {
 	paramObj
 }
 
-func (r AccountOriginNewParamsOriginGoogleCloudStorageGcs) MarshalJSON() (data []byte, err error) {
-	type shadow AccountOriginNewParamsOriginGoogleCloudStorageGcs
+func (r AccountOriginNewParamsOriginGcs) MarshalJSON() (data []byte, err error) {
+	type shadow AccountOriginNewParamsOriginGcs
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *AccountOriginNewParamsOriginGoogleCloudStorageGcs) UnmarshalJSON(data []byte) error {
+func (r *AccountOriginNewParamsOriginGcs) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The properties AccountName, Container, Name, SasToken, Type are required.
-type AccountOriginNewParamsOriginAzureBlobStorage struct {
+type AccountOriginNewParamsOriginAzureBlob struct {
 	AccountName string `json:"accountName,required"`
 	Container   string `json:"container,required"`
 	// Display name of the origin.
@@ -1805,11 +2026,11 @@ type AccountOriginNewParamsOriginAzureBlobStorage struct {
 	paramObj
 }
 
-func (r AccountOriginNewParamsOriginAzureBlobStorage) MarshalJSON() (data []byte, err error) {
-	type shadow AccountOriginNewParamsOriginAzureBlobStorage
+func (r AccountOriginNewParamsOriginAzureBlob) MarshalJSON() (data []byte, err error) {
+	type shadow AccountOriginNewParamsOriginAzureBlob
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *AccountOriginNewParamsOriginAzureBlobStorage) UnmarshalJSON(data []byte) error {
+func (r *AccountOriginNewParamsOriginAzureBlob) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1862,9 +2083,9 @@ type AccountOriginUpdateParams struct {
 	// This field is a request body variant, only one variant field can be set.
 	OfWebProxy *AccountOriginUpdateParamsOriginWebProxy `json:",inline"`
 	// This field is a request body variant, only one variant field can be set.
-	OfGoogleCloudStorageGcs *AccountOriginUpdateParamsOriginGoogleCloudStorageGcs `json:",inline"`
+	OfGcs *AccountOriginUpdateParamsOriginGcs `json:",inline"`
 	// This field is a request body variant, only one variant field can be set.
-	OfAzureBlobStorage *AccountOriginUpdateParamsOriginAzureBlobStorage `json:",inline"`
+	OfAzureBlob *AccountOriginUpdateParamsOriginAzureBlob `json:",inline"`
 	// This field is a request body variant, only one variant field can be set.
 	OfAkeneoPim *AccountOriginUpdateParamsOriginAkeneoPim `json:",inline"`
 
@@ -1877,8 +2098,8 @@ func (u AccountOriginUpdateParams) MarshalJSON() ([]byte, error) {
 		u.OfCloudinaryBackup,
 		u.OfWebFolder,
 		u.OfWebProxy,
-		u.OfGoogleCloudStorageGcs,
-		u.OfAzureBlobStorage,
+		u.OfGcs,
+		u.OfAzureBlob,
 		u.OfAkeneoPim)
 }
 func (r *AccountOriginUpdateParams) UnmarshalJSON(data []byte) error {
@@ -2024,7 +2245,7 @@ func (r *AccountOriginUpdateParamsOriginWebProxy) UnmarshalJSON(data []byte) err
 }
 
 // The properties Bucket, ClientEmail, Name, PrivateKey, Type are required.
-type AccountOriginUpdateParamsOriginGoogleCloudStorageGcs struct {
+type AccountOriginUpdateParamsOriginGcs struct {
 	Bucket      string `json:"bucket,required"`
 	ClientEmail string `json:"clientEmail,required" format:"email"`
 	// Display name of the origin.
@@ -2040,16 +2261,16 @@ type AccountOriginUpdateParamsOriginGoogleCloudStorageGcs struct {
 	paramObj
 }
 
-func (r AccountOriginUpdateParamsOriginGoogleCloudStorageGcs) MarshalJSON() (data []byte, err error) {
-	type shadow AccountOriginUpdateParamsOriginGoogleCloudStorageGcs
+func (r AccountOriginUpdateParamsOriginGcs) MarshalJSON() (data []byte, err error) {
+	type shadow AccountOriginUpdateParamsOriginGcs
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *AccountOriginUpdateParamsOriginGoogleCloudStorageGcs) UnmarshalJSON(data []byte) error {
+func (r *AccountOriginUpdateParamsOriginGcs) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The properties AccountName, Container, Name, SasToken, Type are required.
-type AccountOriginUpdateParamsOriginAzureBlobStorage struct {
+type AccountOriginUpdateParamsOriginAzureBlob struct {
 	AccountName string `json:"accountName,required"`
 	Container   string `json:"container,required"`
 	// Display name of the origin.
@@ -2065,11 +2286,11 @@ type AccountOriginUpdateParamsOriginAzureBlobStorage struct {
 	paramObj
 }
 
-func (r AccountOriginUpdateParamsOriginAzureBlobStorage) MarshalJSON() (data []byte, err error) {
-	type shadow AccountOriginUpdateParamsOriginAzureBlobStorage
+func (r AccountOriginUpdateParamsOriginAzureBlob) MarshalJSON() (data []byte, err error) {
+	type shadow AccountOriginUpdateParamsOriginAzureBlob
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *AccountOriginUpdateParamsOriginAzureBlobStorage) UnmarshalJSON(data []byte) error {
+func (r *AccountOriginUpdateParamsOriginAzureBlob) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

@@ -132,34 +132,72 @@ func (r *AccountURLEndpointNewResponse) UnmarshalJSON(data []byte) error {
 }
 
 // AccountURLEndpointNewResponseURLRewriterUnion contains all possible properties
-// and values from [AccountURLEndpointNewResponseURLRewriterCloudinaryURLRewriter],
-// [AccountURLEndpointNewResponseURLRewriterImgixURLRewriter],
-// [AccountURLEndpointNewResponseURLRewriterAkamaiURLRewriter].
+// and values from [AccountURLEndpointNewResponseURLRewriterCloudinary],
+// [AccountURLEndpointNewResponseURLRewriterImgix],
+// [AccountURLEndpointNewResponseURLRewriterAkamai].
+//
+// Use the [AccountURLEndpointNewResponseURLRewriterUnion.AsAny] method to switch
+// on the variant.
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type AccountURLEndpointNewResponseURLRewriterUnion struct {
-	// This field is from variant
-	// [AccountURLEndpointNewResponseURLRewriterCloudinaryURLRewriter].
-	PreserveAssetDeliveryTypes bool   `json:"preserveAssetDeliveryTypes"`
-	Type                       string `json:"type"`
-	JSON                       struct {
+	// This field is from variant [AccountURLEndpointNewResponseURLRewriterCloudinary].
+	PreserveAssetDeliveryTypes bool `json:"preserveAssetDeliveryTypes"`
+	// Any of "CLOUDINARY", "IMGIX", "AKAMAI".
+	Type string `json:"type"`
+	JSON struct {
 		PreserveAssetDeliveryTypes respjson.Field
 		Type                       respjson.Field
 		raw                        string
 	} `json:"-"`
 }
 
-func (u AccountURLEndpointNewResponseURLRewriterUnion) AsCloudinaryURLRewriter() (v AccountURLEndpointNewResponseURLRewriterCloudinaryURLRewriter) {
+// anyAccountURLEndpointNewResponseURLRewriter is implemented by each variant of
+// [AccountURLEndpointNewResponseURLRewriterUnion] to add type safety for the
+// return type of [AccountURLEndpointNewResponseURLRewriterUnion.AsAny]
+type anyAccountURLEndpointNewResponseURLRewriter interface {
+	implAccountURLEndpointNewResponseURLRewriterUnion()
+}
+
+func (AccountURLEndpointNewResponseURLRewriterCloudinary) implAccountURLEndpointNewResponseURLRewriterUnion() {
+}
+func (AccountURLEndpointNewResponseURLRewriterImgix) implAccountURLEndpointNewResponseURLRewriterUnion() {
+}
+func (AccountURLEndpointNewResponseURLRewriterAkamai) implAccountURLEndpointNewResponseURLRewriterUnion() {
+}
+
+// Use the following switch statement to find the correct variant
+//
+//	switch variant := AccountURLEndpointNewResponseURLRewriterUnion.AsAny().(type) {
+//	case imagekit.AccountURLEndpointNewResponseURLRewriterCloudinary:
+//	case imagekit.AccountURLEndpointNewResponseURLRewriterImgix:
+//	case imagekit.AccountURLEndpointNewResponseURLRewriterAkamai:
+//	default:
+//	  fmt.Errorf("no variant present")
+//	}
+func (u AccountURLEndpointNewResponseURLRewriterUnion) AsAny() anyAccountURLEndpointNewResponseURLRewriter {
+	switch u.Type {
+	case "CLOUDINARY":
+		return u.AsCloudinary()
+	case "IMGIX":
+		return u.AsImgix()
+	case "AKAMAI":
+		return u.AsAkamai()
+	}
+	return nil
+}
+
+func (u AccountURLEndpointNewResponseURLRewriterUnion) AsCloudinary() (v AccountURLEndpointNewResponseURLRewriterCloudinary) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u AccountURLEndpointNewResponseURLRewriterUnion) AsImgixURLRewriter() (v AccountURLEndpointNewResponseURLRewriterImgixURLRewriter) {
+func (u AccountURLEndpointNewResponseURLRewriterUnion) AsImgix() (v AccountURLEndpointNewResponseURLRewriterImgix) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u AccountURLEndpointNewResponseURLRewriterUnion) AsAkamaiURLRewriter() (v AccountURLEndpointNewResponseURLRewriterAkamaiURLRewriter) {
+func (u AccountURLEndpointNewResponseURLRewriterUnion) AsAkamai() (v AccountURLEndpointNewResponseURLRewriterAkamai) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -171,7 +209,7 @@ func (r *AccountURLEndpointNewResponseURLRewriterUnion) UnmarshalJSON(data []byt
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AccountURLEndpointNewResponseURLRewriterCloudinaryURLRewriter struct {
+type AccountURLEndpointNewResponseURLRewriterCloudinary struct {
 	// Whether to preserve `<asset_type>/<delivery_type>` in the rewritten URL.
 	PreserveAssetDeliveryTypes bool                `json:"preserveAssetDeliveryTypes,required"`
 	Type                       constant.Cloudinary `json:"type,required"`
@@ -185,14 +223,12 @@ type AccountURLEndpointNewResponseURLRewriterCloudinaryURLRewriter struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AccountURLEndpointNewResponseURLRewriterCloudinaryURLRewriter) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *AccountURLEndpointNewResponseURLRewriterCloudinaryURLRewriter) UnmarshalJSON(data []byte) error {
+func (r AccountURLEndpointNewResponseURLRewriterCloudinary) RawJSON() string { return r.JSON.raw }
+func (r *AccountURLEndpointNewResponseURLRewriterCloudinary) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AccountURLEndpointNewResponseURLRewriterImgixURLRewriter struct {
+type AccountURLEndpointNewResponseURLRewriterImgix struct {
 	Type constant.Imgix `json:"type,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -203,12 +239,12 @@ type AccountURLEndpointNewResponseURLRewriterImgixURLRewriter struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AccountURLEndpointNewResponseURLRewriterImgixURLRewriter) RawJSON() string { return r.JSON.raw }
-func (r *AccountURLEndpointNewResponseURLRewriterImgixURLRewriter) UnmarshalJSON(data []byte) error {
+func (r AccountURLEndpointNewResponseURLRewriterImgix) RawJSON() string { return r.JSON.raw }
+func (r *AccountURLEndpointNewResponseURLRewriterImgix) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AccountURLEndpointNewResponseURLRewriterAkamaiURLRewriter struct {
+type AccountURLEndpointNewResponseURLRewriterAkamai struct {
 	Type constant.Akamai `json:"type,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -219,10 +255,8 @@ type AccountURLEndpointNewResponseURLRewriterAkamaiURLRewriter struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AccountURLEndpointNewResponseURLRewriterAkamaiURLRewriter) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *AccountURLEndpointNewResponseURLRewriterAkamaiURLRewriter) UnmarshalJSON(data []byte) error {
+func (r AccountURLEndpointNewResponseURLRewriterAkamai) RawJSON() string { return r.JSON.raw }
+func (r *AccountURLEndpointNewResponseURLRewriterAkamai) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -263,34 +297,73 @@ func (r *AccountURLEndpointUpdateResponse) UnmarshalJSON(data []byte) error {
 
 // AccountURLEndpointUpdateResponseURLRewriterUnion contains all possible
 // properties and values from
-// [AccountURLEndpointUpdateResponseURLRewriterCloudinaryURLRewriter],
-// [AccountURLEndpointUpdateResponseURLRewriterImgixURLRewriter],
-// [AccountURLEndpointUpdateResponseURLRewriterAkamaiURLRewriter].
+// [AccountURLEndpointUpdateResponseURLRewriterCloudinary],
+// [AccountURLEndpointUpdateResponseURLRewriterImgix],
+// [AccountURLEndpointUpdateResponseURLRewriterAkamai].
+//
+// Use the [AccountURLEndpointUpdateResponseURLRewriterUnion.AsAny] method to
+// switch on the variant.
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type AccountURLEndpointUpdateResponseURLRewriterUnion struct {
 	// This field is from variant
-	// [AccountURLEndpointUpdateResponseURLRewriterCloudinaryURLRewriter].
-	PreserveAssetDeliveryTypes bool   `json:"preserveAssetDeliveryTypes"`
-	Type                       string `json:"type"`
-	JSON                       struct {
+	// [AccountURLEndpointUpdateResponseURLRewriterCloudinary].
+	PreserveAssetDeliveryTypes bool `json:"preserveAssetDeliveryTypes"`
+	// Any of "CLOUDINARY", "IMGIX", "AKAMAI".
+	Type string `json:"type"`
+	JSON struct {
 		PreserveAssetDeliveryTypes respjson.Field
 		Type                       respjson.Field
 		raw                        string
 	} `json:"-"`
 }
 
-func (u AccountURLEndpointUpdateResponseURLRewriterUnion) AsCloudinaryURLRewriter() (v AccountURLEndpointUpdateResponseURLRewriterCloudinaryURLRewriter) {
+// anyAccountURLEndpointUpdateResponseURLRewriter is implemented by each variant of
+// [AccountURLEndpointUpdateResponseURLRewriterUnion] to add type safety for the
+// return type of [AccountURLEndpointUpdateResponseURLRewriterUnion.AsAny]
+type anyAccountURLEndpointUpdateResponseURLRewriter interface {
+	implAccountURLEndpointUpdateResponseURLRewriterUnion()
+}
+
+func (AccountURLEndpointUpdateResponseURLRewriterCloudinary) implAccountURLEndpointUpdateResponseURLRewriterUnion() {
+}
+func (AccountURLEndpointUpdateResponseURLRewriterImgix) implAccountURLEndpointUpdateResponseURLRewriterUnion() {
+}
+func (AccountURLEndpointUpdateResponseURLRewriterAkamai) implAccountURLEndpointUpdateResponseURLRewriterUnion() {
+}
+
+// Use the following switch statement to find the correct variant
+//
+//	switch variant := AccountURLEndpointUpdateResponseURLRewriterUnion.AsAny().(type) {
+//	case imagekit.AccountURLEndpointUpdateResponseURLRewriterCloudinary:
+//	case imagekit.AccountURLEndpointUpdateResponseURLRewriterImgix:
+//	case imagekit.AccountURLEndpointUpdateResponseURLRewriterAkamai:
+//	default:
+//	  fmt.Errorf("no variant present")
+//	}
+func (u AccountURLEndpointUpdateResponseURLRewriterUnion) AsAny() anyAccountURLEndpointUpdateResponseURLRewriter {
+	switch u.Type {
+	case "CLOUDINARY":
+		return u.AsCloudinary()
+	case "IMGIX":
+		return u.AsImgix()
+	case "AKAMAI":
+		return u.AsAkamai()
+	}
+	return nil
+}
+
+func (u AccountURLEndpointUpdateResponseURLRewriterUnion) AsCloudinary() (v AccountURLEndpointUpdateResponseURLRewriterCloudinary) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u AccountURLEndpointUpdateResponseURLRewriterUnion) AsImgixURLRewriter() (v AccountURLEndpointUpdateResponseURLRewriterImgixURLRewriter) {
+func (u AccountURLEndpointUpdateResponseURLRewriterUnion) AsImgix() (v AccountURLEndpointUpdateResponseURLRewriterImgix) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u AccountURLEndpointUpdateResponseURLRewriterUnion) AsAkamaiURLRewriter() (v AccountURLEndpointUpdateResponseURLRewriterAkamaiURLRewriter) {
+func (u AccountURLEndpointUpdateResponseURLRewriterUnion) AsAkamai() (v AccountURLEndpointUpdateResponseURLRewriterAkamai) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -302,7 +375,7 @@ func (r *AccountURLEndpointUpdateResponseURLRewriterUnion) UnmarshalJSON(data []
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AccountURLEndpointUpdateResponseURLRewriterCloudinaryURLRewriter struct {
+type AccountURLEndpointUpdateResponseURLRewriterCloudinary struct {
 	// Whether to preserve `<asset_type>/<delivery_type>` in the rewritten URL.
 	PreserveAssetDeliveryTypes bool                `json:"preserveAssetDeliveryTypes,required"`
 	Type                       constant.Cloudinary `json:"type,required"`
@@ -316,14 +389,12 @@ type AccountURLEndpointUpdateResponseURLRewriterCloudinaryURLRewriter struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AccountURLEndpointUpdateResponseURLRewriterCloudinaryURLRewriter) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *AccountURLEndpointUpdateResponseURLRewriterCloudinaryURLRewriter) UnmarshalJSON(data []byte) error {
+func (r AccountURLEndpointUpdateResponseURLRewriterCloudinary) RawJSON() string { return r.JSON.raw }
+func (r *AccountURLEndpointUpdateResponseURLRewriterCloudinary) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AccountURLEndpointUpdateResponseURLRewriterImgixURLRewriter struct {
+type AccountURLEndpointUpdateResponseURLRewriterImgix struct {
 	Type constant.Imgix `json:"type,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -334,14 +405,12 @@ type AccountURLEndpointUpdateResponseURLRewriterImgixURLRewriter struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AccountURLEndpointUpdateResponseURLRewriterImgixURLRewriter) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *AccountURLEndpointUpdateResponseURLRewriterImgixURLRewriter) UnmarshalJSON(data []byte) error {
+func (r AccountURLEndpointUpdateResponseURLRewriterImgix) RawJSON() string { return r.JSON.raw }
+func (r *AccountURLEndpointUpdateResponseURLRewriterImgix) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AccountURLEndpointUpdateResponseURLRewriterAkamaiURLRewriter struct {
+type AccountURLEndpointUpdateResponseURLRewriterAkamai struct {
 	Type constant.Akamai `json:"type,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -352,10 +421,8 @@ type AccountURLEndpointUpdateResponseURLRewriterAkamaiURLRewriter struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AccountURLEndpointUpdateResponseURLRewriterAkamaiURLRewriter) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *AccountURLEndpointUpdateResponseURLRewriterAkamaiURLRewriter) UnmarshalJSON(data []byte) error {
+func (r AccountURLEndpointUpdateResponseURLRewriterAkamai) RawJSON() string { return r.JSON.raw }
+func (r *AccountURLEndpointUpdateResponseURLRewriterAkamai) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -395,35 +462,73 @@ func (r *AccountURLEndpointListResponse) UnmarshalJSON(data []byte) error {
 }
 
 // AccountURLEndpointListResponseURLRewriterUnion contains all possible properties
-// and values from
-// [AccountURLEndpointListResponseURLRewriterCloudinaryURLRewriter],
-// [AccountURLEndpointListResponseURLRewriterImgixURLRewriter],
-// [AccountURLEndpointListResponseURLRewriterAkamaiURLRewriter].
+// and values from [AccountURLEndpointListResponseURLRewriterCloudinary],
+// [AccountURLEndpointListResponseURLRewriterImgix],
+// [AccountURLEndpointListResponseURLRewriterAkamai].
+//
+// Use the [AccountURLEndpointListResponseURLRewriterUnion.AsAny] method to switch
+// on the variant.
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type AccountURLEndpointListResponseURLRewriterUnion struct {
 	// This field is from variant
-	// [AccountURLEndpointListResponseURLRewriterCloudinaryURLRewriter].
-	PreserveAssetDeliveryTypes bool   `json:"preserveAssetDeliveryTypes"`
-	Type                       string `json:"type"`
-	JSON                       struct {
+	// [AccountURLEndpointListResponseURLRewriterCloudinary].
+	PreserveAssetDeliveryTypes bool `json:"preserveAssetDeliveryTypes"`
+	// Any of "CLOUDINARY", "IMGIX", "AKAMAI".
+	Type string `json:"type"`
+	JSON struct {
 		PreserveAssetDeliveryTypes respjson.Field
 		Type                       respjson.Field
 		raw                        string
 	} `json:"-"`
 }
 
-func (u AccountURLEndpointListResponseURLRewriterUnion) AsCloudinaryURLRewriter() (v AccountURLEndpointListResponseURLRewriterCloudinaryURLRewriter) {
+// anyAccountURLEndpointListResponseURLRewriter is implemented by each variant of
+// [AccountURLEndpointListResponseURLRewriterUnion] to add type safety for the
+// return type of [AccountURLEndpointListResponseURLRewriterUnion.AsAny]
+type anyAccountURLEndpointListResponseURLRewriter interface {
+	implAccountURLEndpointListResponseURLRewriterUnion()
+}
+
+func (AccountURLEndpointListResponseURLRewriterCloudinary) implAccountURLEndpointListResponseURLRewriterUnion() {
+}
+func (AccountURLEndpointListResponseURLRewriterImgix) implAccountURLEndpointListResponseURLRewriterUnion() {
+}
+func (AccountURLEndpointListResponseURLRewriterAkamai) implAccountURLEndpointListResponseURLRewriterUnion() {
+}
+
+// Use the following switch statement to find the correct variant
+//
+//	switch variant := AccountURLEndpointListResponseURLRewriterUnion.AsAny().(type) {
+//	case imagekit.AccountURLEndpointListResponseURLRewriterCloudinary:
+//	case imagekit.AccountURLEndpointListResponseURLRewriterImgix:
+//	case imagekit.AccountURLEndpointListResponseURLRewriterAkamai:
+//	default:
+//	  fmt.Errorf("no variant present")
+//	}
+func (u AccountURLEndpointListResponseURLRewriterUnion) AsAny() anyAccountURLEndpointListResponseURLRewriter {
+	switch u.Type {
+	case "CLOUDINARY":
+		return u.AsCloudinary()
+	case "IMGIX":
+		return u.AsImgix()
+	case "AKAMAI":
+		return u.AsAkamai()
+	}
+	return nil
+}
+
+func (u AccountURLEndpointListResponseURLRewriterUnion) AsCloudinary() (v AccountURLEndpointListResponseURLRewriterCloudinary) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u AccountURLEndpointListResponseURLRewriterUnion) AsImgixURLRewriter() (v AccountURLEndpointListResponseURLRewriterImgixURLRewriter) {
+func (u AccountURLEndpointListResponseURLRewriterUnion) AsImgix() (v AccountURLEndpointListResponseURLRewriterImgix) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u AccountURLEndpointListResponseURLRewriterUnion) AsAkamaiURLRewriter() (v AccountURLEndpointListResponseURLRewriterAkamaiURLRewriter) {
+func (u AccountURLEndpointListResponseURLRewriterUnion) AsAkamai() (v AccountURLEndpointListResponseURLRewriterAkamai) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -435,7 +540,7 @@ func (r *AccountURLEndpointListResponseURLRewriterUnion) UnmarshalJSON(data []by
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AccountURLEndpointListResponseURLRewriterCloudinaryURLRewriter struct {
+type AccountURLEndpointListResponseURLRewriterCloudinary struct {
 	// Whether to preserve `<asset_type>/<delivery_type>` in the rewritten URL.
 	PreserveAssetDeliveryTypes bool                `json:"preserveAssetDeliveryTypes,required"`
 	Type                       constant.Cloudinary `json:"type,required"`
@@ -449,14 +554,12 @@ type AccountURLEndpointListResponseURLRewriterCloudinaryURLRewriter struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AccountURLEndpointListResponseURLRewriterCloudinaryURLRewriter) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *AccountURLEndpointListResponseURLRewriterCloudinaryURLRewriter) UnmarshalJSON(data []byte) error {
+func (r AccountURLEndpointListResponseURLRewriterCloudinary) RawJSON() string { return r.JSON.raw }
+func (r *AccountURLEndpointListResponseURLRewriterCloudinary) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AccountURLEndpointListResponseURLRewriterImgixURLRewriter struct {
+type AccountURLEndpointListResponseURLRewriterImgix struct {
 	Type constant.Imgix `json:"type,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -467,14 +570,12 @@ type AccountURLEndpointListResponseURLRewriterImgixURLRewriter struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AccountURLEndpointListResponseURLRewriterImgixURLRewriter) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *AccountURLEndpointListResponseURLRewriterImgixURLRewriter) UnmarshalJSON(data []byte) error {
+func (r AccountURLEndpointListResponseURLRewriterImgix) RawJSON() string { return r.JSON.raw }
+func (r *AccountURLEndpointListResponseURLRewriterImgix) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AccountURLEndpointListResponseURLRewriterAkamaiURLRewriter struct {
+type AccountURLEndpointListResponseURLRewriterAkamai struct {
 	Type constant.Akamai `json:"type,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -485,10 +586,8 @@ type AccountURLEndpointListResponseURLRewriterAkamaiURLRewriter struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AccountURLEndpointListResponseURLRewriterAkamaiURLRewriter) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *AccountURLEndpointListResponseURLRewriterAkamaiURLRewriter) UnmarshalJSON(data []byte) error {
+func (r AccountURLEndpointListResponseURLRewriterAkamai) RawJSON() string { return r.JSON.raw }
+func (r *AccountURLEndpointListResponseURLRewriterAkamai) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -528,34 +627,72 @@ func (r *AccountURLEndpointGetResponse) UnmarshalJSON(data []byte) error {
 }
 
 // AccountURLEndpointGetResponseURLRewriterUnion contains all possible properties
-// and values from [AccountURLEndpointGetResponseURLRewriterCloudinaryURLRewriter],
-// [AccountURLEndpointGetResponseURLRewriterImgixURLRewriter],
-// [AccountURLEndpointGetResponseURLRewriterAkamaiURLRewriter].
+// and values from [AccountURLEndpointGetResponseURLRewriterCloudinary],
+// [AccountURLEndpointGetResponseURLRewriterImgix],
+// [AccountURLEndpointGetResponseURLRewriterAkamai].
+//
+// Use the [AccountURLEndpointGetResponseURLRewriterUnion.AsAny] method to switch
+// on the variant.
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type AccountURLEndpointGetResponseURLRewriterUnion struct {
-	// This field is from variant
-	// [AccountURLEndpointGetResponseURLRewriterCloudinaryURLRewriter].
-	PreserveAssetDeliveryTypes bool   `json:"preserveAssetDeliveryTypes"`
-	Type                       string `json:"type"`
-	JSON                       struct {
+	// This field is from variant [AccountURLEndpointGetResponseURLRewriterCloudinary].
+	PreserveAssetDeliveryTypes bool `json:"preserveAssetDeliveryTypes"`
+	// Any of "CLOUDINARY", "IMGIX", "AKAMAI".
+	Type string `json:"type"`
+	JSON struct {
 		PreserveAssetDeliveryTypes respjson.Field
 		Type                       respjson.Field
 		raw                        string
 	} `json:"-"`
 }
 
-func (u AccountURLEndpointGetResponseURLRewriterUnion) AsCloudinaryURLRewriter() (v AccountURLEndpointGetResponseURLRewriterCloudinaryURLRewriter) {
+// anyAccountURLEndpointGetResponseURLRewriter is implemented by each variant of
+// [AccountURLEndpointGetResponseURLRewriterUnion] to add type safety for the
+// return type of [AccountURLEndpointGetResponseURLRewriterUnion.AsAny]
+type anyAccountURLEndpointGetResponseURLRewriter interface {
+	implAccountURLEndpointGetResponseURLRewriterUnion()
+}
+
+func (AccountURLEndpointGetResponseURLRewriterCloudinary) implAccountURLEndpointGetResponseURLRewriterUnion() {
+}
+func (AccountURLEndpointGetResponseURLRewriterImgix) implAccountURLEndpointGetResponseURLRewriterUnion() {
+}
+func (AccountURLEndpointGetResponseURLRewriterAkamai) implAccountURLEndpointGetResponseURLRewriterUnion() {
+}
+
+// Use the following switch statement to find the correct variant
+//
+//	switch variant := AccountURLEndpointGetResponseURLRewriterUnion.AsAny().(type) {
+//	case imagekit.AccountURLEndpointGetResponseURLRewriterCloudinary:
+//	case imagekit.AccountURLEndpointGetResponseURLRewriterImgix:
+//	case imagekit.AccountURLEndpointGetResponseURLRewriterAkamai:
+//	default:
+//	  fmt.Errorf("no variant present")
+//	}
+func (u AccountURLEndpointGetResponseURLRewriterUnion) AsAny() anyAccountURLEndpointGetResponseURLRewriter {
+	switch u.Type {
+	case "CLOUDINARY":
+		return u.AsCloudinary()
+	case "IMGIX":
+		return u.AsImgix()
+	case "AKAMAI":
+		return u.AsAkamai()
+	}
+	return nil
+}
+
+func (u AccountURLEndpointGetResponseURLRewriterUnion) AsCloudinary() (v AccountURLEndpointGetResponseURLRewriterCloudinary) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u AccountURLEndpointGetResponseURLRewriterUnion) AsImgixURLRewriter() (v AccountURLEndpointGetResponseURLRewriterImgixURLRewriter) {
+func (u AccountURLEndpointGetResponseURLRewriterUnion) AsImgix() (v AccountURLEndpointGetResponseURLRewriterImgix) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u AccountURLEndpointGetResponseURLRewriterUnion) AsAkamaiURLRewriter() (v AccountURLEndpointGetResponseURLRewriterAkamaiURLRewriter) {
+func (u AccountURLEndpointGetResponseURLRewriterUnion) AsAkamai() (v AccountURLEndpointGetResponseURLRewriterAkamai) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -567,7 +704,7 @@ func (r *AccountURLEndpointGetResponseURLRewriterUnion) UnmarshalJSON(data []byt
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AccountURLEndpointGetResponseURLRewriterCloudinaryURLRewriter struct {
+type AccountURLEndpointGetResponseURLRewriterCloudinary struct {
 	// Whether to preserve `<asset_type>/<delivery_type>` in the rewritten URL.
 	PreserveAssetDeliveryTypes bool                `json:"preserveAssetDeliveryTypes,required"`
 	Type                       constant.Cloudinary `json:"type,required"`
@@ -581,14 +718,12 @@ type AccountURLEndpointGetResponseURLRewriterCloudinaryURLRewriter struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AccountURLEndpointGetResponseURLRewriterCloudinaryURLRewriter) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *AccountURLEndpointGetResponseURLRewriterCloudinaryURLRewriter) UnmarshalJSON(data []byte) error {
+func (r AccountURLEndpointGetResponseURLRewriterCloudinary) RawJSON() string { return r.JSON.raw }
+func (r *AccountURLEndpointGetResponseURLRewriterCloudinary) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AccountURLEndpointGetResponseURLRewriterImgixURLRewriter struct {
+type AccountURLEndpointGetResponseURLRewriterImgix struct {
 	Type constant.Imgix `json:"type,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -599,12 +734,12 @@ type AccountURLEndpointGetResponseURLRewriterImgixURLRewriter struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AccountURLEndpointGetResponseURLRewriterImgixURLRewriter) RawJSON() string { return r.JSON.raw }
-func (r *AccountURLEndpointGetResponseURLRewriterImgixURLRewriter) UnmarshalJSON(data []byte) error {
+func (r AccountURLEndpointGetResponseURLRewriterImgix) RawJSON() string { return r.JSON.raw }
+func (r *AccountURLEndpointGetResponseURLRewriterImgix) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AccountURLEndpointGetResponseURLRewriterAkamaiURLRewriter struct {
+type AccountURLEndpointGetResponseURLRewriterAkamai struct {
 	Type constant.Akamai `json:"type,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -615,10 +750,8 @@ type AccountURLEndpointGetResponseURLRewriterAkamaiURLRewriter struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AccountURLEndpointGetResponseURLRewriterAkamaiURLRewriter) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *AccountURLEndpointGetResponseURLRewriterAkamaiURLRewriter) UnmarshalJSON(data []byte) error {
+func (r AccountURLEndpointGetResponseURLRewriterAkamai) RawJSON() string { return r.JSON.raw }
+func (r *AccountURLEndpointGetResponseURLRewriterAkamai) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
