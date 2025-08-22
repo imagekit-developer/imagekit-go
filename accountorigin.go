@@ -1602,9 +1602,9 @@ type AccountOriginNewParams struct {
 	// This field is a request body variant, only one variant field can be set.
 	OfWebProxy *AccountOriginNewParamsBodyWebProxy `json:",inline"`
 	// This field is a request body variant, only one variant field can be set.
-	OfGcs *AccountOriginNewParamsBodyGcs `json:",inline"`
+	OfGoogleCloudStorageGcs *AccountOriginNewParamsBodyGoogleCloudStorageGcs `json:",inline"`
 	// This field is a request body variant, only one variant field can be set.
-	OfAzureBlob *AccountOriginNewParamsBodyAzureBlob `json:",inline"`
+	OfAzureBlobStorage *AccountOriginNewParamsBodyAzureBlobStorage `json:",inline"`
 	// This field is a request body variant, only one variant field can be set.
 	OfAkeneoPim *AccountOriginNewParamsBodyAkeneoPim `json:",inline"`
 
@@ -1617,8 +1617,8 @@ func (u AccountOriginNewParams) MarshalJSON() ([]byte, error) {
 		u.OfCloudinaryBackup,
 		u.OfWebFolder,
 		u.OfWebProxy,
-		u.OfGcs,
-		u.OfAzureBlob,
+		u.OfGoogleCloudStorageGcs,
+		u.OfAzureBlobStorage,
 		u.OfAkeneoPim)
 }
 func (r *AccountOriginNewParams) UnmarshalJSON(data []byte) error {
@@ -1764,7 +1764,7 @@ func (r *AccountOriginNewParamsBodyWebProxy) UnmarshalJSON(data []byte) error {
 }
 
 // The properties Bucket, ClientEmail, Name, PrivateKey, Type are required.
-type AccountOriginNewParamsBodyGcs struct {
+type AccountOriginNewParamsBodyGoogleCloudStorageGcs struct {
 	Bucket      string `json:"bucket,required"`
 	ClientEmail string `json:"clientEmail,required" format:"email"`
 	// Display name of the origin.
@@ -1780,16 +1780,16 @@ type AccountOriginNewParamsBodyGcs struct {
 	paramObj
 }
 
-func (r AccountOriginNewParamsBodyGcs) MarshalJSON() (data []byte, err error) {
-	type shadow AccountOriginNewParamsBodyGcs
+func (r AccountOriginNewParamsBodyGoogleCloudStorageGcs) MarshalJSON() (data []byte, err error) {
+	type shadow AccountOriginNewParamsBodyGoogleCloudStorageGcs
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *AccountOriginNewParamsBodyGcs) UnmarshalJSON(data []byte) error {
+func (r *AccountOriginNewParamsBodyGoogleCloudStorageGcs) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The properties AccountName, Container, Name, SasToken, Type are required.
-type AccountOriginNewParamsBodyAzureBlob struct {
+type AccountOriginNewParamsBodyAzureBlobStorage struct {
 	AccountName string `json:"accountName,required"`
 	Container   string `json:"container,required"`
 	// Display name of the origin.
@@ -1805,11 +1805,11 @@ type AccountOriginNewParamsBodyAzureBlob struct {
 	paramObj
 }
 
-func (r AccountOriginNewParamsBodyAzureBlob) MarshalJSON() (data []byte, err error) {
-	type shadow AccountOriginNewParamsBodyAzureBlob
+func (r AccountOriginNewParamsBodyAzureBlobStorage) MarshalJSON() (data []byte, err error) {
+	type shadow AccountOriginNewParamsBodyAzureBlobStorage
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *AccountOriginNewParamsBodyAzureBlob) UnmarshalJSON(data []byte) error {
+func (r *AccountOriginNewParamsBodyAzureBlobStorage) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
