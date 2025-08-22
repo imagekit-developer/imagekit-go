@@ -28,8 +28,8 @@ func TestUsage(t *testing.T) {
 		option.WithPassword("My Password"),
 	)
 	response, err := client.Files.Upload(context.TODO(), imagekit.FileUploadParams{
-		File:     io.Reader(bytes.NewBuffer([]byte(""))),
-		FileName: "file-name.jpg",
+		File:     io.Reader(bytes.NewBuffer([]byte("some file contents"))),
+		FileName: "fileName",
 	})
 	if err != nil {
 		t.Fatalf("err should be nil: %s", err.Error())
