@@ -28,7 +28,15 @@ func TestAccountOriginNewWithOptionalParams(t *testing.T) {
 		option.WithPassword("My Password"),
 	)
 	_, err := client.Accounts.Origins.New(context.TODO(), imagekit.AccountOriginNewParams{
-		Body: imagekit.AccountOriginNewParamsBody{},
+		OfS3: &imagekit.AccountOriginNewParamsOriginS3{
+			AccessKey:                 "AKIATEST123",
+			Bucket:                    "test-bucket",
+			Name:                      "My S3 Origin",
+			SecretKey:                 "secrettest123",
+			BaseURLForCanonicalHeader: imagekit.String("https://cdn.example.com"),
+			IncludeCanonicalHeader:    imagekit.Bool(false),
+			Prefix:                    imagekit.String("images"),
+		},
 	})
 	if err != nil {
 		var apierr *imagekit.Error
@@ -57,7 +65,15 @@ func TestAccountOriginUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		imagekit.AccountOriginUpdateParams{
-			Body: imagekit.AccountOriginUpdateParamsBody{},
+			OfS3: &imagekit.AccountOriginUpdateParamsBodyS3{
+				AccessKey:                 "AKIATEST123",
+				Bucket:                    "test-bucket",
+				Name:                      "My S3 Origin",
+				SecretKey:                 "secrettest123",
+				BaseURLForCanonicalHeader: imagekit.String("https://cdn.example.com"),
+				IncludeCanonicalHeader:    imagekit.Bool(false),
+				Prefix:                    imagekit.String("images"),
+			},
 		},
 	)
 	if err != nil {
