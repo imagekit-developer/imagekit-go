@@ -163,13 +163,12 @@ func (r *CustomMetadataFieldNewResponseSchema) UnmarshalJSON(data []byte) error 
 // CustomMetadataFieldNewResponseSchemaDefaultValueUnion contains all possible
 // properties and values from
 // [CustomMetadataFieldNewResponseSchemaDefaultValueUnionUnion],
-// [[]CustomMetadataFieldNewResponseSchemaDefaultValueJsonScalarArrayItemUnion].
+// [[]CustomMetadataFieldNewResponseSchemaDefaultValueArrayOfMixedTypeUnion].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 //
 // If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfFloat OfBool
-// OfCustomMetadataFieldNewResponseSchemaDefaultValueJsonScalarArray]
+// will be valid: OfString OfFloat OfBool OfArrayOfMixedTypes]
 type CustomMetadataFieldNewResponseSchemaDefaultValueUnion struct {
 	// This field will be present if the value is a [string] instead of an object.
 	OfString string `json:",inline"`
@@ -178,15 +177,15 @@ type CustomMetadataFieldNewResponseSchemaDefaultValueUnion struct {
 	// This field will be present if the value is a [bool] instead of an object.
 	OfBool bool `json:",inline"`
 	// This field will be present if the value is a
-	// [[]CustomMetadataFieldNewResponseSchemaDefaultValueJsonScalarArrayItemUnion]
+	// [[]CustomMetadataFieldNewResponseSchemaDefaultValueArrayOfMixedTypeUnion]
 	// instead of an object.
-	OfCustomMetadataFieldNewResponseSchemaDefaultValueJsonScalarArray []CustomMetadataFieldNewResponseSchemaDefaultValueJsonScalarArrayItemUnion `json:",inline"`
-	JSON                                                              struct {
-		OfString                                                          respjson.Field
-		OfFloat                                                           respjson.Field
-		OfBool                                                            respjson.Field
-		OfCustomMetadataFieldNewResponseSchemaDefaultValueJsonScalarArray respjson.Field
-		raw                                                               string
+	OfArrayOfMixedTypes []CustomMetadataFieldNewResponseSchemaDefaultValueArrayOfMixedTypeUnion `json:",inline"`
+	JSON                struct {
+		OfString            respjson.Field
+		OfFloat             respjson.Field
+		OfBool              respjson.Field
+		OfArrayOfMixedTypes respjson.Field
+		raw                 string
 	} `json:"-"`
 }
 
@@ -195,7 +194,7 @@ func (u CustomMetadataFieldNewResponseSchemaDefaultValueUnion) AsCustomMetadataF
 	return
 }
 
-func (u CustomMetadataFieldNewResponseSchemaDefaultValueUnion) AsCustomMetadataFieldNewResponseSchemaDefaultValueJsonScalarArray() (v []CustomMetadataFieldNewResponseSchemaDefaultValueJsonScalarArrayItemUnion) {
+func (u CustomMetadataFieldNewResponseSchemaDefaultValueUnion) AsArrayOfMixedTypes() (v []CustomMetadataFieldNewResponseSchemaDefaultValueArrayOfMixedTypeUnion) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -253,14 +252,14 @@ func (r *CustomMetadataFieldNewResponseSchemaDefaultValueUnionUnion) UnmarshalJS
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// CustomMetadataFieldNewResponseSchemaDefaultValueJsonScalarArrayItemUnion
-// contains all possible properties and values from [string], [float64], [bool].
+// CustomMetadataFieldNewResponseSchemaDefaultValueArrayOfMixedTypeUnion contains
+// all possible properties and values from [string], [float64], [bool].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 //
 // If the underlying value is not a json object, one of the following properties
 // will be valid: OfString OfFloat OfBool]
-type CustomMetadataFieldNewResponseSchemaDefaultValueJsonScalarArrayItemUnion struct {
+type CustomMetadataFieldNewResponseSchemaDefaultValueArrayOfMixedTypeUnion struct {
 	// This field will be present if the value is a [string] instead of an object.
 	OfString string `json:",inline"`
 	// This field will be present if the value is a [float64] instead of an object.
@@ -275,27 +274,27 @@ type CustomMetadataFieldNewResponseSchemaDefaultValueJsonScalarArrayItemUnion st
 	} `json:"-"`
 }
 
-func (u CustomMetadataFieldNewResponseSchemaDefaultValueJsonScalarArrayItemUnion) AsString() (v string) {
+func (u CustomMetadataFieldNewResponseSchemaDefaultValueArrayOfMixedTypeUnion) AsString() (v string) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u CustomMetadataFieldNewResponseSchemaDefaultValueJsonScalarArrayItemUnion) AsFloat() (v float64) {
+func (u CustomMetadataFieldNewResponseSchemaDefaultValueArrayOfMixedTypeUnion) AsFloat() (v float64) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u CustomMetadataFieldNewResponseSchemaDefaultValueJsonScalarArrayItemUnion) AsBool() (v bool) {
+func (u CustomMetadataFieldNewResponseSchemaDefaultValueArrayOfMixedTypeUnion) AsBool() (v bool) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
 // Returns the unmodified JSON received from the API
-func (u CustomMetadataFieldNewResponseSchemaDefaultValueJsonScalarArrayItemUnion) RawJSON() string {
+func (u CustomMetadataFieldNewResponseSchemaDefaultValueArrayOfMixedTypeUnion) RawJSON() string {
 	return u.JSON.raw
 }
 
-func (r *CustomMetadataFieldNewResponseSchemaDefaultValueJsonScalarArrayItemUnion) UnmarshalJSON(data []byte) error {
+func (r *CustomMetadataFieldNewResponseSchemaDefaultValueArrayOfMixedTypeUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -495,13 +494,12 @@ func (r *CustomMetadataFieldUpdateResponseSchema) UnmarshalJSON(data []byte) err
 // CustomMetadataFieldUpdateResponseSchemaDefaultValueUnion contains all possible
 // properties and values from
 // [CustomMetadataFieldUpdateResponseSchemaDefaultValueUnionUnion],
-// [[]CustomMetadataFieldUpdateResponseSchemaDefaultValueJsonScalarArrayItemUnion].
+// [[]CustomMetadataFieldUpdateResponseSchemaDefaultValueArrayOfMixedTypeUnion].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 //
 // If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfFloat OfBool
-// OfCustomMetadataFieldUpdateResponseSchemaDefaultValueJsonScalarArray]
+// will be valid: OfString OfFloat OfBool OfArrayOfMixedTypes]
 type CustomMetadataFieldUpdateResponseSchemaDefaultValueUnion struct {
 	// This field will be present if the value is a [string] instead of an object.
 	OfString string `json:",inline"`
@@ -510,15 +508,15 @@ type CustomMetadataFieldUpdateResponseSchemaDefaultValueUnion struct {
 	// This field will be present if the value is a [bool] instead of an object.
 	OfBool bool `json:",inline"`
 	// This field will be present if the value is a
-	// [[]CustomMetadataFieldUpdateResponseSchemaDefaultValueJsonScalarArrayItemUnion]
+	// [[]CustomMetadataFieldUpdateResponseSchemaDefaultValueArrayOfMixedTypeUnion]
 	// instead of an object.
-	OfCustomMetadataFieldUpdateResponseSchemaDefaultValueJsonScalarArray []CustomMetadataFieldUpdateResponseSchemaDefaultValueJsonScalarArrayItemUnion `json:",inline"`
-	JSON                                                                 struct {
-		OfString                                                             respjson.Field
-		OfFloat                                                              respjson.Field
-		OfBool                                                               respjson.Field
-		OfCustomMetadataFieldUpdateResponseSchemaDefaultValueJsonScalarArray respjson.Field
-		raw                                                                  string
+	OfArrayOfMixedTypes []CustomMetadataFieldUpdateResponseSchemaDefaultValueArrayOfMixedTypeUnion `json:",inline"`
+	JSON                struct {
+		OfString            respjson.Field
+		OfFloat             respjson.Field
+		OfBool              respjson.Field
+		OfArrayOfMixedTypes respjson.Field
+		raw                 string
 	} `json:"-"`
 }
 
@@ -527,7 +525,7 @@ func (u CustomMetadataFieldUpdateResponseSchemaDefaultValueUnion) AsCustomMetada
 	return
 }
 
-func (u CustomMetadataFieldUpdateResponseSchemaDefaultValueUnion) AsCustomMetadataFieldUpdateResponseSchemaDefaultValueJsonScalarArray() (v []CustomMetadataFieldUpdateResponseSchemaDefaultValueJsonScalarArrayItemUnion) {
+func (u CustomMetadataFieldUpdateResponseSchemaDefaultValueUnion) AsArrayOfMixedTypes() (v []CustomMetadataFieldUpdateResponseSchemaDefaultValueArrayOfMixedTypeUnion) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -585,14 +583,14 @@ func (r *CustomMetadataFieldUpdateResponseSchemaDefaultValueUnionUnion) Unmarsha
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// CustomMetadataFieldUpdateResponseSchemaDefaultValueJsonScalarArrayItemUnion
+// CustomMetadataFieldUpdateResponseSchemaDefaultValueArrayOfMixedTypeUnion
 // contains all possible properties and values from [string], [float64], [bool].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 //
 // If the underlying value is not a json object, one of the following properties
 // will be valid: OfString OfFloat OfBool]
-type CustomMetadataFieldUpdateResponseSchemaDefaultValueJsonScalarArrayItemUnion struct {
+type CustomMetadataFieldUpdateResponseSchemaDefaultValueArrayOfMixedTypeUnion struct {
 	// This field will be present if the value is a [string] instead of an object.
 	OfString string `json:",inline"`
 	// This field will be present if the value is a [float64] instead of an object.
@@ -607,27 +605,27 @@ type CustomMetadataFieldUpdateResponseSchemaDefaultValueJsonScalarArrayItemUnion
 	} `json:"-"`
 }
 
-func (u CustomMetadataFieldUpdateResponseSchemaDefaultValueJsonScalarArrayItemUnion) AsString() (v string) {
+func (u CustomMetadataFieldUpdateResponseSchemaDefaultValueArrayOfMixedTypeUnion) AsString() (v string) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u CustomMetadataFieldUpdateResponseSchemaDefaultValueJsonScalarArrayItemUnion) AsFloat() (v float64) {
+func (u CustomMetadataFieldUpdateResponseSchemaDefaultValueArrayOfMixedTypeUnion) AsFloat() (v float64) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u CustomMetadataFieldUpdateResponseSchemaDefaultValueJsonScalarArrayItemUnion) AsBool() (v bool) {
+func (u CustomMetadataFieldUpdateResponseSchemaDefaultValueArrayOfMixedTypeUnion) AsBool() (v bool) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
 // Returns the unmodified JSON received from the API
-func (u CustomMetadataFieldUpdateResponseSchemaDefaultValueJsonScalarArrayItemUnion) RawJSON() string {
+func (u CustomMetadataFieldUpdateResponseSchemaDefaultValueArrayOfMixedTypeUnion) RawJSON() string {
 	return u.JSON.raw
 }
 
-func (r *CustomMetadataFieldUpdateResponseSchemaDefaultValueJsonScalarArrayItemUnion) UnmarshalJSON(data []byte) error {
+func (r *CustomMetadataFieldUpdateResponseSchemaDefaultValueArrayOfMixedTypeUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -827,13 +825,12 @@ func (r *CustomMetadataFieldListResponseSchema) UnmarshalJSON(data []byte) error
 // CustomMetadataFieldListResponseSchemaDefaultValueUnion contains all possible
 // properties and values from
 // [CustomMetadataFieldListResponseSchemaDefaultValueUnionUnion],
-// [[]CustomMetadataFieldListResponseSchemaDefaultValueJsonScalarArrayItemUnion].
+// [[]CustomMetadataFieldListResponseSchemaDefaultValueArrayOfMixedTypeUnion].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 //
 // If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfFloat OfBool
-// OfCustomMetadataFieldListResponseSchemaDefaultValueJsonScalarArray]
+// will be valid: OfString OfFloat OfBool OfArrayOfMixedTypes]
 type CustomMetadataFieldListResponseSchemaDefaultValueUnion struct {
 	// This field will be present if the value is a [string] instead of an object.
 	OfString string `json:",inline"`
@@ -842,15 +839,15 @@ type CustomMetadataFieldListResponseSchemaDefaultValueUnion struct {
 	// This field will be present if the value is a [bool] instead of an object.
 	OfBool bool `json:",inline"`
 	// This field will be present if the value is a
-	// [[]CustomMetadataFieldListResponseSchemaDefaultValueJsonScalarArrayItemUnion]
+	// [[]CustomMetadataFieldListResponseSchemaDefaultValueArrayOfMixedTypeUnion]
 	// instead of an object.
-	OfCustomMetadataFieldListResponseSchemaDefaultValueJsonScalarArray []CustomMetadataFieldListResponseSchemaDefaultValueJsonScalarArrayItemUnion `json:",inline"`
-	JSON                                                               struct {
-		OfString                                                           respjson.Field
-		OfFloat                                                            respjson.Field
-		OfBool                                                             respjson.Field
-		OfCustomMetadataFieldListResponseSchemaDefaultValueJsonScalarArray respjson.Field
-		raw                                                                string
+	OfArrayOfMixedTypes []CustomMetadataFieldListResponseSchemaDefaultValueArrayOfMixedTypeUnion `json:",inline"`
+	JSON                struct {
+		OfString            respjson.Field
+		OfFloat             respjson.Field
+		OfBool              respjson.Field
+		OfArrayOfMixedTypes respjson.Field
+		raw                 string
 	} `json:"-"`
 }
 
@@ -859,7 +856,7 @@ func (u CustomMetadataFieldListResponseSchemaDefaultValueUnion) AsCustomMetadata
 	return
 }
 
-func (u CustomMetadataFieldListResponseSchemaDefaultValueUnion) AsCustomMetadataFieldListResponseSchemaDefaultValueJsonScalarArray() (v []CustomMetadataFieldListResponseSchemaDefaultValueJsonScalarArrayItemUnion) {
+func (u CustomMetadataFieldListResponseSchemaDefaultValueUnion) AsArrayOfMixedTypes() (v []CustomMetadataFieldListResponseSchemaDefaultValueArrayOfMixedTypeUnion) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -917,14 +914,14 @@ func (r *CustomMetadataFieldListResponseSchemaDefaultValueUnionUnion) UnmarshalJ
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// CustomMetadataFieldListResponseSchemaDefaultValueJsonScalarArrayItemUnion
-// contains all possible properties and values from [string], [float64], [bool].
+// CustomMetadataFieldListResponseSchemaDefaultValueArrayOfMixedTypeUnion contains
+// all possible properties and values from [string], [float64], [bool].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 //
 // If the underlying value is not a json object, one of the following properties
 // will be valid: OfString OfFloat OfBool]
-type CustomMetadataFieldListResponseSchemaDefaultValueJsonScalarArrayItemUnion struct {
+type CustomMetadataFieldListResponseSchemaDefaultValueArrayOfMixedTypeUnion struct {
 	// This field will be present if the value is a [string] instead of an object.
 	OfString string `json:",inline"`
 	// This field will be present if the value is a [float64] instead of an object.
@@ -939,27 +936,27 @@ type CustomMetadataFieldListResponseSchemaDefaultValueJsonScalarArrayItemUnion s
 	} `json:"-"`
 }
 
-func (u CustomMetadataFieldListResponseSchemaDefaultValueJsonScalarArrayItemUnion) AsString() (v string) {
+func (u CustomMetadataFieldListResponseSchemaDefaultValueArrayOfMixedTypeUnion) AsString() (v string) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u CustomMetadataFieldListResponseSchemaDefaultValueJsonScalarArrayItemUnion) AsFloat() (v float64) {
+func (u CustomMetadataFieldListResponseSchemaDefaultValueArrayOfMixedTypeUnion) AsFloat() (v float64) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u CustomMetadataFieldListResponseSchemaDefaultValueJsonScalarArrayItemUnion) AsBool() (v bool) {
+func (u CustomMetadataFieldListResponseSchemaDefaultValueArrayOfMixedTypeUnion) AsBool() (v bool) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
 // Returns the unmodified JSON received from the API
-func (u CustomMetadataFieldListResponseSchemaDefaultValueJsonScalarArrayItemUnion) RawJSON() string {
+func (u CustomMetadataFieldListResponseSchemaDefaultValueArrayOfMixedTypeUnion) RawJSON() string {
 	return u.JSON.raw
 }
 
-func (r *CustomMetadataFieldListResponseSchemaDefaultValueJsonScalarArrayItemUnion) UnmarshalJSON(data []byte) error {
+func (r *CustomMetadataFieldListResponseSchemaDefaultValueArrayOfMixedTypeUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1167,13 +1164,13 @@ func init() {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type CustomMetadataFieldNewParamsSchemaDefaultValueUnion struct {
-	OfCustomMetadataFieldNewsSchemaDefaultValueUnion           *CustomMetadataFieldNewParamsSchemaDefaultValueUnionUnion                `json:",omitzero,inline"`
-	OfCustomMetadataFieldNewsSchemaDefaultValueJsonScalarArray []CustomMetadataFieldNewParamsSchemaDefaultValueJsonScalarArrayItemUnion `json:",omitzero,inline"`
+	OfCustomMetadataFieldNewsSchemaDefaultValueUnion *CustomMetadataFieldNewParamsSchemaDefaultValueUnionUnion             `json:",omitzero,inline"`
+	OfArrayOfMixedTypes                              []CustomMetadataFieldNewParamsSchemaDefaultValueArrayOfMixedTypeUnion `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u CustomMetadataFieldNewParamsSchemaDefaultValueUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfCustomMetadataFieldNewsSchemaDefaultValueUnion, u.OfCustomMetadataFieldNewsSchemaDefaultValueJsonScalarArray)
+	return param.MarshalUnion(u, u.OfCustomMetadataFieldNewsSchemaDefaultValueUnion, u.OfArrayOfMixedTypes)
 }
 func (u *CustomMetadataFieldNewParamsSchemaDefaultValueUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -1182,8 +1179,8 @@ func (u *CustomMetadataFieldNewParamsSchemaDefaultValueUnion) UnmarshalJSON(data
 func (u *CustomMetadataFieldNewParamsSchemaDefaultValueUnion) asAny() any {
 	if !param.IsOmitted(u.OfCustomMetadataFieldNewsSchemaDefaultValueUnion) {
 		return u.OfCustomMetadataFieldNewsSchemaDefaultValueUnion.asAny()
-	} else if !param.IsOmitted(u.OfCustomMetadataFieldNewsSchemaDefaultValueJsonScalarArray) {
-		return &u.OfCustomMetadataFieldNewsSchemaDefaultValueJsonScalarArray
+	} else if !param.IsOmitted(u.OfArrayOfMixedTypes) {
+		return &u.OfArrayOfMixedTypes
 	}
 	return nil
 }
@@ -1219,21 +1216,21 @@ func (u *CustomMetadataFieldNewParamsSchemaDefaultValueUnionUnion) asAny() any {
 // Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
-type CustomMetadataFieldNewParamsSchemaDefaultValueJsonScalarArrayItemUnion struct {
+type CustomMetadataFieldNewParamsSchemaDefaultValueArrayOfMixedTypeUnion struct {
 	OfString param.Opt[string]  `json:",omitzero,inline"`
 	OfFloat  param.Opt[float64] `json:",omitzero,inline"`
 	OfBool   param.Opt[bool]    `json:",omitzero,inline"`
 	paramUnion
 }
 
-func (u CustomMetadataFieldNewParamsSchemaDefaultValueJsonScalarArrayItemUnion) MarshalJSON() ([]byte, error) {
+func (u CustomMetadataFieldNewParamsSchemaDefaultValueArrayOfMixedTypeUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion(u, u.OfString, u.OfFloat, u.OfBool)
 }
-func (u *CustomMetadataFieldNewParamsSchemaDefaultValueJsonScalarArrayItemUnion) UnmarshalJSON(data []byte) error {
+func (u *CustomMetadataFieldNewParamsSchemaDefaultValueArrayOfMixedTypeUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
-func (u *CustomMetadataFieldNewParamsSchemaDefaultValueJsonScalarArrayItemUnion) asAny() any {
+func (u *CustomMetadataFieldNewParamsSchemaDefaultValueArrayOfMixedTypeUnion) asAny() any {
 	if !param.IsOmitted(u.OfString) {
 		return &u.OfString.Value
 	} else if !param.IsOmitted(u.OfFloat) {
@@ -1389,13 +1386,13 @@ func (r *CustomMetadataFieldUpdateParamsSchema) UnmarshalJSON(data []byte) error
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type CustomMetadataFieldUpdateParamsSchemaDefaultValueUnion struct {
-	OfCustomMetadataFieldUpdatesSchemaDefaultValueUnion           *CustomMetadataFieldUpdateParamsSchemaDefaultValueUnionUnion                `json:",omitzero,inline"`
-	OfCustomMetadataFieldUpdatesSchemaDefaultValueJsonScalarArray []CustomMetadataFieldUpdateParamsSchemaDefaultValueJsonScalarArrayItemUnion `json:",omitzero,inline"`
+	OfCustomMetadataFieldUpdatesSchemaDefaultValueUnion *CustomMetadataFieldUpdateParamsSchemaDefaultValueUnionUnion             `json:",omitzero,inline"`
+	OfArrayOfMixedTypes                                 []CustomMetadataFieldUpdateParamsSchemaDefaultValueArrayOfMixedTypeUnion `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u CustomMetadataFieldUpdateParamsSchemaDefaultValueUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfCustomMetadataFieldUpdatesSchemaDefaultValueUnion, u.OfCustomMetadataFieldUpdatesSchemaDefaultValueJsonScalarArray)
+	return param.MarshalUnion(u, u.OfCustomMetadataFieldUpdatesSchemaDefaultValueUnion, u.OfArrayOfMixedTypes)
 }
 func (u *CustomMetadataFieldUpdateParamsSchemaDefaultValueUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -1404,8 +1401,8 @@ func (u *CustomMetadataFieldUpdateParamsSchemaDefaultValueUnion) UnmarshalJSON(d
 func (u *CustomMetadataFieldUpdateParamsSchemaDefaultValueUnion) asAny() any {
 	if !param.IsOmitted(u.OfCustomMetadataFieldUpdatesSchemaDefaultValueUnion) {
 		return u.OfCustomMetadataFieldUpdatesSchemaDefaultValueUnion.asAny()
-	} else if !param.IsOmitted(u.OfCustomMetadataFieldUpdatesSchemaDefaultValueJsonScalarArray) {
-		return &u.OfCustomMetadataFieldUpdatesSchemaDefaultValueJsonScalarArray
+	} else if !param.IsOmitted(u.OfArrayOfMixedTypes) {
+		return &u.OfArrayOfMixedTypes
 	}
 	return nil
 }
@@ -1441,21 +1438,21 @@ func (u *CustomMetadataFieldUpdateParamsSchemaDefaultValueUnionUnion) asAny() an
 // Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
-type CustomMetadataFieldUpdateParamsSchemaDefaultValueJsonScalarArrayItemUnion struct {
+type CustomMetadataFieldUpdateParamsSchemaDefaultValueArrayOfMixedTypeUnion struct {
 	OfString param.Opt[string]  `json:",omitzero,inline"`
 	OfFloat  param.Opt[float64] `json:",omitzero,inline"`
 	OfBool   param.Opt[bool]    `json:",omitzero,inline"`
 	paramUnion
 }
 
-func (u CustomMetadataFieldUpdateParamsSchemaDefaultValueJsonScalarArrayItemUnion) MarshalJSON() ([]byte, error) {
+func (u CustomMetadataFieldUpdateParamsSchemaDefaultValueArrayOfMixedTypeUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion(u, u.OfString, u.OfFloat, u.OfBool)
 }
-func (u *CustomMetadataFieldUpdateParamsSchemaDefaultValueJsonScalarArrayItemUnion) UnmarshalJSON(data []byte) error {
+func (u *CustomMetadataFieldUpdateParamsSchemaDefaultValueArrayOfMixedTypeUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
-func (u *CustomMetadataFieldUpdateParamsSchemaDefaultValueJsonScalarArrayItemUnion) asAny() any {
+func (u *CustomMetadataFieldUpdateParamsSchemaDefaultValueArrayOfMixedTypeUnion) asAny() any {
 	if !param.IsOmitted(u.OfString) {
 		return &u.OfString.Value
 	} else if !param.IsOmitted(u.OfFloat) {
