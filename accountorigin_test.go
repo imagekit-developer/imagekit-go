@@ -65,7 +65,7 @@ func TestAccountOriginUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		imagekit.AccountOriginUpdateParams{
-			OfS3: &imagekit.AccountOriginUpdateParamsBodyS3{
+			OfS3: &imagekit.AccountOriginUpdateParamsOriginS3{
 				AccessKey:                 "AKIATEST123",
 				Bucket:                    "test-bucket",
 				Name:                      "My S3 Origin",
