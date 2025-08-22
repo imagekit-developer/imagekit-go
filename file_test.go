@@ -33,17 +33,17 @@ func TestFileUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"fileId",
 		imagekit.FileUpdateParams{
-			OfUpdateFileDetails: &imagekit.FileUpdateParamsUpdateUpdateFileDetails{
+			OfUpdateFileDetails: &imagekit.FileUpdateParamsBodyUpdateFileDetails{
 				CustomCoordinates: imagekit.String("10,10,100,100"),
 				CustomMetadata: map[string]any{
 					"brand": "bar",
 					"color": "bar",
 				},
 				Description: imagekit.String("description"),
-				Extensions: []imagekit.FileUpdateParamsUpdateUpdateFileDetailsExtensionUnion{{
-					OfRemoveBackground: &imagekit.FileUpdateParamsUpdateUpdateFileDetailsExtensionRemoveBackground{
+				Extensions: []imagekit.FileUpdateParamsBodyUpdateFileDetailsExtensionUnion{{
+					OfRemoveBackground: &imagekit.FileUpdateParamsBodyUpdateFileDetailsExtensionRemoveBackground{
 						Name: "remove-bg",
-						Options: imagekit.FileUpdateParamsUpdateUpdateFileDetailsExtensionRemoveBackgroundOptions{
+						Options: imagekit.FileUpdateParamsBodyUpdateFileDetailsExtensionRemoveBackgroundOptions{
 							AddShadow:        imagekit.Bool(true),
 							BgColor:          imagekit.String("bg_color"),
 							BgImageURL:       imagekit.String("bg_image_url"),
@@ -51,23 +51,23 @@ func TestFileUpdateWithOptionalParams(t *testing.T) {
 						},
 					},
 				}, {
-					OfAutoTagging: &imagekit.FileUpdateParamsUpdateUpdateFileDetailsExtensionAutoTagging{
+					OfAutoTagging: &imagekit.FileUpdateParamsBodyUpdateFileDetailsExtensionAutoTagging{
 						MaxTags:       10,
 						MinConfidence: 80,
 						Name:          "google-auto-tagging",
 					},
 				}, {
-					OfAutoTagging: &imagekit.FileUpdateParamsUpdateUpdateFileDetailsExtensionAutoTagging{
+					OfAutoTagging: &imagekit.FileUpdateParamsBodyUpdateFileDetailsExtensionAutoTagging{
 						MaxTags:       10,
 						MinConfidence: 80,
 						Name:          "aws-auto-tagging",
 					},
 				}, {
-					OfAutoDescription: &imagekit.FileUpdateParamsUpdateUpdateFileDetailsExtensionAutoDescription{
+					OfAutoDescription: &imagekit.FileUpdateParamsBodyUpdateFileDetailsExtensionAutoDescription{
 						Name: "ai-auto-description",
 					},
 				}},
-				RemoveAITags: imagekit.FileUpdateParamsUpdateUpdateFileDetailsRemoveAITagsUnion{
+				RemoveAITags: imagekit.FileUpdateParamsBodyUpdateFileDetailsRemoveAITagsUnion{
 					OfStringArray: []string{"car", "vehicle", "motorsports"},
 				},
 				Tags:       []string{"tag1", "tag2"},

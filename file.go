@@ -941,9 +941,9 @@ type FileUpdateParams struct {
 	//
 
 	// This field is a request body variant, only one variant field can be set.
-	OfUpdateFileDetails *FileUpdateParamsUpdateUpdateFileDetails `json:",inline"`
+	OfUpdateFileDetails *FileUpdateParamsBodyUpdateFileDetails `json:",inline"`
 	// This field is a request body variant, only one variant field can be set.
-	OfChangePublicationStatus *FileUpdateParamsUpdateChangePublicationStatus `json:",inline"`
+	OfChangePublicationStatus *FileUpdateParamsBodyChangePublicationStatus `json:",inline"`
 
 	paramObj
 }
@@ -955,7 +955,7 @@ func (r *FileUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type FileUpdateParamsUpdateUpdateFileDetails struct {
+type FileUpdateParamsBodyUpdateFileDetails struct {
 	// Define an important area in the image in the format `x,y,width,height` e.g.
 	// `10,10,100,100`. Send `null` to unset this value.
 	CustomCoordinates param.Opt[string] `json:"customCoordinates,omitzero"`
@@ -975,7 +975,7 @@ type FileUpdateParamsUpdateUpdateFileDetails struct {
 	CustomMetadata map[string]any `json:"customMetadata,omitzero"`
 	// Array of extensions to be applied to the asset. Each extension can be configured
 	// with specific parameters based on the extension type.
-	Extensions []FileUpdateParamsUpdateUpdateFileDetailsExtensionUnion `json:"extensions,omitzero"`
+	Extensions []FileUpdateParamsBodyUpdateFileDetailsExtensionUnion `json:"extensions,omitzero"`
 	// An array of AITags associated with the file that you want to remove, e.g.
 	// `["car", "vehicle", "motorsports"]`.
 	//
@@ -984,36 +984,36 @@ type FileUpdateParamsUpdateUpdateFileDetails struct {
 	//
 	// Note: The remove operation for `AITags` executes before any of the `extensions`
 	// are processed.
-	RemoveAITags FileUpdateParamsUpdateUpdateFileDetailsRemoveAITagsUnion `json:"removeAITags,omitzero"`
+	RemoveAITags FileUpdateParamsBodyUpdateFileDetailsRemoveAITagsUnion `json:"removeAITags,omitzero"`
 	paramObj
 }
 
-func (r FileUpdateParamsUpdateUpdateFileDetails) MarshalJSON() (data []byte, err error) {
-	type shadow FileUpdateParamsUpdateUpdateFileDetails
+func (r FileUpdateParamsBodyUpdateFileDetails) MarshalJSON() (data []byte, err error) {
+	type shadow FileUpdateParamsBodyUpdateFileDetails
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *FileUpdateParamsUpdateUpdateFileDetails) UnmarshalJSON(data []byte) error {
+func (r *FileUpdateParamsBodyUpdateFileDetails) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
-type FileUpdateParamsUpdateUpdateFileDetailsExtensionUnion struct {
-	OfRemoveBackground *FileUpdateParamsUpdateUpdateFileDetailsExtensionRemoveBackground `json:",omitzero,inline"`
-	OfAutoTagging      *FileUpdateParamsUpdateUpdateFileDetailsExtensionAutoTagging      `json:",omitzero,inline"`
-	OfAutoDescription  *FileUpdateParamsUpdateUpdateFileDetailsExtensionAutoDescription  `json:",omitzero,inline"`
+type FileUpdateParamsBodyUpdateFileDetailsExtensionUnion struct {
+	OfRemoveBackground *FileUpdateParamsBodyUpdateFileDetailsExtensionRemoveBackground `json:",omitzero,inline"`
+	OfAutoTagging      *FileUpdateParamsBodyUpdateFileDetailsExtensionAutoTagging      `json:",omitzero,inline"`
+	OfAutoDescription  *FileUpdateParamsBodyUpdateFileDetailsExtensionAutoDescription  `json:",omitzero,inline"`
 	paramUnion
 }
 
-func (u FileUpdateParamsUpdateUpdateFileDetailsExtensionUnion) MarshalJSON() ([]byte, error) {
+func (u FileUpdateParamsBodyUpdateFileDetailsExtensionUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion(u, u.OfRemoveBackground, u.OfAutoTagging, u.OfAutoDescription)
 }
-func (u *FileUpdateParamsUpdateUpdateFileDetailsExtensionUnion) UnmarshalJSON(data []byte) error {
+func (u *FileUpdateParamsBodyUpdateFileDetailsExtensionUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
-func (u *FileUpdateParamsUpdateUpdateFileDetailsExtensionUnion) asAny() any {
+func (u *FileUpdateParamsBodyUpdateFileDetailsExtensionUnion) asAny() any {
 	if !param.IsOmitted(u.OfRemoveBackground) {
 		return u.OfRemoveBackground
 	} else if !param.IsOmitted(u.OfAutoTagging) {
@@ -1025,7 +1025,7 @@ func (u *FileUpdateParamsUpdateUpdateFileDetailsExtensionUnion) asAny() any {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u FileUpdateParamsUpdateUpdateFileDetailsExtensionUnion) GetOptions() *FileUpdateParamsUpdateUpdateFileDetailsExtensionRemoveBackgroundOptions {
+func (u FileUpdateParamsBodyUpdateFileDetailsExtensionUnion) GetOptions() *FileUpdateParamsBodyUpdateFileDetailsExtensionRemoveBackgroundOptions {
 	if vt := u.OfRemoveBackground; vt != nil {
 		return &vt.Options
 	}
@@ -1033,7 +1033,7 @@ func (u FileUpdateParamsUpdateUpdateFileDetailsExtensionUnion) GetOptions() *Fil
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u FileUpdateParamsUpdateUpdateFileDetailsExtensionUnion) GetMaxTags() *int64 {
+func (u FileUpdateParamsBodyUpdateFileDetailsExtensionUnion) GetMaxTags() *int64 {
 	if vt := u.OfAutoTagging; vt != nil {
 		return &vt.MaxTags
 	}
@@ -1041,7 +1041,7 @@ func (u FileUpdateParamsUpdateUpdateFileDetailsExtensionUnion) GetMaxTags() *int
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u FileUpdateParamsUpdateUpdateFileDetailsExtensionUnion) GetMinConfidence() *int64 {
+func (u FileUpdateParamsBodyUpdateFileDetailsExtensionUnion) GetMinConfidence() *int64 {
 	if vt := u.OfAutoTagging; vt != nil {
 		return &vt.MinConfidence
 	}
@@ -1049,7 +1049,7 @@ func (u FileUpdateParamsUpdateUpdateFileDetailsExtensionUnion) GetMinConfidence(
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u FileUpdateParamsUpdateUpdateFileDetailsExtensionUnion) GetName() *string {
+func (u FileUpdateParamsBodyUpdateFileDetailsExtensionUnion) GetName() *string {
 	if vt := u.OfRemoveBackground; vt != nil {
 		return (*string)(&vt.Name)
 	} else if vt := u.OfAutoTagging; vt != nil {
@@ -1061,30 +1061,30 @@ func (u FileUpdateParamsUpdateUpdateFileDetailsExtensionUnion) GetName() *string
 }
 
 // The property Name is required.
-type FileUpdateParamsUpdateUpdateFileDetailsExtensionRemoveBackground struct {
+type FileUpdateParamsBodyUpdateFileDetailsExtensionRemoveBackground struct {
 	// Specifies the background removal extension.
 	//
 	// Any of "remove-bg".
-	Name    string                                                                  `json:"name,omitzero,required"`
-	Options FileUpdateParamsUpdateUpdateFileDetailsExtensionRemoveBackgroundOptions `json:"options,omitzero"`
+	Name    string                                                                `json:"name,omitzero,required"`
+	Options FileUpdateParamsBodyUpdateFileDetailsExtensionRemoveBackgroundOptions `json:"options,omitzero"`
 	paramObj
 }
 
-func (r FileUpdateParamsUpdateUpdateFileDetailsExtensionRemoveBackground) MarshalJSON() (data []byte, err error) {
-	type shadow FileUpdateParamsUpdateUpdateFileDetailsExtensionRemoveBackground
+func (r FileUpdateParamsBodyUpdateFileDetailsExtensionRemoveBackground) MarshalJSON() (data []byte, err error) {
+	type shadow FileUpdateParamsBodyUpdateFileDetailsExtensionRemoveBackground
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *FileUpdateParamsUpdateUpdateFileDetailsExtensionRemoveBackground) UnmarshalJSON(data []byte) error {
+func (r *FileUpdateParamsBodyUpdateFileDetailsExtensionRemoveBackground) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[FileUpdateParamsUpdateUpdateFileDetailsExtensionRemoveBackground](
+	apijson.RegisterFieldValidator[FileUpdateParamsBodyUpdateFileDetailsExtensionRemoveBackground](
 		"name", "remove-bg",
 	)
 }
 
-type FileUpdateParamsUpdateUpdateFileDetailsExtensionRemoveBackgroundOptions struct {
+type FileUpdateParamsBodyUpdateFileDetailsExtensionRemoveBackgroundOptions struct {
 	// Whether to add an artificial shadow to the result. Default is false. Note:
 	// Adding shadows is currently only supported for car photos.
 	AddShadow param.Opt[bool] `json:"add_shadow,omitzero"`
@@ -1101,16 +1101,16 @@ type FileUpdateParamsUpdateUpdateFileDetailsExtensionRemoveBackgroundOptions str
 	paramObj
 }
 
-func (r FileUpdateParamsUpdateUpdateFileDetailsExtensionRemoveBackgroundOptions) MarshalJSON() (data []byte, err error) {
-	type shadow FileUpdateParamsUpdateUpdateFileDetailsExtensionRemoveBackgroundOptions
+func (r FileUpdateParamsBodyUpdateFileDetailsExtensionRemoveBackgroundOptions) MarshalJSON() (data []byte, err error) {
+	type shadow FileUpdateParamsBodyUpdateFileDetailsExtensionRemoveBackgroundOptions
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *FileUpdateParamsUpdateUpdateFileDetailsExtensionRemoveBackgroundOptions) UnmarshalJSON(data []byte) error {
+func (r *FileUpdateParamsBodyUpdateFileDetailsExtensionRemoveBackgroundOptions) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The properties MaxTags, MinConfidence, Name are required.
-type FileUpdateParamsUpdateUpdateFileDetailsExtensionAutoTagging struct {
+type FileUpdateParamsBodyUpdateFileDetailsExtensionAutoTagging struct {
 	// Maximum number of tags to attach to the asset.
 	MaxTags int64 `json:"maxTags,required"`
 	// Minimum confidence level for tags to be considered valid.
@@ -1122,22 +1122,22 @@ type FileUpdateParamsUpdateUpdateFileDetailsExtensionAutoTagging struct {
 	paramObj
 }
 
-func (r FileUpdateParamsUpdateUpdateFileDetailsExtensionAutoTagging) MarshalJSON() (data []byte, err error) {
-	type shadow FileUpdateParamsUpdateUpdateFileDetailsExtensionAutoTagging
+func (r FileUpdateParamsBodyUpdateFileDetailsExtensionAutoTagging) MarshalJSON() (data []byte, err error) {
+	type shadow FileUpdateParamsBodyUpdateFileDetailsExtensionAutoTagging
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *FileUpdateParamsUpdateUpdateFileDetailsExtensionAutoTagging) UnmarshalJSON(data []byte) error {
+func (r *FileUpdateParamsBodyUpdateFileDetailsExtensionAutoTagging) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[FileUpdateParamsUpdateUpdateFileDetailsExtensionAutoTagging](
+	apijson.RegisterFieldValidator[FileUpdateParamsBodyUpdateFileDetailsExtensionAutoTagging](
 		"name", "google-auto-tagging", "aws-auto-tagging",
 	)
 }
 
 // The property Name is required.
-type FileUpdateParamsUpdateUpdateFileDetailsExtensionAutoDescription struct {
+type FileUpdateParamsBodyUpdateFileDetailsExtensionAutoDescription struct {
 	// Specifies the auto description extension.
 	//
 	// Any of "ai-auto-description".
@@ -1145,16 +1145,16 @@ type FileUpdateParamsUpdateUpdateFileDetailsExtensionAutoDescription struct {
 	paramObj
 }
 
-func (r FileUpdateParamsUpdateUpdateFileDetailsExtensionAutoDescription) MarshalJSON() (data []byte, err error) {
-	type shadow FileUpdateParamsUpdateUpdateFileDetailsExtensionAutoDescription
+func (r FileUpdateParamsBodyUpdateFileDetailsExtensionAutoDescription) MarshalJSON() (data []byte, err error) {
+	type shadow FileUpdateParamsBodyUpdateFileDetailsExtensionAutoDescription
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *FileUpdateParamsUpdateUpdateFileDetailsExtensionAutoDescription) UnmarshalJSON(data []byte) error {
+func (r *FileUpdateParamsBodyUpdateFileDetailsExtensionAutoDescription) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[FileUpdateParamsUpdateUpdateFileDetailsExtensionAutoDescription](
+	apijson.RegisterFieldValidator[FileUpdateParamsBodyUpdateFileDetailsExtensionAutoDescription](
 		"name", "ai-auto-description",
 	)
 }
@@ -1162,54 +1162,54 @@ func init() {
 // Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
-type FileUpdateParamsUpdateUpdateFileDetailsRemoveAITagsUnion struct {
+type FileUpdateParamsBodyUpdateFileDetailsRemoveAITagsUnion struct {
 	OfStringArray []string `json:",omitzero,inline"`
 	// Check if union is this variant with
-	// !param.IsOmitted(union.OfFileUpdatesUpdateUpdateFileDetailsRemoveAITagsString)
-	OfFileUpdatesUpdateUpdateFileDetailsRemoveAITagsString param.Opt[string] `json:",omitzero,inline"`
+	// !param.IsOmitted(union.OfFileUpdatesBodyUpdateFileDetailsRemoveAITagsString)
+	OfFileUpdatesBodyUpdateFileDetailsRemoveAITagsString param.Opt[string] `json:",omitzero,inline"`
 	paramUnion
 }
 
-func (u FileUpdateParamsUpdateUpdateFileDetailsRemoveAITagsUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfStringArray, u.OfFileUpdatesUpdateUpdateFileDetailsRemoveAITagsString)
+func (u FileUpdateParamsBodyUpdateFileDetailsRemoveAITagsUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfStringArray, u.OfFileUpdatesBodyUpdateFileDetailsRemoveAITagsString)
 }
-func (u *FileUpdateParamsUpdateUpdateFileDetailsRemoveAITagsUnion) UnmarshalJSON(data []byte) error {
+func (u *FileUpdateParamsBodyUpdateFileDetailsRemoveAITagsUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
-func (u *FileUpdateParamsUpdateUpdateFileDetailsRemoveAITagsUnion) asAny() any {
+func (u *FileUpdateParamsBodyUpdateFileDetailsRemoveAITagsUnion) asAny() any {
 	if !param.IsOmitted(u.OfStringArray) {
 		return &u.OfStringArray
-	} else if !param.IsOmitted(u.OfFileUpdatesUpdateUpdateFileDetailsRemoveAITagsString) {
-		return &u.OfFileUpdatesUpdateUpdateFileDetailsRemoveAITagsString
+	} else if !param.IsOmitted(u.OfFileUpdatesBodyUpdateFileDetailsRemoveAITagsString) {
+		return &u.OfFileUpdatesBodyUpdateFileDetailsRemoveAITagsString
 	}
 	return nil
 }
 
-type FileUpdateParamsUpdateUpdateFileDetailsRemoveAITagsString string
+type FileUpdateParamsBodyUpdateFileDetailsRemoveAITagsString string
 
 const (
-	FileUpdateParamsUpdateUpdateFileDetailsRemoveAITagsStringAll FileUpdateParamsUpdateUpdateFileDetailsRemoveAITagsString = "all"
+	FileUpdateParamsBodyUpdateFileDetailsRemoveAITagsStringAll FileUpdateParamsBodyUpdateFileDetailsRemoveAITagsString = "all"
 )
 
-type FileUpdateParamsUpdateChangePublicationStatus struct {
+type FileUpdateParamsBodyChangePublicationStatus struct {
 	// Configure the publication status of a file and its versions.
-	Publish FileUpdateParamsUpdateChangePublicationStatusPublish `json:"publish,omitzero"`
+	Publish FileUpdateParamsBodyChangePublicationStatusPublish `json:"publish,omitzero"`
 	paramObj
 }
 
-func (r FileUpdateParamsUpdateChangePublicationStatus) MarshalJSON() (data []byte, err error) {
-	type shadow FileUpdateParamsUpdateChangePublicationStatus
+func (r FileUpdateParamsBodyChangePublicationStatus) MarshalJSON() (data []byte, err error) {
+	type shadow FileUpdateParamsBodyChangePublicationStatus
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *FileUpdateParamsUpdateChangePublicationStatus) UnmarshalJSON(data []byte) error {
+func (r *FileUpdateParamsBodyChangePublicationStatus) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Configure the publication status of a file and its versions.
 //
 // The property IsPublished is required.
-type FileUpdateParamsUpdateChangePublicationStatusPublish struct {
+type FileUpdateParamsBodyChangePublicationStatusPublish struct {
 	// Set to `true` to publish the file. Set to `false` to unpublish the file.
 	IsPublished bool `json:"isPublished,required"`
 	// Set to `true` to publish/unpublish all versions of the file. Set to `false` to
@@ -1218,11 +1218,11 @@ type FileUpdateParamsUpdateChangePublicationStatusPublish struct {
 	paramObj
 }
 
-func (r FileUpdateParamsUpdateChangePublicationStatusPublish) MarshalJSON() (data []byte, err error) {
-	type shadow FileUpdateParamsUpdateChangePublicationStatusPublish
+func (r FileUpdateParamsBodyChangePublicationStatusPublish) MarshalJSON() (data []byte, err error) {
+	type shadow FileUpdateParamsBodyChangePublicationStatusPublish
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *FileUpdateParamsUpdateChangePublicationStatusPublish) UnmarshalJSON(data []byte) error {
+func (r *FileUpdateParamsBodyChangePublicationStatusPublish) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
