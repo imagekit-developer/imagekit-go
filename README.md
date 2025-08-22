@@ -48,8 +48,8 @@ func main() {
 		option.WithPassword("My Password"),             // defaults to os.LookupEnv("ORG_MY_PASSWORD_TOKEN")
 	)
 	response, err := client.Files.Upload(context.TODO(), imagekit.FileUploadParams{
-		File:     io.Reader(bytes.NewBuffer([]byte("some file contents"))),
-		FileName: "fileName",
+		File:     io.Reader(bytes.NewBuffer([]byte("https://www.example.com/public-url.jpg"))),
+		FileName: "file-name.jpg",
 	})
 	if err != nil {
 		panic(err.Error())
@@ -292,8 +292,8 @@ To handle errors, we recommend that you use the `errors.As` pattern:
 
 ```go
 _, err := client.Files.Upload(context.TODO(), imagekit.FileUploadParams{
-	File:     io.Reader(bytes.NewBuffer([]byte("some file contents"))),
-	FileName: "fileName",
+	File:     io.Reader(bytes.NewBuffer([]byte("https://www.example.com/public-url.jpg"))),
+	FileName: "file-name.jpg",
 })
 if err != nil {
 	var apierr *imagekit.Error
@@ -322,8 +322,8 @@ defer cancel()
 client.Files.Upload(
 	ctx,
 	imagekit.FileUploadParams{
-		File:     io.Reader(bytes.NewBuffer([]byte("some file contents"))),
-		FileName: "fileName",
+		File:     io.Reader(bytes.NewBuffer([]byte("https://www.example.com/public-url.jpg"))),
+		FileName: "file-name.jpg",
 	},
 	// This sets the per-retry timeout
 	option.WithRequestTimeout(20*time.Second),
@@ -382,8 +382,8 @@ client := imagekit.NewClient(
 client.Files.Upload(
 	context.TODO(),
 	imagekit.FileUploadParams{
-		File:     io.Reader(bytes.NewBuffer([]byte("some file contents"))),
-		FileName: "fileName",
+		File:     io.Reader(bytes.NewBuffer([]byte("https://www.example.com/public-url.jpg"))),
+		FileName: "file-name.jpg",
 	},
 	option.WithMaxRetries(5),
 )
@@ -400,8 +400,8 @@ var response *http.Response
 response, err := client.Files.Upload(
 	context.TODO(),
 	imagekit.FileUploadParams{
-		File:     io.Reader(bytes.NewBuffer([]byte("some file contents"))),
-		FileName: "fileName",
+		File:     io.Reader(bytes.NewBuffer([]byte("https://www.example.com/public-url.jpg"))),
+		FileName: "file-name.jpg",
 	},
 	option.WithResponseInto(&response),
 )
