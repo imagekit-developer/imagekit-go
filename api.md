@@ -204,3 +204,12 @@ Response Types:
 Methods:
 
 - <code title="post /api/v2/files/upload">client.Beta.V2.Files.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go#BetaV2FileService.Upload">Upload</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go">imagekit</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go#BetaV2FileUploadParams">BetaV2FileUploadParams</a>) (<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go">imagekit</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go#BetaV2FileUploadResponse">BetaV2FileUploadResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
+# Webhooks
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go">imagekit</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go#VideoTransformationAcceptedWebhookEvent">VideoTransformationAcceptedWebhookEvent</a>
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go">imagekit</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go#VideoTransformationReadyWebhookEvent">VideoTransformationReadyWebhookEvent</a>
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go">imagekit</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go#VideoTransformationErrorWebhookEvent">VideoTransformationErrorWebhookEvent</a>
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go">imagekit</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go#UnwrapWebhookEventUnion">UnwrapWebhookEventUnion</a>

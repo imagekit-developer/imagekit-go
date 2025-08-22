@@ -23,6 +23,7 @@ type Client struct {
 	Folders              FolderService
 	Accounts             AccountService
 	Beta                 BetaService
+	Webhooks             WebhookService
 }
 
 // DefaultClientOptions read from the environment (IMAGEKIT_PRIVATE_API_KEY,
@@ -60,6 +61,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.Folders = NewFolderService(opts...)
 	r.Accounts = NewAccountService(opts...)
 	r.Beta = NewBetaService(opts...)
+	r.Webhooks = NewWebhookService(opts...)
 
 	return
 }

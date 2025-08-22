@@ -269,7 +269,7 @@ func WithEnvironmentProduction() RequestOption {
 
 // WithPrivateAPIKey returns a RequestOption that sets the client setting "private_api_key".
 func WithPrivateAPIKey(value string) RequestOption {
-	return requestconfig.RequestOptionFunc(func(r *requestconfig.RequestConfig) error {
+	return requestconfig.PreRequestOptionFunc(func(r *requestconfig.RequestConfig) error {
 		r.PrivateAPIKey = value
 		return r.Apply(WithHeader("authorization", fmt.Sprintf("Basic %s", base64.StdEncoding.EncodeToString([]byte(r.PrivateAPIKey+":"+r.Password)))))
 	})
