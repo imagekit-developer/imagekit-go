@@ -28,14 +28,15 @@ func TestAccountOriginNewWithOptionalParams(t *testing.T) {
 		option.WithPassword("My Password"),
 	)
 	_, err := client.Accounts.Origins.New(context.TODO(), imagekit.AccountOriginNewParams{
-		OfS3: &imagekit.AccountOriginNewParamsBodyS3{
-			AccessKey:                 "AKIATEST123",
-			Bucket:                    "test-bucket",
-			Name:                      "My S3 Origin",
-			SecretKey:                 "secrettest123",
+		OfS3Origin: &imagekit.AccountOriginNewParamsBodyS3Origin{
+			AccessKey:                 "AKIAIOSFODNN7EXAMPLE",
+			Bucket:                    "product-images",
+			Name:                      "US S3 Storage",
+			SecretKey:                 "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
+			Type:                      "S3",
 			BaseURLForCanonicalHeader: imagekit.String("https://cdn.example.com"),
 			IncludeCanonicalHeader:    imagekit.Bool(false),
-			Prefix:                    imagekit.String("images"),
+			Prefix:                    imagekit.String("raw-assets"),
 		},
 	})
 	if err != nil {
@@ -65,14 +66,15 @@ func TestAccountOriginUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		imagekit.AccountOriginUpdateParams{
-			OfS3: &imagekit.AccountOriginUpdateParamsBodyS3{
-				AccessKey:                 "AKIATEST123",
-				Bucket:                    "test-bucket",
-				Name:                      "My S3 Origin",
-				SecretKey:                 "secrettest123",
+			OfS3Origin: &imagekit.AccountOriginUpdateParamsBodyS3Origin{
+				AccessKey:                 "AKIAIOSFODNN7EXAMPLE",
+				Bucket:                    "product-images",
+				Name:                      "US S3 Storage",
+				SecretKey:                 "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
+				Type:                      "S3",
 				BaseURLForCanonicalHeader: imagekit.String("https://cdn.example.com"),
 				IncludeCanonicalHeader:    imagekit.Bool(false),
-				Prefix:                    imagekit.String("images"),
+				Prefix:                    imagekit.String("raw-assets"),
 			},
 		},
 	)
