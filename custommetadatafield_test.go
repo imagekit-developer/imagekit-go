@@ -33,7 +33,9 @@ func TestCustomMetadataFieldNewWithOptionalParams(t *testing.T) {
 		Schema: imagekit.CustomMetadataFieldNewParamsSchema{
 			Type: "Number",
 			DefaultValue: imagekit.CustomMetadataFieldNewParamsSchemaDefaultValueUnion{
-				OfString: imagekit.String("string"),
+				OfCustomMetadataFieldNewsSchemaDefaultValueUnion: &imagekit.CustomMetadataFieldNewParamsSchemaDefaultValueUnionUnion{
+					OfString: imagekit.String("Hello"),
+				},
 			},
 			IsValueRequired: imagekit.Bool(true),
 			MaxLength:       imagekit.Float(0),
@@ -89,7 +91,9 @@ func TestCustomMetadataFieldUpdateWithOptionalParams(t *testing.T) {
 			Label: imagekit.String("price"),
 			Schema: imagekit.CustomMetadataFieldUpdateParamsSchema{
 				DefaultValue: imagekit.CustomMetadataFieldUpdateParamsSchemaDefaultValueUnion{
-					OfString: imagekit.String("string"),
+					OfCustomMetadataFieldUpdatesSchemaDefaultValueUnion: &imagekit.CustomMetadataFieldUpdateParamsSchemaDefaultValueUnionUnion{
+						OfString: imagekit.String("Hello"),
+					},
 				},
 				IsValueRequired: imagekit.Bool(true),
 				MaxLength:       imagekit.Float(0),
