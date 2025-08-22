@@ -13,7 +13,6 @@ import (
 	"github.com/stainless-sdks/imagekit-go"
 	"github.com/stainless-sdks/imagekit-go/internal/testutil"
 	"github.com/stainless-sdks/imagekit-go/option"
-	"github.com/stainless-sdks/imagekit-go/shared"
 )
 
 func TestFileUpdateWithOptionalParams(t *testing.T) {
@@ -42,9 +41,9 @@ func TestFileUpdateWithOptionalParams(t *testing.T) {
 				},
 				Description: imagekit.String("description"),
 				Extensions: []imagekit.FileUpdateParamsBodyUpdateFileDetailsExtensionUnion{{
-					OfRemoveBackground: &shared.RemovedotBgExtensionParam{
-						Name: shared.RemovedotBgExtensionNameRemoveBg,
-						Options: shared.RemovedotBgExtensionOptionsParam{
+					OfRemoveBackground: &imagekit.FileUpdateParamsBodyUpdateFileDetailsExtensionRemoveBackground{
+						Name: "remove-bg",
+						Options: imagekit.FileUpdateParamsBodyUpdateFileDetailsExtensionRemoveBackgroundOptions{
 							AddShadow:        imagekit.Bool(true),
 							BgColor:          imagekit.String("bg_color"),
 							BgImageURL:       imagekit.String("bg_image_url"),
@@ -52,20 +51,20 @@ func TestFileUpdateWithOptionalParams(t *testing.T) {
 						},
 					},
 				}, {
-					OfAutoTagging: &shared.AutoTaggingExtensionParam{
+					OfAutoTagging: &imagekit.FileUpdateParamsBodyUpdateFileDetailsExtensionAutoTagging{
 						MaxTags:       10,
 						MinConfidence: 80,
-						Name:          shared.AutoTaggingExtensionNameGoogleAutoTagging,
+						Name:          "google-auto-tagging",
 					},
 				}, {
-					OfAutoTagging: &shared.AutoTaggingExtensionParam{
+					OfAutoTagging: &imagekit.FileUpdateParamsBodyUpdateFileDetailsExtensionAutoTagging{
 						MaxTags:       10,
 						MinConfidence: 80,
-						Name:          shared.AutoTaggingExtensionNameAwsAutoTagging,
+						Name:          "aws-auto-tagging",
 					},
 				}, {
-					OfAutoDescription: &shared.AutoDescriptionExtensionParam{
-						Name: shared.AutoDescriptionExtensionNameAIAutoDescription,
+					OfAutoDescription: &imagekit.FileUpdateParamsBodyUpdateFileDetailsExtensionAutoDescription{
+						Name: "ai-auto-description",
 					},
 				}},
 				RemoveAITags: imagekit.FileUpdateParamsBodyUpdateFileDetailsRemoveAITagsUnion{
@@ -243,9 +242,9 @@ func TestFileUploadWithOptionalParams(t *testing.T) {
 		Description: imagekit.String("Running shoes"),
 		Expire:      imagekit.Int(0),
 		Extensions: []imagekit.FileUploadParamsExtensionUnion{{
-			OfRemoveBackground: &shared.RemovedotBgExtensionParam{
-				Name: shared.RemovedotBgExtensionNameRemoveBg,
-				Options: shared.RemovedotBgExtensionOptionsParam{
+			OfRemoveBackground: &imagekit.FileUploadParamsExtensionRemoveBackground{
+				Name: "remove-bg",
+				Options: imagekit.FileUploadParamsExtensionRemoveBackgroundOptions{
 					AddShadow:        imagekit.Bool(true),
 					BgColor:          imagekit.String("bg_color"),
 					BgImageURL:       imagekit.String("bg_image_url"),
@@ -253,10 +252,10 @@ func TestFileUploadWithOptionalParams(t *testing.T) {
 				},
 			},
 		}, {
-			OfAutoTagging: &shared.AutoTaggingExtensionParam{
+			OfAutoTagging: &imagekit.FileUploadParamsExtensionAutoTagging{
 				MaxTags:       5,
 				MinConfidence: 95,
-				Name:          shared.AutoTaggingExtensionNameGoogleAutoTagging,
+				Name:          "google-auto-tagging",
 			},
 		}},
 		Folder:                  imagekit.String("folder"),
