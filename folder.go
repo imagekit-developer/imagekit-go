@@ -57,7 +57,7 @@ func (r *FolderService) Delete(ctx context.Context, body FolderDeleteParams, opt
 // this operation. Note: If any file at the destination has the same name as the
 // source file, then the source file and its versions will be appended to the
 // destination file version history.
-func (r *FolderService) Copy(ctx context.Context, body FolderCopyParams, opts ...option.RequestOption) (res *JobResponse, err error) {
+func (r *FolderService) Copy(ctx context.Context, body FolderCopyParams, opts ...option.RequestOption) (res *FolderCopyResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "v1/bulkJobs/copyFolder"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -68,7 +68,7 @@ func (r *FolderService) Copy(ctx context.Context, body FolderCopyParams, opts ..
 // files, and their versions are moved in this operation. Note: If any file at the
 // destination has the same name as the source file, then the source file and its
 // versions will be appended to the destination file version history.
-func (r *FolderService) Move(ctx context.Context, body FolderMoveParams, opts ...option.RequestOption) (res *JobResponse, err error) {
+func (r *FolderService) Move(ctx context.Context, body FolderMoveParams, opts ...option.RequestOption) (res *FolderMoveResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "v1/bulkJobs/moveFolder"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -78,30 +78,11 @@ func (r *FolderService) Move(ctx context.Context, body FolderMoveParams, opts ..
 // This API allows you to rename an existing folder. The folder and all its nested
 // assets and sub-folders will remain unchanged, but their paths will be updated to
 // reflect the new folder name.
-func (r *FolderService) Rename(ctx context.Context, body FolderRenameParams, opts ...option.RequestOption) (res *JobResponse, err error) {
+func (r *FolderService) Rename(ctx context.Context, body FolderRenameParams, opts ...option.RequestOption) (res *FolderRenameResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "v1/bulkJobs/renameFolder"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
-}
-
-// Job submitted successfully. A `jobId` will be returned.
-type JobResponse struct {
-	// Unique identifier of the bulk job. This can be used to check the status of the
-	// bulk job.
-	JobID string `json:"jobId,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		JobID       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r JobResponse) RawJSON() string { return r.JSON.raw }
-func (r *JobResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
 }
 
 type FolderNewResponse struct {
@@ -129,6 +110,63 @@ type FolderDeleteResponse struct {
 // Returns the unmodified JSON received from the API
 func (r FolderDeleteResponse) RawJSON() string { return r.JSON.raw }
 func (r *FolderDeleteResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Job submitted successfully. A `jobId` will be returned.
+type FolderCopyResponse struct {
+	// Unique identifier of the bulk job. This can be used to check the status of the
+	// bulk job.
+	JobID string `json:"jobId,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		JobID       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r FolderCopyResponse) RawJSON() string { return r.JSON.raw }
+func (r *FolderCopyResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Job submitted successfully. A `jobId` will be returned.
+type FolderMoveResponse struct {
+	// Unique identifier of the bulk job. This can be used to check the status of the
+	// bulk job.
+	JobID string `json:"jobId,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		JobID       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r FolderMoveResponse) RawJSON() string { return r.JSON.raw }
+func (r *FolderMoveResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Job submitted successfully. A `jobId` will be returned.
+type FolderRenameResponse struct {
+	// Unique identifier of the bulk job. This can be used to check the status of the
+	// bulk job.
+	JobID string `json:"jobId,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		JobID       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r FolderRenameResponse) RawJSON() string { return r.JSON.raw }
+func (r *FolderRenameResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
