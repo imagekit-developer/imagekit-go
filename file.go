@@ -171,6 +171,9 @@ type File struct {
 	CustomCoordinates string `json:"customCoordinates,nullable"`
 	// An object with custom metadata for the file.
 	CustomMetadata map[string]any `json:"customMetadata"`
+	// Optional text to describe the contents of the file. Can be set by the user or
+	// the ai-auto-description extension.
+	Description string `json:"description"`
 	// Unique identifier of the asset.
 	FileID string `json:"fileId"`
 	// Path of the file. This is the path you would use in the URL to access the file.
@@ -219,6 +222,7 @@ type File struct {
 		CreatedAt         respjson.Field
 		CustomCoordinates respjson.Field
 		CustomMetadata    respjson.Field
+		Description       respjson.Field
 		FileID            respjson.Field
 		FilePath          respjson.Field
 		FileType          respjson.Field
@@ -709,6 +713,9 @@ type FileUploadResponse struct {
 	// API. Send `customMetadata` in `responseFields` in API request to get the value
 	// of this field.
 	CustomMetadata map[string]any `json:"customMetadata"`
+	// Optional text to describe the contents of the file. Can be set by the user or
+	// the ai-auto-description extension.
+	Description string `json:"description"`
 	// The duration of the video in seconds (only for video).
 	Duration int64 `json:"duration"`
 	// Consolidated embedded metadata associated with the file. It includes exif, iptc,
@@ -771,6 +778,7 @@ type FileUploadResponse struct {
 		BitRate           respjson.Field
 		CustomCoordinates respjson.Field
 		CustomMetadata    respjson.Field
+		Description       respjson.Field
 		Duration          respjson.Field
 		EmbeddedMetadata  respjson.Field
 		ExtensionStatus   respjson.Field

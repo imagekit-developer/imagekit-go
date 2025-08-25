@@ -62,6 +62,8 @@ type AssetListResponseUnion struct {
 	// This field is from variant [File].
 	CustomMetadata map[string]any `json:"customMetadata"`
 	// This field is from variant [File].
+	Description string `json:"description"`
+	// This field is from variant [File].
 	FileID string `json:"fileId"`
 	// This field is from variant [File].
 	FilePath string `json:"filePath"`
@@ -102,6 +104,7 @@ type AssetListResponseUnion struct {
 		CreatedAt         respjson.Field
 		CustomCoordinates respjson.Field
 		CustomMetadata    respjson.Field
+		Description       respjson.Field
 		FileID            respjson.Field
 		FilePath          respjson.Field
 		FileType          respjson.Field

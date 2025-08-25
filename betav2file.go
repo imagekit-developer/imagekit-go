@@ -91,6 +91,9 @@ type BetaV2FileUploadResponse struct {
 	// API. Send `customMetadata` in `responseFields` in API request to get the value
 	// of this field.
 	CustomMetadata map[string]any `json:"customMetadata"`
+	// Optional text to describe the contents of the file. Can be set by the user or
+	// the ai-auto-description extension.
+	Description string `json:"description"`
 	// The duration of the video in seconds (only for video).
 	Duration int64 `json:"duration"`
 	// Consolidated embedded metadata associated with the file. It includes exif, iptc,
@@ -153,6 +156,7 @@ type BetaV2FileUploadResponse struct {
 		BitRate           respjson.Field
 		CustomCoordinates respjson.Field
 		CustomMetadata    respjson.Field
+		Description       respjson.Field
 		Duration          respjson.Field
 		EmbeddedMetadata  respjson.Field
 		ExtensionStatus   respjson.Field
