@@ -57,7 +57,7 @@ func (r *FolderService) Delete(ctx context.Context, body FolderDeleteParams, opt
 // this operation. Note: If any file at the destination has the same name as the
 // source file, then the source file and its versions will be appended to the
 // destination file version history.
-func (r *FolderService) Copy(ctx context.Context, body FolderCopyParams, opts ...option.RequestOption) (res *AsyncBulkJobResponse, err error) {
+func (r *FolderService) Copy(ctx context.Context, body FolderCopyParams, opts ...option.RequestOption) (res *JobResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "v1/bulkJobs/copyFolder"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -68,7 +68,7 @@ func (r *FolderService) Copy(ctx context.Context, body FolderCopyParams, opts ..
 // files, and their versions are moved in this operation. Note: If any file at the
 // destination has the same name as the source file, then the source file and its
 // versions will be appended to the destination file version history.
-func (r *FolderService) Move(ctx context.Context, body FolderMoveParams, opts ...option.RequestOption) (res *AsyncBulkJobResponse, err error) {
+func (r *FolderService) Move(ctx context.Context, body FolderMoveParams, opts ...option.RequestOption) (res *JobResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "v1/bulkJobs/moveFolder"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -78,7 +78,7 @@ func (r *FolderService) Move(ctx context.Context, body FolderMoveParams, opts ..
 // This API allows you to rename an existing folder. The folder and all its nested
 // assets and sub-folders will remain unchanged, but their paths will be updated to
 // reflect the new folder name.
-func (r *FolderService) Rename(ctx context.Context, body FolderRenameParams, opts ...option.RequestOption) (res *AsyncBulkJobResponse, err error) {
+func (r *FolderService) Rename(ctx context.Context, body FolderRenameParams, opts ...option.RequestOption) (res *JobResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "v1/bulkJobs/renameFolder"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -86,7 +86,7 @@ func (r *FolderService) Rename(ctx context.Context, body FolderRenameParams, opt
 }
 
 // Job submitted successfully. A `jobId` will be returned.
-type AsyncBulkJobResponse struct {
+type JobResponse struct {
 	// Unique identifier of the bulk job. This can be used to check the status of the
 	// bulk job.
 	JobID string `json:"jobId,required"`
@@ -99,8 +99,8 @@ type AsyncBulkJobResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r AsyncBulkJobResponse) RawJSON() string { return r.JSON.raw }
-func (r *AsyncBulkJobResponse) UnmarshalJSON(data []byte) error {
+func (r JobResponse) RawJSON() string { return r.JSON.raw }
+func (r *JobResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
