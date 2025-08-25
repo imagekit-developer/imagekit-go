@@ -41,7 +41,7 @@ func NewCustomMetadataFieldService(opts ...option.RequestOption) (r CustomMetada
 // created either through this API or using the dashboard UI, its value can be set
 // on the assets. The value of a field for an asset can be set using the media
 // library UI or programmatically through upload or update assets API.
-func (r *CustomMetadataFieldService) New(ctx context.Context, body CustomMetadataFieldNewParams, opts ...option.RequestOption) (res *CustomMetadataFieldNewResponse, err error) {
+func (r *CustomMetadataFieldService) New(ctx context.Context, body CustomMetadataFieldNewParams, opts ...option.RequestOption) (res *CustomMetadataField, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "v1/customMetadataFields"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -49,7 +49,7 @@ func (r *CustomMetadataFieldService) New(ctx context.Context, body CustomMetadat
 }
 
 // This API updates the label or schema of an existing custom metadata field.
-func (r *CustomMetadataFieldService) Update(ctx context.Context, id string, body CustomMetadataFieldUpdateParams, opts ...option.RequestOption) (res *CustomMetadataFieldUpdateResponse, err error) {
+func (r *CustomMetadataFieldService) Update(ctx context.Context, id string, body CustomMetadataFieldUpdateParams, opts ...option.RequestOption) (res *CustomMetadataField, err error) {
 	opts = append(r.Options[:], opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -63,7 +63,7 @@ func (r *CustomMetadataFieldService) Update(ctx context.Context, id string, body
 // This API returns the array of created custom metadata field objects. By default
 // the API returns only non deleted field objects, but you can include deleted
 // fields in the API response.
-func (r *CustomMetadataFieldService) List(ctx context.Context, query CustomMetadataFieldListParams, opts ...option.RequestOption) (res *[]CustomMetadataFieldListResponse, err error) {
+func (r *CustomMetadataFieldService) List(ctx context.Context, query CustomMetadataFieldListParams, opts ...option.RequestOption) (res *[]CustomMetadataField, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "v1/customMetadataFields"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
@@ -84,7 +84,7 @@ func (r *CustomMetadataFieldService) Delete(ctx context.Context, id string, opts
 }
 
 // Object containing details of a custom metadata field.
-type CustomMetadataFieldNewResponse struct {
+type CustomMetadataField struct {
 	// Unique identifier for the custom metadata field. Use this to update the field.
 	ID string `json:"id,required"`
 	// Human readable name of the custom metadata field. This name is displayed as form
@@ -95,7 +95,7 @@ type CustomMetadataFieldNewResponse struct {
 	// `customMetadata` (key-value object) for an asset using upload or update API.
 	Name string `json:"name,required"`
 	// An object that describes the rules for the custom metadata field value.
-	Schema CustomMetadataFieldNewResponseSchema `json:"schema,required"`
+	Schema CustomMetadataFieldSchema `json:"schema,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -108,13 +108,13 @@ type CustomMetadataFieldNewResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CustomMetadataFieldNewResponse) RawJSON() string { return r.JSON.raw }
-func (r *CustomMetadataFieldNewResponse) UnmarshalJSON(data []byte) error {
+func (r CustomMetadataField) RawJSON() string { return r.JSON.raw }
+func (r *CustomMetadataField) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // An object that describes the rules for the custom metadata field value.
-type CustomMetadataFieldNewResponseSchema struct {
+type CustomMetadataFieldSchema struct {
 	// Type of the custom metadata field.
 	//
 	// Any of "Text", "Textarea", "Number", "Date", "Boolean", "SingleSelect",
@@ -122,7 +122,7 @@ type CustomMetadataFieldNewResponseSchema struct {
 	Type string `json:"type,required"`
 	// The default value for this custom metadata field. Date type of default value
 	// depends on the field type.
-	DefaultValue CustomMetadataFieldNewResponseSchemaDefaultValueUnion `json:"defaultValue"`
+	DefaultValue CustomMetadataFieldSchemaDefaultValueUnion `json:"defaultValue"`
 	// Specifies if the this custom metadata field is required or not.
 	IsValueRequired bool `json:"isValueRequired"`
 	// Maximum length of string. Only set if `type` is set to `Text` or `Textarea`.
@@ -130,15 +130,15 @@ type CustomMetadataFieldNewResponseSchema struct {
 	// Maximum value of the field. Only set if field type is `Date` or `Number`. For
 	// `Date` type field, the value will be in ISO8601 string format. For `Number` type
 	// field, it will be a numeric value.
-	MaxValue CustomMetadataFieldNewResponseSchemaMaxValueUnion `json:"maxValue"`
+	MaxValue CustomMetadataFieldSchemaMaxValueUnion `json:"maxValue"`
 	// Minimum length of string. Only set if `type` is set to `Text` or `Textarea`.
 	MinLength float64 `json:"minLength"`
 	// Minimum value of the field. Only set if field type is `Date` or `Number`. For
 	// `Date` type field, the value will be in ISO8601 string format. For `Number` type
 	// field, it will be a numeric value.
-	MinValue CustomMetadataFieldNewResponseSchemaMinValueUnion `json:"minValue"`
+	MinValue CustomMetadataFieldSchemaMinValueUnion `json:"minValue"`
 	// An array of allowed values when field type is `SingleSelect` or `MultiSelect`.
-	SelectOptions []CustomMetadataFieldNewResponseSchemaSelectOptionUnion `json:"selectOptions"`
+	SelectOptions []CustomMetadataFieldSchemaSelectOptionUnion `json:"selectOptions"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Type            respjson.Field
@@ -155,20 +155,20 @@ type CustomMetadataFieldNewResponseSchema struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CustomMetadataFieldNewResponseSchema) RawJSON() string { return r.JSON.raw }
-func (r *CustomMetadataFieldNewResponseSchema) UnmarshalJSON(data []byte) error {
+func (r CustomMetadataFieldSchema) RawJSON() string { return r.JSON.raw }
+func (r *CustomMetadataFieldSchema) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// CustomMetadataFieldNewResponseSchemaDefaultValueUnion contains all possible
-// properties and values from [string], [float64], [bool],
-// [[]CustomMetadataFieldNewResponseSchemaDefaultValueMixedItemUnion].
+// CustomMetadataFieldSchemaDefaultValueUnion contains all possible properties and
+// values from [string], [float64], [bool],
+// [[]CustomMetadataFieldSchemaDefaultValueMixedItemUnion].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 //
 // If the underlying value is not a json object, one of the following properties
 // will be valid: OfString OfFloat OfBool OfMixed]
-type CustomMetadataFieldNewResponseSchemaDefaultValueUnion struct {
+type CustomMetadataFieldSchemaDefaultValueUnion struct {
 	// This field will be present if the value is a [string] instead of an object.
 	OfString string `json:",inline"`
 	// This field will be present if the value is a [float64] instead of an object.
@@ -176,9 +176,8 @@ type CustomMetadataFieldNewResponseSchemaDefaultValueUnion struct {
 	// This field will be present if the value is a [bool] instead of an object.
 	OfBool bool `json:",inline"`
 	// This field will be present if the value is a
-	// [[]CustomMetadataFieldNewResponseSchemaDefaultValueMixedItemUnion] instead of an
-	// object.
-	OfMixed []CustomMetadataFieldNewResponseSchemaDefaultValueMixedItemUnion `json:",inline"`
+	// [[]CustomMetadataFieldSchemaDefaultValueMixedItemUnion] instead of an object.
+	OfMixed []CustomMetadataFieldSchemaDefaultValueMixedItemUnion `json:",inline"`
 	JSON    struct {
 		OfString respjson.Field
 		OfFloat  respjson.Field
@@ -188,159 +187,41 @@ type CustomMetadataFieldNewResponseSchemaDefaultValueUnion struct {
 	} `json:"-"`
 }
 
-func (u CustomMetadataFieldNewResponseSchemaDefaultValueUnion) AsString() (v string) {
+func (u CustomMetadataFieldSchemaDefaultValueUnion) AsString() (v string) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u CustomMetadataFieldNewResponseSchemaDefaultValueUnion) AsFloat() (v float64) {
+func (u CustomMetadataFieldSchemaDefaultValueUnion) AsFloat() (v float64) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u CustomMetadataFieldNewResponseSchemaDefaultValueUnion) AsBool() (v bool) {
+func (u CustomMetadataFieldSchemaDefaultValueUnion) AsBool() (v bool) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u CustomMetadataFieldNewResponseSchemaDefaultValueUnion) AsMixed() (v []CustomMetadataFieldNewResponseSchemaDefaultValueMixedItemUnion) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u CustomMetadataFieldNewResponseSchemaDefaultValueUnion) RawJSON() string { return u.JSON.raw }
-
-func (r *CustomMetadataFieldNewResponseSchemaDefaultValueUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// CustomMetadataFieldNewResponseSchemaDefaultValueMixedItemUnion contains all
-// possible properties and values from [string], [float64], [bool].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfFloat OfBool]
-type CustomMetadataFieldNewResponseSchemaDefaultValueMixedItemUnion struct {
-	// This field will be present if the value is a [string] instead of an object.
-	OfString string `json:",inline"`
-	// This field will be present if the value is a [float64] instead of an object.
-	OfFloat float64 `json:",inline"`
-	// This field will be present if the value is a [bool] instead of an object.
-	OfBool bool `json:",inline"`
-	JSON   struct {
-		OfString respjson.Field
-		OfFloat  respjson.Field
-		OfBool   respjson.Field
-		raw      string
-	} `json:"-"`
-}
-
-func (u CustomMetadataFieldNewResponseSchemaDefaultValueMixedItemUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u CustomMetadataFieldNewResponseSchemaDefaultValueMixedItemUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u CustomMetadataFieldNewResponseSchemaDefaultValueMixedItemUnion) AsBool() (v bool) {
+func (u CustomMetadataFieldSchemaDefaultValueUnion) AsMixed() (v []CustomMetadataFieldSchemaDefaultValueMixedItemUnion) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
 // Returns the unmodified JSON received from the API
-func (u CustomMetadataFieldNewResponseSchemaDefaultValueMixedItemUnion) RawJSON() string {
-	return u.JSON.raw
-}
+func (u CustomMetadataFieldSchemaDefaultValueUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *CustomMetadataFieldNewResponseSchemaDefaultValueMixedItemUnion) UnmarshalJSON(data []byte) error {
+func (r *CustomMetadataFieldSchemaDefaultValueUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// CustomMetadataFieldNewResponseSchemaMaxValueUnion contains all possible
-// properties and values from [string], [float64].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfFloat]
-type CustomMetadataFieldNewResponseSchemaMaxValueUnion struct {
-	// This field will be present if the value is a [string] instead of an object.
-	OfString string `json:",inline"`
-	// This field will be present if the value is a [float64] instead of an object.
-	OfFloat float64 `json:",inline"`
-	JSON    struct {
-		OfString respjson.Field
-		OfFloat  respjson.Field
-		raw      string
-	} `json:"-"`
-}
-
-func (u CustomMetadataFieldNewResponseSchemaMaxValueUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u CustomMetadataFieldNewResponseSchemaMaxValueUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u CustomMetadataFieldNewResponseSchemaMaxValueUnion) RawJSON() string { return u.JSON.raw }
-
-func (r *CustomMetadataFieldNewResponseSchemaMaxValueUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// CustomMetadataFieldNewResponseSchemaMinValueUnion contains all possible
-// properties and values from [string], [float64].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfFloat]
-type CustomMetadataFieldNewResponseSchemaMinValueUnion struct {
-	// This field will be present if the value is a [string] instead of an object.
-	OfString string `json:",inline"`
-	// This field will be present if the value is a [float64] instead of an object.
-	OfFloat float64 `json:",inline"`
-	JSON    struct {
-		OfString respjson.Field
-		OfFloat  respjson.Field
-		raw      string
-	} `json:"-"`
-}
-
-func (u CustomMetadataFieldNewResponseSchemaMinValueUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u CustomMetadataFieldNewResponseSchemaMinValueUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u CustomMetadataFieldNewResponseSchemaMinValueUnion) RawJSON() string { return u.JSON.raw }
-
-func (r *CustomMetadataFieldNewResponseSchemaMinValueUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// CustomMetadataFieldNewResponseSchemaSelectOptionUnion contains all possible
+// CustomMetadataFieldSchemaDefaultValueMixedItemUnion contains all possible
 // properties and values from [string], [float64], [bool].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 //
 // If the underlying value is not a json object, one of the following properties
 // will be valid: OfString OfFloat OfBool]
-type CustomMetadataFieldNewResponseSchemaSelectOptionUnion struct {
+type CustomMetadataFieldSchemaDefaultValueMixedItemUnion struct {
 	// This field will be present if the value is a [string] instead of an object.
 	OfString string `json:",inline"`
 	// This field will be present if the value is a [float64] instead of an object.
@@ -355,214 +236,36 @@ type CustomMetadataFieldNewResponseSchemaSelectOptionUnion struct {
 	} `json:"-"`
 }
 
-func (u CustomMetadataFieldNewResponseSchemaSelectOptionUnion) AsString() (v string) {
+func (u CustomMetadataFieldSchemaDefaultValueMixedItemUnion) AsString() (v string) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u CustomMetadataFieldNewResponseSchemaSelectOptionUnion) AsFloat() (v float64) {
+func (u CustomMetadataFieldSchemaDefaultValueMixedItemUnion) AsFloat() (v float64) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u CustomMetadataFieldNewResponseSchemaSelectOptionUnion) AsBool() (v bool) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u CustomMetadataFieldNewResponseSchemaSelectOptionUnion) RawJSON() string { return u.JSON.raw }
-
-func (r *CustomMetadataFieldNewResponseSchemaSelectOptionUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Object containing details of a custom metadata field.
-type CustomMetadataFieldUpdateResponse struct {
-	// Unique identifier for the custom metadata field. Use this to update the field.
-	ID string `json:"id,required"`
-	// Human readable name of the custom metadata field. This name is displayed as form
-	// field label to the users while setting field value on the asset in the media
-	// library UI.
-	Label string `json:"label,required"`
-	// API name of the custom metadata field. This becomes the key while setting
-	// `customMetadata` (key-value object) for an asset using upload or update API.
-	Name string `json:"name,required"`
-	// An object that describes the rules for the custom metadata field value.
-	Schema CustomMetadataFieldUpdateResponseSchema `json:"schema,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		Label       respjson.Field
-		Name        respjson.Field
-		Schema      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r CustomMetadataFieldUpdateResponse) RawJSON() string { return r.JSON.raw }
-func (r *CustomMetadataFieldUpdateResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// An object that describes the rules for the custom metadata field value.
-type CustomMetadataFieldUpdateResponseSchema struct {
-	// Type of the custom metadata field.
-	//
-	// Any of "Text", "Textarea", "Number", "Date", "Boolean", "SingleSelect",
-	// "MultiSelect".
-	Type string `json:"type,required"`
-	// The default value for this custom metadata field. Date type of default value
-	// depends on the field type.
-	DefaultValue CustomMetadataFieldUpdateResponseSchemaDefaultValueUnion `json:"defaultValue"`
-	// Specifies if the this custom metadata field is required or not.
-	IsValueRequired bool `json:"isValueRequired"`
-	// Maximum length of string. Only set if `type` is set to `Text` or `Textarea`.
-	MaxLength float64 `json:"maxLength"`
-	// Maximum value of the field. Only set if field type is `Date` or `Number`. For
-	// `Date` type field, the value will be in ISO8601 string format. For `Number` type
-	// field, it will be a numeric value.
-	MaxValue CustomMetadataFieldUpdateResponseSchemaMaxValueUnion `json:"maxValue"`
-	// Minimum length of string. Only set if `type` is set to `Text` or `Textarea`.
-	MinLength float64 `json:"minLength"`
-	// Minimum value of the field. Only set if field type is `Date` or `Number`. For
-	// `Date` type field, the value will be in ISO8601 string format. For `Number` type
-	// field, it will be a numeric value.
-	MinValue CustomMetadataFieldUpdateResponseSchemaMinValueUnion `json:"minValue"`
-	// An array of allowed values when field type is `SingleSelect` or `MultiSelect`.
-	SelectOptions []CustomMetadataFieldUpdateResponseSchemaSelectOptionUnion `json:"selectOptions"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Type            respjson.Field
-		DefaultValue    respjson.Field
-		IsValueRequired respjson.Field
-		MaxLength       respjson.Field
-		MaxValue        respjson.Field
-		MinLength       respjson.Field
-		MinValue        respjson.Field
-		SelectOptions   respjson.Field
-		ExtraFields     map[string]respjson.Field
-		raw             string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r CustomMetadataFieldUpdateResponseSchema) RawJSON() string { return r.JSON.raw }
-func (r *CustomMetadataFieldUpdateResponseSchema) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// CustomMetadataFieldUpdateResponseSchemaDefaultValueUnion contains all possible
-// properties and values from [string], [float64], [bool],
-// [[]CustomMetadataFieldUpdateResponseSchemaDefaultValueMixedItemUnion].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfFloat OfBool OfMixed]
-type CustomMetadataFieldUpdateResponseSchemaDefaultValueUnion struct {
-	// This field will be present if the value is a [string] instead of an object.
-	OfString string `json:",inline"`
-	// This field will be present if the value is a [float64] instead of an object.
-	OfFloat float64 `json:",inline"`
-	// This field will be present if the value is a [bool] instead of an object.
-	OfBool bool `json:",inline"`
-	// This field will be present if the value is a
-	// [[]CustomMetadataFieldUpdateResponseSchemaDefaultValueMixedItemUnion] instead of
-	// an object.
-	OfMixed []CustomMetadataFieldUpdateResponseSchemaDefaultValueMixedItemUnion `json:",inline"`
-	JSON    struct {
-		OfString respjson.Field
-		OfFloat  respjson.Field
-		OfBool   respjson.Field
-		OfMixed  respjson.Field
-		raw      string
-	} `json:"-"`
-}
-
-func (u CustomMetadataFieldUpdateResponseSchemaDefaultValueUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u CustomMetadataFieldUpdateResponseSchemaDefaultValueUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u CustomMetadataFieldUpdateResponseSchemaDefaultValueUnion) AsBool() (v bool) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u CustomMetadataFieldUpdateResponseSchemaDefaultValueUnion) AsMixed() (v []CustomMetadataFieldUpdateResponseSchemaDefaultValueMixedItemUnion) {
+func (u CustomMetadataFieldSchemaDefaultValueMixedItemUnion) AsBool() (v bool) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
 // Returns the unmodified JSON received from the API
-func (u CustomMetadataFieldUpdateResponseSchemaDefaultValueUnion) RawJSON() string { return u.JSON.raw }
+func (u CustomMetadataFieldSchemaDefaultValueMixedItemUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *CustomMetadataFieldUpdateResponseSchemaDefaultValueUnion) UnmarshalJSON(data []byte) error {
+func (r *CustomMetadataFieldSchemaDefaultValueMixedItemUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// CustomMetadataFieldUpdateResponseSchemaDefaultValueMixedItemUnion contains all
-// possible properties and values from [string], [float64], [bool].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfFloat OfBool]
-type CustomMetadataFieldUpdateResponseSchemaDefaultValueMixedItemUnion struct {
-	// This field will be present if the value is a [string] instead of an object.
-	OfString string `json:",inline"`
-	// This field will be present if the value is a [float64] instead of an object.
-	OfFloat float64 `json:",inline"`
-	// This field will be present if the value is a [bool] instead of an object.
-	OfBool bool `json:",inline"`
-	JSON   struct {
-		OfString respjson.Field
-		OfFloat  respjson.Field
-		OfBool   respjson.Field
-		raw      string
-	} `json:"-"`
-}
-
-func (u CustomMetadataFieldUpdateResponseSchemaDefaultValueMixedItemUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u CustomMetadataFieldUpdateResponseSchemaDefaultValueMixedItemUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u CustomMetadataFieldUpdateResponseSchemaDefaultValueMixedItemUnion) AsBool() (v bool) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u CustomMetadataFieldUpdateResponseSchemaDefaultValueMixedItemUnion) RawJSON() string {
-	return u.JSON.raw
-}
-
-func (r *CustomMetadataFieldUpdateResponseSchemaDefaultValueMixedItemUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// CustomMetadataFieldUpdateResponseSchemaMaxValueUnion contains all possible
-// properties and values from [string], [float64].
+// CustomMetadataFieldSchemaMaxValueUnion contains all possible properties and
+// values from [string], [float64].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 //
 // If the underlying value is not a json object, one of the following properties
 // will be valid: OfString OfFloat]
-type CustomMetadataFieldUpdateResponseSchemaMaxValueUnion struct {
+type CustomMetadataFieldSchemaMaxValueUnion struct {
 	// This field will be present if the value is a [string] instead of an object.
 	OfString string `json:",inline"`
 	// This field will be present if the value is a [float64] instead of an object.
@@ -574,31 +277,31 @@ type CustomMetadataFieldUpdateResponseSchemaMaxValueUnion struct {
 	} `json:"-"`
 }
 
-func (u CustomMetadataFieldUpdateResponseSchemaMaxValueUnion) AsString() (v string) {
+func (u CustomMetadataFieldSchemaMaxValueUnion) AsString() (v string) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u CustomMetadataFieldUpdateResponseSchemaMaxValueUnion) AsFloat() (v float64) {
+func (u CustomMetadataFieldSchemaMaxValueUnion) AsFloat() (v float64) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
 // Returns the unmodified JSON received from the API
-func (u CustomMetadataFieldUpdateResponseSchemaMaxValueUnion) RawJSON() string { return u.JSON.raw }
+func (u CustomMetadataFieldSchemaMaxValueUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *CustomMetadataFieldUpdateResponseSchemaMaxValueUnion) UnmarshalJSON(data []byte) error {
+func (r *CustomMetadataFieldSchemaMaxValueUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// CustomMetadataFieldUpdateResponseSchemaMinValueUnion contains all possible
-// properties and values from [string], [float64].
+// CustomMetadataFieldSchemaMinValueUnion contains all possible properties and
+// values from [string], [float64].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 //
 // If the underlying value is not a json object, one of the following properties
 // will be valid: OfString OfFloat]
-type CustomMetadataFieldUpdateResponseSchemaMinValueUnion struct {
+type CustomMetadataFieldSchemaMinValueUnion struct {
 	// This field will be present if the value is a [string] instead of an object.
 	OfString string `json:",inline"`
 	// This field will be present if the value is a [float64] instead of an object.
@@ -610,31 +313,31 @@ type CustomMetadataFieldUpdateResponseSchemaMinValueUnion struct {
 	} `json:"-"`
 }
 
-func (u CustomMetadataFieldUpdateResponseSchemaMinValueUnion) AsString() (v string) {
+func (u CustomMetadataFieldSchemaMinValueUnion) AsString() (v string) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u CustomMetadataFieldUpdateResponseSchemaMinValueUnion) AsFloat() (v float64) {
+func (u CustomMetadataFieldSchemaMinValueUnion) AsFloat() (v float64) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
 // Returns the unmodified JSON received from the API
-func (u CustomMetadataFieldUpdateResponseSchemaMinValueUnion) RawJSON() string { return u.JSON.raw }
+func (u CustomMetadataFieldSchemaMinValueUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *CustomMetadataFieldUpdateResponseSchemaMinValueUnion) UnmarshalJSON(data []byte) error {
+func (r *CustomMetadataFieldSchemaMinValueUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// CustomMetadataFieldUpdateResponseSchemaSelectOptionUnion contains all possible
-// properties and values from [string], [float64], [bool].
+// CustomMetadataFieldSchemaSelectOptionUnion contains all possible properties and
+// values from [string], [float64], [bool].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 //
 // If the underlying value is not a json object, one of the following properties
 // will be valid: OfString OfFloat OfBool]
-type CustomMetadataFieldUpdateResponseSchemaSelectOptionUnion struct {
+type CustomMetadataFieldSchemaSelectOptionUnion struct {
 	// This field will be present if the value is a [string] instead of an object.
 	OfString string `json:",inline"`
 	// This field will be present if the value is a [float64] instead of an object.
@@ -649,319 +352,25 @@ type CustomMetadataFieldUpdateResponseSchemaSelectOptionUnion struct {
 	} `json:"-"`
 }
 
-func (u CustomMetadataFieldUpdateResponseSchemaSelectOptionUnion) AsString() (v string) {
+func (u CustomMetadataFieldSchemaSelectOptionUnion) AsString() (v string) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u CustomMetadataFieldUpdateResponseSchemaSelectOptionUnion) AsFloat() (v float64) {
+func (u CustomMetadataFieldSchemaSelectOptionUnion) AsFloat() (v float64) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u CustomMetadataFieldUpdateResponseSchemaSelectOptionUnion) AsBool() (v bool) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u CustomMetadataFieldUpdateResponseSchemaSelectOptionUnion) RawJSON() string { return u.JSON.raw }
-
-func (r *CustomMetadataFieldUpdateResponseSchemaSelectOptionUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Object containing details of a custom metadata field.
-type CustomMetadataFieldListResponse struct {
-	// Unique identifier for the custom metadata field. Use this to update the field.
-	ID string `json:"id,required"`
-	// Human readable name of the custom metadata field. This name is displayed as form
-	// field label to the users while setting field value on the asset in the media
-	// library UI.
-	Label string `json:"label,required"`
-	// API name of the custom metadata field. This becomes the key while setting
-	// `customMetadata` (key-value object) for an asset using upload or update API.
-	Name string `json:"name,required"`
-	// An object that describes the rules for the custom metadata field value.
-	Schema CustomMetadataFieldListResponseSchema `json:"schema,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		Label       respjson.Field
-		Name        respjson.Field
-		Schema      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r CustomMetadataFieldListResponse) RawJSON() string { return r.JSON.raw }
-func (r *CustomMetadataFieldListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// An object that describes the rules for the custom metadata field value.
-type CustomMetadataFieldListResponseSchema struct {
-	// Type of the custom metadata field.
-	//
-	// Any of "Text", "Textarea", "Number", "Date", "Boolean", "SingleSelect",
-	// "MultiSelect".
-	Type string `json:"type,required"`
-	// The default value for this custom metadata field. Date type of default value
-	// depends on the field type.
-	DefaultValue CustomMetadataFieldListResponseSchemaDefaultValueUnion `json:"defaultValue"`
-	// Specifies if the this custom metadata field is required or not.
-	IsValueRequired bool `json:"isValueRequired"`
-	// Maximum length of string. Only set if `type` is set to `Text` or `Textarea`.
-	MaxLength float64 `json:"maxLength"`
-	// Maximum value of the field. Only set if field type is `Date` or `Number`. For
-	// `Date` type field, the value will be in ISO8601 string format. For `Number` type
-	// field, it will be a numeric value.
-	MaxValue CustomMetadataFieldListResponseSchemaMaxValueUnion `json:"maxValue"`
-	// Minimum length of string. Only set if `type` is set to `Text` or `Textarea`.
-	MinLength float64 `json:"minLength"`
-	// Minimum value of the field. Only set if field type is `Date` or `Number`. For
-	// `Date` type field, the value will be in ISO8601 string format. For `Number` type
-	// field, it will be a numeric value.
-	MinValue CustomMetadataFieldListResponseSchemaMinValueUnion `json:"minValue"`
-	// An array of allowed values when field type is `SingleSelect` or `MultiSelect`.
-	SelectOptions []CustomMetadataFieldListResponseSchemaSelectOptionUnion `json:"selectOptions"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Type            respjson.Field
-		DefaultValue    respjson.Field
-		IsValueRequired respjson.Field
-		MaxLength       respjson.Field
-		MaxValue        respjson.Field
-		MinLength       respjson.Field
-		MinValue        respjson.Field
-		SelectOptions   respjson.Field
-		ExtraFields     map[string]respjson.Field
-		raw             string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r CustomMetadataFieldListResponseSchema) RawJSON() string { return r.JSON.raw }
-func (r *CustomMetadataFieldListResponseSchema) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// CustomMetadataFieldListResponseSchemaDefaultValueUnion contains all possible
-// properties and values from [string], [float64], [bool],
-// [[]CustomMetadataFieldListResponseSchemaDefaultValueMixedItemUnion].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfFloat OfBool OfMixed]
-type CustomMetadataFieldListResponseSchemaDefaultValueUnion struct {
-	// This field will be present if the value is a [string] instead of an object.
-	OfString string `json:",inline"`
-	// This field will be present if the value is a [float64] instead of an object.
-	OfFloat float64 `json:",inline"`
-	// This field will be present if the value is a [bool] instead of an object.
-	OfBool bool `json:",inline"`
-	// This field will be present if the value is a
-	// [[]CustomMetadataFieldListResponseSchemaDefaultValueMixedItemUnion] instead of
-	// an object.
-	OfMixed []CustomMetadataFieldListResponseSchemaDefaultValueMixedItemUnion `json:",inline"`
-	JSON    struct {
-		OfString respjson.Field
-		OfFloat  respjson.Field
-		OfBool   respjson.Field
-		OfMixed  respjson.Field
-		raw      string
-	} `json:"-"`
-}
-
-func (u CustomMetadataFieldListResponseSchemaDefaultValueUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u CustomMetadataFieldListResponseSchemaDefaultValueUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u CustomMetadataFieldListResponseSchemaDefaultValueUnion) AsBool() (v bool) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u CustomMetadataFieldListResponseSchemaDefaultValueUnion) AsMixed() (v []CustomMetadataFieldListResponseSchemaDefaultValueMixedItemUnion) {
+func (u CustomMetadataFieldSchemaSelectOptionUnion) AsBool() (v bool) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
 // Returns the unmodified JSON received from the API
-func (u CustomMetadataFieldListResponseSchemaDefaultValueUnion) RawJSON() string { return u.JSON.raw }
+func (u CustomMetadataFieldSchemaSelectOptionUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *CustomMetadataFieldListResponseSchemaDefaultValueUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// CustomMetadataFieldListResponseSchemaDefaultValueMixedItemUnion contains all
-// possible properties and values from [string], [float64], [bool].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfFloat OfBool]
-type CustomMetadataFieldListResponseSchemaDefaultValueMixedItemUnion struct {
-	// This field will be present if the value is a [string] instead of an object.
-	OfString string `json:",inline"`
-	// This field will be present if the value is a [float64] instead of an object.
-	OfFloat float64 `json:",inline"`
-	// This field will be present if the value is a [bool] instead of an object.
-	OfBool bool `json:",inline"`
-	JSON   struct {
-		OfString respjson.Field
-		OfFloat  respjson.Field
-		OfBool   respjson.Field
-		raw      string
-	} `json:"-"`
-}
-
-func (u CustomMetadataFieldListResponseSchemaDefaultValueMixedItemUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u CustomMetadataFieldListResponseSchemaDefaultValueMixedItemUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u CustomMetadataFieldListResponseSchemaDefaultValueMixedItemUnion) AsBool() (v bool) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u CustomMetadataFieldListResponseSchemaDefaultValueMixedItemUnion) RawJSON() string {
-	return u.JSON.raw
-}
-
-func (r *CustomMetadataFieldListResponseSchemaDefaultValueMixedItemUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// CustomMetadataFieldListResponseSchemaMaxValueUnion contains all possible
-// properties and values from [string], [float64].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfFloat]
-type CustomMetadataFieldListResponseSchemaMaxValueUnion struct {
-	// This field will be present if the value is a [string] instead of an object.
-	OfString string `json:",inline"`
-	// This field will be present if the value is a [float64] instead of an object.
-	OfFloat float64 `json:",inline"`
-	JSON    struct {
-		OfString respjson.Field
-		OfFloat  respjson.Field
-		raw      string
-	} `json:"-"`
-}
-
-func (u CustomMetadataFieldListResponseSchemaMaxValueUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u CustomMetadataFieldListResponseSchemaMaxValueUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u CustomMetadataFieldListResponseSchemaMaxValueUnion) RawJSON() string { return u.JSON.raw }
-
-func (r *CustomMetadataFieldListResponseSchemaMaxValueUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// CustomMetadataFieldListResponseSchemaMinValueUnion contains all possible
-// properties and values from [string], [float64].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfFloat]
-type CustomMetadataFieldListResponseSchemaMinValueUnion struct {
-	// This field will be present if the value is a [string] instead of an object.
-	OfString string `json:",inline"`
-	// This field will be present if the value is a [float64] instead of an object.
-	OfFloat float64 `json:",inline"`
-	JSON    struct {
-		OfString respjson.Field
-		OfFloat  respjson.Field
-		raw      string
-	} `json:"-"`
-}
-
-func (u CustomMetadataFieldListResponseSchemaMinValueUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u CustomMetadataFieldListResponseSchemaMinValueUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u CustomMetadataFieldListResponseSchemaMinValueUnion) RawJSON() string { return u.JSON.raw }
-
-func (r *CustomMetadataFieldListResponseSchemaMinValueUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// CustomMetadataFieldListResponseSchemaSelectOptionUnion contains all possible
-// properties and values from [string], [float64], [bool].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfFloat OfBool]
-type CustomMetadataFieldListResponseSchemaSelectOptionUnion struct {
-	// This field will be present if the value is a [string] instead of an object.
-	OfString string `json:",inline"`
-	// This field will be present if the value is a [float64] instead of an object.
-	OfFloat float64 `json:",inline"`
-	// This field will be present if the value is a [bool] instead of an object.
-	OfBool bool `json:",inline"`
-	JSON   struct {
-		OfString respjson.Field
-		OfFloat  respjson.Field
-		OfBool   respjson.Field
-		raw      string
-	} `json:"-"`
-}
-
-func (u CustomMetadataFieldListResponseSchemaSelectOptionUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u CustomMetadataFieldListResponseSchemaSelectOptionUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u CustomMetadataFieldListResponseSchemaSelectOptionUnion) AsBool() (v bool) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u CustomMetadataFieldListResponseSchemaSelectOptionUnion) RawJSON() string { return u.JSON.raw }
-
-func (r *CustomMetadataFieldListResponseSchemaSelectOptionUnion) UnmarshalJSON(data []byte) error {
+func (r *CustomMetadataFieldSchemaSelectOptionUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
