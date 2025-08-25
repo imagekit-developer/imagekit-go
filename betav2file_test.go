@@ -55,6 +55,8 @@ func TestBetaV2FileUploadWithOptionalParams(t *testing.T) {
 				MinConfidence: 95,
 				Name:          "google-auto-tagging",
 			},
+		}, {
+			OfAIAutoDescription: &imagekit.BetaV2FileUploadParamsExtensionAIAutoDescription{},
 		}},
 		Folder:                  imagekit.String("folder"),
 		IsPrivateFile:           imagekit.Bool(true),
