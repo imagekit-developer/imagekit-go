@@ -141,6 +141,10 @@ Methods:
 
 ## Origins
 
+Params Types:
+
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go">imagekit</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go#OriginUnionParam">OriginUnionParam</a>
+
 Response Types:
 
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go">imagekit</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go#AccountOriginNewResponseUnion">AccountOriginNewResponseUnion</a>
