@@ -18,6 +18,7 @@ Response Types:
 
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go">imagekit</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go#File">File</a>
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go">imagekit</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go#Folder">Folder</a>
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go">imagekit</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go#Metadata">Metadata</a>
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go">imagekit</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go#FileUpdateResponse">FileUpdateResponse</a>
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go">imagekit</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go#FileCopyResponse">FileCopyResponse</a>
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go">imagekit</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go#FileMoveResponse">FileMoveResponse</a>
@@ -65,15 +66,10 @@ Methods:
 
 ## Metadata
 
-Response Types:
-
-- <a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go">imagekit</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go#FileMetadataGetResponse">FileMetadataGetResponse</a>
-- <a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go">imagekit</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go#FileMetadataGetFromURLResponse">FileMetadataGetFromURLResponse</a>
-
 Methods:
 
-- <code title="get /v1/files/{fileId}/metadata">client.Files.Metadata.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go#FileMetadataService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, fileID <a href="https://pkg.go.dev/builtin#string">string</a>) (<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go">imagekit</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go#FileMetadataGetResponse">FileMetadataGetResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
-- <code title="get /v1/files/metadata">client.Files.Metadata.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go#FileMetadataService.GetFromURL">GetFromURL</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go">imagekit</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go#FileMetadataGetFromURLParams">FileMetadataGetFromURLParams</a>) (<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go">imagekit</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go#FileMetadataGetFromURLResponse">FileMetadataGetFromURLResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /v1/files/{fileId}/metadata">client.Files.Metadata.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go#FileMetadataService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, fileID <a href="https://pkg.go.dev/builtin#string">string</a>) (<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go">imagekit</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go#Metadata">Metadata</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /v1/files/metadata">client.Files.Metadata.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go#FileMetadataService.GetFromURL">GetFromURL</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go">imagekit</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go#FileMetadataGetFromURLParams">FileMetadataGetFromURLParams</a>) (<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go">imagekit</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go#Metadata">Metadata</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 # Assets
 
