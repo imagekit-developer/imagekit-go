@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/url"
+	"time"
 
 	"github.com/stainless-sdks/imagekit-go/internal/apijson"
 	"github.com/stainless-sdks/imagekit-go/internal/apiquery"
@@ -49,11 +50,13 @@ func (r *AssetService) List(ctx context.Context, query AssetListParams, opts ...
 // AssetListResponseUnion contains all possible properties and values from
 // [AssetListResponseFileFileVersion], [AssetListResponseFolder].
 //
+// Use the [AssetListResponseUnion.AsAny] method to switch on the variant.
+//
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type AssetListResponseUnion struct {
 	// This field is from variant [AssetListResponseFileFileVersion].
 	AITags    []AssetListResponseFileFileVersionAITag `json:"AITags"`
-	CreatedAt string                                  `json:"createdAt"`
+	CreatedAt time.Time                               `json:"createdAt"`
 	// This field is from variant [AssetListResponseFileFileVersion].
 	CustomCoordinates string `json:"customCoordinates"`
 	// This field is from variant [AssetListResponseFileFileVersion].
@@ -81,8 +84,9 @@ type AssetListResponseUnion struct {
 	Tags []string `json:"tags"`
 	// This field is from variant [AssetListResponseFileFileVersion].
 	Thumbnail string `json:"thumbnail"`
-	Type      string `json:"type"`
-	UpdatedAt string `json:"updatedAt"`
+	// Any of nil, "folder".
+	Type      string    `json:"type"`
+	UpdatedAt time.Time `json:"updatedAt"`
 	// This field is from variant [AssetListResponseFileFileVersion].
 	URL string `json:"url"`
 	// This field is from variant [AssetListResponseFileFileVersion].
@@ -144,7 +148,7 @@ type AssetListResponseFileFileVersion struct {
 	AITags []AssetListResponseFileFileVersionAITag `json:"AITags,nullable"`
 	// Date and time when the file was uploaded. The date and time is in ISO8601
 	// format.
-	CreatedAt string `json:"createdAt"`
+	CreatedAt time.Time `json:"createdAt" format:"date-time"`
 	// An string with custom coordinates of the file.
 	CustomCoordinates string `json:"customCoordinates,nullable"`
 	// An object with custom metadata for the file.
@@ -177,14 +181,16 @@ type AssetListResponseFileFileVersion struct {
 	Tags []string `json:"tags,nullable"`
 	// URL of the thumbnail image. This URL is used to access the thumbnail image of
 	// the file in the media library.
-	Thumbnail string `json:"thumbnail"`
+	Thumbnail string `json:"thumbnail" format:"uri"`
 	// Type of the asset.
+	//
+	// Any of "file", "file-version".
 	Type string `json:"type"`
 	// Date and time when the file was last updated. The date and time is in ISO8601
 	// format.
-	UpdatedAt string `json:"updatedAt"`
+	UpdatedAt time.Time `json:"updatedAt" format:"date-time"`
 	// URL of the file.
-	URL string `json:"url"`
+	URL string `json:"url" format:"uri"`
 	// An object with details of the file version.
 	VersionInfo AssetListResponseFileFileVersionVersionInfo `json:"versionInfo"`
 	// Width of the file.
@@ -271,7 +277,7 @@ func (r *AssetListResponseFileFileVersionVersionInfo) UnmarshalJSON(data []byte)
 type AssetListResponseFolder struct {
 	// Date and time when the folder was created. The date and time is in ISO8601
 	// format.
-	CreatedAt string `json:"createdAt"`
+	CreatedAt time.Time `json:"createdAt" format:"date-time"`
 	// Unique identifier of the asset.
 	FolderID string `json:"folderId"`
 	// Path of the folder. This is the path you would use in the URL to access the
@@ -287,7 +293,7 @@ type AssetListResponseFolder struct {
 	Type string `json:"type"`
 	// Date and time when the folder was last updated. The date and time is in ISO8601
 	// format.
-	UpdatedAt string `json:"updatedAt"`
+	UpdatedAt time.Time `json:"updatedAt" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CreatedAt   respjson.Field

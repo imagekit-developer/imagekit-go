@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/stainless-sdks/imagekit-go/internal/apijson"
 	"github.com/stainless-sdks/imagekit-go/internal/requestconfig"
@@ -102,7 +103,7 @@ type FileVersionListResponse struct {
 	AITags []FileVersionListResponseAITag `json:"AITags,nullable"`
 	// Date and time when the file was uploaded. The date and time is in ISO8601
 	// format.
-	CreatedAt string `json:"createdAt"`
+	CreatedAt time.Time `json:"createdAt" format:"date-time"`
 	// An string with custom coordinates of the file.
 	CustomCoordinates string `json:"customCoordinates,nullable"`
 	// An object with custom metadata for the file.
@@ -135,14 +136,16 @@ type FileVersionListResponse struct {
 	Tags []string `json:"tags,nullable"`
 	// URL of the thumbnail image. This URL is used to access the thumbnail image of
 	// the file in the media library.
-	Thumbnail string `json:"thumbnail"`
+	Thumbnail string `json:"thumbnail" format:"uri"`
 	// Type of the asset.
-	Type string `json:"type"`
+	//
+	// Any of "file", "file-version".
+	Type FileVersionListResponseType `json:"type"`
 	// Date and time when the file was last updated. The date and time is in ISO8601
 	// format.
-	UpdatedAt string `json:"updatedAt"`
+	UpdatedAt time.Time `json:"updatedAt" format:"date-time"`
 	// URL of the file.
-	URL string `json:"url"`
+	URL string `json:"url" format:"uri"`
 	// An object with details of the file version.
 	VersionInfo FileVersionListResponseVersionInfo `json:"versionInfo"`
 	// Width of the file.
@@ -205,6 +208,14 @@ func (r *FileVersionListResponseAITag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Type of the asset.
+type FileVersionListResponseType string
+
+const (
+	FileVersionListResponseTypeFile        FileVersionListResponseType = "file"
+	FileVersionListResponseTypeFileVersion FileVersionListResponseType = "file-version"
+)
+
 // An object with details of the file version.
 type FileVersionListResponseVersionInfo struct {
 	// Unique identifier of the file version.
@@ -246,7 +257,7 @@ type FileVersionGetResponse struct {
 	AITags []FileVersionGetResponseAITag `json:"AITags,nullable"`
 	// Date and time when the file was uploaded. The date and time is in ISO8601
 	// format.
-	CreatedAt string `json:"createdAt"`
+	CreatedAt time.Time `json:"createdAt" format:"date-time"`
 	// An string with custom coordinates of the file.
 	CustomCoordinates string `json:"customCoordinates,nullable"`
 	// An object with custom metadata for the file.
@@ -279,14 +290,16 @@ type FileVersionGetResponse struct {
 	Tags []string `json:"tags,nullable"`
 	// URL of the thumbnail image. This URL is used to access the thumbnail image of
 	// the file in the media library.
-	Thumbnail string `json:"thumbnail"`
+	Thumbnail string `json:"thumbnail" format:"uri"`
 	// Type of the asset.
-	Type string `json:"type"`
+	//
+	// Any of "file", "file-version".
+	Type FileVersionGetResponseType `json:"type"`
 	// Date and time when the file was last updated. The date and time is in ISO8601
 	// format.
-	UpdatedAt string `json:"updatedAt"`
+	UpdatedAt time.Time `json:"updatedAt" format:"date-time"`
 	// URL of the file.
-	URL string `json:"url"`
+	URL string `json:"url" format:"uri"`
 	// An object with details of the file version.
 	VersionInfo FileVersionGetResponseVersionInfo `json:"versionInfo"`
 	// Width of the file.
@@ -349,6 +362,14 @@ func (r *FileVersionGetResponseAITag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Type of the asset.
+type FileVersionGetResponseType string
+
+const (
+	FileVersionGetResponseTypeFile        FileVersionGetResponseType = "file"
+	FileVersionGetResponseTypeFileVersion FileVersionGetResponseType = "file-version"
+)
+
 // An object with details of the file version.
 type FileVersionGetResponseVersionInfo struct {
 	// Unique identifier of the file version.
@@ -376,7 +397,7 @@ type FileVersionRestoreResponse struct {
 	AITags []FileVersionRestoreResponseAITag `json:"AITags,nullable"`
 	// Date and time when the file was uploaded. The date and time is in ISO8601
 	// format.
-	CreatedAt string `json:"createdAt"`
+	CreatedAt time.Time `json:"createdAt" format:"date-time"`
 	// An string with custom coordinates of the file.
 	CustomCoordinates string `json:"customCoordinates,nullable"`
 	// An object with custom metadata for the file.
@@ -409,14 +430,16 @@ type FileVersionRestoreResponse struct {
 	Tags []string `json:"tags,nullable"`
 	// URL of the thumbnail image. This URL is used to access the thumbnail image of
 	// the file in the media library.
-	Thumbnail string `json:"thumbnail"`
+	Thumbnail string `json:"thumbnail" format:"uri"`
 	// Type of the asset.
-	Type string `json:"type"`
+	//
+	// Any of "file", "file-version".
+	Type FileVersionRestoreResponseType `json:"type"`
 	// Date and time when the file was last updated. The date and time is in ISO8601
 	// format.
-	UpdatedAt string `json:"updatedAt"`
+	UpdatedAt time.Time `json:"updatedAt" format:"date-time"`
 	// URL of the file.
-	URL string `json:"url"`
+	URL string `json:"url" format:"uri"`
 	// An object with details of the file version.
 	VersionInfo FileVersionRestoreResponseVersionInfo `json:"versionInfo"`
 	// Width of the file.
@@ -478,6 +501,14 @@ func (r FileVersionRestoreResponseAITag) RawJSON() string { return r.JSON.raw }
 func (r *FileVersionRestoreResponseAITag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// Type of the asset.
+type FileVersionRestoreResponseType string
+
+const (
+	FileVersionRestoreResponseTypeFile        FileVersionRestoreResponseType = "file"
+	FileVersionRestoreResponseTypeFileVersion FileVersionRestoreResponseType = "file-version"
+)
 
 // An object with details of the file version.
 type FileVersionRestoreResponseVersionInfo struct {
