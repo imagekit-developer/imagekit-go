@@ -51,11 +51,14 @@ type FolderJobGetResponse struct {
 	// Unique identifier of the purge request. This will be present only if
 	// `purgeCache` is set to `true` in the rename folder API request.
 	PurgeRequestID string `json:"purgeRequestId"`
-	// Status of the bulk job. Possible values - `Pending`, `Completed`.
-	Status string `json:"status"`
-	// Type of the bulk job. Possible values - `COPY_FOLDER`, `MOVE_FOLDER`,
-	// `RENAME_FOLDER`.
-	Type string `json:"type"`
+	// Status of the bulk job.
+	//
+	// Any of "Pending", "Completed".
+	Status FolderJobGetResponseStatus `json:"status"`
+	// Type of the bulk job.
+	//
+	// Any of "COPY_FOLDER", "MOVE_FOLDER", "RENAME_FOLDER".
+	Type FolderJobGetResponseType `json:"type"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		JobID          respjson.Field
@@ -72,3 +75,20 @@ func (r FolderJobGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *FolderJobGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// Status of the bulk job.
+type FolderJobGetResponseStatus string
+
+const (
+	FolderJobGetResponseStatusPending   FolderJobGetResponseStatus = "Pending"
+	FolderJobGetResponseStatusCompleted FolderJobGetResponseStatus = "Completed"
+)
+
+// Type of the bulk job.
+type FolderJobGetResponseType string
+
+const (
+	FolderJobGetResponseTypeCopyFolder   FolderJobGetResponseType = "COPY_FOLDER"
+	FolderJobGetResponseTypeMoveFolder   FolderJobGetResponseType = "MOVE_FOLDER"
+	FolderJobGetResponseTypeRenameFolder FolderJobGetResponseType = "RENAME_FOLDER"
+)
