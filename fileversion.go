@@ -12,6 +12,7 @@ import (
 	"github.com/stainless-sdks/imagekit-go/internal/requestconfig"
 	"github.com/stainless-sdks/imagekit-go/option"
 	"github.com/stainless-sdks/imagekit-go/packages/respjson"
+	"github.com/stainless-sdks/imagekit-go/shared"
 )
 
 // FileVersionService contains methods and other services that help with
@@ -34,7 +35,7 @@ func NewFileVersionService(opts ...option.RequestOption) (r FileVersionService) 
 }
 
 // This API returns details of all versions of a file.
-func (r *FileVersionService) List(ctx context.Context, fileID string, opts ...option.RequestOption) (res *[]File, err error) {
+func (r *FileVersionService) List(ctx context.Context, fileID string, opts ...option.RequestOption) (res *[]shared.File, err error) {
 	opts = append(r.Options[:], opts...)
 	if fileID == "" {
 		err = errors.New("missing required fileId parameter")
@@ -65,7 +66,7 @@ func (r *FileVersionService) Delete(ctx context.Context, versionID string, body 
 }
 
 // This API returns an object with details or attributes of a file version.
-func (r *FileVersionService) Get(ctx context.Context, versionID string, query FileVersionGetParams, opts ...option.RequestOption) (res *File, err error) {
+func (r *FileVersionService) Get(ctx context.Context, versionID string, query FileVersionGetParams, opts ...option.RequestOption) (res *shared.File, err error) {
 	opts = append(r.Options[:], opts...)
 	if query.FileID == "" {
 		err = errors.New("missing required fileId parameter")
@@ -81,7 +82,7 @@ func (r *FileVersionService) Get(ctx context.Context, versionID string, query Fi
 }
 
 // This API restores a file version as the current file version.
-func (r *FileVersionService) Restore(ctx context.Context, versionID string, body FileVersionRestoreParams, opts ...option.RequestOption) (res *File, err error) {
+func (r *FileVersionService) Restore(ctx context.Context, versionID string, body FileVersionRestoreParams, opts ...option.RequestOption) (res *shared.File, err error) {
 	opts = append(r.Options[:], opts...)
 	if body.FileID == "" {
 		err = errors.New("missing required fileId parameter")

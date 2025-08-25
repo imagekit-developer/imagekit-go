@@ -15,6 +15,7 @@ import (
 	"github.com/stainless-sdks/imagekit-go/option"
 	"github.com/stainless-sdks/imagekit-go/packages/param"
 	"github.com/stainless-sdks/imagekit-go/packages/respjson"
+	"github.com/stainless-sdks/imagekit-go/shared"
 )
 
 // AssetService contains methods and other services that help with interacting with
@@ -47,57 +48,57 @@ func (r *AssetService) List(ctx context.Context, query AssetListParams, opts ...
 	return
 }
 
-// AssetListResponseUnion contains all possible properties and values from [File],
-// [Folder].
+// AssetListResponseUnion contains all possible properties and values from
+// [shared.File], [shared.Folder].
 //
 // Use the [AssetListResponseUnion.AsAny] method to switch on the variant.
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type AssetListResponseUnion struct {
-	// This field is from variant [File].
-	AITags    []FileAITag `json:"AITags"`
-	CreatedAt time.Time   `json:"createdAt"`
-	// This field is from variant [File].
+	// This field is from variant [shared.File].
+	AITags    []shared.FileAITag `json:"AITags"`
+	CreatedAt time.Time          `json:"createdAt"`
+	// This field is from variant [shared.File].
 	CustomCoordinates string `json:"customCoordinates"`
-	// This field is from variant [File].
+	// This field is from variant [shared.File].
 	CustomMetadata map[string]any `json:"customMetadata"`
-	// This field is from variant [File].
+	// This field is from variant [shared.File].
 	Description string `json:"description"`
-	// This field is from variant [File].
+	// This field is from variant [shared.File].
 	FileID string `json:"fileId"`
-	// This field is from variant [File].
+	// This field is from variant [shared.File].
 	FilePath string `json:"filePath"`
-	// This field is from variant [File].
+	// This field is from variant [shared.File].
 	FileType string `json:"fileType"`
-	// This field is from variant [File].
+	// This field is from variant [shared.File].
 	HasAlpha bool `json:"hasAlpha"`
-	// This field is from variant [File].
+	// This field is from variant [shared.File].
 	Height float64 `json:"height"`
-	// This field is from variant [File].
+	// This field is from variant [shared.File].
 	IsPrivateFile bool `json:"isPrivateFile"`
-	// This field is from variant [File].
+	// This field is from variant [shared.File].
 	IsPublished bool `json:"isPublished"`
-	// This field is from variant [File].
+	// This field is from variant [shared.File].
 	Mime string `json:"mime"`
 	Name string `json:"name"`
-	// This field is from variant [File].
+	// This field is from variant [shared.File].
 	Size float64 `json:"size"`
-	// This field is from variant [File].
+	// This field is from variant [shared.File].
 	Tags []string `json:"tags"`
-	// This field is from variant [File].
+	// This field is from variant [shared.File].
 	Thumbnail string `json:"thumbnail"`
 	// Any of nil, "folder".
 	Type      string    `json:"type"`
 	UpdatedAt time.Time `json:"updatedAt"`
-	// This field is from variant [File].
+	// This field is from variant [shared.File].
 	URL string `json:"url"`
-	// This field is from variant [File].
-	VersionInfo FileVersionInfo `json:"versionInfo"`
-	// This field is from variant [File].
+	// This field is from variant [shared.File].
+	VersionInfo shared.FileVersionInfo `json:"versionInfo"`
+	// This field is from variant [shared.File].
 	Width float64 `json:"width"`
-	// This field is from variant [Folder].
+	// This field is from variant [shared.Folder].
 	FolderID string `json:"folderId"`
-	// This field is from variant [Folder].
+	// This field is from variant [shared.Folder].
 	FolderPath string `json:"folderPath"`
 	JSON       struct {
 		AITags            respjson.Field
@@ -128,12 +129,12 @@ type AssetListResponseUnion struct {
 	} `json:"-"`
 }
 
-func (u AssetListResponseUnion) AsFileFileVersion() (v File) {
+func (u AssetListResponseUnion) AsFileFileVersion() (v shared.File) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u AssetListResponseUnion) AsFolder() (v Folder) {
+func (u AssetListResponseUnion) AsFolder() (v shared.Folder) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
