@@ -643,21 +643,22 @@ func (r *OriginAkeneoPimParam) UnmarshalJSON(data []byte) error {
 // AccountOriginNewResponseUnion contains all possible properties and values from
 // [AccountOriginNewResponseS3], [AccountOriginNewResponseS3Compatible],
 // [AccountOriginNewResponseCloudinaryBackup], [AccountOriginNewResponseWebFolder],
-// [AccountOriginNewResponseWebProxy],
-// [AccountOriginNewResponseGoogleCloudStorageGcs],
-// [AccountOriginNewResponseAzureBlobStorage], [AccountOriginNewResponseAkeneoPim].
+// [AccountOriginNewResponseWebProxy], [AccountOriginNewResponseGcs],
+// [AccountOriginNewResponseAzureBlob], [AccountOriginNewResponseAkeneoPim].
+//
+// Use the [AccountOriginNewResponseUnion.AsAny] method to switch on the variant.
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type AccountOriginNewResponseUnion struct {
-	AccessKey                 string `json:"accessKey"`
-	Bucket                    string `json:"bucket"`
-	Name                      string `json:"name"`
-	SecretKey                 string `json:"secretKey"`
+	ID                     string `json:"id"`
+	Bucket                 string `json:"bucket"`
+	IncludeCanonicalHeader bool   `json:"includeCanonicalHeader"`
+	Name                   string `json:"name"`
+	Prefix                 string `json:"prefix"`
+	// Any of "S3", "S3_COMPATIBLE", "CLOUDINARY_BACKUP", "WEB_FOLDER", "WEB_PROXY",
+	// "GCS", "AZURE_BLOB", "AKENEO_PIM".
 	Type                      string `json:"type"`
-	ID                        string `json:"id"`
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader"`
-	IncludeCanonicalHeader    bool   `json:"includeCanonicalHeader"`
-	Prefix                    string `json:"prefix"`
 	// This field is from variant [AccountOriginNewResponseS3Compatible].
 	Endpoint string `json:"endpoint"`
 	// This field is from variant [AccountOriginNewResponseS3Compatible].
@@ -665,49 +666,81 @@ type AccountOriginNewResponseUnion struct {
 	BaseURL          string `json:"baseUrl"`
 	// This field is from variant [AccountOriginNewResponseWebFolder].
 	ForwardHostHeaderToOrigin bool `json:"forwardHostHeaderToOrigin"`
-	// This field is from variant [AccountOriginNewResponseGoogleCloudStorageGcs].
+	// This field is from variant [AccountOriginNewResponseGcs].
 	ClientEmail string `json:"clientEmail"`
-	// This field is from variant [AccountOriginNewResponseGoogleCloudStorageGcs].
-	PrivateKey string `json:"privateKey"`
-	// This field is from variant [AccountOriginNewResponseAzureBlobStorage].
+	// This field is from variant [AccountOriginNewResponseAzureBlob].
 	AccountName string `json:"accountName"`
-	// This field is from variant [AccountOriginNewResponseAzureBlobStorage].
+	// This field is from variant [AccountOriginNewResponseAzureBlob].
 	Container string `json:"container"`
-	// This field is from variant [AccountOriginNewResponseAzureBlobStorage].
-	SasToken string `json:"sasToken"`
-	// This field is from variant [AccountOriginNewResponseAkeneoPim].
-	ClientID string `json:"clientId"`
-	// This field is from variant [AccountOriginNewResponseAkeneoPim].
-	ClientSecret string `json:"clientSecret"`
-	// This field is from variant [AccountOriginNewResponseAkeneoPim].
-	Password string `json:"password"`
-	// This field is from variant [AccountOriginNewResponseAkeneoPim].
-	Username string `json:"username"`
-	JSON     struct {
-		AccessKey                 respjson.Field
-		Bucket                    respjson.Field
-		Name                      respjson.Field
-		SecretKey                 respjson.Field
-		Type                      respjson.Field
+	JSON      struct {
 		ID                        respjson.Field
-		BaseURLForCanonicalHeader respjson.Field
+		Bucket                    respjson.Field
 		IncludeCanonicalHeader    respjson.Field
+		Name                      respjson.Field
 		Prefix                    respjson.Field
+		Type                      respjson.Field
+		BaseURLForCanonicalHeader respjson.Field
 		Endpoint                  respjson.Field
 		S3ForcePathStyle          respjson.Field
 		BaseURL                   respjson.Field
 		ForwardHostHeaderToOrigin respjson.Field
 		ClientEmail               respjson.Field
-		PrivateKey                respjson.Field
 		AccountName               respjson.Field
 		Container                 respjson.Field
-		SasToken                  respjson.Field
-		ClientID                  respjson.Field
-		ClientSecret              respjson.Field
-		Password                  respjson.Field
-		Username                  respjson.Field
 		raw                       string
 	} `json:"-"`
+}
+
+// anyAccountOriginNewResponse is implemented by each variant of
+// [AccountOriginNewResponseUnion] to add type safety for the return type of
+// [AccountOriginNewResponseUnion.AsAny]
+type anyAccountOriginNewResponse interface {
+	implAccountOriginNewResponseUnion()
+}
+
+func (AccountOriginNewResponseS3) implAccountOriginNewResponseUnion()               {}
+func (AccountOriginNewResponseS3Compatible) implAccountOriginNewResponseUnion()     {}
+func (AccountOriginNewResponseCloudinaryBackup) implAccountOriginNewResponseUnion() {}
+func (AccountOriginNewResponseWebFolder) implAccountOriginNewResponseUnion()        {}
+func (AccountOriginNewResponseWebProxy) implAccountOriginNewResponseUnion()         {}
+func (AccountOriginNewResponseGcs) implAccountOriginNewResponseUnion()              {}
+func (AccountOriginNewResponseAzureBlob) implAccountOriginNewResponseUnion()        {}
+func (AccountOriginNewResponseAkeneoPim) implAccountOriginNewResponseUnion()        {}
+
+// Use the following switch statement to find the correct variant
+//
+//	switch variant := AccountOriginNewResponseUnion.AsAny().(type) {
+//	case imagekit.AccountOriginNewResponseS3:
+//	case imagekit.AccountOriginNewResponseS3Compatible:
+//	case imagekit.AccountOriginNewResponseCloudinaryBackup:
+//	case imagekit.AccountOriginNewResponseWebFolder:
+//	case imagekit.AccountOriginNewResponseWebProxy:
+//	case imagekit.AccountOriginNewResponseGcs:
+//	case imagekit.AccountOriginNewResponseAzureBlob:
+//	case imagekit.AccountOriginNewResponseAkeneoPim:
+//	default:
+//	  fmt.Errorf("no variant present")
+//	}
+func (u AccountOriginNewResponseUnion) AsAny() anyAccountOriginNewResponse {
+	switch u.Type {
+	case "S3":
+		return u.AsS3()
+	case "S3_COMPATIBLE":
+		return u.AsS3Compatible()
+	case "CLOUDINARY_BACKUP":
+		return u.AsCloudinaryBackup()
+	case "WEB_FOLDER":
+		return u.AsWebFolder()
+	case "WEB_PROXY":
+		return u.AsWebProxy()
+	case "GCS":
+		return u.AsGcs()
+	case "AZURE_BLOB":
+		return u.AsAzureBlob()
+	case "AKENEO_PIM":
+		return u.AsAkeneoPim()
+	}
+	return nil
 }
 
 func (u AccountOriginNewResponseUnion) AsS3() (v AccountOriginNewResponseS3) {
@@ -735,12 +768,12 @@ func (u AccountOriginNewResponseUnion) AsWebProxy() (v AccountOriginNewResponseW
 	return
 }
 
-func (u AccountOriginNewResponseUnion) AsGoogleCloudStorageGcs() (v AccountOriginNewResponseGoogleCloudStorageGcs) {
+func (u AccountOriginNewResponseUnion) AsGcs() (v AccountOriginNewResponseGcs) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u AccountOriginNewResponseUnion) AsAzureBlobStorage() (v AccountOriginNewResponseAzureBlobStorage) {
+func (u AccountOriginNewResponseUnion) AsAzureBlob() (v AccountOriginNewResponseAzureBlob) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -758,33 +791,29 @@ func (r *AccountOriginNewResponseUnion) UnmarshalJSON(data []byte) error {
 }
 
 type AccountOriginNewResponseS3 struct {
-	// Access key for the bucket.
-	AccessKey string `json:"accessKey,required"`
+	// Unique identifier for the origin. This is generated by ImageKit when you create
+	// a new origin.
+	ID string `json:"id,required"`
 	// S3 bucket name.
 	Bucket string `json:"bucket,required"`
+	// Whether to send a Canonical header.
+	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
 	Name string `json:"name,required"`
-	// Secret key for the bucket.
-	SecretKey string      `json:"secretKey,required"`
-	Type      constant.S3 `json:"type,required"`
-	ID        string      `json:"id"`
+	// Path prefix inside the bucket.
+	Prefix string      `json:"prefix,required"`
+	Type   constant.S3 `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
-	// Whether to send a Canonical header.
-	IncludeCanonicalHeader bool `json:"includeCanonicalHeader"`
-	// Path prefix inside the bucket.
-	Prefix string `json:"prefix"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		AccessKey                 respjson.Field
-		Bucket                    respjson.Field
-		Name                      respjson.Field
-		SecretKey                 respjson.Field
-		Type                      respjson.Field
 		ID                        respjson.Field
-		BaseURLForCanonicalHeader respjson.Field
+		Bucket                    respjson.Field
 		IncludeCanonicalHeader    respjson.Field
+		Name                      respjson.Field
 		Prefix                    respjson.Field
+		Type                      respjson.Field
+		BaseURLForCanonicalHeader respjson.Field
 		ExtraFields               map[string]respjson.Field
 		raw                       string
 	} `json:"-"`
@@ -797,39 +826,35 @@ func (r *AccountOriginNewResponseS3) UnmarshalJSON(data []byte) error {
 }
 
 type AccountOriginNewResponseS3Compatible struct {
-	// Access key for the bucket.
-	AccessKey string `json:"accessKey,required"`
+	// Unique identifier for the origin. This is generated by ImageKit when you create
+	// a new origin.
+	ID string `json:"id,required"`
 	// S3 bucket name.
 	Bucket string `json:"bucket,required"`
 	// Custom S3-compatible endpoint.
 	Endpoint string `json:"endpoint,required" format:"uri"`
+	// Whether to send a Canonical header.
+	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
 	Name string `json:"name,required"`
-	// Secret key for the bucket.
-	SecretKey string                `json:"secretKey,required"`
-	Type      constant.S3Compatible `json:"type,required"`
-	ID        string                `json:"id"`
+	// Path prefix inside the bucket.
+	Prefix string `json:"prefix,required"`
+	// Use path-style S3 URLs?
+	S3ForcePathStyle bool                  `json:"s3ForcePathStyle,required"`
+	Type             constant.S3Compatible `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
-	// Whether to send a Canonical header.
-	IncludeCanonicalHeader bool `json:"includeCanonicalHeader"`
-	// Path prefix inside the bucket.
-	Prefix string `json:"prefix"`
-	// Use path-style S3 URLs?
-	S3ForcePathStyle bool `json:"s3ForcePathStyle"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		AccessKey                 respjson.Field
+		ID                        respjson.Field
 		Bucket                    respjson.Field
 		Endpoint                  respjson.Field
-		Name                      respjson.Field
-		SecretKey                 respjson.Field
-		Type                      respjson.Field
-		ID                        respjson.Field
-		BaseURLForCanonicalHeader respjson.Field
 		IncludeCanonicalHeader    respjson.Field
+		Name                      respjson.Field
 		Prefix                    respjson.Field
 		S3ForcePathStyle          respjson.Field
+		Type                      respjson.Field
+		BaseURLForCanonicalHeader respjson.Field
 		ExtraFields               map[string]respjson.Field
 		raw                       string
 	} `json:"-"`
@@ -842,33 +867,29 @@ func (r *AccountOriginNewResponseS3Compatible) UnmarshalJSON(data []byte) error 
 }
 
 type AccountOriginNewResponseCloudinaryBackup struct {
-	// Access key for the bucket.
-	AccessKey string `json:"accessKey,required"`
+	// Unique identifier for the origin. This is generated by ImageKit when you create
+	// a new origin.
+	ID string `json:"id,required"`
 	// S3 bucket name.
 	Bucket string `json:"bucket,required"`
+	// Whether to send a Canonical header.
+	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
 	Name string `json:"name,required"`
-	// Secret key for the bucket.
-	SecretKey string                    `json:"secretKey,required"`
-	Type      constant.CloudinaryBackup `json:"type,required"`
-	ID        string                    `json:"id"`
+	// Path prefix inside the bucket.
+	Prefix string                    `json:"prefix,required"`
+	Type   constant.CloudinaryBackup `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
-	// Whether to send a Canonical header.
-	IncludeCanonicalHeader bool `json:"includeCanonicalHeader"`
-	// Path prefix inside the bucket.
-	Prefix string `json:"prefix"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		AccessKey                 respjson.Field
-		Bucket                    respjson.Field
-		Name                      respjson.Field
-		SecretKey                 respjson.Field
-		Type                      respjson.Field
 		ID                        respjson.Field
-		BaseURLForCanonicalHeader respjson.Field
+		Bucket                    respjson.Field
 		IncludeCanonicalHeader    respjson.Field
+		Name                      respjson.Field
 		Prefix                    respjson.Field
+		Type                      respjson.Field
+		BaseURLForCanonicalHeader respjson.Field
 		ExtraFields               map[string]respjson.Field
 		raw                       string
 	} `json:"-"`
@@ -881,27 +902,29 @@ func (r *AccountOriginNewResponseCloudinaryBackup) UnmarshalJSON(data []byte) er
 }
 
 type AccountOriginNewResponseWebFolder struct {
+	// Unique identifier for the origin. This is generated by ImageKit when you create
+	// a new origin.
+	ID string `json:"id,required"`
 	// Root URL for the web folder origin.
 	BaseURL string `json:"baseUrl,required" format:"uri"`
+	// Forward the Host header to origin?
+	ForwardHostHeaderToOrigin bool `json:"forwardHostHeaderToOrigin,required"`
+	// Whether to send a Canonical header.
+	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
 	Name string             `json:"name,required"`
 	Type constant.WebFolder `json:"type,required"`
-	ID   string             `json:"id"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
-	// Forward the Host header to origin?
-	ForwardHostHeaderToOrigin bool `json:"forwardHostHeaderToOrigin"`
-	// Whether to send a Canonical header.
-	IncludeCanonicalHeader bool `json:"includeCanonicalHeader"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		BaseURL                   respjson.Field
-		Name                      respjson.Field
-		Type                      respjson.Field
 		ID                        respjson.Field
-		BaseURLForCanonicalHeader respjson.Field
+		BaseURL                   respjson.Field
 		ForwardHostHeaderToOrigin respjson.Field
 		IncludeCanonicalHeader    respjson.Field
+		Name                      respjson.Field
+		Type                      respjson.Field
+		BaseURLForCanonicalHeader respjson.Field
 		ExtraFields               map[string]respjson.Field
 		raw                       string
 	} `json:"-"`
@@ -914,21 +937,23 @@ func (r *AccountOriginNewResponseWebFolder) UnmarshalJSON(data []byte) error {
 }
 
 type AccountOriginNewResponseWebProxy struct {
+	// Unique identifier for the origin. This is generated by ImageKit when you create
+	// a new origin.
+	ID string `json:"id,required"`
+	// Whether to send a Canonical header.
+	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
 	Name string            `json:"name,required"`
 	Type constant.WebProxy `json:"type,required"`
-	ID   string            `json:"id"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
-	// Whether to send a Canonical header.
-	IncludeCanonicalHeader bool `json:"includeCanonicalHeader"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID                        respjson.Field
+		IncludeCanonicalHeader    respjson.Field
 		Name                      respjson.Field
 		Type                      respjson.Field
-		ID                        respjson.Field
 		BaseURLForCanonicalHeader respjson.Field
-		IncludeCanonicalHeader    respjson.Field
 		ExtraFields               map[string]respjson.Field
 		raw                       string
 	} `json:"-"`
@@ -940,107 +965,97 @@ func (r *AccountOriginNewResponseWebProxy) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AccountOriginNewResponseGoogleCloudStorageGcs struct {
+type AccountOriginNewResponseGcs struct {
+	// Unique identifier for the origin. This is generated by ImageKit when you create
+	// a new origin.
+	ID          string `json:"id,required"`
 	Bucket      string `json:"bucket,required"`
 	ClientEmail string `json:"clientEmail,required" format:"email"`
+	// Whether to send a Canonical header.
+	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
-	Name       string       `json:"name,required"`
-	PrivateKey string       `json:"privateKey,required"`
-	Type       constant.Gcs `json:"type,required"`
-	ID         string       `json:"id"`
+	Name   string       `json:"name,required"`
+	Prefix string       `json:"prefix,required"`
+	Type   constant.Gcs `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
-	// Whether to send a Canonical header.
-	IncludeCanonicalHeader bool   `json:"includeCanonicalHeader"`
-	Prefix                 string `json:"prefix"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID                        respjson.Field
 		Bucket                    respjson.Field
 		ClientEmail               respjson.Field
-		Name                      respjson.Field
-		PrivateKey                respjson.Field
-		Type                      respjson.Field
-		ID                        respjson.Field
-		BaseURLForCanonicalHeader respjson.Field
 		IncludeCanonicalHeader    respjson.Field
+		Name                      respjson.Field
 		Prefix                    respjson.Field
+		Type                      respjson.Field
+		BaseURLForCanonicalHeader respjson.Field
 		ExtraFields               map[string]respjson.Field
 		raw                       string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r AccountOriginNewResponseGoogleCloudStorageGcs) RawJSON() string { return r.JSON.raw }
-func (r *AccountOriginNewResponseGoogleCloudStorageGcs) UnmarshalJSON(data []byte) error {
+func (r AccountOriginNewResponseGcs) RawJSON() string { return r.JSON.raw }
+func (r *AccountOriginNewResponseGcs) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AccountOriginNewResponseAzureBlobStorage struct {
+type AccountOriginNewResponseAzureBlob struct {
+	// Unique identifier for the origin. This is generated by ImageKit when you create
+	// a new origin.
+	ID          string `json:"id,required"`
 	AccountName string `json:"accountName,required"`
 	Container   string `json:"container,required"`
+	// Whether to send a Canonical header.
+	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
-	Name     string             `json:"name,required"`
-	SasToken string             `json:"sasToken,required"`
-	Type     constant.AzureBlob `json:"type,required"`
-	ID       string             `json:"id"`
+	Name   string             `json:"name,required"`
+	Prefix string             `json:"prefix,required"`
+	Type   constant.AzureBlob `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
-	// Whether to send a Canonical header.
-	IncludeCanonicalHeader bool   `json:"includeCanonicalHeader"`
-	Prefix                 string `json:"prefix"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID                        respjson.Field
 		AccountName               respjson.Field
 		Container                 respjson.Field
-		Name                      respjson.Field
-		SasToken                  respjson.Field
-		Type                      respjson.Field
-		ID                        respjson.Field
-		BaseURLForCanonicalHeader respjson.Field
 		IncludeCanonicalHeader    respjson.Field
+		Name                      respjson.Field
 		Prefix                    respjson.Field
+		Type                      respjson.Field
+		BaseURLForCanonicalHeader respjson.Field
 		ExtraFields               map[string]respjson.Field
 		raw                       string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r AccountOriginNewResponseAzureBlobStorage) RawJSON() string { return r.JSON.raw }
-func (r *AccountOriginNewResponseAzureBlobStorage) UnmarshalJSON(data []byte) error {
+func (r AccountOriginNewResponseAzureBlob) RawJSON() string { return r.JSON.raw }
+func (r *AccountOriginNewResponseAzureBlob) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 type AccountOriginNewResponseAkeneoPim struct {
+	// Unique identifier for the origin. This is generated by ImageKit when you create
+	// a new origin.
+	ID string `json:"id,required"`
 	// Akeneo instance base URL.
 	BaseURL string `json:"baseUrl,required" format:"uri"`
-	// Akeneo API client ID.
-	ClientID string `json:"clientId,required"`
-	// Akeneo API client secret.
-	ClientSecret string `json:"clientSecret,required"`
+	// Whether to send a Canonical header.
+	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
-	Name string `json:"name,required"`
-	// Akeneo API password.
-	Password string             `json:"password,required"`
-	Type     constant.AkeneoPim `json:"type,required"`
-	// Akeneo API username.
-	Username string `json:"username,required"`
-	ID       string `json:"id"`
+	Name string             `json:"name,required"`
+	Type constant.AkeneoPim `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
-	// Whether to send a Canonical header.
-	IncludeCanonicalHeader bool `json:"includeCanonicalHeader"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		BaseURL                   respjson.Field
-		ClientID                  respjson.Field
-		ClientSecret              respjson.Field
-		Name                      respjson.Field
-		Password                  respjson.Field
-		Type                      respjson.Field
-		Username                  respjson.Field
 		ID                        respjson.Field
-		BaseURLForCanonicalHeader respjson.Field
+		BaseURL                   respjson.Field
 		IncludeCanonicalHeader    respjson.Field
+		Name                      respjson.Field
+		Type                      respjson.Field
+		BaseURLForCanonicalHeader respjson.Field
 		ExtraFields               map[string]respjson.Field
 		raw                       string
 	} `json:"-"`
@@ -1056,21 +1071,23 @@ func (r *AccountOriginNewResponseAkeneoPim) UnmarshalJSON(data []byte) error {
 // from [AccountOriginUpdateResponseS3], [AccountOriginUpdateResponseS3Compatible],
 // [AccountOriginUpdateResponseCloudinaryBackup],
 // [AccountOriginUpdateResponseWebFolder], [AccountOriginUpdateResponseWebProxy],
-// [AccountOriginUpdateResponseGoogleCloudStorageGcs],
-// [AccountOriginUpdateResponseAzureBlobStorage],
+// [AccountOriginUpdateResponseGcs], [AccountOriginUpdateResponseAzureBlob],
 // [AccountOriginUpdateResponseAkeneoPim].
+//
+// Use the [AccountOriginUpdateResponseUnion.AsAny] method to switch on the
+// variant.
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type AccountOriginUpdateResponseUnion struct {
-	AccessKey                 string `json:"accessKey"`
-	Bucket                    string `json:"bucket"`
-	Name                      string `json:"name"`
-	SecretKey                 string `json:"secretKey"`
+	ID                     string `json:"id"`
+	Bucket                 string `json:"bucket"`
+	IncludeCanonicalHeader bool   `json:"includeCanonicalHeader"`
+	Name                   string `json:"name"`
+	Prefix                 string `json:"prefix"`
+	// Any of "S3", "S3_COMPATIBLE", "CLOUDINARY_BACKUP", "WEB_FOLDER", "WEB_PROXY",
+	// "GCS", "AZURE_BLOB", "AKENEO_PIM".
 	Type                      string `json:"type"`
-	ID                        string `json:"id"`
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader"`
-	IncludeCanonicalHeader    bool   `json:"includeCanonicalHeader"`
-	Prefix                    string `json:"prefix"`
 	// This field is from variant [AccountOriginUpdateResponseS3Compatible].
 	Endpoint string `json:"endpoint"`
 	// This field is from variant [AccountOriginUpdateResponseS3Compatible].
@@ -1078,49 +1095,81 @@ type AccountOriginUpdateResponseUnion struct {
 	BaseURL          string `json:"baseUrl"`
 	// This field is from variant [AccountOriginUpdateResponseWebFolder].
 	ForwardHostHeaderToOrigin bool `json:"forwardHostHeaderToOrigin"`
-	// This field is from variant [AccountOriginUpdateResponseGoogleCloudStorageGcs].
+	// This field is from variant [AccountOriginUpdateResponseGcs].
 	ClientEmail string `json:"clientEmail"`
-	// This field is from variant [AccountOriginUpdateResponseGoogleCloudStorageGcs].
-	PrivateKey string `json:"privateKey"`
-	// This field is from variant [AccountOriginUpdateResponseAzureBlobStorage].
+	// This field is from variant [AccountOriginUpdateResponseAzureBlob].
 	AccountName string `json:"accountName"`
-	// This field is from variant [AccountOriginUpdateResponseAzureBlobStorage].
+	// This field is from variant [AccountOriginUpdateResponseAzureBlob].
 	Container string `json:"container"`
-	// This field is from variant [AccountOriginUpdateResponseAzureBlobStorage].
-	SasToken string `json:"sasToken"`
-	// This field is from variant [AccountOriginUpdateResponseAkeneoPim].
-	ClientID string `json:"clientId"`
-	// This field is from variant [AccountOriginUpdateResponseAkeneoPim].
-	ClientSecret string `json:"clientSecret"`
-	// This field is from variant [AccountOriginUpdateResponseAkeneoPim].
-	Password string `json:"password"`
-	// This field is from variant [AccountOriginUpdateResponseAkeneoPim].
-	Username string `json:"username"`
-	JSON     struct {
-		AccessKey                 respjson.Field
-		Bucket                    respjson.Field
-		Name                      respjson.Field
-		SecretKey                 respjson.Field
-		Type                      respjson.Field
+	JSON      struct {
 		ID                        respjson.Field
-		BaseURLForCanonicalHeader respjson.Field
+		Bucket                    respjson.Field
 		IncludeCanonicalHeader    respjson.Field
+		Name                      respjson.Field
 		Prefix                    respjson.Field
+		Type                      respjson.Field
+		BaseURLForCanonicalHeader respjson.Field
 		Endpoint                  respjson.Field
 		S3ForcePathStyle          respjson.Field
 		BaseURL                   respjson.Field
 		ForwardHostHeaderToOrigin respjson.Field
 		ClientEmail               respjson.Field
-		PrivateKey                respjson.Field
 		AccountName               respjson.Field
 		Container                 respjson.Field
-		SasToken                  respjson.Field
-		ClientID                  respjson.Field
-		ClientSecret              respjson.Field
-		Password                  respjson.Field
-		Username                  respjson.Field
 		raw                       string
 	} `json:"-"`
+}
+
+// anyAccountOriginUpdateResponse is implemented by each variant of
+// [AccountOriginUpdateResponseUnion] to add type safety for the return type of
+// [AccountOriginUpdateResponseUnion.AsAny]
+type anyAccountOriginUpdateResponse interface {
+	implAccountOriginUpdateResponseUnion()
+}
+
+func (AccountOriginUpdateResponseS3) implAccountOriginUpdateResponseUnion()               {}
+func (AccountOriginUpdateResponseS3Compatible) implAccountOriginUpdateResponseUnion()     {}
+func (AccountOriginUpdateResponseCloudinaryBackup) implAccountOriginUpdateResponseUnion() {}
+func (AccountOriginUpdateResponseWebFolder) implAccountOriginUpdateResponseUnion()        {}
+func (AccountOriginUpdateResponseWebProxy) implAccountOriginUpdateResponseUnion()         {}
+func (AccountOriginUpdateResponseGcs) implAccountOriginUpdateResponseUnion()              {}
+func (AccountOriginUpdateResponseAzureBlob) implAccountOriginUpdateResponseUnion()        {}
+func (AccountOriginUpdateResponseAkeneoPim) implAccountOriginUpdateResponseUnion()        {}
+
+// Use the following switch statement to find the correct variant
+//
+//	switch variant := AccountOriginUpdateResponseUnion.AsAny().(type) {
+//	case imagekit.AccountOriginUpdateResponseS3:
+//	case imagekit.AccountOriginUpdateResponseS3Compatible:
+//	case imagekit.AccountOriginUpdateResponseCloudinaryBackup:
+//	case imagekit.AccountOriginUpdateResponseWebFolder:
+//	case imagekit.AccountOriginUpdateResponseWebProxy:
+//	case imagekit.AccountOriginUpdateResponseGcs:
+//	case imagekit.AccountOriginUpdateResponseAzureBlob:
+//	case imagekit.AccountOriginUpdateResponseAkeneoPim:
+//	default:
+//	  fmt.Errorf("no variant present")
+//	}
+func (u AccountOriginUpdateResponseUnion) AsAny() anyAccountOriginUpdateResponse {
+	switch u.Type {
+	case "S3":
+		return u.AsS3()
+	case "S3_COMPATIBLE":
+		return u.AsS3Compatible()
+	case "CLOUDINARY_BACKUP":
+		return u.AsCloudinaryBackup()
+	case "WEB_FOLDER":
+		return u.AsWebFolder()
+	case "WEB_PROXY":
+		return u.AsWebProxy()
+	case "GCS":
+		return u.AsGcs()
+	case "AZURE_BLOB":
+		return u.AsAzureBlob()
+	case "AKENEO_PIM":
+		return u.AsAkeneoPim()
+	}
+	return nil
 }
 
 func (u AccountOriginUpdateResponseUnion) AsS3() (v AccountOriginUpdateResponseS3) {
@@ -1148,12 +1197,12 @@ func (u AccountOriginUpdateResponseUnion) AsWebProxy() (v AccountOriginUpdateRes
 	return
 }
 
-func (u AccountOriginUpdateResponseUnion) AsGoogleCloudStorageGcs() (v AccountOriginUpdateResponseGoogleCloudStorageGcs) {
+func (u AccountOriginUpdateResponseUnion) AsGcs() (v AccountOriginUpdateResponseGcs) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u AccountOriginUpdateResponseUnion) AsAzureBlobStorage() (v AccountOriginUpdateResponseAzureBlobStorage) {
+func (u AccountOriginUpdateResponseUnion) AsAzureBlob() (v AccountOriginUpdateResponseAzureBlob) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -1171,33 +1220,29 @@ func (r *AccountOriginUpdateResponseUnion) UnmarshalJSON(data []byte) error {
 }
 
 type AccountOriginUpdateResponseS3 struct {
-	// Access key for the bucket.
-	AccessKey string `json:"accessKey,required"`
+	// Unique identifier for the origin. This is generated by ImageKit when you create
+	// a new origin.
+	ID string `json:"id,required"`
 	// S3 bucket name.
 	Bucket string `json:"bucket,required"`
+	// Whether to send a Canonical header.
+	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
 	Name string `json:"name,required"`
-	// Secret key for the bucket.
-	SecretKey string      `json:"secretKey,required"`
-	Type      constant.S3 `json:"type,required"`
-	ID        string      `json:"id"`
+	// Path prefix inside the bucket.
+	Prefix string      `json:"prefix,required"`
+	Type   constant.S3 `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
-	// Whether to send a Canonical header.
-	IncludeCanonicalHeader bool `json:"includeCanonicalHeader"`
-	// Path prefix inside the bucket.
-	Prefix string `json:"prefix"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		AccessKey                 respjson.Field
-		Bucket                    respjson.Field
-		Name                      respjson.Field
-		SecretKey                 respjson.Field
-		Type                      respjson.Field
 		ID                        respjson.Field
-		BaseURLForCanonicalHeader respjson.Field
+		Bucket                    respjson.Field
 		IncludeCanonicalHeader    respjson.Field
+		Name                      respjson.Field
 		Prefix                    respjson.Field
+		Type                      respjson.Field
+		BaseURLForCanonicalHeader respjson.Field
 		ExtraFields               map[string]respjson.Field
 		raw                       string
 	} `json:"-"`
@@ -1210,39 +1255,35 @@ func (r *AccountOriginUpdateResponseS3) UnmarshalJSON(data []byte) error {
 }
 
 type AccountOriginUpdateResponseS3Compatible struct {
-	// Access key for the bucket.
-	AccessKey string `json:"accessKey,required"`
+	// Unique identifier for the origin. This is generated by ImageKit when you create
+	// a new origin.
+	ID string `json:"id,required"`
 	// S3 bucket name.
 	Bucket string `json:"bucket,required"`
 	// Custom S3-compatible endpoint.
 	Endpoint string `json:"endpoint,required" format:"uri"`
+	// Whether to send a Canonical header.
+	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
 	Name string `json:"name,required"`
-	// Secret key for the bucket.
-	SecretKey string                `json:"secretKey,required"`
-	Type      constant.S3Compatible `json:"type,required"`
-	ID        string                `json:"id"`
+	// Path prefix inside the bucket.
+	Prefix string `json:"prefix,required"`
+	// Use path-style S3 URLs?
+	S3ForcePathStyle bool                  `json:"s3ForcePathStyle,required"`
+	Type             constant.S3Compatible `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
-	// Whether to send a Canonical header.
-	IncludeCanonicalHeader bool `json:"includeCanonicalHeader"`
-	// Path prefix inside the bucket.
-	Prefix string `json:"prefix"`
-	// Use path-style S3 URLs?
-	S3ForcePathStyle bool `json:"s3ForcePathStyle"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		AccessKey                 respjson.Field
+		ID                        respjson.Field
 		Bucket                    respjson.Field
 		Endpoint                  respjson.Field
-		Name                      respjson.Field
-		SecretKey                 respjson.Field
-		Type                      respjson.Field
-		ID                        respjson.Field
-		BaseURLForCanonicalHeader respjson.Field
 		IncludeCanonicalHeader    respjson.Field
+		Name                      respjson.Field
 		Prefix                    respjson.Field
 		S3ForcePathStyle          respjson.Field
+		Type                      respjson.Field
+		BaseURLForCanonicalHeader respjson.Field
 		ExtraFields               map[string]respjson.Field
 		raw                       string
 	} `json:"-"`
@@ -1255,33 +1296,29 @@ func (r *AccountOriginUpdateResponseS3Compatible) UnmarshalJSON(data []byte) err
 }
 
 type AccountOriginUpdateResponseCloudinaryBackup struct {
-	// Access key for the bucket.
-	AccessKey string `json:"accessKey,required"`
+	// Unique identifier for the origin. This is generated by ImageKit when you create
+	// a new origin.
+	ID string `json:"id,required"`
 	// S3 bucket name.
 	Bucket string `json:"bucket,required"`
+	// Whether to send a Canonical header.
+	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
 	Name string `json:"name,required"`
-	// Secret key for the bucket.
-	SecretKey string                    `json:"secretKey,required"`
-	Type      constant.CloudinaryBackup `json:"type,required"`
-	ID        string                    `json:"id"`
+	// Path prefix inside the bucket.
+	Prefix string                    `json:"prefix,required"`
+	Type   constant.CloudinaryBackup `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
-	// Whether to send a Canonical header.
-	IncludeCanonicalHeader bool `json:"includeCanonicalHeader"`
-	// Path prefix inside the bucket.
-	Prefix string `json:"prefix"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		AccessKey                 respjson.Field
-		Bucket                    respjson.Field
-		Name                      respjson.Field
-		SecretKey                 respjson.Field
-		Type                      respjson.Field
 		ID                        respjson.Field
-		BaseURLForCanonicalHeader respjson.Field
+		Bucket                    respjson.Field
 		IncludeCanonicalHeader    respjson.Field
+		Name                      respjson.Field
 		Prefix                    respjson.Field
+		Type                      respjson.Field
+		BaseURLForCanonicalHeader respjson.Field
 		ExtraFields               map[string]respjson.Field
 		raw                       string
 	} `json:"-"`
@@ -1294,27 +1331,29 @@ func (r *AccountOriginUpdateResponseCloudinaryBackup) UnmarshalJSON(data []byte)
 }
 
 type AccountOriginUpdateResponseWebFolder struct {
+	// Unique identifier for the origin. This is generated by ImageKit when you create
+	// a new origin.
+	ID string `json:"id,required"`
 	// Root URL for the web folder origin.
 	BaseURL string `json:"baseUrl,required" format:"uri"`
+	// Forward the Host header to origin?
+	ForwardHostHeaderToOrigin bool `json:"forwardHostHeaderToOrigin,required"`
+	// Whether to send a Canonical header.
+	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
 	Name string             `json:"name,required"`
 	Type constant.WebFolder `json:"type,required"`
-	ID   string             `json:"id"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
-	// Forward the Host header to origin?
-	ForwardHostHeaderToOrigin bool `json:"forwardHostHeaderToOrigin"`
-	// Whether to send a Canonical header.
-	IncludeCanonicalHeader bool `json:"includeCanonicalHeader"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		BaseURL                   respjson.Field
-		Name                      respjson.Field
-		Type                      respjson.Field
 		ID                        respjson.Field
-		BaseURLForCanonicalHeader respjson.Field
+		BaseURL                   respjson.Field
 		ForwardHostHeaderToOrigin respjson.Field
 		IncludeCanonicalHeader    respjson.Field
+		Name                      respjson.Field
+		Type                      respjson.Field
+		BaseURLForCanonicalHeader respjson.Field
 		ExtraFields               map[string]respjson.Field
 		raw                       string
 	} `json:"-"`
@@ -1327,21 +1366,23 @@ func (r *AccountOriginUpdateResponseWebFolder) UnmarshalJSON(data []byte) error 
 }
 
 type AccountOriginUpdateResponseWebProxy struct {
+	// Unique identifier for the origin. This is generated by ImageKit when you create
+	// a new origin.
+	ID string `json:"id,required"`
+	// Whether to send a Canonical header.
+	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
 	Name string            `json:"name,required"`
 	Type constant.WebProxy `json:"type,required"`
-	ID   string            `json:"id"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
-	// Whether to send a Canonical header.
-	IncludeCanonicalHeader bool `json:"includeCanonicalHeader"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID                        respjson.Field
+		IncludeCanonicalHeader    respjson.Field
 		Name                      respjson.Field
 		Type                      respjson.Field
-		ID                        respjson.Field
 		BaseURLForCanonicalHeader respjson.Field
-		IncludeCanonicalHeader    respjson.Field
 		ExtraFields               map[string]respjson.Field
 		raw                       string
 	} `json:"-"`
@@ -1353,107 +1394,97 @@ func (r *AccountOriginUpdateResponseWebProxy) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AccountOriginUpdateResponseGoogleCloudStorageGcs struct {
+type AccountOriginUpdateResponseGcs struct {
+	// Unique identifier for the origin. This is generated by ImageKit when you create
+	// a new origin.
+	ID          string `json:"id,required"`
 	Bucket      string `json:"bucket,required"`
 	ClientEmail string `json:"clientEmail,required" format:"email"`
+	// Whether to send a Canonical header.
+	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
-	Name       string       `json:"name,required"`
-	PrivateKey string       `json:"privateKey,required"`
-	Type       constant.Gcs `json:"type,required"`
-	ID         string       `json:"id"`
+	Name   string       `json:"name,required"`
+	Prefix string       `json:"prefix,required"`
+	Type   constant.Gcs `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
-	// Whether to send a Canonical header.
-	IncludeCanonicalHeader bool   `json:"includeCanonicalHeader"`
-	Prefix                 string `json:"prefix"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID                        respjson.Field
 		Bucket                    respjson.Field
 		ClientEmail               respjson.Field
-		Name                      respjson.Field
-		PrivateKey                respjson.Field
-		Type                      respjson.Field
-		ID                        respjson.Field
-		BaseURLForCanonicalHeader respjson.Field
 		IncludeCanonicalHeader    respjson.Field
+		Name                      respjson.Field
 		Prefix                    respjson.Field
+		Type                      respjson.Field
+		BaseURLForCanonicalHeader respjson.Field
 		ExtraFields               map[string]respjson.Field
 		raw                       string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r AccountOriginUpdateResponseGoogleCloudStorageGcs) RawJSON() string { return r.JSON.raw }
-func (r *AccountOriginUpdateResponseGoogleCloudStorageGcs) UnmarshalJSON(data []byte) error {
+func (r AccountOriginUpdateResponseGcs) RawJSON() string { return r.JSON.raw }
+func (r *AccountOriginUpdateResponseGcs) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AccountOriginUpdateResponseAzureBlobStorage struct {
+type AccountOriginUpdateResponseAzureBlob struct {
+	// Unique identifier for the origin. This is generated by ImageKit when you create
+	// a new origin.
+	ID          string `json:"id,required"`
 	AccountName string `json:"accountName,required"`
 	Container   string `json:"container,required"`
+	// Whether to send a Canonical header.
+	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
-	Name     string             `json:"name,required"`
-	SasToken string             `json:"sasToken,required"`
-	Type     constant.AzureBlob `json:"type,required"`
-	ID       string             `json:"id"`
+	Name   string             `json:"name,required"`
+	Prefix string             `json:"prefix,required"`
+	Type   constant.AzureBlob `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
-	// Whether to send a Canonical header.
-	IncludeCanonicalHeader bool   `json:"includeCanonicalHeader"`
-	Prefix                 string `json:"prefix"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID                        respjson.Field
 		AccountName               respjson.Field
 		Container                 respjson.Field
-		Name                      respjson.Field
-		SasToken                  respjson.Field
-		Type                      respjson.Field
-		ID                        respjson.Field
-		BaseURLForCanonicalHeader respjson.Field
 		IncludeCanonicalHeader    respjson.Field
+		Name                      respjson.Field
 		Prefix                    respjson.Field
+		Type                      respjson.Field
+		BaseURLForCanonicalHeader respjson.Field
 		ExtraFields               map[string]respjson.Field
 		raw                       string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r AccountOriginUpdateResponseAzureBlobStorage) RawJSON() string { return r.JSON.raw }
-func (r *AccountOriginUpdateResponseAzureBlobStorage) UnmarshalJSON(data []byte) error {
+func (r AccountOriginUpdateResponseAzureBlob) RawJSON() string { return r.JSON.raw }
+func (r *AccountOriginUpdateResponseAzureBlob) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 type AccountOriginUpdateResponseAkeneoPim struct {
+	// Unique identifier for the origin. This is generated by ImageKit when you create
+	// a new origin.
+	ID string `json:"id,required"`
 	// Akeneo instance base URL.
 	BaseURL string `json:"baseUrl,required" format:"uri"`
-	// Akeneo API client ID.
-	ClientID string `json:"clientId,required"`
-	// Akeneo API client secret.
-	ClientSecret string `json:"clientSecret,required"`
+	// Whether to send a Canonical header.
+	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
-	Name string `json:"name,required"`
-	// Akeneo API password.
-	Password string             `json:"password,required"`
-	Type     constant.AkeneoPim `json:"type,required"`
-	// Akeneo API username.
-	Username string `json:"username,required"`
-	ID       string `json:"id"`
+	Name string             `json:"name,required"`
+	Type constant.AkeneoPim `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
-	// Whether to send a Canonical header.
-	IncludeCanonicalHeader bool `json:"includeCanonicalHeader"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		BaseURL                   respjson.Field
-		ClientID                  respjson.Field
-		ClientSecret              respjson.Field
-		Name                      respjson.Field
-		Password                  respjson.Field
-		Type                      respjson.Field
-		Username                  respjson.Field
 		ID                        respjson.Field
-		BaseURLForCanonicalHeader respjson.Field
+		BaseURL                   respjson.Field
 		IncludeCanonicalHeader    respjson.Field
+		Name                      respjson.Field
+		Type                      respjson.Field
+		BaseURLForCanonicalHeader respjson.Field
 		ExtraFields               map[string]respjson.Field
 		raw                       string
 	} `json:"-"`
@@ -1469,21 +1500,22 @@ func (r *AccountOriginUpdateResponseAkeneoPim) UnmarshalJSON(data []byte) error 
 // [AccountOriginListResponseS3], [AccountOriginListResponseS3Compatible],
 // [AccountOriginListResponseCloudinaryBackup],
 // [AccountOriginListResponseWebFolder], [AccountOriginListResponseWebProxy],
-// [AccountOriginListResponseGoogleCloudStorageGcs],
-// [AccountOriginListResponseAzureBlobStorage],
+// [AccountOriginListResponseGcs], [AccountOriginListResponseAzureBlob],
 // [AccountOriginListResponseAkeneoPim].
+//
+// Use the [AccountOriginListResponseUnion.AsAny] method to switch on the variant.
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type AccountOriginListResponseUnion struct {
-	AccessKey                 string `json:"accessKey"`
-	Bucket                    string `json:"bucket"`
-	Name                      string `json:"name"`
-	SecretKey                 string `json:"secretKey"`
+	ID                     string `json:"id"`
+	Bucket                 string `json:"bucket"`
+	IncludeCanonicalHeader bool   `json:"includeCanonicalHeader"`
+	Name                   string `json:"name"`
+	Prefix                 string `json:"prefix"`
+	// Any of "S3", "S3_COMPATIBLE", "CLOUDINARY_BACKUP", "WEB_FOLDER", "WEB_PROXY",
+	// "GCS", "AZURE_BLOB", "AKENEO_PIM".
 	Type                      string `json:"type"`
-	ID                        string `json:"id"`
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader"`
-	IncludeCanonicalHeader    bool   `json:"includeCanonicalHeader"`
-	Prefix                    string `json:"prefix"`
 	// This field is from variant [AccountOriginListResponseS3Compatible].
 	Endpoint string `json:"endpoint"`
 	// This field is from variant [AccountOriginListResponseS3Compatible].
@@ -1491,49 +1523,81 @@ type AccountOriginListResponseUnion struct {
 	BaseURL          string `json:"baseUrl"`
 	// This field is from variant [AccountOriginListResponseWebFolder].
 	ForwardHostHeaderToOrigin bool `json:"forwardHostHeaderToOrigin"`
-	// This field is from variant [AccountOriginListResponseGoogleCloudStorageGcs].
+	// This field is from variant [AccountOriginListResponseGcs].
 	ClientEmail string `json:"clientEmail"`
-	// This field is from variant [AccountOriginListResponseGoogleCloudStorageGcs].
-	PrivateKey string `json:"privateKey"`
-	// This field is from variant [AccountOriginListResponseAzureBlobStorage].
+	// This field is from variant [AccountOriginListResponseAzureBlob].
 	AccountName string `json:"accountName"`
-	// This field is from variant [AccountOriginListResponseAzureBlobStorage].
+	// This field is from variant [AccountOriginListResponseAzureBlob].
 	Container string `json:"container"`
-	// This field is from variant [AccountOriginListResponseAzureBlobStorage].
-	SasToken string `json:"sasToken"`
-	// This field is from variant [AccountOriginListResponseAkeneoPim].
-	ClientID string `json:"clientId"`
-	// This field is from variant [AccountOriginListResponseAkeneoPim].
-	ClientSecret string `json:"clientSecret"`
-	// This field is from variant [AccountOriginListResponseAkeneoPim].
-	Password string `json:"password"`
-	// This field is from variant [AccountOriginListResponseAkeneoPim].
-	Username string `json:"username"`
-	JSON     struct {
-		AccessKey                 respjson.Field
-		Bucket                    respjson.Field
-		Name                      respjson.Field
-		SecretKey                 respjson.Field
-		Type                      respjson.Field
+	JSON      struct {
 		ID                        respjson.Field
-		BaseURLForCanonicalHeader respjson.Field
+		Bucket                    respjson.Field
 		IncludeCanonicalHeader    respjson.Field
+		Name                      respjson.Field
 		Prefix                    respjson.Field
+		Type                      respjson.Field
+		BaseURLForCanonicalHeader respjson.Field
 		Endpoint                  respjson.Field
 		S3ForcePathStyle          respjson.Field
 		BaseURL                   respjson.Field
 		ForwardHostHeaderToOrigin respjson.Field
 		ClientEmail               respjson.Field
-		PrivateKey                respjson.Field
 		AccountName               respjson.Field
 		Container                 respjson.Field
-		SasToken                  respjson.Field
-		ClientID                  respjson.Field
-		ClientSecret              respjson.Field
-		Password                  respjson.Field
-		Username                  respjson.Field
 		raw                       string
 	} `json:"-"`
+}
+
+// anyAccountOriginListResponse is implemented by each variant of
+// [AccountOriginListResponseUnion] to add type safety for the return type of
+// [AccountOriginListResponseUnion.AsAny]
+type anyAccountOriginListResponse interface {
+	implAccountOriginListResponseUnion()
+}
+
+func (AccountOriginListResponseS3) implAccountOriginListResponseUnion()               {}
+func (AccountOriginListResponseS3Compatible) implAccountOriginListResponseUnion()     {}
+func (AccountOriginListResponseCloudinaryBackup) implAccountOriginListResponseUnion() {}
+func (AccountOriginListResponseWebFolder) implAccountOriginListResponseUnion()        {}
+func (AccountOriginListResponseWebProxy) implAccountOriginListResponseUnion()         {}
+func (AccountOriginListResponseGcs) implAccountOriginListResponseUnion()              {}
+func (AccountOriginListResponseAzureBlob) implAccountOriginListResponseUnion()        {}
+func (AccountOriginListResponseAkeneoPim) implAccountOriginListResponseUnion()        {}
+
+// Use the following switch statement to find the correct variant
+//
+//	switch variant := AccountOriginListResponseUnion.AsAny().(type) {
+//	case imagekit.AccountOriginListResponseS3:
+//	case imagekit.AccountOriginListResponseS3Compatible:
+//	case imagekit.AccountOriginListResponseCloudinaryBackup:
+//	case imagekit.AccountOriginListResponseWebFolder:
+//	case imagekit.AccountOriginListResponseWebProxy:
+//	case imagekit.AccountOriginListResponseGcs:
+//	case imagekit.AccountOriginListResponseAzureBlob:
+//	case imagekit.AccountOriginListResponseAkeneoPim:
+//	default:
+//	  fmt.Errorf("no variant present")
+//	}
+func (u AccountOriginListResponseUnion) AsAny() anyAccountOriginListResponse {
+	switch u.Type {
+	case "S3":
+		return u.AsS3()
+	case "S3_COMPATIBLE":
+		return u.AsS3Compatible()
+	case "CLOUDINARY_BACKUP":
+		return u.AsCloudinaryBackup()
+	case "WEB_FOLDER":
+		return u.AsWebFolder()
+	case "WEB_PROXY":
+		return u.AsWebProxy()
+	case "GCS":
+		return u.AsGcs()
+	case "AZURE_BLOB":
+		return u.AsAzureBlob()
+	case "AKENEO_PIM":
+		return u.AsAkeneoPim()
+	}
+	return nil
 }
 
 func (u AccountOriginListResponseUnion) AsS3() (v AccountOriginListResponseS3) {
@@ -1561,12 +1625,12 @@ func (u AccountOriginListResponseUnion) AsWebProxy() (v AccountOriginListRespons
 	return
 }
 
-func (u AccountOriginListResponseUnion) AsGoogleCloudStorageGcs() (v AccountOriginListResponseGoogleCloudStorageGcs) {
+func (u AccountOriginListResponseUnion) AsGcs() (v AccountOriginListResponseGcs) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u AccountOriginListResponseUnion) AsAzureBlobStorage() (v AccountOriginListResponseAzureBlobStorage) {
+func (u AccountOriginListResponseUnion) AsAzureBlob() (v AccountOriginListResponseAzureBlob) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -1584,33 +1648,29 @@ func (r *AccountOriginListResponseUnion) UnmarshalJSON(data []byte) error {
 }
 
 type AccountOriginListResponseS3 struct {
-	// Access key for the bucket.
-	AccessKey string `json:"accessKey,required"`
+	// Unique identifier for the origin. This is generated by ImageKit when you create
+	// a new origin.
+	ID string `json:"id,required"`
 	// S3 bucket name.
 	Bucket string `json:"bucket,required"`
+	// Whether to send a Canonical header.
+	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
 	Name string `json:"name,required"`
-	// Secret key for the bucket.
-	SecretKey string      `json:"secretKey,required"`
-	Type      constant.S3 `json:"type,required"`
-	ID        string      `json:"id"`
+	// Path prefix inside the bucket.
+	Prefix string      `json:"prefix,required"`
+	Type   constant.S3 `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
-	// Whether to send a Canonical header.
-	IncludeCanonicalHeader bool `json:"includeCanonicalHeader"`
-	// Path prefix inside the bucket.
-	Prefix string `json:"prefix"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		AccessKey                 respjson.Field
-		Bucket                    respjson.Field
-		Name                      respjson.Field
-		SecretKey                 respjson.Field
-		Type                      respjson.Field
 		ID                        respjson.Field
-		BaseURLForCanonicalHeader respjson.Field
+		Bucket                    respjson.Field
 		IncludeCanonicalHeader    respjson.Field
+		Name                      respjson.Field
 		Prefix                    respjson.Field
+		Type                      respjson.Field
+		BaseURLForCanonicalHeader respjson.Field
 		ExtraFields               map[string]respjson.Field
 		raw                       string
 	} `json:"-"`
@@ -1623,39 +1683,35 @@ func (r *AccountOriginListResponseS3) UnmarshalJSON(data []byte) error {
 }
 
 type AccountOriginListResponseS3Compatible struct {
-	// Access key for the bucket.
-	AccessKey string `json:"accessKey,required"`
+	// Unique identifier for the origin. This is generated by ImageKit when you create
+	// a new origin.
+	ID string `json:"id,required"`
 	// S3 bucket name.
 	Bucket string `json:"bucket,required"`
 	// Custom S3-compatible endpoint.
 	Endpoint string `json:"endpoint,required" format:"uri"`
+	// Whether to send a Canonical header.
+	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
 	Name string `json:"name,required"`
-	// Secret key for the bucket.
-	SecretKey string                `json:"secretKey,required"`
-	Type      constant.S3Compatible `json:"type,required"`
-	ID        string                `json:"id"`
+	// Path prefix inside the bucket.
+	Prefix string `json:"prefix,required"`
+	// Use path-style S3 URLs?
+	S3ForcePathStyle bool                  `json:"s3ForcePathStyle,required"`
+	Type             constant.S3Compatible `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
-	// Whether to send a Canonical header.
-	IncludeCanonicalHeader bool `json:"includeCanonicalHeader"`
-	// Path prefix inside the bucket.
-	Prefix string `json:"prefix"`
-	// Use path-style S3 URLs?
-	S3ForcePathStyle bool `json:"s3ForcePathStyle"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		AccessKey                 respjson.Field
+		ID                        respjson.Field
 		Bucket                    respjson.Field
 		Endpoint                  respjson.Field
-		Name                      respjson.Field
-		SecretKey                 respjson.Field
-		Type                      respjson.Field
-		ID                        respjson.Field
-		BaseURLForCanonicalHeader respjson.Field
 		IncludeCanonicalHeader    respjson.Field
+		Name                      respjson.Field
 		Prefix                    respjson.Field
 		S3ForcePathStyle          respjson.Field
+		Type                      respjson.Field
+		BaseURLForCanonicalHeader respjson.Field
 		ExtraFields               map[string]respjson.Field
 		raw                       string
 	} `json:"-"`
@@ -1668,33 +1724,29 @@ func (r *AccountOriginListResponseS3Compatible) UnmarshalJSON(data []byte) error
 }
 
 type AccountOriginListResponseCloudinaryBackup struct {
-	// Access key for the bucket.
-	AccessKey string `json:"accessKey,required"`
+	// Unique identifier for the origin. This is generated by ImageKit when you create
+	// a new origin.
+	ID string `json:"id,required"`
 	// S3 bucket name.
 	Bucket string `json:"bucket,required"`
+	// Whether to send a Canonical header.
+	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
 	Name string `json:"name,required"`
-	// Secret key for the bucket.
-	SecretKey string                    `json:"secretKey,required"`
-	Type      constant.CloudinaryBackup `json:"type,required"`
-	ID        string                    `json:"id"`
+	// Path prefix inside the bucket.
+	Prefix string                    `json:"prefix,required"`
+	Type   constant.CloudinaryBackup `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
-	// Whether to send a Canonical header.
-	IncludeCanonicalHeader bool `json:"includeCanonicalHeader"`
-	// Path prefix inside the bucket.
-	Prefix string `json:"prefix"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		AccessKey                 respjson.Field
-		Bucket                    respjson.Field
-		Name                      respjson.Field
-		SecretKey                 respjson.Field
-		Type                      respjson.Field
 		ID                        respjson.Field
-		BaseURLForCanonicalHeader respjson.Field
+		Bucket                    respjson.Field
 		IncludeCanonicalHeader    respjson.Field
+		Name                      respjson.Field
 		Prefix                    respjson.Field
+		Type                      respjson.Field
+		BaseURLForCanonicalHeader respjson.Field
 		ExtraFields               map[string]respjson.Field
 		raw                       string
 	} `json:"-"`
@@ -1707,27 +1759,29 @@ func (r *AccountOriginListResponseCloudinaryBackup) UnmarshalJSON(data []byte) e
 }
 
 type AccountOriginListResponseWebFolder struct {
+	// Unique identifier for the origin. This is generated by ImageKit when you create
+	// a new origin.
+	ID string `json:"id,required"`
 	// Root URL for the web folder origin.
 	BaseURL string `json:"baseUrl,required" format:"uri"`
+	// Forward the Host header to origin?
+	ForwardHostHeaderToOrigin bool `json:"forwardHostHeaderToOrigin,required"`
+	// Whether to send a Canonical header.
+	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
 	Name string             `json:"name,required"`
 	Type constant.WebFolder `json:"type,required"`
-	ID   string             `json:"id"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
-	// Forward the Host header to origin?
-	ForwardHostHeaderToOrigin bool `json:"forwardHostHeaderToOrigin"`
-	// Whether to send a Canonical header.
-	IncludeCanonicalHeader bool `json:"includeCanonicalHeader"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		BaseURL                   respjson.Field
-		Name                      respjson.Field
-		Type                      respjson.Field
 		ID                        respjson.Field
-		BaseURLForCanonicalHeader respjson.Field
+		BaseURL                   respjson.Field
 		ForwardHostHeaderToOrigin respjson.Field
 		IncludeCanonicalHeader    respjson.Field
+		Name                      respjson.Field
+		Type                      respjson.Field
+		BaseURLForCanonicalHeader respjson.Field
 		ExtraFields               map[string]respjson.Field
 		raw                       string
 	} `json:"-"`
@@ -1740,21 +1794,23 @@ func (r *AccountOriginListResponseWebFolder) UnmarshalJSON(data []byte) error {
 }
 
 type AccountOriginListResponseWebProxy struct {
+	// Unique identifier for the origin. This is generated by ImageKit when you create
+	// a new origin.
+	ID string `json:"id,required"`
+	// Whether to send a Canonical header.
+	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
 	Name string            `json:"name,required"`
 	Type constant.WebProxy `json:"type,required"`
-	ID   string            `json:"id"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
-	// Whether to send a Canonical header.
-	IncludeCanonicalHeader bool `json:"includeCanonicalHeader"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID                        respjson.Field
+		IncludeCanonicalHeader    respjson.Field
 		Name                      respjson.Field
 		Type                      respjson.Field
-		ID                        respjson.Field
 		BaseURLForCanonicalHeader respjson.Field
-		IncludeCanonicalHeader    respjson.Field
 		ExtraFields               map[string]respjson.Field
 		raw                       string
 	} `json:"-"`
@@ -1766,107 +1822,97 @@ func (r *AccountOriginListResponseWebProxy) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AccountOriginListResponseGoogleCloudStorageGcs struct {
+type AccountOriginListResponseGcs struct {
+	// Unique identifier for the origin. This is generated by ImageKit when you create
+	// a new origin.
+	ID          string `json:"id,required"`
 	Bucket      string `json:"bucket,required"`
 	ClientEmail string `json:"clientEmail,required" format:"email"`
+	// Whether to send a Canonical header.
+	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
-	Name       string       `json:"name,required"`
-	PrivateKey string       `json:"privateKey,required"`
-	Type       constant.Gcs `json:"type,required"`
-	ID         string       `json:"id"`
+	Name   string       `json:"name,required"`
+	Prefix string       `json:"prefix,required"`
+	Type   constant.Gcs `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
-	// Whether to send a Canonical header.
-	IncludeCanonicalHeader bool   `json:"includeCanonicalHeader"`
-	Prefix                 string `json:"prefix"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID                        respjson.Field
 		Bucket                    respjson.Field
 		ClientEmail               respjson.Field
-		Name                      respjson.Field
-		PrivateKey                respjson.Field
-		Type                      respjson.Field
-		ID                        respjson.Field
-		BaseURLForCanonicalHeader respjson.Field
 		IncludeCanonicalHeader    respjson.Field
+		Name                      respjson.Field
 		Prefix                    respjson.Field
+		Type                      respjson.Field
+		BaseURLForCanonicalHeader respjson.Field
 		ExtraFields               map[string]respjson.Field
 		raw                       string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r AccountOriginListResponseGoogleCloudStorageGcs) RawJSON() string { return r.JSON.raw }
-func (r *AccountOriginListResponseGoogleCloudStorageGcs) UnmarshalJSON(data []byte) error {
+func (r AccountOriginListResponseGcs) RawJSON() string { return r.JSON.raw }
+func (r *AccountOriginListResponseGcs) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AccountOriginListResponseAzureBlobStorage struct {
+type AccountOriginListResponseAzureBlob struct {
+	// Unique identifier for the origin. This is generated by ImageKit when you create
+	// a new origin.
+	ID          string `json:"id,required"`
 	AccountName string `json:"accountName,required"`
 	Container   string `json:"container,required"`
+	// Whether to send a Canonical header.
+	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
-	Name     string             `json:"name,required"`
-	SasToken string             `json:"sasToken,required"`
-	Type     constant.AzureBlob `json:"type,required"`
-	ID       string             `json:"id"`
+	Name   string             `json:"name,required"`
+	Prefix string             `json:"prefix,required"`
+	Type   constant.AzureBlob `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
-	// Whether to send a Canonical header.
-	IncludeCanonicalHeader bool   `json:"includeCanonicalHeader"`
-	Prefix                 string `json:"prefix"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID                        respjson.Field
 		AccountName               respjson.Field
 		Container                 respjson.Field
-		Name                      respjson.Field
-		SasToken                  respjson.Field
-		Type                      respjson.Field
-		ID                        respjson.Field
-		BaseURLForCanonicalHeader respjson.Field
 		IncludeCanonicalHeader    respjson.Field
+		Name                      respjson.Field
 		Prefix                    respjson.Field
+		Type                      respjson.Field
+		BaseURLForCanonicalHeader respjson.Field
 		ExtraFields               map[string]respjson.Field
 		raw                       string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r AccountOriginListResponseAzureBlobStorage) RawJSON() string { return r.JSON.raw }
-func (r *AccountOriginListResponseAzureBlobStorage) UnmarshalJSON(data []byte) error {
+func (r AccountOriginListResponseAzureBlob) RawJSON() string { return r.JSON.raw }
+func (r *AccountOriginListResponseAzureBlob) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 type AccountOriginListResponseAkeneoPim struct {
+	// Unique identifier for the origin. This is generated by ImageKit when you create
+	// a new origin.
+	ID string `json:"id,required"`
 	// Akeneo instance base URL.
 	BaseURL string `json:"baseUrl,required" format:"uri"`
-	// Akeneo API client ID.
-	ClientID string `json:"clientId,required"`
-	// Akeneo API client secret.
-	ClientSecret string `json:"clientSecret,required"`
+	// Whether to send a Canonical header.
+	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
-	Name string `json:"name,required"`
-	// Akeneo API password.
-	Password string             `json:"password,required"`
-	Type     constant.AkeneoPim `json:"type,required"`
-	// Akeneo API username.
-	Username string `json:"username,required"`
-	ID       string `json:"id"`
+	Name string             `json:"name,required"`
+	Type constant.AkeneoPim `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
-	// Whether to send a Canonical header.
-	IncludeCanonicalHeader bool `json:"includeCanonicalHeader"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		BaseURL                   respjson.Field
-		ClientID                  respjson.Field
-		ClientSecret              respjson.Field
-		Name                      respjson.Field
-		Password                  respjson.Field
-		Type                      respjson.Field
-		Username                  respjson.Field
 		ID                        respjson.Field
-		BaseURLForCanonicalHeader respjson.Field
+		BaseURL                   respjson.Field
 		IncludeCanonicalHeader    respjson.Field
+		Name                      respjson.Field
+		Type                      respjson.Field
+		BaseURLForCanonicalHeader respjson.Field
 		ExtraFields               map[string]respjson.Field
 		raw                       string
 	} `json:"-"`
@@ -1881,21 +1927,22 @@ func (r *AccountOriginListResponseAkeneoPim) UnmarshalJSON(data []byte) error {
 // AccountOriginGetResponseUnion contains all possible properties and values from
 // [AccountOriginGetResponseS3], [AccountOriginGetResponseS3Compatible],
 // [AccountOriginGetResponseCloudinaryBackup], [AccountOriginGetResponseWebFolder],
-// [AccountOriginGetResponseWebProxy],
-// [AccountOriginGetResponseGoogleCloudStorageGcs],
-// [AccountOriginGetResponseAzureBlobStorage], [AccountOriginGetResponseAkeneoPim].
+// [AccountOriginGetResponseWebProxy], [AccountOriginGetResponseGcs],
+// [AccountOriginGetResponseAzureBlob], [AccountOriginGetResponseAkeneoPim].
+//
+// Use the [AccountOriginGetResponseUnion.AsAny] method to switch on the variant.
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type AccountOriginGetResponseUnion struct {
-	AccessKey                 string `json:"accessKey"`
-	Bucket                    string `json:"bucket"`
-	Name                      string `json:"name"`
-	SecretKey                 string `json:"secretKey"`
+	ID                     string `json:"id"`
+	Bucket                 string `json:"bucket"`
+	IncludeCanonicalHeader bool   `json:"includeCanonicalHeader"`
+	Name                   string `json:"name"`
+	Prefix                 string `json:"prefix"`
+	// Any of "S3", "S3_COMPATIBLE", "CLOUDINARY_BACKUP", "WEB_FOLDER", "WEB_PROXY",
+	// "GCS", "AZURE_BLOB", "AKENEO_PIM".
 	Type                      string `json:"type"`
-	ID                        string `json:"id"`
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader"`
-	IncludeCanonicalHeader    bool   `json:"includeCanonicalHeader"`
-	Prefix                    string `json:"prefix"`
 	// This field is from variant [AccountOriginGetResponseS3Compatible].
 	Endpoint string `json:"endpoint"`
 	// This field is from variant [AccountOriginGetResponseS3Compatible].
@@ -1903,49 +1950,81 @@ type AccountOriginGetResponseUnion struct {
 	BaseURL          string `json:"baseUrl"`
 	// This field is from variant [AccountOriginGetResponseWebFolder].
 	ForwardHostHeaderToOrigin bool `json:"forwardHostHeaderToOrigin"`
-	// This field is from variant [AccountOriginGetResponseGoogleCloudStorageGcs].
+	// This field is from variant [AccountOriginGetResponseGcs].
 	ClientEmail string `json:"clientEmail"`
-	// This field is from variant [AccountOriginGetResponseGoogleCloudStorageGcs].
-	PrivateKey string `json:"privateKey"`
-	// This field is from variant [AccountOriginGetResponseAzureBlobStorage].
+	// This field is from variant [AccountOriginGetResponseAzureBlob].
 	AccountName string `json:"accountName"`
-	// This field is from variant [AccountOriginGetResponseAzureBlobStorage].
+	// This field is from variant [AccountOriginGetResponseAzureBlob].
 	Container string `json:"container"`
-	// This field is from variant [AccountOriginGetResponseAzureBlobStorage].
-	SasToken string `json:"sasToken"`
-	// This field is from variant [AccountOriginGetResponseAkeneoPim].
-	ClientID string `json:"clientId"`
-	// This field is from variant [AccountOriginGetResponseAkeneoPim].
-	ClientSecret string `json:"clientSecret"`
-	// This field is from variant [AccountOriginGetResponseAkeneoPim].
-	Password string `json:"password"`
-	// This field is from variant [AccountOriginGetResponseAkeneoPim].
-	Username string `json:"username"`
-	JSON     struct {
-		AccessKey                 respjson.Field
-		Bucket                    respjson.Field
-		Name                      respjson.Field
-		SecretKey                 respjson.Field
-		Type                      respjson.Field
+	JSON      struct {
 		ID                        respjson.Field
-		BaseURLForCanonicalHeader respjson.Field
+		Bucket                    respjson.Field
 		IncludeCanonicalHeader    respjson.Field
+		Name                      respjson.Field
 		Prefix                    respjson.Field
+		Type                      respjson.Field
+		BaseURLForCanonicalHeader respjson.Field
 		Endpoint                  respjson.Field
 		S3ForcePathStyle          respjson.Field
 		BaseURL                   respjson.Field
 		ForwardHostHeaderToOrigin respjson.Field
 		ClientEmail               respjson.Field
-		PrivateKey                respjson.Field
 		AccountName               respjson.Field
 		Container                 respjson.Field
-		SasToken                  respjson.Field
-		ClientID                  respjson.Field
-		ClientSecret              respjson.Field
-		Password                  respjson.Field
-		Username                  respjson.Field
 		raw                       string
 	} `json:"-"`
+}
+
+// anyAccountOriginGetResponse is implemented by each variant of
+// [AccountOriginGetResponseUnion] to add type safety for the return type of
+// [AccountOriginGetResponseUnion.AsAny]
+type anyAccountOriginGetResponse interface {
+	implAccountOriginGetResponseUnion()
+}
+
+func (AccountOriginGetResponseS3) implAccountOriginGetResponseUnion()               {}
+func (AccountOriginGetResponseS3Compatible) implAccountOriginGetResponseUnion()     {}
+func (AccountOriginGetResponseCloudinaryBackup) implAccountOriginGetResponseUnion() {}
+func (AccountOriginGetResponseWebFolder) implAccountOriginGetResponseUnion()        {}
+func (AccountOriginGetResponseWebProxy) implAccountOriginGetResponseUnion()         {}
+func (AccountOriginGetResponseGcs) implAccountOriginGetResponseUnion()              {}
+func (AccountOriginGetResponseAzureBlob) implAccountOriginGetResponseUnion()        {}
+func (AccountOriginGetResponseAkeneoPim) implAccountOriginGetResponseUnion()        {}
+
+// Use the following switch statement to find the correct variant
+//
+//	switch variant := AccountOriginGetResponseUnion.AsAny().(type) {
+//	case imagekit.AccountOriginGetResponseS3:
+//	case imagekit.AccountOriginGetResponseS3Compatible:
+//	case imagekit.AccountOriginGetResponseCloudinaryBackup:
+//	case imagekit.AccountOriginGetResponseWebFolder:
+//	case imagekit.AccountOriginGetResponseWebProxy:
+//	case imagekit.AccountOriginGetResponseGcs:
+//	case imagekit.AccountOriginGetResponseAzureBlob:
+//	case imagekit.AccountOriginGetResponseAkeneoPim:
+//	default:
+//	  fmt.Errorf("no variant present")
+//	}
+func (u AccountOriginGetResponseUnion) AsAny() anyAccountOriginGetResponse {
+	switch u.Type {
+	case "S3":
+		return u.AsS3()
+	case "S3_COMPATIBLE":
+		return u.AsS3Compatible()
+	case "CLOUDINARY_BACKUP":
+		return u.AsCloudinaryBackup()
+	case "WEB_FOLDER":
+		return u.AsWebFolder()
+	case "WEB_PROXY":
+		return u.AsWebProxy()
+	case "GCS":
+		return u.AsGcs()
+	case "AZURE_BLOB":
+		return u.AsAzureBlob()
+	case "AKENEO_PIM":
+		return u.AsAkeneoPim()
+	}
+	return nil
 }
 
 func (u AccountOriginGetResponseUnion) AsS3() (v AccountOriginGetResponseS3) {
@@ -1973,12 +2052,12 @@ func (u AccountOriginGetResponseUnion) AsWebProxy() (v AccountOriginGetResponseW
 	return
 }
 
-func (u AccountOriginGetResponseUnion) AsGoogleCloudStorageGcs() (v AccountOriginGetResponseGoogleCloudStorageGcs) {
+func (u AccountOriginGetResponseUnion) AsGcs() (v AccountOriginGetResponseGcs) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u AccountOriginGetResponseUnion) AsAzureBlobStorage() (v AccountOriginGetResponseAzureBlobStorage) {
+func (u AccountOriginGetResponseUnion) AsAzureBlob() (v AccountOriginGetResponseAzureBlob) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -1996,33 +2075,29 @@ func (r *AccountOriginGetResponseUnion) UnmarshalJSON(data []byte) error {
 }
 
 type AccountOriginGetResponseS3 struct {
-	// Access key for the bucket.
-	AccessKey string `json:"accessKey,required"`
+	// Unique identifier for the origin. This is generated by ImageKit when you create
+	// a new origin.
+	ID string `json:"id,required"`
 	// S3 bucket name.
 	Bucket string `json:"bucket,required"`
+	// Whether to send a Canonical header.
+	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
 	Name string `json:"name,required"`
-	// Secret key for the bucket.
-	SecretKey string      `json:"secretKey,required"`
-	Type      constant.S3 `json:"type,required"`
-	ID        string      `json:"id"`
+	// Path prefix inside the bucket.
+	Prefix string      `json:"prefix,required"`
+	Type   constant.S3 `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
-	// Whether to send a Canonical header.
-	IncludeCanonicalHeader bool `json:"includeCanonicalHeader"`
-	// Path prefix inside the bucket.
-	Prefix string `json:"prefix"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		AccessKey                 respjson.Field
-		Bucket                    respjson.Field
-		Name                      respjson.Field
-		SecretKey                 respjson.Field
-		Type                      respjson.Field
 		ID                        respjson.Field
-		BaseURLForCanonicalHeader respjson.Field
+		Bucket                    respjson.Field
 		IncludeCanonicalHeader    respjson.Field
+		Name                      respjson.Field
 		Prefix                    respjson.Field
+		Type                      respjson.Field
+		BaseURLForCanonicalHeader respjson.Field
 		ExtraFields               map[string]respjson.Field
 		raw                       string
 	} `json:"-"`
@@ -2035,39 +2110,35 @@ func (r *AccountOriginGetResponseS3) UnmarshalJSON(data []byte) error {
 }
 
 type AccountOriginGetResponseS3Compatible struct {
-	// Access key for the bucket.
-	AccessKey string `json:"accessKey,required"`
+	// Unique identifier for the origin. This is generated by ImageKit when you create
+	// a new origin.
+	ID string `json:"id,required"`
 	// S3 bucket name.
 	Bucket string `json:"bucket,required"`
 	// Custom S3-compatible endpoint.
 	Endpoint string `json:"endpoint,required" format:"uri"`
+	// Whether to send a Canonical header.
+	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
 	Name string `json:"name,required"`
-	// Secret key for the bucket.
-	SecretKey string                `json:"secretKey,required"`
-	Type      constant.S3Compatible `json:"type,required"`
-	ID        string                `json:"id"`
+	// Path prefix inside the bucket.
+	Prefix string `json:"prefix,required"`
+	// Use path-style S3 URLs?
+	S3ForcePathStyle bool                  `json:"s3ForcePathStyle,required"`
+	Type             constant.S3Compatible `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
-	// Whether to send a Canonical header.
-	IncludeCanonicalHeader bool `json:"includeCanonicalHeader"`
-	// Path prefix inside the bucket.
-	Prefix string `json:"prefix"`
-	// Use path-style S3 URLs?
-	S3ForcePathStyle bool `json:"s3ForcePathStyle"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		AccessKey                 respjson.Field
+		ID                        respjson.Field
 		Bucket                    respjson.Field
 		Endpoint                  respjson.Field
-		Name                      respjson.Field
-		SecretKey                 respjson.Field
-		Type                      respjson.Field
-		ID                        respjson.Field
-		BaseURLForCanonicalHeader respjson.Field
 		IncludeCanonicalHeader    respjson.Field
+		Name                      respjson.Field
 		Prefix                    respjson.Field
 		S3ForcePathStyle          respjson.Field
+		Type                      respjson.Field
+		BaseURLForCanonicalHeader respjson.Field
 		ExtraFields               map[string]respjson.Field
 		raw                       string
 	} `json:"-"`
@@ -2080,33 +2151,29 @@ func (r *AccountOriginGetResponseS3Compatible) UnmarshalJSON(data []byte) error 
 }
 
 type AccountOriginGetResponseCloudinaryBackup struct {
-	// Access key for the bucket.
-	AccessKey string `json:"accessKey,required"`
+	// Unique identifier for the origin. This is generated by ImageKit when you create
+	// a new origin.
+	ID string `json:"id,required"`
 	// S3 bucket name.
 	Bucket string `json:"bucket,required"`
+	// Whether to send a Canonical header.
+	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
 	Name string `json:"name,required"`
-	// Secret key for the bucket.
-	SecretKey string                    `json:"secretKey,required"`
-	Type      constant.CloudinaryBackup `json:"type,required"`
-	ID        string                    `json:"id"`
+	// Path prefix inside the bucket.
+	Prefix string                    `json:"prefix,required"`
+	Type   constant.CloudinaryBackup `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
-	// Whether to send a Canonical header.
-	IncludeCanonicalHeader bool `json:"includeCanonicalHeader"`
-	// Path prefix inside the bucket.
-	Prefix string `json:"prefix"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		AccessKey                 respjson.Field
-		Bucket                    respjson.Field
-		Name                      respjson.Field
-		SecretKey                 respjson.Field
-		Type                      respjson.Field
 		ID                        respjson.Field
-		BaseURLForCanonicalHeader respjson.Field
+		Bucket                    respjson.Field
 		IncludeCanonicalHeader    respjson.Field
+		Name                      respjson.Field
 		Prefix                    respjson.Field
+		Type                      respjson.Field
+		BaseURLForCanonicalHeader respjson.Field
 		ExtraFields               map[string]respjson.Field
 		raw                       string
 	} `json:"-"`
@@ -2119,27 +2186,29 @@ func (r *AccountOriginGetResponseCloudinaryBackup) UnmarshalJSON(data []byte) er
 }
 
 type AccountOriginGetResponseWebFolder struct {
+	// Unique identifier for the origin. This is generated by ImageKit when you create
+	// a new origin.
+	ID string `json:"id,required"`
 	// Root URL for the web folder origin.
 	BaseURL string `json:"baseUrl,required" format:"uri"`
+	// Forward the Host header to origin?
+	ForwardHostHeaderToOrigin bool `json:"forwardHostHeaderToOrigin,required"`
+	// Whether to send a Canonical header.
+	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
 	Name string             `json:"name,required"`
 	Type constant.WebFolder `json:"type,required"`
-	ID   string             `json:"id"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
-	// Forward the Host header to origin?
-	ForwardHostHeaderToOrigin bool `json:"forwardHostHeaderToOrigin"`
-	// Whether to send a Canonical header.
-	IncludeCanonicalHeader bool `json:"includeCanonicalHeader"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		BaseURL                   respjson.Field
-		Name                      respjson.Field
-		Type                      respjson.Field
 		ID                        respjson.Field
-		BaseURLForCanonicalHeader respjson.Field
+		BaseURL                   respjson.Field
 		ForwardHostHeaderToOrigin respjson.Field
 		IncludeCanonicalHeader    respjson.Field
+		Name                      respjson.Field
+		Type                      respjson.Field
+		BaseURLForCanonicalHeader respjson.Field
 		ExtraFields               map[string]respjson.Field
 		raw                       string
 	} `json:"-"`
@@ -2152,21 +2221,23 @@ func (r *AccountOriginGetResponseWebFolder) UnmarshalJSON(data []byte) error {
 }
 
 type AccountOriginGetResponseWebProxy struct {
+	// Unique identifier for the origin. This is generated by ImageKit when you create
+	// a new origin.
+	ID string `json:"id,required"`
+	// Whether to send a Canonical header.
+	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
 	Name string            `json:"name,required"`
 	Type constant.WebProxy `json:"type,required"`
-	ID   string            `json:"id"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
-	// Whether to send a Canonical header.
-	IncludeCanonicalHeader bool `json:"includeCanonicalHeader"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID                        respjson.Field
+		IncludeCanonicalHeader    respjson.Field
 		Name                      respjson.Field
 		Type                      respjson.Field
-		ID                        respjson.Field
 		BaseURLForCanonicalHeader respjson.Field
-		IncludeCanonicalHeader    respjson.Field
 		ExtraFields               map[string]respjson.Field
 		raw                       string
 	} `json:"-"`
@@ -2178,107 +2249,97 @@ func (r *AccountOriginGetResponseWebProxy) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AccountOriginGetResponseGoogleCloudStorageGcs struct {
+type AccountOriginGetResponseGcs struct {
+	// Unique identifier for the origin. This is generated by ImageKit when you create
+	// a new origin.
+	ID          string `json:"id,required"`
 	Bucket      string `json:"bucket,required"`
 	ClientEmail string `json:"clientEmail,required" format:"email"`
+	// Whether to send a Canonical header.
+	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
-	Name       string       `json:"name,required"`
-	PrivateKey string       `json:"privateKey,required"`
-	Type       constant.Gcs `json:"type,required"`
-	ID         string       `json:"id"`
+	Name   string       `json:"name,required"`
+	Prefix string       `json:"prefix,required"`
+	Type   constant.Gcs `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
-	// Whether to send a Canonical header.
-	IncludeCanonicalHeader bool   `json:"includeCanonicalHeader"`
-	Prefix                 string `json:"prefix"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID                        respjson.Field
 		Bucket                    respjson.Field
 		ClientEmail               respjson.Field
-		Name                      respjson.Field
-		PrivateKey                respjson.Field
-		Type                      respjson.Field
-		ID                        respjson.Field
-		BaseURLForCanonicalHeader respjson.Field
 		IncludeCanonicalHeader    respjson.Field
+		Name                      respjson.Field
 		Prefix                    respjson.Field
+		Type                      respjson.Field
+		BaseURLForCanonicalHeader respjson.Field
 		ExtraFields               map[string]respjson.Field
 		raw                       string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r AccountOriginGetResponseGoogleCloudStorageGcs) RawJSON() string { return r.JSON.raw }
-func (r *AccountOriginGetResponseGoogleCloudStorageGcs) UnmarshalJSON(data []byte) error {
+func (r AccountOriginGetResponseGcs) RawJSON() string { return r.JSON.raw }
+func (r *AccountOriginGetResponseGcs) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AccountOriginGetResponseAzureBlobStorage struct {
+type AccountOriginGetResponseAzureBlob struct {
+	// Unique identifier for the origin. This is generated by ImageKit when you create
+	// a new origin.
+	ID          string `json:"id,required"`
 	AccountName string `json:"accountName,required"`
 	Container   string `json:"container,required"`
+	// Whether to send a Canonical header.
+	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
-	Name     string             `json:"name,required"`
-	SasToken string             `json:"sasToken,required"`
-	Type     constant.AzureBlob `json:"type,required"`
-	ID       string             `json:"id"`
+	Name   string             `json:"name,required"`
+	Prefix string             `json:"prefix,required"`
+	Type   constant.AzureBlob `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
-	// Whether to send a Canonical header.
-	IncludeCanonicalHeader bool   `json:"includeCanonicalHeader"`
-	Prefix                 string `json:"prefix"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		ID                        respjson.Field
 		AccountName               respjson.Field
 		Container                 respjson.Field
-		Name                      respjson.Field
-		SasToken                  respjson.Field
-		Type                      respjson.Field
-		ID                        respjson.Field
-		BaseURLForCanonicalHeader respjson.Field
 		IncludeCanonicalHeader    respjson.Field
+		Name                      respjson.Field
 		Prefix                    respjson.Field
+		Type                      respjson.Field
+		BaseURLForCanonicalHeader respjson.Field
 		ExtraFields               map[string]respjson.Field
 		raw                       string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r AccountOriginGetResponseAzureBlobStorage) RawJSON() string { return r.JSON.raw }
-func (r *AccountOriginGetResponseAzureBlobStorage) UnmarshalJSON(data []byte) error {
+func (r AccountOriginGetResponseAzureBlob) RawJSON() string { return r.JSON.raw }
+func (r *AccountOriginGetResponseAzureBlob) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 type AccountOriginGetResponseAkeneoPim struct {
+	// Unique identifier for the origin. This is generated by ImageKit when you create
+	// a new origin.
+	ID string `json:"id,required"`
 	// Akeneo instance base URL.
 	BaseURL string `json:"baseUrl,required" format:"uri"`
-	// Akeneo API client ID.
-	ClientID string `json:"clientId,required"`
-	// Akeneo API client secret.
-	ClientSecret string `json:"clientSecret,required"`
+	// Whether to send a Canonical header.
+	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
 	// Display name of the origin.
-	Name string `json:"name,required"`
-	// Akeneo API password.
-	Password string             `json:"password,required"`
-	Type     constant.AkeneoPim `json:"type,required"`
-	// Akeneo API username.
-	Username string `json:"username,required"`
-	ID       string `json:"id"`
+	Name string             `json:"name,required"`
+	Type constant.AkeneoPim `json:"type,required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
-	// Whether to send a Canonical header.
-	IncludeCanonicalHeader bool `json:"includeCanonicalHeader"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		BaseURL                   respjson.Field
-		ClientID                  respjson.Field
-		ClientSecret              respjson.Field
-		Name                      respjson.Field
-		Password                  respjson.Field
-		Type                      respjson.Field
-		Username                  respjson.Field
 		ID                        respjson.Field
-		BaseURLForCanonicalHeader respjson.Field
+		BaseURL                   respjson.Field
 		IncludeCanonicalHeader    respjson.Field
+		Name                      respjson.Field
+		Type                      respjson.Field
+		BaseURLForCanonicalHeader respjson.Field
 		ExtraFields               map[string]respjson.Field
 		raw                       string
 	} `json:"-"`
