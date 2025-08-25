@@ -162,6 +162,10 @@ Methods:
 
 ## URLEndpoints
 
+Params Types:
+
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go">imagekit</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go#URLEndpointParam">URLEndpointParam</a>
+
 Response Types:
 
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go">imagekit</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go#AccountURLEndpointNewResponse">AccountURLEndpointNewResponse</a>

@@ -28,12 +28,14 @@ func TestAccountURLEndpointNewWithOptionalParams(t *testing.T) {
 		option.WithPassword("My Password"),
 	)
 	_, err := client.Accounts.URLEndpoints.New(context.TODO(), imagekit.AccountURLEndpointNewParams{
-		Description: "My custom URL endpoint",
-		Origins:     []string{"origin-id-1"},
-		URLPrefix:   imagekit.String("product-images"),
-		URLRewriter: imagekit.AccountURLEndpointNewParamsURLRewriterUnion{
-			OfCloudinary: &imagekit.AccountURLEndpointNewParamsURLRewriterCloudinary{
-				PreserveAssetDeliveryTypes: imagekit.Bool(true),
+		URLEndpoint: imagekit.URLEndpointParam{
+			Description: "My custom URL endpoint",
+			Origins:     []string{"origin-id-1"},
+			URLPrefix:   imagekit.String("product-images"),
+			URLRewriter: imagekit.URLEndpointURLRewriterUnionParam{
+				OfCloudinary: &imagekit.URLEndpointURLRewriterCloudinaryParam{
+					PreserveAssetDeliveryTypes: imagekit.Bool(true),
+				},
 			},
 		},
 	})
@@ -64,12 +66,14 @@ func TestAccountURLEndpointUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		imagekit.AccountURLEndpointUpdateParams{
-			Description: "My custom URL endpoint",
-			Origins:     []string{"origin-id-1"},
-			URLPrefix:   imagekit.String("product-images"),
-			URLRewriter: imagekit.AccountURLEndpointUpdateParamsURLRewriterUnion{
-				OfCloudinary: &imagekit.AccountURLEndpointUpdateParamsURLRewriterCloudinary{
-					PreserveAssetDeliveryTypes: imagekit.Bool(true),
+			URLEndpoint: imagekit.URLEndpointParam{
+				Description: "My custom URL endpoint",
+				Origins:     []string{"origin-id-1"},
+				URLPrefix:   imagekit.String("product-images"),
+				URLRewriter: imagekit.URLEndpointURLRewriterUnionParam{
+					OfCloudinary: &imagekit.URLEndpointURLRewriterCloudinaryParam{
+						PreserveAssetDeliveryTypes: imagekit.Bool(true),
+					},
 				},
 			},
 		},

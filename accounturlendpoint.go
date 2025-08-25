@@ -10,6 +10,7 @@ import (
 	"net/http"
 
 	"github.com/stainless-sdks/imagekit-go/internal/apijson"
+	shimjson "github.com/stainless-sdks/imagekit-go/internal/encoding/json"
 	"github.com/stainless-sdks/imagekit-go/internal/requestconfig"
 	"github.com/stainless-sdks/imagekit-go/option"
 	"github.com/stainless-sdks/imagekit-go/packages/param"
@@ -94,6 +95,148 @@ func (r *AccountURLEndpointService) Get(ctx context.Context, id string, opts ...
 	path := fmt.Sprintf("v1/accounts/url-endpoints/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
+}
+
+// Schema for URL endpoint resource.
+//
+// The property Description is required.
+type URLEndpointParam struct {
+	// Description of the URL endpoint.
+	Description string `json:"description,required"`
+	// Path segment appended to your base URL to form the endpoint (letters, digits,
+	// and hyphens only — or empty for the default endpoint).
+	URLPrefix param.Opt[string] `json:"urlPrefix,omitzero"`
+	// Ordered list of origin IDs to try when the file isn’t in the Media Library;
+	// ImageKit checks them in the sequence provided. Origin must be created before it
+	// can be used in a URL endpoint.
+	Origins []string `json:"origins,omitzero"`
+	// Configuration for third-party URL rewriting.
+	URLRewriter URLEndpointURLRewriterUnionParam `json:"urlRewriter,omitzero"`
+	paramObj
+}
+
+func (r URLEndpointParam) MarshalJSON() (data []byte, err error) {
+	type shadow URLEndpointParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *URLEndpointParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type URLEndpointURLRewriterUnionParam struct {
+	OfCloudinary *URLEndpointURLRewriterCloudinaryParam `json:",omitzero,inline"`
+	OfImgix      *URLEndpointURLRewriterImgixParam      `json:",omitzero,inline"`
+	OfAkamai     *URLEndpointURLRewriterAkamaiParam     `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u URLEndpointURLRewriterUnionParam) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfCloudinary, u.OfImgix, u.OfAkamai)
+}
+func (u *URLEndpointURLRewriterUnionParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *URLEndpointURLRewriterUnionParam) asAny() any {
+	if !param.IsOmitted(u.OfCloudinary) {
+		return u.OfCloudinary
+	} else if !param.IsOmitted(u.OfImgix) {
+		return u.OfImgix
+	} else if !param.IsOmitted(u.OfAkamai) {
+		return u.OfAkamai
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u URLEndpointURLRewriterUnionParam) GetPreserveAssetDeliveryTypes() *bool {
+	if vt := u.OfCloudinary; vt != nil && vt.PreserveAssetDeliveryTypes.Valid() {
+		return &vt.PreserveAssetDeliveryTypes.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u URLEndpointURLRewriterUnionParam) GetType() *string {
+	if vt := u.OfCloudinary; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfImgix; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfAkamai; vt != nil {
+		return (*string)(&vt.Type)
+	}
+	return nil
+}
+
+func init() {
+	apijson.RegisterUnion[URLEndpointURLRewriterUnionParam](
+		"type",
+		apijson.Discriminator[URLEndpointURLRewriterCloudinaryParam]("CLOUDINARY"),
+		apijson.Discriminator[URLEndpointURLRewriterImgixParam]("IMGIX"),
+		apijson.Discriminator[URLEndpointURLRewriterAkamaiParam]("AKAMAI"),
+	)
+}
+
+// The property Type is required.
+type URLEndpointURLRewriterCloudinaryParam struct {
+	// Whether to preserve `<asset_type>/<delivery_type>` in the rewritten URL.
+	PreserveAssetDeliveryTypes param.Opt[bool] `json:"preserveAssetDeliveryTypes,omitzero"`
+	// This field can be elided, and will marshal its zero value as "CLOUDINARY".
+	Type constant.Cloudinary `json:"type,required"`
+	paramObj
+}
+
+func (r URLEndpointURLRewriterCloudinaryParam) MarshalJSON() (data []byte, err error) {
+	type shadow URLEndpointURLRewriterCloudinaryParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *URLEndpointURLRewriterCloudinaryParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func NewURLEndpointURLRewriterImgixParam() URLEndpointURLRewriterImgixParam {
+	return URLEndpointURLRewriterImgixParam{
+		Type: "IMGIX",
+	}
+}
+
+// This struct has a constant value, construct it with
+// [NewURLEndpointURLRewriterImgixParam].
+type URLEndpointURLRewriterImgixParam struct {
+	Type constant.Imgix `json:"type,required"`
+	paramObj
+}
+
+func (r URLEndpointURLRewriterImgixParam) MarshalJSON() (data []byte, err error) {
+	type shadow URLEndpointURLRewriterImgixParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *URLEndpointURLRewriterImgixParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func NewURLEndpointURLRewriterAkamaiParam() URLEndpointURLRewriterAkamaiParam {
+	return URLEndpointURLRewriterAkamaiParam{
+		Type: "AKAMAI",
+	}
+}
+
+// This struct has a constant value, construct it with
+// [NewURLEndpointURLRewriterAkamaiParam].
+type URLEndpointURLRewriterAkamaiParam struct {
+	Type constant.Akamai `json:"type,required"`
+	paramObj
+}
+
+func (r URLEndpointURLRewriterAkamaiParam) MarshalJSON() (data []byte, err error) {
+	type shadow URLEndpointURLRewriterAkamaiParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *URLEndpointURLRewriterAkamaiParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // URL‑endpoint object as returned by the API.
@@ -756,279 +899,27 @@ func (r *AccountURLEndpointGetResponseURLRewriterAkamai) UnmarshalJSON(data []by
 }
 
 type AccountURLEndpointNewParams struct {
-	// Description of the URL endpoint.
-	Description string `json:"description,required"`
-	// Path segment appended to your base URL to form the endpoint (letters, digits,
-	// and hyphens only — or empty for the default endpoint).
-	URLPrefix param.Opt[string] `json:"urlPrefix,omitzero"`
-	// Ordered list of origin IDs to try when the file isn’t in the Media Library;
-	// ImageKit checks them in the sequence provided. Origin must be created before it
-	// can be used in a URL endpoint.
-	Origins []string `json:"origins,omitzero"`
-	// Configuration for third-party URL rewriting.
-	URLRewriter AccountURLEndpointNewParamsURLRewriterUnion `json:"urlRewriter,omitzero"`
+	// Schema for URL endpoint resource.
+	URLEndpoint URLEndpointParam
 	paramObj
 }
 
 func (r AccountURLEndpointNewParams) MarshalJSON() (data []byte, err error) {
-	type shadow AccountURLEndpointNewParams
-	return param.MarshalObject(r, (*shadow)(&r))
+	return shimjson.Marshal(r.URLEndpoint)
 }
 func (r *AccountURLEndpointNewParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Only one field can be non-zero.
-//
-// Use [param.IsOmitted] to confirm if a field is set.
-type AccountURLEndpointNewParamsURLRewriterUnion struct {
-	OfCloudinary *AccountURLEndpointNewParamsURLRewriterCloudinary `json:",omitzero,inline"`
-	OfImgix      *AccountURLEndpointNewParamsURLRewriterImgix      `json:",omitzero,inline"`
-	OfAkamai     *AccountURLEndpointNewParamsURLRewriterAkamai     `json:",omitzero,inline"`
-	paramUnion
-}
-
-func (u AccountURLEndpointNewParamsURLRewriterUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfCloudinary, u.OfImgix, u.OfAkamai)
-}
-func (u *AccountURLEndpointNewParamsURLRewriterUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
-}
-
-func (u *AccountURLEndpointNewParamsURLRewriterUnion) asAny() any {
-	if !param.IsOmitted(u.OfCloudinary) {
-		return u.OfCloudinary
-	} else if !param.IsOmitted(u.OfImgix) {
-		return u.OfImgix
-	} else if !param.IsOmitted(u.OfAkamai) {
-		return u.OfAkamai
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u AccountURLEndpointNewParamsURLRewriterUnion) GetPreserveAssetDeliveryTypes() *bool {
-	if vt := u.OfCloudinary; vt != nil && vt.PreserveAssetDeliveryTypes.Valid() {
-		return &vt.PreserveAssetDeliveryTypes.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u AccountURLEndpointNewParamsURLRewriterUnion) GetType() *string {
-	if vt := u.OfCloudinary; vt != nil {
-		return (*string)(&vt.Type)
-	} else if vt := u.OfImgix; vt != nil {
-		return (*string)(&vt.Type)
-	} else if vt := u.OfAkamai; vt != nil {
-		return (*string)(&vt.Type)
-	}
-	return nil
-}
-
-func init() {
-	apijson.RegisterUnion[AccountURLEndpointNewParamsURLRewriterUnion](
-		"type",
-		apijson.Discriminator[AccountURLEndpointNewParamsURLRewriterCloudinary]("CLOUDINARY"),
-		apijson.Discriminator[AccountURLEndpointNewParamsURLRewriterImgix]("IMGIX"),
-		apijson.Discriminator[AccountURLEndpointNewParamsURLRewriterAkamai]("AKAMAI"),
-	)
-}
-
-// The property Type is required.
-type AccountURLEndpointNewParamsURLRewriterCloudinary struct {
-	// Whether to preserve `<asset_type>/<delivery_type>` in the rewritten URL.
-	PreserveAssetDeliveryTypes param.Opt[bool] `json:"preserveAssetDeliveryTypes,omitzero"`
-	// This field can be elided, and will marshal its zero value as "CLOUDINARY".
-	Type constant.Cloudinary `json:"type,required"`
-	paramObj
-}
-
-func (r AccountURLEndpointNewParamsURLRewriterCloudinary) MarshalJSON() (data []byte, err error) {
-	type shadow AccountURLEndpointNewParamsURLRewriterCloudinary
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *AccountURLEndpointNewParamsURLRewriterCloudinary) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func NewAccountURLEndpointNewParamsURLRewriterImgix() AccountURLEndpointNewParamsURLRewriterImgix {
-	return AccountURLEndpointNewParamsURLRewriterImgix{
-		Type: "IMGIX",
-	}
-}
-
-// This struct has a constant value, construct it with
-// [NewAccountURLEndpointNewParamsURLRewriterImgix].
-type AccountURLEndpointNewParamsURLRewriterImgix struct {
-	Type constant.Imgix `json:"type,required"`
-	paramObj
-}
-
-func (r AccountURLEndpointNewParamsURLRewriterImgix) MarshalJSON() (data []byte, err error) {
-	type shadow AccountURLEndpointNewParamsURLRewriterImgix
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *AccountURLEndpointNewParamsURLRewriterImgix) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func NewAccountURLEndpointNewParamsURLRewriterAkamai() AccountURLEndpointNewParamsURLRewriterAkamai {
-	return AccountURLEndpointNewParamsURLRewriterAkamai{
-		Type: "AKAMAI",
-	}
-}
-
-// This struct has a constant value, construct it with
-// [NewAccountURLEndpointNewParamsURLRewriterAkamai].
-type AccountURLEndpointNewParamsURLRewriterAkamai struct {
-	Type constant.Akamai `json:"type,required"`
-	paramObj
-}
-
-func (r AccountURLEndpointNewParamsURLRewriterAkamai) MarshalJSON() (data []byte, err error) {
-	type shadow AccountURLEndpointNewParamsURLRewriterAkamai
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *AccountURLEndpointNewParamsURLRewriterAkamai) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return json.Unmarshal(data, &r.URLEndpoint)
 }
 
 type AccountURLEndpointUpdateParams struct {
-	// Description of the URL endpoint.
-	Description string `json:"description,required"`
-	// Path segment appended to your base URL to form the endpoint (letters, digits,
-	// and hyphens only — or empty for the default endpoint).
-	URLPrefix param.Opt[string] `json:"urlPrefix,omitzero"`
-	// Ordered list of origin IDs to try when the file isn’t in the Media Library;
-	// ImageKit checks them in the sequence provided. Origin must be created before it
-	// can be used in a URL endpoint.
-	Origins []string `json:"origins,omitzero"`
-	// Configuration for third-party URL rewriting.
-	URLRewriter AccountURLEndpointUpdateParamsURLRewriterUnion `json:"urlRewriter,omitzero"`
+	// Schema for URL endpoint resource.
+	URLEndpoint URLEndpointParam
 	paramObj
 }
 
 func (r AccountURLEndpointUpdateParams) MarshalJSON() (data []byte, err error) {
-	type shadow AccountURLEndpointUpdateParams
-	return param.MarshalObject(r, (*shadow)(&r))
+	return shimjson.Marshal(r.URLEndpoint)
 }
 func (r *AccountURLEndpointUpdateParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Only one field can be non-zero.
-//
-// Use [param.IsOmitted] to confirm if a field is set.
-type AccountURLEndpointUpdateParamsURLRewriterUnion struct {
-	OfCloudinary *AccountURLEndpointUpdateParamsURLRewriterCloudinary `json:",omitzero,inline"`
-	OfImgix      *AccountURLEndpointUpdateParamsURLRewriterImgix      `json:",omitzero,inline"`
-	OfAkamai     *AccountURLEndpointUpdateParamsURLRewriterAkamai     `json:",omitzero,inline"`
-	paramUnion
-}
-
-func (u AccountURLEndpointUpdateParamsURLRewriterUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfCloudinary, u.OfImgix, u.OfAkamai)
-}
-func (u *AccountURLEndpointUpdateParamsURLRewriterUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
-}
-
-func (u *AccountURLEndpointUpdateParamsURLRewriterUnion) asAny() any {
-	if !param.IsOmitted(u.OfCloudinary) {
-		return u.OfCloudinary
-	} else if !param.IsOmitted(u.OfImgix) {
-		return u.OfImgix
-	} else if !param.IsOmitted(u.OfAkamai) {
-		return u.OfAkamai
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u AccountURLEndpointUpdateParamsURLRewriterUnion) GetPreserveAssetDeliveryTypes() *bool {
-	if vt := u.OfCloudinary; vt != nil && vt.PreserveAssetDeliveryTypes.Valid() {
-		return &vt.PreserveAssetDeliveryTypes.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u AccountURLEndpointUpdateParamsURLRewriterUnion) GetType() *string {
-	if vt := u.OfCloudinary; vt != nil {
-		return (*string)(&vt.Type)
-	} else if vt := u.OfImgix; vt != nil {
-		return (*string)(&vt.Type)
-	} else if vt := u.OfAkamai; vt != nil {
-		return (*string)(&vt.Type)
-	}
-	return nil
-}
-
-func init() {
-	apijson.RegisterUnion[AccountURLEndpointUpdateParamsURLRewriterUnion](
-		"type",
-		apijson.Discriminator[AccountURLEndpointUpdateParamsURLRewriterCloudinary]("CLOUDINARY"),
-		apijson.Discriminator[AccountURLEndpointUpdateParamsURLRewriterImgix]("IMGIX"),
-		apijson.Discriminator[AccountURLEndpointUpdateParamsURLRewriterAkamai]("AKAMAI"),
-	)
-}
-
-// The property Type is required.
-type AccountURLEndpointUpdateParamsURLRewriterCloudinary struct {
-	// Whether to preserve `<asset_type>/<delivery_type>` in the rewritten URL.
-	PreserveAssetDeliveryTypes param.Opt[bool] `json:"preserveAssetDeliveryTypes,omitzero"`
-	// This field can be elided, and will marshal its zero value as "CLOUDINARY".
-	Type constant.Cloudinary `json:"type,required"`
-	paramObj
-}
-
-func (r AccountURLEndpointUpdateParamsURLRewriterCloudinary) MarshalJSON() (data []byte, err error) {
-	type shadow AccountURLEndpointUpdateParamsURLRewriterCloudinary
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *AccountURLEndpointUpdateParamsURLRewriterCloudinary) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func NewAccountURLEndpointUpdateParamsURLRewriterImgix() AccountURLEndpointUpdateParamsURLRewriterImgix {
-	return AccountURLEndpointUpdateParamsURLRewriterImgix{
-		Type: "IMGIX",
-	}
-}
-
-// This struct has a constant value, construct it with
-// [NewAccountURLEndpointUpdateParamsURLRewriterImgix].
-type AccountURLEndpointUpdateParamsURLRewriterImgix struct {
-	Type constant.Imgix `json:"type,required"`
-	paramObj
-}
-
-func (r AccountURLEndpointUpdateParamsURLRewriterImgix) MarshalJSON() (data []byte, err error) {
-	type shadow AccountURLEndpointUpdateParamsURLRewriterImgix
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *AccountURLEndpointUpdateParamsURLRewriterImgix) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func NewAccountURLEndpointUpdateParamsURLRewriterAkamai() AccountURLEndpointUpdateParamsURLRewriterAkamai {
-	return AccountURLEndpointUpdateParamsURLRewriterAkamai{
-		Type: "AKAMAI",
-	}
-}
-
-// This struct has a constant value, construct it with
-// [NewAccountURLEndpointUpdateParamsURLRewriterAkamai].
-type AccountURLEndpointUpdateParamsURLRewriterAkamai struct {
-	Type constant.Akamai `json:"type,required"`
-	paramObj
-}
-
-func (r AccountURLEndpointUpdateParamsURLRewriterAkamai) MarshalJSON() (data []byte, err error) {
-	type shadow AccountURLEndpointUpdateParamsURLRewriterAkamai
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *AccountURLEndpointUpdateParamsURLRewriterAkamai) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return json.Unmarshal(data, &r.URLEndpoint)
 }
