@@ -47,55 +47,55 @@ func (r *AssetService) List(ctx context.Context, query AssetListParams, opts ...
 	return
 }
 
-// AssetListResponseUnion contains all possible properties and values from
-// [AssetListResponseFileFileVersion], [AssetListResponseFolder].
+// AssetListResponseUnion contains all possible properties and values from [File],
+// [Folder].
 //
 // Use the [AssetListResponseUnion.AsAny] method to switch on the variant.
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type AssetListResponseUnion struct {
-	// This field is from variant [AssetListResponseFileFileVersion].
-	AITags    []AssetListResponseFileFileVersionAITag `json:"AITags"`
-	CreatedAt time.Time                               `json:"createdAt"`
-	// This field is from variant [AssetListResponseFileFileVersion].
+	// This field is from variant [File].
+	AITags    []FileAITag `json:"AITags"`
+	CreatedAt time.Time   `json:"createdAt"`
+	// This field is from variant [File].
 	CustomCoordinates string `json:"customCoordinates"`
-	// This field is from variant [AssetListResponseFileFileVersion].
+	// This field is from variant [File].
 	CustomMetadata map[string]any `json:"customMetadata"`
-	// This field is from variant [AssetListResponseFileFileVersion].
+	// This field is from variant [File].
 	FileID string `json:"fileId"`
-	// This field is from variant [AssetListResponseFileFileVersion].
+	// This field is from variant [File].
 	FilePath string `json:"filePath"`
-	// This field is from variant [AssetListResponseFileFileVersion].
+	// This field is from variant [File].
 	FileType string `json:"fileType"`
-	// This field is from variant [AssetListResponseFileFileVersion].
+	// This field is from variant [File].
 	HasAlpha bool `json:"hasAlpha"`
-	// This field is from variant [AssetListResponseFileFileVersion].
+	// This field is from variant [File].
 	Height float64 `json:"height"`
-	// This field is from variant [AssetListResponseFileFileVersion].
+	// This field is from variant [File].
 	IsPrivateFile bool `json:"isPrivateFile"`
-	// This field is from variant [AssetListResponseFileFileVersion].
+	// This field is from variant [File].
 	IsPublished bool `json:"isPublished"`
-	// This field is from variant [AssetListResponseFileFileVersion].
+	// This field is from variant [File].
 	Mime string `json:"mime"`
 	Name string `json:"name"`
-	// This field is from variant [AssetListResponseFileFileVersion].
+	// This field is from variant [File].
 	Size float64 `json:"size"`
-	// This field is from variant [AssetListResponseFileFileVersion].
+	// This field is from variant [File].
 	Tags []string `json:"tags"`
-	// This field is from variant [AssetListResponseFileFileVersion].
+	// This field is from variant [File].
 	Thumbnail string `json:"thumbnail"`
 	// Any of nil, "folder".
 	Type      string    `json:"type"`
 	UpdatedAt time.Time `json:"updatedAt"`
-	// This field is from variant [AssetListResponseFileFileVersion].
+	// This field is from variant [File].
 	URL string `json:"url"`
-	// This field is from variant [AssetListResponseFileFileVersion].
-	VersionInfo AssetListResponseFileFileVersionVersionInfo `json:"versionInfo"`
-	// This field is from variant [AssetListResponseFileFileVersion].
+	// This field is from variant [File].
+	VersionInfo FileVersionInfo `json:"versionInfo"`
+	// This field is from variant [File].
 	Width float64 `json:"width"`
-	// This field is from variant [AssetListResponseFolder].
+	// This field is from variant [Folder].
 	FolderID string `json:"folderId"`
-	// This field is from variant [AssetListResponseFolder].
+	// This field is from variant [Folder].
 	FolderPath string `json:"folderPath"`
 	JSON       struct {
 		AITags            respjson.Field
@@ -125,12 +125,12 @@ type AssetListResponseUnion struct {
 	} `json:"-"`
 }
 
-func (u AssetListResponseUnion) AsFileFileVersion() (v AssetListResponseFileFileVersion) {
+func (u AssetListResponseUnion) AsFileFileVersion() (v File) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u AssetListResponseUnion) AsFolder() (v AssetListResponseFolder) {
+func (u AssetListResponseUnion) AsFolder() (v Folder) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -139,177 +139,6 @@ func (u AssetListResponseUnion) AsFolder() (v AssetListResponseFolder) {
 func (u AssetListResponseUnion) RawJSON() string { return u.JSON.raw }
 
 func (r *AssetListResponseUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Object containing details of a file or file version.
-type AssetListResponseFileFileVersion struct {
-	// An array of tags assigned to the file by auto tagging.
-	AITags []AssetListResponseFileFileVersionAITag `json:"AITags,nullable"`
-	// Date and time when the file was uploaded. The date and time is in ISO8601
-	// format.
-	CreatedAt time.Time `json:"createdAt" format:"date-time"`
-	// An string with custom coordinates of the file.
-	CustomCoordinates string `json:"customCoordinates,nullable"`
-	// An object with custom metadata for the file.
-	CustomMetadata map[string]any `json:"customMetadata"`
-	// Unique identifier of the asset.
-	FileID string `json:"fileId"`
-	// Path of the file. This is the path you would use in the URL to access the file.
-	// For example, if the file is at the root of the media library, the path will be
-	// `/file.jpg`. If the file is inside a folder named `images`, the path will be
-	// `/images/file.jpg`.
-	FilePath string `json:"filePath"`
-	// Type of the file. Possible values are `image`, `non-image`.
-	FileType string `json:"fileType"`
-	// Specifies if the image has an alpha channel.
-	HasAlpha bool `json:"hasAlpha"`
-	// Height of the file.
-	Height float64 `json:"height"`
-	// Specifies if the file is private or not.
-	IsPrivateFile bool `json:"isPrivateFile"`
-	// Specifies if the file is published or not.
-	IsPublished bool `json:"isPublished"`
-	// MIME type of the file.
-	Mime string `json:"mime"`
-	// Name of the asset.
-	Name string `json:"name"`
-	// Size of the file in bytes.
-	Size float64 `json:"size"`
-	// An array of tags assigned to the file. Tags are used to search files in the
-	// media library.
-	Tags []string `json:"tags,nullable"`
-	// URL of the thumbnail image. This URL is used to access the thumbnail image of
-	// the file in the media library.
-	Thumbnail string `json:"thumbnail" format:"uri"`
-	// Type of the asset.
-	//
-	// Any of "file", "file-version".
-	Type string `json:"type"`
-	// Date and time when the file was last updated. The date and time is in ISO8601
-	// format.
-	UpdatedAt time.Time `json:"updatedAt" format:"date-time"`
-	// URL of the file.
-	URL string `json:"url" format:"uri"`
-	// An object with details of the file version.
-	VersionInfo AssetListResponseFileFileVersionVersionInfo `json:"versionInfo"`
-	// Width of the file.
-	Width float64 `json:"width"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		AITags            respjson.Field
-		CreatedAt         respjson.Field
-		CustomCoordinates respjson.Field
-		CustomMetadata    respjson.Field
-		FileID            respjson.Field
-		FilePath          respjson.Field
-		FileType          respjson.Field
-		HasAlpha          respjson.Field
-		Height            respjson.Field
-		IsPrivateFile     respjson.Field
-		IsPublished       respjson.Field
-		Mime              respjson.Field
-		Name              respjson.Field
-		Size              respjson.Field
-		Tags              respjson.Field
-		Thumbnail         respjson.Field
-		Type              respjson.Field
-		UpdatedAt         respjson.Field
-		URL               respjson.Field
-		VersionInfo       respjson.Field
-		Width             respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AssetListResponseFileFileVersion) RawJSON() string { return r.JSON.raw }
-func (r *AssetListResponseFileFileVersion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AssetListResponseFileFileVersionAITag struct {
-	// Confidence score of the tag.
-	Confidence float64 `json:"confidence"`
-	// Name of the tag.
-	Name string `json:"name"`
-	// Source of the tag. Possible values are `google-auto-tagging` and
-	// `aws-auto-tagging`.
-	Source string `json:"source"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Confidence  respjson.Field
-		Name        respjson.Field
-		Source      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AssetListResponseFileFileVersionAITag) RawJSON() string { return r.JSON.raw }
-func (r *AssetListResponseFileFileVersionAITag) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// An object with details of the file version.
-type AssetListResponseFileFileVersionVersionInfo struct {
-	// Unique identifier of the file version.
-	ID string `json:"id"`
-	// Name of the file version.
-	Name string `json:"name"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		Name        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AssetListResponseFileFileVersionVersionInfo) RawJSON() string { return r.JSON.raw }
-func (r *AssetListResponseFileFileVersionVersionInfo) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AssetListResponseFolder struct {
-	// Date and time when the folder was created. The date and time is in ISO8601
-	// format.
-	CreatedAt time.Time `json:"createdAt" format:"date-time"`
-	// Unique identifier of the asset.
-	FolderID string `json:"folderId"`
-	// Path of the folder. This is the path you would use in the URL to access the
-	// folder. For example, if the folder is at the root of the media library, the path
-	// will be /folder. If the folder is inside another folder named images, the path
-	// will be /images/folder.
-	FolderPath string `json:"folderPath"`
-	// Name of the asset.
-	Name string `json:"name"`
-	// Type of the asset.
-	//
-	// Any of "folder".
-	Type string `json:"type"`
-	// Date and time when the folder was last updated. The date and time is in ISO8601
-	// format.
-	UpdatedAt time.Time `json:"updatedAt" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		CreatedAt   respjson.Field
-		FolderID    respjson.Field
-		FolderPath  respjson.Field
-		Name        respjson.Field
-		Type        respjson.Field
-		UpdatedAt   respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AssetListResponseFolder) RawJSON() string { return r.JSON.raw }
-func (r *AssetListResponseFolder) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
