@@ -70,13 +70,13 @@ func (r *WebhookService) Unwrap(payload []byte, headers http.Header, opts ...opt
 	return res, nil
 }
 
-type VideoTransformationAcceptedWebhookEvent struct {
+type VideoTransformationAcceptedEvent struct {
 	// Unique identifier for the event.
-	ID        string                                         `json:"id,required"`
-	CreatedAt time.Time                                      `json:"created_at,required" format:"date-time"`
-	Data      VideoTransformationAcceptedWebhookEventData    `json:"data,required"`
-	Request   VideoTransformationAcceptedWebhookEventRequest `json:"request,required"`
-	Type      constant.VideoTransformationAccepted           `json:"type,required"`
+	ID        string                                  `json:"id,required"`
+	CreatedAt time.Time                               `json:"created_at,required" format:"date-time"`
+	Data      VideoTransformationAcceptedEventData    `json:"data,required"`
+	Request   VideoTransformationAcceptedEventRequest `json:"request,required"`
+	Type      constant.VideoTransformationAccepted    `json:"type,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -90,14 +90,14 @@ type VideoTransformationAcceptedWebhookEvent struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r VideoTransformationAcceptedWebhookEvent) RawJSON() string { return r.JSON.raw }
-func (r *VideoTransformationAcceptedWebhookEvent) UnmarshalJSON(data []byte) error {
+func (r VideoTransformationAcceptedEvent) RawJSON() string { return r.JSON.raw }
+func (r *VideoTransformationAcceptedEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type VideoTransformationAcceptedWebhookEventData struct {
-	Asset          VideoTransformationAcceptedWebhookEventDataAsset          `json:"asset,required"`
-	Transformation VideoTransformationAcceptedWebhookEventDataTransformation `json:"transformation,required"`
+type VideoTransformationAcceptedEventData struct {
+	Asset          VideoTransformationAcceptedEventDataAsset          `json:"asset,required"`
+	Transformation VideoTransformationAcceptedEventDataTransformation `json:"transformation,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Asset          respjson.Field
@@ -108,12 +108,12 @@ type VideoTransformationAcceptedWebhookEventData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r VideoTransformationAcceptedWebhookEventData) RawJSON() string { return r.JSON.raw }
-func (r *VideoTransformationAcceptedWebhookEventData) UnmarshalJSON(data []byte) error {
+func (r VideoTransformationAcceptedEventData) RawJSON() string { return r.JSON.raw }
+func (r *VideoTransformationAcceptedEventData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type VideoTransformationAcceptedWebhookEventDataAsset struct {
+type VideoTransformationAcceptedEventDataAsset struct {
 	// Source asset URL.
 	URL string `json:"url,required" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -125,15 +125,15 @@ type VideoTransformationAcceptedWebhookEventDataAsset struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r VideoTransformationAcceptedWebhookEventDataAsset) RawJSON() string { return r.JSON.raw }
-func (r *VideoTransformationAcceptedWebhookEventDataAsset) UnmarshalJSON(data []byte) error {
+func (r VideoTransformationAcceptedEventDataAsset) RawJSON() string { return r.JSON.raw }
+func (r *VideoTransformationAcceptedEventDataAsset) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type VideoTransformationAcceptedWebhookEventDataTransformation struct {
+type VideoTransformationAcceptedEventDataTransformation struct {
 	// Any of "video-transformation", "gif-to-video", "video-thumbnail".
-	Type    string                                                           `json:"type,required"`
-	Options VideoTransformationAcceptedWebhookEventDataTransformationOptions `json:"options"`
+	Type    string                                                    `json:"type,required"`
+	Options VideoTransformationAcceptedEventDataTransformationOptions `json:"options"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Type        respjson.Field
@@ -144,14 +144,12 @@ type VideoTransformationAcceptedWebhookEventDataTransformation struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r VideoTransformationAcceptedWebhookEventDataTransformation) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *VideoTransformationAcceptedWebhookEventDataTransformation) UnmarshalJSON(data []byte) error {
+func (r VideoTransformationAcceptedEventDataTransformation) RawJSON() string { return r.JSON.raw }
+func (r *VideoTransformationAcceptedEventDataTransformation) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type VideoTransformationAcceptedWebhookEventDataTransformationOptions struct {
+type VideoTransformationAcceptedEventDataTransformationOptions struct {
 	// Any of "aac", "opus".
 	AudioCodec string `json:"audio_codec"`
 	AutoRotate bool   `json:"auto_rotate"`
@@ -178,14 +176,14 @@ type VideoTransformationAcceptedWebhookEventDataTransformationOptions struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r VideoTransformationAcceptedWebhookEventDataTransformationOptions) RawJSON() string {
+func (r VideoTransformationAcceptedEventDataTransformationOptions) RawJSON() string {
 	return r.JSON.raw
 }
-func (r *VideoTransformationAcceptedWebhookEventDataTransformationOptions) UnmarshalJSON(data []byte) error {
+func (r *VideoTransformationAcceptedEventDataTransformationOptions) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type VideoTransformationAcceptedWebhookEventRequest struct {
+type VideoTransformationAcceptedEventRequest struct {
 	// URL of the submitted request.
 	URL string `json:"url,required" format:"uri"`
 	// Unique ID for the originating request.
@@ -203,19 +201,18 @@ type VideoTransformationAcceptedWebhookEventRequest struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r VideoTransformationAcceptedWebhookEventRequest) RawJSON() string { return r.JSON.raw }
-func (r *VideoTransformationAcceptedWebhookEventRequest) UnmarshalJSON(data []byte) error {
+func (r VideoTransformationAcceptedEventRequest) RawJSON() string { return r.JSON.raw }
+func (r *VideoTransformationAcceptedEventRequest) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type VideoTransformationReadyWebhookEvent struct {
+type VideoTransformationErrorEvent struct {
 	// Unique identifier for the event.
-	ID        string                                      `json:"id,required"`
-	CreatedAt time.Time                                   `json:"created_at,required" format:"date-time"`
-	Data      VideoTransformationReadyWebhookEventData    `json:"data,required"`
-	Request   VideoTransformationReadyWebhookEventRequest `json:"request,required"`
-	Type      constant.VideoTransformationReady           `json:"type,required"`
-	Timings   VideoTransformationReadyWebhookEventTimings `json:"timings"`
+	ID        string                               `json:"id,required"`
+	CreatedAt time.Time                            `json:"created_at,required" format:"date-time"`
+	Data      VideoTransformationErrorEventData    `json:"data,required"`
+	Request   VideoTransformationErrorEventRequest `json:"request,required"`
+	Type      constant.VideoTransformationError    `json:"type,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -223,21 +220,20 @@ type VideoTransformationReadyWebhookEvent struct {
 		Data        respjson.Field
 		Request     respjson.Field
 		Type        respjson.Field
-		Timings     respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r VideoTransformationReadyWebhookEvent) RawJSON() string { return r.JSON.raw }
-func (r *VideoTransformationReadyWebhookEvent) UnmarshalJSON(data []byte) error {
+func (r VideoTransformationErrorEvent) RawJSON() string { return r.JSON.raw }
+func (r *VideoTransformationErrorEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type VideoTransformationReadyWebhookEventData struct {
-	Asset          VideoTransformationReadyWebhookEventDataAsset          `json:"asset,required"`
-	Transformation VideoTransformationReadyWebhookEventDataTransformation `json:"transformation,required"`
+type VideoTransformationErrorEventData struct {
+	Asset          VideoTransformationErrorEventDataAsset          `json:"asset,required"`
+	Transformation VideoTransformationErrorEventDataTransformation `json:"transformation,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Asset          respjson.Field
@@ -248,12 +244,12 @@ type VideoTransformationReadyWebhookEventData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r VideoTransformationReadyWebhookEventData) RawJSON() string { return r.JSON.raw }
-func (r *VideoTransformationReadyWebhookEventData) UnmarshalJSON(data []byte) error {
+func (r VideoTransformationErrorEventData) RawJSON() string { return r.JSON.raw }
+func (r *VideoTransformationErrorEventData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type VideoTransformationReadyWebhookEventDataAsset struct {
+type VideoTransformationErrorEventDataAsset struct {
 	// Source asset URL.
 	URL string `json:"url,required" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -265,33 +261,50 @@ type VideoTransformationReadyWebhookEventDataAsset struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r VideoTransformationReadyWebhookEventDataAsset) RawJSON() string { return r.JSON.raw }
-func (r *VideoTransformationReadyWebhookEventDataAsset) UnmarshalJSON(data []byte) error {
+func (r VideoTransformationErrorEventDataAsset) RawJSON() string { return r.JSON.raw }
+func (r *VideoTransformationErrorEventDataAsset) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type VideoTransformationReadyWebhookEventDataTransformation struct {
+type VideoTransformationErrorEventDataTransformation struct {
 	// Any of "video-transformation", "gif-to-video", "video-thumbnail".
-	Type    string                                                        `json:"type,required"`
-	Options VideoTransformationReadyWebhookEventDataTransformationOptions `json:"options"`
-	Output  VideoTransformationReadyWebhookEventDataTransformationOutput  `json:"output"`
+	Type    string                                                 `json:"type,required"`
+	Error   VideoTransformationErrorEventDataTransformationError   `json:"error"`
+	Options VideoTransformationErrorEventDataTransformationOptions `json:"options"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Type        respjson.Field
+		Error       respjson.Field
 		Options     respjson.Field
-		Output      respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r VideoTransformationReadyWebhookEventDataTransformation) RawJSON() string { return r.JSON.raw }
-func (r *VideoTransformationReadyWebhookEventDataTransformation) UnmarshalJSON(data []byte) error {
+func (r VideoTransformationErrorEventDataTransformation) RawJSON() string { return r.JSON.raw }
+func (r *VideoTransformationErrorEventDataTransformation) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type VideoTransformationReadyWebhookEventDataTransformationOptions struct {
+type VideoTransformationErrorEventDataTransformationError struct {
+	// Any of "encoding_failed", "download_failed", "internal_server_error".
+	Reason string `json:"reason,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Reason      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VideoTransformationErrorEventDataTransformationError) RawJSON() string { return r.JSON.raw }
+func (r *VideoTransformationErrorEventDataTransformationError) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VideoTransformationErrorEventDataTransformationOptions struct {
 	// Any of "aac", "opus".
 	AudioCodec string `json:"audio_codec"`
 	AutoRotate bool   `json:"auto_rotate"`
@@ -318,16 +331,152 @@ type VideoTransformationReadyWebhookEventDataTransformationOptions struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r VideoTransformationReadyWebhookEventDataTransformationOptions) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *VideoTransformationReadyWebhookEventDataTransformationOptions) UnmarshalJSON(data []byte) error {
+func (r VideoTransformationErrorEventDataTransformationOptions) RawJSON() string { return r.JSON.raw }
+func (r *VideoTransformationErrorEventDataTransformationOptions) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type VideoTransformationReadyWebhookEventDataTransformationOutput struct {
-	URL           string                                                                    `json:"url,required" format:"uri"`
-	VideoMetadata VideoTransformationReadyWebhookEventDataTransformationOutputVideoMetadata `json:"video_metadata"`
+type VideoTransformationErrorEventRequest struct {
+	// URL of the submitted request.
+	URL string `json:"url,required" format:"uri"`
+	// Unique ID for the originating request.
+	XRequestID string `json:"x_request_id,required"`
+	// User-Agent header of the originating request.
+	UserAgent string `json:"user_agent"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		URL         respjson.Field
+		XRequestID  respjson.Field
+		UserAgent   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VideoTransformationErrorEventRequest) RawJSON() string { return r.JSON.raw }
+func (r *VideoTransformationErrorEventRequest) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VideoTransformationReadyEvent struct {
+	// Unique identifier for the event.
+	ID        string                               `json:"id,required"`
+	CreatedAt time.Time                            `json:"created_at,required" format:"date-time"`
+	Data      VideoTransformationReadyEventData    `json:"data,required"`
+	Request   VideoTransformationReadyEventRequest `json:"request,required"`
+	Type      constant.VideoTransformationReady    `json:"type,required"`
+	Timings   VideoTransformationReadyEventTimings `json:"timings"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		CreatedAt   respjson.Field
+		Data        respjson.Field
+		Request     respjson.Field
+		Type        respjson.Field
+		Timings     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VideoTransformationReadyEvent) RawJSON() string { return r.JSON.raw }
+func (r *VideoTransformationReadyEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VideoTransformationReadyEventData struct {
+	Asset          VideoTransformationReadyEventDataAsset          `json:"asset,required"`
+	Transformation VideoTransformationReadyEventDataTransformation `json:"transformation,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Asset          respjson.Field
+		Transformation respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VideoTransformationReadyEventData) RawJSON() string { return r.JSON.raw }
+func (r *VideoTransformationReadyEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VideoTransformationReadyEventDataAsset struct {
+	// Source asset URL.
+	URL string `json:"url,required" format:"uri"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		URL         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VideoTransformationReadyEventDataAsset) RawJSON() string { return r.JSON.raw }
+func (r *VideoTransformationReadyEventDataAsset) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VideoTransformationReadyEventDataTransformation struct {
+	// Any of "video-transformation", "gif-to-video", "video-thumbnail".
+	Type    string                                                 `json:"type,required"`
+	Options VideoTransformationReadyEventDataTransformationOptions `json:"options"`
+	Output  VideoTransformationReadyEventDataTransformationOutput  `json:"output"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type        respjson.Field
+		Options     respjson.Field
+		Output      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VideoTransformationReadyEventDataTransformation) RawJSON() string { return r.JSON.raw }
+func (r *VideoTransformationReadyEventDataTransformation) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VideoTransformationReadyEventDataTransformationOptions struct {
+	// Any of "aac", "opus".
+	AudioCodec string `json:"audio_codec"`
+	AutoRotate bool   `json:"auto_rotate"`
+	// Any of "mp4", "webm", "jpg", "png", "webp".
+	Format  string `json:"format"`
+	Quality int64  `json:"quality"`
+	// Any of "HLS", "DASH".
+	StreamProtocol string   `json:"stream_protocol"`
+	Variants       []string `json:"variants"`
+	// Any of "h264", "vp9".
+	VideoCodec string `json:"video_codec"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AudioCodec     respjson.Field
+		AutoRotate     respjson.Field
+		Format         respjson.Field
+		Quality        respjson.Field
+		StreamProtocol respjson.Field
+		Variants       respjson.Field
+		VideoCodec     respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VideoTransformationReadyEventDataTransformationOptions) RawJSON() string { return r.JSON.raw }
+func (r *VideoTransformationReadyEventDataTransformationOptions) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VideoTransformationReadyEventDataTransformationOutput struct {
+	URL           string                                                             `json:"url,required" format:"uri"`
+	VideoMetadata VideoTransformationReadyEventDataTransformationOutputVideoMetadata `json:"video_metadata"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		URL           respjson.Field
@@ -338,14 +487,12 @@ type VideoTransformationReadyWebhookEventDataTransformationOutput struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r VideoTransformationReadyWebhookEventDataTransformationOutput) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *VideoTransformationReadyWebhookEventDataTransformationOutput) UnmarshalJSON(data []byte) error {
+func (r VideoTransformationReadyEventDataTransformationOutput) RawJSON() string { return r.JSON.raw }
+func (r *VideoTransformationReadyEventDataTransformationOutput) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type VideoTransformationReadyWebhookEventDataTransformationOutputVideoMetadata struct {
+type VideoTransformationReadyEventDataTransformationOutputVideoMetadata struct {
 	Bitrate  int64   `json:"bitrate,required"`
 	Duration float64 `json:"duration,required"`
 	Height   int64   `json:"height,required"`
@@ -362,14 +509,14 @@ type VideoTransformationReadyWebhookEventDataTransformationOutputVideoMetadata s
 }
 
 // Returns the unmodified JSON received from the API
-func (r VideoTransformationReadyWebhookEventDataTransformationOutputVideoMetadata) RawJSON() string {
+func (r VideoTransformationReadyEventDataTransformationOutputVideoMetadata) RawJSON() string {
 	return r.JSON.raw
 }
-func (r *VideoTransformationReadyWebhookEventDataTransformationOutputVideoMetadata) UnmarshalJSON(data []byte) error {
+func (r *VideoTransformationReadyEventDataTransformationOutputVideoMetadata) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type VideoTransformationReadyWebhookEventRequest struct {
+type VideoTransformationReadyEventRequest struct {
 	// URL of the submitted request.
 	URL string `json:"url,required" format:"uri"`
 	// Unique ID for the originating request.
@@ -387,12 +534,12 @@ type VideoTransformationReadyWebhookEventRequest struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r VideoTransformationReadyWebhookEventRequest) RawJSON() string { return r.JSON.raw }
-func (r *VideoTransformationReadyWebhookEventRequest) UnmarshalJSON(data []byte) error {
+func (r VideoTransformationReadyEventRequest) RawJSON() string { return r.JSON.raw }
+func (r *VideoTransformationReadyEventRequest) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type VideoTransformationReadyWebhookEventTimings struct {
+type VideoTransformationReadyEventTimings struct {
 	// Milliseconds spent downloading the source.
 	DownloadDuration int64 `json:"download_duration"`
 	// Milliseconds spent encoding.
@@ -407,187 +554,28 @@ type VideoTransformationReadyWebhookEventTimings struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r VideoTransformationReadyWebhookEventTimings) RawJSON() string { return r.JSON.raw }
-func (r *VideoTransformationReadyWebhookEventTimings) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type VideoTransformationErrorWebhookEvent struct {
-	// Unique identifier for the event.
-	ID        string                                      `json:"id,required"`
-	CreatedAt time.Time                                   `json:"created_at,required" format:"date-time"`
-	Data      VideoTransformationErrorWebhookEventData    `json:"data,required"`
-	Request   VideoTransformationErrorWebhookEventRequest `json:"request,required"`
-	Type      constant.VideoTransformationError           `json:"type,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		CreatedAt   respjson.Field
-		Data        respjson.Field
-		Request     respjson.Field
-		Type        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r VideoTransformationErrorWebhookEvent) RawJSON() string { return r.JSON.raw }
-func (r *VideoTransformationErrorWebhookEvent) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type VideoTransformationErrorWebhookEventData struct {
-	Asset          VideoTransformationErrorWebhookEventDataAsset          `json:"asset,required"`
-	Transformation VideoTransformationErrorWebhookEventDataTransformation `json:"transformation,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Asset          respjson.Field
-		Transformation respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r VideoTransformationErrorWebhookEventData) RawJSON() string { return r.JSON.raw }
-func (r *VideoTransformationErrorWebhookEventData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type VideoTransformationErrorWebhookEventDataAsset struct {
-	// Source asset URL.
-	URL string `json:"url,required" format:"uri"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		URL         respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r VideoTransformationErrorWebhookEventDataAsset) RawJSON() string { return r.JSON.raw }
-func (r *VideoTransformationErrorWebhookEventDataAsset) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type VideoTransformationErrorWebhookEventDataTransformation struct {
-	// Any of "video-transformation", "gif-to-video", "video-thumbnail".
-	Type    string                                                        `json:"type,required"`
-	Error   VideoTransformationErrorWebhookEventDataTransformationError   `json:"error"`
-	Options VideoTransformationErrorWebhookEventDataTransformationOptions `json:"options"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Type        respjson.Field
-		Error       respjson.Field
-		Options     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r VideoTransformationErrorWebhookEventDataTransformation) RawJSON() string { return r.JSON.raw }
-func (r *VideoTransformationErrorWebhookEventDataTransformation) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type VideoTransformationErrorWebhookEventDataTransformationError struct {
-	// Any of "encoding_failed", "download_failed", "internal_server_error".
-	Reason string `json:"reason,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Reason      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r VideoTransformationErrorWebhookEventDataTransformationError) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *VideoTransformationErrorWebhookEventDataTransformationError) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type VideoTransformationErrorWebhookEventDataTransformationOptions struct {
-	// Any of "aac", "opus".
-	AudioCodec string `json:"audio_codec"`
-	AutoRotate bool   `json:"auto_rotate"`
-	// Any of "mp4", "webm", "jpg", "png", "webp".
-	Format  string `json:"format"`
-	Quality int64  `json:"quality"`
-	// Any of "HLS", "DASH".
-	StreamProtocol string   `json:"stream_protocol"`
-	Variants       []string `json:"variants"`
-	// Any of "h264", "vp9".
-	VideoCodec string `json:"video_codec"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		AudioCodec     respjson.Field
-		AutoRotate     respjson.Field
-		Format         respjson.Field
-		Quality        respjson.Field
-		StreamProtocol respjson.Field
-		Variants       respjson.Field
-		VideoCodec     respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r VideoTransformationErrorWebhookEventDataTransformationOptions) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *VideoTransformationErrorWebhookEventDataTransformationOptions) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type VideoTransformationErrorWebhookEventRequest struct {
-	// URL of the submitted request.
-	URL string `json:"url,required" format:"uri"`
-	// Unique ID for the originating request.
-	XRequestID string `json:"x_request_id,required"`
-	// User-Agent header of the originating request.
-	UserAgent string `json:"user_agent"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		URL         respjson.Field
-		XRequestID  respjson.Field
-		UserAgent   respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r VideoTransformationErrorWebhookEventRequest) RawJSON() string { return r.JSON.raw }
-func (r *VideoTransformationErrorWebhookEventRequest) UnmarshalJSON(data []byte) error {
+func (r VideoTransformationReadyEventTimings) RawJSON() string { return r.JSON.raw }
+func (r *VideoTransformationReadyEventTimings) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // UnsafeUnwrapWebhookEventUnion contains all possible properties and values from
-// [VideoTransformationAcceptedWebhookEvent],
-// [VideoTransformationReadyWebhookEvent], [VideoTransformationErrorWebhookEvent].
+// [VideoTransformationAcceptedEvent], [VideoTransformationReadyEvent],
+// [VideoTransformationErrorEvent].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type UnsafeUnwrapWebhookEventUnion struct {
 	ID        string    `json:"id"`
 	CreatedAt time.Time `json:"created_at"`
-	// This field is a union of [VideoTransformationAcceptedWebhookEventData],
-	// [VideoTransformationReadyWebhookEventData],
-	// [VideoTransformationErrorWebhookEventData]
+	// This field is a union of [VideoTransformationAcceptedEventData],
+	// [VideoTransformationReadyEventData], [VideoTransformationErrorEventData]
 	Data UnsafeUnwrapWebhookEventUnionData `json:"data"`
-	// This field is a union of [VideoTransformationAcceptedWebhookEventRequest],
-	// [VideoTransformationReadyWebhookEventRequest],
-	// [VideoTransformationErrorWebhookEventRequest]
+	// This field is a union of [VideoTransformationAcceptedEventRequest],
+	// [VideoTransformationReadyEventRequest], [VideoTransformationErrorEventRequest]
 	Request UnsafeUnwrapWebhookEventUnionRequest `json:"request"`
 	Type    string                               `json:"type"`
-	// This field is from variant [VideoTransformationReadyWebhookEvent].
-	Timings VideoTransformationReadyWebhookEventTimings `json:"timings"`
+	// This field is from variant [VideoTransformationReadyEvent].
+	Timings VideoTransformationReadyEventTimings `json:"timings"`
 	JSON    struct {
 		ID        respjson.Field
 		CreatedAt respjson.Field
@@ -599,17 +587,17 @@ type UnsafeUnwrapWebhookEventUnion struct {
 	} `json:"-"`
 }
 
-func (u UnsafeUnwrapWebhookEventUnion) AsVideoTransformationAcceptedWebhookEvent() (v VideoTransformationAcceptedWebhookEvent) {
+func (u UnsafeUnwrapWebhookEventUnion) AsVideoTransformationAcceptedEvent() (v VideoTransformationAcceptedEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u UnsafeUnwrapWebhookEventUnion) AsVideoTransformationReadyWebhookEvent() (v VideoTransformationReadyWebhookEvent) {
+func (u UnsafeUnwrapWebhookEventUnion) AsVideoTransformationReadyEvent() (v VideoTransformationReadyEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u UnsafeUnwrapWebhookEventUnion) AsVideoTransformationErrorWebhookEvent() (v VideoTransformationErrorWebhookEvent) {
+func (u UnsafeUnwrapWebhookEventUnion) AsVideoTransformationErrorEvent() (v VideoTransformationErrorEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -628,14 +616,13 @@ func (r *UnsafeUnwrapWebhookEventUnion) UnmarshalJSON(data []byte) error {
 // For type safety it is recommended to directly use a variant of the
 // [UnsafeUnwrapWebhookEventUnion].
 type UnsafeUnwrapWebhookEventUnionData struct {
-	// This field is a union of [VideoTransformationAcceptedWebhookEventDataAsset],
-	// [VideoTransformationReadyWebhookEventDataAsset],
-	// [VideoTransformationErrorWebhookEventDataAsset]
+	// This field is a union of [VideoTransformationAcceptedEventDataAsset],
+	// [VideoTransformationReadyEventDataAsset],
+	// [VideoTransformationErrorEventDataAsset]
 	Asset UnsafeUnwrapWebhookEventUnionDataAsset `json:"asset"`
-	// This field is a union of
-	// [VideoTransformationAcceptedWebhookEventDataTransformation],
-	// [VideoTransformationReadyWebhookEventDataTransformation],
-	// [VideoTransformationErrorWebhookEventDataTransformation]
+	// This field is a union of [VideoTransformationAcceptedEventDataTransformation],
+	// [VideoTransformationReadyEventDataTransformation],
+	// [VideoTransformationErrorEventDataTransformation]
 	Transformation UnsafeUnwrapWebhookEventUnionDataTransformation `json:"transformation"`
 	JSON           struct {
 		Asset          respjson.Field
@@ -675,16 +662,14 @@ func (r *UnsafeUnwrapWebhookEventUnionDataAsset) UnmarshalJSON(data []byte) erro
 type UnsafeUnwrapWebhookEventUnionDataTransformation struct {
 	Type string `json:"type"`
 	// This field is a union of
-	// [VideoTransformationAcceptedWebhookEventDataTransformationOptions],
-	// [VideoTransformationReadyWebhookEventDataTransformationOptions],
-	// [VideoTransformationErrorWebhookEventDataTransformationOptions]
+	// [VideoTransformationAcceptedEventDataTransformationOptions],
+	// [VideoTransformationReadyEventDataTransformationOptions],
+	// [VideoTransformationErrorEventDataTransformationOptions]
 	Options UnsafeUnwrapWebhookEventUnionDataTransformationOptions `json:"options"`
-	// This field is from variant
-	// [VideoTransformationReadyWebhookEventDataTransformation].
-	Output VideoTransformationReadyWebhookEventDataTransformationOutput `json:"output"`
-	// This field is from variant
-	// [VideoTransformationErrorWebhookEventDataTransformation].
-	Error VideoTransformationErrorWebhookEventDataTransformationError `json:"error"`
+	// This field is from variant [VideoTransformationReadyEventDataTransformation].
+	Output VideoTransformationReadyEventDataTransformationOutput `json:"output"`
+	// This field is from variant [VideoTransformationErrorEventDataTransformation].
+	Error VideoTransformationErrorEventDataTransformationError `json:"error"`
 	JSON  struct {
 		Type    respjson.Field
 		Options respjson.Field
@@ -752,24 +737,22 @@ func (r *UnsafeUnwrapWebhookEventUnionRequest) UnmarshalJSON(data []byte) error 
 }
 
 // UnwrapWebhookEventUnion contains all possible properties and values from
-// [VideoTransformationAcceptedWebhookEvent],
-// [VideoTransformationReadyWebhookEvent], [VideoTransformationErrorWebhookEvent].
+// [VideoTransformationAcceptedEvent], [VideoTransformationReadyEvent],
+// [VideoTransformationErrorEvent].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type UnwrapWebhookEventUnion struct {
 	ID        string    `json:"id"`
 	CreatedAt time.Time `json:"created_at"`
-	// This field is a union of [VideoTransformationAcceptedWebhookEventData],
-	// [VideoTransformationReadyWebhookEventData],
-	// [VideoTransformationErrorWebhookEventData]
+	// This field is a union of [VideoTransformationAcceptedEventData],
+	// [VideoTransformationReadyEventData], [VideoTransformationErrorEventData]
 	Data UnwrapWebhookEventUnionData `json:"data"`
-	// This field is a union of [VideoTransformationAcceptedWebhookEventRequest],
-	// [VideoTransformationReadyWebhookEventRequest],
-	// [VideoTransformationErrorWebhookEventRequest]
+	// This field is a union of [VideoTransformationAcceptedEventRequest],
+	// [VideoTransformationReadyEventRequest], [VideoTransformationErrorEventRequest]
 	Request UnwrapWebhookEventUnionRequest `json:"request"`
 	Type    string                         `json:"type"`
-	// This field is from variant [VideoTransformationReadyWebhookEvent].
-	Timings VideoTransformationReadyWebhookEventTimings `json:"timings"`
+	// This field is from variant [VideoTransformationReadyEvent].
+	Timings VideoTransformationReadyEventTimings `json:"timings"`
 	JSON    struct {
 		ID        respjson.Field
 		CreatedAt respjson.Field
@@ -781,17 +764,17 @@ type UnwrapWebhookEventUnion struct {
 	} `json:"-"`
 }
 
-func (u UnwrapWebhookEventUnion) AsVideoTransformationAcceptedWebhookEvent() (v VideoTransformationAcceptedWebhookEvent) {
+func (u UnwrapWebhookEventUnion) AsVideoTransformationAcceptedEvent() (v VideoTransformationAcceptedEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u UnwrapWebhookEventUnion) AsVideoTransformationReadyWebhookEvent() (v VideoTransformationReadyWebhookEvent) {
+func (u UnwrapWebhookEventUnion) AsVideoTransformationReadyEvent() (v VideoTransformationReadyEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u UnwrapWebhookEventUnion) AsVideoTransformationErrorWebhookEvent() (v VideoTransformationErrorWebhookEvent) {
+func (u UnwrapWebhookEventUnion) AsVideoTransformationErrorEvent() (v VideoTransformationErrorEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -810,14 +793,13 @@ func (r *UnwrapWebhookEventUnion) UnmarshalJSON(data []byte) error {
 // For type safety it is recommended to directly use a variant of the
 // [UnwrapWebhookEventUnion].
 type UnwrapWebhookEventUnionData struct {
-	// This field is a union of [VideoTransformationAcceptedWebhookEventDataAsset],
-	// [VideoTransformationReadyWebhookEventDataAsset],
-	// [VideoTransformationErrorWebhookEventDataAsset]
+	// This field is a union of [VideoTransformationAcceptedEventDataAsset],
+	// [VideoTransformationReadyEventDataAsset],
+	// [VideoTransformationErrorEventDataAsset]
 	Asset UnwrapWebhookEventUnionDataAsset `json:"asset"`
-	// This field is a union of
-	// [VideoTransformationAcceptedWebhookEventDataTransformation],
-	// [VideoTransformationReadyWebhookEventDataTransformation],
-	// [VideoTransformationErrorWebhookEventDataTransformation]
+	// This field is a union of [VideoTransformationAcceptedEventDataTransformation],
+	// [VideoTransformationReadyEventDataTransformation],
+	// [VideoTransformationErrorEventDataTransformation]
 	Transformation UnwrapWebhookEventUnionDataTransformation `json:"transformation"`
 	JSON           struct {
 		Asset          respjson.Field
@@ -857,16 +839,14 @@ func (r *UnwrapWebhookEventUnionDataAsset) UnmarshalJSON(data []byte) error {
 type UnwrapWebhookEventUnionDataTransformation struct {
 	Type string `json:"type"`
 	// This field is a union of
-	// [VideoTransformationAcceptedWebhookEventDataTransformationOptions],
-	// [VideoTransformationReadyWebhookEventDataTransformationOptions],
-	// [VideoTransformationErrorWebhookEventDataTransformationOptions]
+	// [VideoTransformationAcceptedEventDataTransformationOptions],
+	// [VideoTransformationReadyEventDataTransformationOptions],
+	// [VideoTransformationErrorEventDataTransformationOptions]
 	Options UnwrapWebhookEventUnionDataTransformationOptions `json:"options"`
-	// This field is from variant
-	// [VideoTransformationReadyWebhookEventDataTransformation].
-	Output VideoTransformationReadyWebhookEventDataTransformationOutput `json:"output"`
-	// This field is from variant
-	// [VideoTransformationErrorWebhookEventDataTransformation].
-	Error VideoTransformationErrorWebhookEventDataTransformationError `json:"error"`
+	// This field is from variant [VideoTransformationReadyEventDataTransformation].
+	Output VideoTransformationReadyEventDataTransformationOutput `json:"output"`
+	// This field is from variant [VideoTransformationErrorEventDataTransformation].
+	Error VideoTransformationErrorEventDataTransformationError `json:"error"`
 	JSON  struct {
 		Type    respjson.Field
 		Options respjson.Field
