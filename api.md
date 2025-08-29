@@ -189,8 +189,11 @@ Methods:
 
 Response Types:
 
-- <a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go">imagekit</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go#VideoTransformationAcceptedEvent">VideoTransformationAcceptedEvent</a>
-- <a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go">imagekit</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go#VideoTransformationErrorEvent">VideoTransformationErrorEvent</a>
-- <a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go">imagekit</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go#VideoTransformationReadyEvent">VideoTransformationReadyEvent</a>
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go">imagekit</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go#VideoTransformationAcceptedWebhookEvent">VideoTransformationAcceptedWebhookEvent</a>
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go">imagekit</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go#VideoTransformationReadyWebhookEvent">VideoTransformationReadyWebhookEvent</a>
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go">imagekit</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go#VideoTransformationErrorWebhookEvent">VideoTransformationErrorWebhookEvent</a>
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go">imagekit</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go#VideoTransformationAcceptedWebhookEvent">VideoTransformationAcceptedWebhookEvent</a>
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go">imagekit</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go#VideoTransformationReadyWebhookEvent">VideoTransformationReadyWebhookEvent</a>
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go">imagekit</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go#VideoTransformationErrorWebhookEvent">VideoTransformationErrorWebhookEvent</a>
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go">imagekit</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go#UnsafeUnwrapWebhookEventUnion">UnsafeUnwrapWebhookEventUnion</a>
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go">imagekit</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go#UnwrapWebhookEventUnion">UnwrapWebhookEventUnion</a>
