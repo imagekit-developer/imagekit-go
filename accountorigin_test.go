@@ -28,14 +28,16 @@ func TestAccountOriginNewWithOptionalParams(t *testing.T) {
 		option.WithPassword("My Password"),
 	)
 	_, err := client.Accounts.Origins.New(context.TODO(), imagekit.AccountOriginNewParams{
-		OfS3: &imagekit.OriginRequestS3Param{
-			AccessKey:                 "AKIATEST123",
-			Bucket:                    "test-bucket",
-			Name:                      "My S3 Origin",
-			SecretKey:                 "secrettest123",
-			BaseURLForCanonicalHeader: imagekit.String("https://cdn.example.com"),
-			IncludeCanonicalHeader:    imagekit.Bool(false),
-			Prefix:                    imagekit.String("images"),
+		Origin: imagekit.OriginRequestUnionParam{
+			OfS3: &imagekit.OriginRequestS3Param{
+				AccessKey:                 "AKIATEST123",
+				Bucket:                    "test-bucket",
+				Name:                      "My S3 Origin",
+				SecretKey:                 "secrettest123",
+				BaseURLForCanonicalHeader: imagekit.String("https://cdn.example.com"),
+				IncludeCanonicalHeader:    imagekit.Bool(false),
+				Prefix:                    imagekit.String("images"),
+			},
 		},
 	})
 	if err != nil {
@@ -65,14 +67,16 @@ func TestAccountOriginUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		imagekit.AccountOriginUpdateParams{
-			OfS3: &imagekit.OriginRequestS3Param{
-				AccessKey:                 "AKIATEST123",
-				Bucket:                    "test-bucket",
-				Name:                      "My S3 Origin",
-				SecretKey:                 "secrettest123",
-				BaseURLForCanonicalHeader: imagekit.String("https://cdn.example.com"),
-				IncludeCanonicalHeader:    imagekit.Bool(false),
-				Prefix:                    imagekit.String("images"),
+			Origin: imagekit.OriginRequestUnionParam{
+				OfS3: &imagekit.OriginRequestS3Param{
+					AccessKey:                 "AKIATEST123",
+					Bucket:                    "test-bucket",
+					Name:                      "My S3 Origin",
+					SecretKey:                 "secrettest123",
+					BaseURLForCanonicalHeader: imagekit.String("https://cdn.example.com"),
+					IncludeCanonicalHeader:    imagekit.Bool(false),
+					Prefix:                    imagekit.String("images"),
+				},
 			},
 		},
 	)

@@ -10,6 +10,7 @@ import (
 	"net/http"
 
 	"github.com/stainless-sdks/imagekit-go/internal/apijson"
+	shimjson "github.com/stainless-sdks/imagekit-go/internal/encoding/json"
 	"github.com/stainless-sdks/imagekit-go/internal/requestconfig"
 	"github.com/stainless-sdks/imagekit-go/option"
 	"github.com/stainless-sdks/imagekit-go/packages/param"
@@ -1072,18 +1073,11 @@ type AccountOriginNewParams struct {
 	paramObj
 }
 
-func (u AccountOriginNewParams) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfS3,
-		u.OfS3Compatible,
-		u.OfCloudinaryBackup,
-		u.OfWebFolder,
-		u.OfWebProxy,
-		u.OfGcs,
-		u.OfAzureBlob,
-		u.OfAkeneoPim)
+func (r AccountOriginNewParams) MarshalJSON() (data []byte, err error) {
+	return shimjson.Marshal(r.Origin)
 }
 func (r *AccountOriginNewParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return json.Unmarshal(data, &r.Origin)
 }
 
 type AccountOriginUpdateParams struct {
@@ -1092,16 +1086,9 @@ type AccountOriginUpdateParams struct {
 	paramObj
 }
 
-func (u AccountOriginUpdateParams) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfS3,
-		u.OfS3Compatible,
-		u.OfCloudinaryBackup,
-		u.OfWebFolder,
-		u.OfWebProxy,
-		u.OfGcs,
-		u.OfAzureBlob,
-		u.OfAkeneoPim)
+func (r AccountOriginUpdateParams) MarshalJSON() (data []byte, err error) {
+	return shimjson.Marshal(r.Origin)
 }
 func (r *AccountOriginUpdateParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+	return json.Unmarshal(data, &r.Origin)
 }
