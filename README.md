@@ -2,7 +2,7 @@
 
 <a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go"><img src="https://pkg.go.dev/badge/github.com/stainless-sdks/imagekit-go.svg" alt="Go Reference"></a>
 
-The Image Kit Go library provides convenient access to the [Image Kit REST API](https://imagekit.io)
+The Image Kit Go library provides convenient access to the [Image Kit REST API](https://imagekit.io/docs)
 from applications written in Go.
 
 It is generated with [Stainless](https://www.stainless.com/).
