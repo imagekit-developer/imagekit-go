@@ -186,9 +186,9 @@ type VideoTransformationAcceptedEventDataTransformationOptions struct {
 	StreamProtocol string `json:"stream_protocol"`
 	// Array of quality representations for adaptive bitrate streaming.
 	Variants []string `json:"variants"`
-	// Video codec used for encoding (h264 or vp9).
+	// Video codec used for encoding (h264, vp9, or av1).
 	//
-	// Any of "h264", "vp9".
+	// Any of "h264", "vp9", "av1".
 	VideoCodec string `json:"video_codec"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -378,9 +378,9 @@ type VideoTransformationErrorEventDataTransformationOptions struct {
 	StreamProtocol string `json:"stream_protocol"`
 	// Array of quality representations for adaptive bitrate streaming.
 	Variants []string `json:"variants"`
-	// Video codec used for encoding (h264 or vp9).
+	// Video codec used for encoding (h264, vp9, or av1).
 	//
-	// Any of "h264", "vp9".
+	// Any of "h264", "vp9", "av1".
 	VideoCodec string `json:"video_codec"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -547,9 +547,9 @@ type VideoTransformationReadyEventDataTransformationOptions struct {
 	StreamProtocol string `json:"stream_protocol"`
 	// Array of quality representations for adaptive bitrate streaming.
 	Variants []string `json:"variants"`
-	// Video codec used for encoding (h264 or vp9).
+	// Video codec used for encoding (h264, vp9, or av1).
 	//
-	// Any of "h264", "vp9".
+	// Any of "h264", "vp9", "av1".
 	VideoCodec string `json:"video_codec"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
