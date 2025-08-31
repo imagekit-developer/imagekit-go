@@ -28,12 +28,22 @@ type Cloudinary string                  // Always "CLOUDINARY"
 type CloudinaryBackup string            // Always "CLOUDINARY_BACKUP"
 type Gcs string                         // Always "GCS"
 type GifToVideo string                  // Always "gif-to-video"
+type Image string                       // Always "image"
 type Imgix string                       // Always "IMGIX"
+type Max string                         // Always "max"
 type RemoveBg string                    // Always "remove-bg"
 type S3 string                          // Always "S3"
 type S3Compatible string                // Always "S3_COMPATIBLE"
+type SolidColor string                  // Always "solidColor"
+type Subtitle string                    // Always "subtitle"
+type Text string                        // Always "text"
 type Thumbnail string                   // Always "thumbnail"
 type Transformation string              // Always "transformation"
+type UploadPostTransformError string    // Always "upload.post-transform.error"
+type UploadPostTransformSuccess string  // Always "upload.post-transform.success"
+type UploadPreTransformError string     // Always "upload.pre-transform.error"
+type UploadPreTransformSuccess string   // Always "upload.pre-transform.success"
+type Video string                       // Always "video"
 type VideoTransformationAccepted string // Always "video.transformation.accepted"
 type VideoTransformationError string    // Always "video.transformation.error"
 type VideoTransformationReady string    // Always "video.transformation.ready"
@@ -50,12 +60,30 @@ func (c Cloudinary) Default() Cloudinary               { return "CLOUDINARY" }
 func (c CloudinaryBackup) Default() CloudinaryBackup   { return "CLOUDINARY_BACKUP" }
 func (c Gcs) Default() Gcs                             { return "GCS" }
 func (c GifToVideo) Default() GifToVideo               { return "gif-to-video" }
+func (c Image) Default() Image                         { return "image" }
 func (c Imgix) Default() Imgix                         { return "IMGIX" }
+func (c Max) Default() Max                             { return "max" }
 func (c RemoveBg) Default() RemoveBg                   { return "remove-bg" }
 func (c S3) Default() S3                               { return "S3" }
 func (c S3Compatible) Default() S3Compatible           { return "S3_COMPATIBLE" }
+func (c SolidColor) Default() SolidColor               { return "solidColor" }
+func (c Subtitle) Default() Subtitle                   { return "subtitle" }
+func (c Text) Default() Text                           { return "text" }
 func (c Thumbnail) Default() Thumbnail                 { return "thumbnail" }
 func (c Transformation) Default() Transformation       { return "transformation" }
+func (c UploadPostTransformError) Default() UploadPostTransformError {
+	return "upload.post-transform.error"
+}
+func (c UploadPostTransformSuccess) Default() UploadPostTransformSuccess {
+	return "upload.post-transform.success"
+}
+func (c UploadPreTransformError) Default() UploadPreTransformError {
+	return "upload.pre-transform.error"
+}
+func (c UploadPreTransformSuccess) Default() UploadPreTransformSuccess {
+	return "upload.pre-transform.success"
+}
+func (c Video) Default() Video { return "video" }
 func (c VideoTransformationAccepted) Default() VideoTransformationAccepted {
 	return "video.transformation.accepted"
 }
@@ -78,12 +106,22 @@ func (c Cloudinary) MarshalJSON() ([]byte, error)                  { return mars
 func (c CloudinaryBackup) MarshalJSON() ([]byte, error)            { return marshalString(c) }
 func (c Gcs) MarshalJSON() ([]byte, error)                         { return marshalString(c) }
 func (c GifToVideo) MarshalJSON() ([]byte, error)                  { return marshalString(c) }
+func (c Image) MarshalJSON() ([]byte, error)                       { return marshalString(c) }
 func (c Imgix) MarshalJSON() ([]byte, error)                       { return marshalString(c) }
+func (c Max) MarshalJSON() ([]byte, error)                         { return marshalString(c) }
 func (c RemoveBg) MarshalJSON() ([]byte, error)                    { return marshalString(c) }
 func (c S3) MarshalJSON() ([]byte, error)                          { return marshalString(c) }
 func (c S3Compatible) MarshalJSON() ([]byte, error)                { return marshalString(c) }
+func (c SolidColor) MarshalJSON() ([]byte, error)                  { return marshalString(c) }
+func (c Subtitle) MarshalJSON() ([]byte, error)                    { return marshalString(c) }
+func (c Text) MarshalJSON() ([]byte, error)                        { return marshalString(c) }
 func (c Thumbnail) MarshalJSON() ([]byte, error)                   { return marshalString(c) }
 func (c Transformation) MarshalJSON() ([]byte, error)              { return marshalString(c) }
+func (c UploadPostTransformError) MarshalJSON() ([]byte, error)    { return marshalString(c) }
+func (c UploadPostTransformSuccess) MarshalJSON() ([]byte, error)  { return marshalString(c) }
+func (c UploadPreTransformError) MarshalJSON() ([]byte, error)     { return marshalString(c) }
+func (c UploadPreTransformSuccess) MarshalJSON() ([]byte, error)   { return marshalString(c) }
+func (c Video) MarshalJSON() ([]byte, error)                       { return marshalString(c) }
 func (c VideoTransformationAccepted) MarshalJSON() ([]byte, error) { return marshalString(c) }
 func (c VideoTransformationError) MarshalJSON() ([]byte, error)    { return marshalString(c) }
 func (c VideoTransformationReady) MarshalJSON() ([]byte, error)    { return marshalString(c) }
