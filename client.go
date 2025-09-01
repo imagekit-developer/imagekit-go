@@ -27,25 +27,25 @@ type Client struct {
 }
 
 // DefaultClientOptions read from the environment (IMAGEKIT_PRIVATE_API_KEY,
-// ORG_MY_PASSWORD_TOKEN, IMAGE_KIT_BASE_URL). This should be used to initialize
-// new clients.
+// OPTIONAL_IMAGEKIT_IGNORES_THIS, IMAGE_KIT_BASE_URL). This should be used to
+// initialize new clients.
 func DefaultClientOptions() []option.RequestOption {
 	defaults := []option.RequestOption{option.WithEnvironmentProduction()}
 	if o, ok := os.LookupEnv("IMAGE_KIT_BASE_URL"); ok {
 		defaults = append(defaults, option.WithBaseURL(o))
 	}
-	defaults = append(defaults, option.WithPassword("does_not_matter"))
+	defaults = append(defaults, option.WithPassword("do_not_set"))
 	if o, ok := os.LookupEnv("IMAGEKIT_PRIVATE_API_KEY"); ok {
 		defaults = append(defaults, option.WithPrivateAPIKey(o))
 	}
-	if o, ok := os.LookupEnv("ORG_MY_PASSWORD_TOKEN"); ok {
+	if o, ok := os.LookupEnv("OPTIONAL_IMAGEKIT_IGNORES_THIS"); ok {
 		defaults = append(defaults, option.WithPassword(o))
 	}
 	return defaults
 }
 
 // NewClient generates a new client with the default option read from the
-// environment (IMAGEKIT_PRIVATE_API_KEY, ORG_MY_PASSWORD_TOKEN,
+// environment (IMAGEKIT_PRIVATE_API_KEY, OPTIONAL_IMAGEKIT_IGNORES_THIS,
 // IMAGE_KIT_BASE_URL). The option passed in as arguments are applied after these
 // default arguments, and all option will be passed down to the services and
 // requests that this client makes.
