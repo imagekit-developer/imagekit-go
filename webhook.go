@@ -70,6 +70,584 @@ func (r *WebhookService) Unwrap(payload []byte, headers http.Header, opts ...opt
 	return res, nil
 }
 
+// Triggered when a post-transformation fails. The original file remains available,
+// but the requested transformation could not be generated.
+type UploadPostTransformErrorEvent struct {
+	// Unique identifier for the event.
+	ID string `json:"id,required"`
+	// Timestamp of when the event occurred in ISO8601 format.
+	CreatedAt time.Time                            `json:"created_at,required" format:"date-time"`
+	Data      UploadPostTransformErrorEventData    `json:"data,required"`
+	Request   UploadPostTransformErrorEventRequest `json:"request,required"`
+	Type      constant.UploadPostTransformError    `json:"type,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		CreatedAt   respjson.Field
+		Data        respjson.Field
+		Request     respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r UploadPostTransformErrorEvent) RawJSON() string { return r.JSON.raw }
+func (r *UploadPostTransformErrorEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type UploadPostTransformErrorEventData struct {
+	// Unique identifier of the originally uploaded file.
+	FileID string `json:"fileId,required"`
+	// Name of the file.
+	Name string `json:"name,required"`
+	// Path of the file.
+	Path           string                                          `json:"path,required"`
+	Transformation UploadPostTransformErrorEventDataTransformation `json:"transformation,required"`
+	// URL of the attempted post-transformation.
+	URL string `json:"url,required" format:"uri"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		FileID         respjson.Field
+		Name           respjson.Field
+		Path           respjson.Field
+		Transformation respjson.Field
+		URL            respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r UploadPostTransformErrorEventData) RawJSON() string { return r.JSON.raw }
+func (r *UploadPostTransformErrorEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type UploadPostTransformErrorEventDataTransformation struct {
+	Error UploadPostTransformErrorEventDataTransformationError `json:"error,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Error       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r UploadPostTransformErrorEventDataTransformation) RawJSON() string { return r.JSON.raw }
+func (r *UploadPostTransformErrorEventDataTransformation) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type UploadPostTransformErrorEventDataTransformationError struct {
+	// Reason for the post-transformation failure.
+	Reason string `json:"reason,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Reason      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r UploadPostTransformErrorEventDataTransformationError) RawJSON() string { return r.JSON.raw }
+func (r *UploadPostTransformErrorEventDataTransformationError) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type UploadPostTransformErrorEventRequest struct {
+	Transformation UploadPostTransformErrorEventRequestTransformation `json:"transformation,required"`
+	// Unique identifier for the originating request.
+	XRequestID string `json:"x_request_id,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Transformation respjson.Field
+		XRequestID     respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r UploadPostTransformErrorEventRequest) RawJSON() string { return r.JSON.raw }
+func (r *UploadPostTransformErrorEventRequest) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type UploadPostTransformErrorEventRequestTransformation struct {
+	// Type of the requested post-transformation.
+	//
+	// Any of "transformation", "abs", "gif-to-video", "thumbnail".
+	Type string `json:"type,required"`
+	// Only applicable if transformation type is 'abs'. Streaming protocol used.
+	//
+	// Any of "hls", "dash".
+	Protocol string `json:"protocol"`
+	// Value for the requested transformation type.
+	Value string `json:"value"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type        respjson.Field
+		Protocol    respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r UploadPostTransformErrorEventRequestTransformation) RawJSON() string { return r.JSON.raw }
+func (r *UploadPostTransformErrorEventRequestTransformation) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Triggered when a post-transformation completes successfully. The transformed
+// version of the file is now ready and can be accessed via the provided URL. Note
+// that each post-transformation generates a separate webhook event.
+type UploadPostTransformSuccessEvent struct {
+	// Unique identifier for the event.
+	ID string `json:"id,required"`
+	// Timestamp of when the event occurred in ISO8601 format.
+	CreatedAt time.Time                              `json:"created_at,required" format:"date-time"`
+	Data      UploadPostTransformSuccessEventData    `json:"data,required"`
+	Request   UploadPostTransformSuccessEventRequest `json:"request,required"`
+	Type      constant.UploadPostTransformSuccess    `json:"type,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		CreatedAt   respjson.Field
+		Data        respjson.Field
+		Request     respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r UploadPostTransformSuccessEvent) RawJSON() string { return r.JSON.raw }
+func (r *UploadPostTransformSuccessEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type UploadPostTransformSuccessEventData struct {
+	// Unique identifier of the originally uploaded file.
+	FileID string `json:"fileId,required"`
+	// Name of the file.
+	Name string `json:"name,required"`
+	// URL of the generated post-transformation.
+	URL string `json:"url,required" format:"uri"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		FileID      respjson.Field
+		Name        respjson.Field
+		URL         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r UploadPostTransformSuccessEventData) RawJSON() string { return r.JSON.raw }
+func (r *UploadPostTransformSuccessEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type UploadPostTransformSuccessEventRequest struct {
+	Transformation UploadPostTransformSuccessEventRequestTransformation `json:"transformation,required"`
+	// Unique identifier for the originating request.
+	XRequestID string `json:"x_request_id,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Transformation respjson.Field
+		XRequestID     respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r UploadPostTransformSuccessEventRequest) RawJSON() string { return r.JSON.raw }
+func (r *UploadPostTransformSuccessEventRequest) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type UploadPostTransformSuccessEventRequestTransformation struct {
+	// Type of the requested post-transformation.
+	//
+	// Any of "transformation", "abs", "gif-to-video", "thumbnail".
+	Type string `json:"type,required"`
+	// Only applicable if transformation type is 'abs'. Streaming protocol used.
+	//
+	// Any of "hls", "dash".
+	Protocol string `json:"protocol"`
+	// Value for the requested transformation type.
+	Value string `json:"value"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type        respjson.Field
+		Protocol    respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r UploadPostTransformSuccessEventRequestTransformation) RawJSON() string { return r.JSON.raw }
+func (r *UploadPostTransformSuccessEventRequestTransformation) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Triggered when a pre-transformation fails. The file upload may have been
+// accepted, but the requested transformation could not be applied.
+type UploadPreTransformErrorEvent struct {
+	// Unique identifier for the event.
+	ID string `json:"id,required"`
+	// Timestamp of when the event occurred in ISO8601 format.
+	CreatedAt time.Time                           `json:"created_at,required" format:"date-time"`
+	Data      UploadPreTransformErrorEventData    `json:"data,required"`
+	Request   UploadPreTransformErrorEventRequest `json:"request,required"`
+	Type      constant.UploadPreTransformError    `json:"type,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		CreatedAt   respjson.Field
+		Data        respjson.Field
+		Request     respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r UploadPreTransformErrorEvent) RawJSON() string { return r.JSON.raw }
+func (r *UploadPreTransformErrorEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type UploadPreTransformErrorEventData struct {
+	// Name of the file.
+	Name string `json:"name,required"`
+	// Path of the file.
+	Path           string                                         `json:"path,required"`
+	Transformation UploadPreTransformErrorEventDataTransformation `json:"transformation,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Name           respjson.Field
+		Path           respjson.Field
+		Transformation respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r UploadPreTransformErrorEventData) RawJSON() string { return r.JSON.raw }
+func (r *UploadPreTransformErrorEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type UploadPreTransformErrorEventDataTransformation struct {
+	Error UploadPreTransformErrorEventDataTransformationError `json:"error,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Error       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r UploadPreTransformErrorEventDataTransformation) RawJSON() string { return r.JSON.raw }
+func (r *UploadPreTransformErrorEventDataTransformation) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type UploadPreTransformErrorEventDataTransformationError struct {
+	// Reason for the pre-transformation failure.
+	Reason string `json:"reason,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Reason      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r UploadPreTransformErrorEventDataTransformationError) RawJSON() string { return r.JSON.raw }
+func (r *UploadPreTransformErrorEventDataTransformationError) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type UploadPreTransformErrorEventRequest struct {
+	// The requested pre-transformation string.
+	Transformation string `json:"transformation,required"`
+	// Unique identifier for the originating request.
+	XRequestID string `json:"x_request_id,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Transformation respjson.Field
+		XRequestID     respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r UploadPreTransformErrorEventRequest) RawJSON() string { return r.JSON.raw }
+func (r *UploadPreTransformErrorEventRequest) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Triggered when a pre-transformation completes successfully. The file has been
+// processed with the requested transformation and is now available in the Media
+// Library.
+type UploadPreTransformSuccessEvent struct {
+	// Unique identifier for the event.
+	ID string `json:"id,required"`
+	// Timestamp of when the event occurred in ISO8601 format.
+	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	// Object containing details of a successful upload.
+	Data    UploadPreTransformSuccessEventData    `json:"data,required"`
+	Request UploadPreTransformSuccessEventRequest `json:"request,required"`
+	Type    constant.UploadPreTransformSuccess    `json:"type,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		CreatedAt   respjson.Field
+		Data        respjson.Field
+		Request     respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r UploadPreTransformSuccessEvent) RawJSON() string { return r.JSON.raw }
+func (r *UploadPreTransformSuccessEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Object containing details of a successful upload.
+type UploadPreTransformSuccessEventData struct {
+	// An array of tags assigned to the uploaded file by auto tagging.
+	AITags []UploadPreTransformSuccessEventDataAITag `json:"AITags,nullable"`
+	// The audio codec used in the video (only for video).
+	AudioCodec string `json:"audioCodec"`
+	// The bit rate of the video in kbps (only for video).
+	BitRate int64 `json:"bitRate"`
+	// Value of custom coordinates associated with the image in the format
+	// `x,y,width,height`. If `customCoordinates` are not defined, then it is `null`.
+	// Send `customCoordinates` in `responseFields` in API request to get the value of
+	// this field.
+	CustomCoordinates string `json:"customCoordinates,nullable"`
+	// A key-value data associated with the asset. Use `responseField` in API request
+	// to get `customMetadata` in the upload API response. Before setting any custom
+	// metadata on an asset, you have to create the field using custom metadata fields
+	// API. Send `customMetadata` in `responseFields` in API request to get the value
+	// of this field.
+	CustomMetadata map[string]any `json:"customMetadata"`
+	// Optional text to describe the contents of the file. Can be set by the user or
+	// the ai-auto-description extension.
+	Description string `json:"description"`
+	// The duration of the video in seconds (only for video).
+	Duration int64 `json:"duration"`
+	// Consolidated embedded metadata associated with the file. It includes exif, iptc,
+	// and xmp data. Send `embeddedMetadata` in `responseFields` in API request to get
+	// embeddedMetadata in the upload API response.
+	EmbeddedMetadata map[string]any `json:"embeddedMetadata"`
+	// Extension names with their processing status at the time of completion of the
+	// request. It could have one of the following status values:
+	//
+	// `success`: The extension has been successfully applied. `failed`: The extension
+	// has failed and will not be retried. `pending`: The extension will finish
+	// processing in some time. On completion, the final status (success / failed) will
+	// be sent to the `webhookUrl` provided.
+	//
+	// If no extension was requested, then this parameter is not returned.
+	ExtensionStatus UploadPreTransformSuccessEventDataExtensionStatus `json:"extensionStatus"`
+	// Unique fileId. Store this fileld in your database, as this will be used to
+	// perform update action on this file.
+	FileID string `json:"fileId"`
+	// The relative path of the file in the media library e.g.
+	// `/marketing-assets/new-banner.jpg`.
+	FilePath string `json:"filePath"`
+	// Type of the uploaded file. Possible values are `image`, `non-image`.
+	FileType string `json:"fileType"`
+	// Height of the image in pixels (Only for images)
+	Height float64 `json:"height"`
+	// Is the file marked as private. It can be either `true` or `false`. Send
+	// `isPrivateFile` in `responseFields` in API request to get the value of this
+	// field.
+	IsPrivateFile bool `json:"isPrivateFile"`
+	// Is the file published or in draft state. It can be either `true` or `false`.
+	// Send `isPublished` in `responseFields` in API request to get the value of this
+	// field.
+	IsPublished bool `json:"isPublished"`
+	// Legacy metadata. Send `metadata` in `responseFields` in API request to get
+	// metadata in the upload API response.
+	Metadata Metadata `json:"metadata"`
+	// Name of the asset.
+	Name string `json:"name"`
+	// Size of the image file in Bytes.
+	Size float64 `json:"size"`
+	// The array of tags associated with the asset. If no tags are set, it will be
+	// `null`. Send `tags` in `responseFields` in API request to get the value of this
+	// field.
+	Tags []string `json:"tags,nullable"`
+	// In the case of an image, a small thumbnail URL.
+	ThumbnailURL string `json:"thumbnailUrl"`
+	// A publicly accessible URL of the file.
+	URL string `json:"url"`
+	// An object containing the file or file version's `id` (versionId) and `name`.
+	VersionInfo UploadPreTransformSuccessEventDataVersionInfo `json:"versionInfo"`
+	// The video codec used in the video (only for video).
+	VideoCodec string `json:"videoCodec"`
+	// Width of the image in pixels (Only for Images)
+	Width float64 `json:"width"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AITags            respjson.Field
+		AudioCodec        respjson.Field
+		BitRate           respjson.Field
+		CustomCoordinates respjson.Field
+		CustomMetadata    respjson.Field
+		Description       respjson.Field
+		Duration          respjson.Field
+		EmbeddedMetadata  respjson.Field
+		ExtensionStatus   respjson.Field
+		FileID            respjson.Field
+		FilePath          respjson.Field
+		FileType          respjson.Field
+		Height            respjson.Field
+		IsPrivateFile     respjson.Field
+		IsPublished       respjson.Field
+		Metadata          respjson.Field
+		Name              respjson.Field
+		Size              respjson.Field
+		Tags              respjson.Field
+		ThumbnailURL      respjson.Field
+		URL               respjson.Field
+		VersionInfo       respjson.Field
+		VideoCodec        respjson.Field
+		Width             respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r UploadPreTransformSuccessEventData) RawJSON() string { return r.JSON.raw }
+func (r *UploadPreTransformSuccessEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type UploadPreTransformSuccessEventDataAITag struct {
+	// Confidence score of the tag.
+	Confidence float64 `json:"confidence"`
+	// Name of the tag.
+	Name string `json:"name"`
+	// Array of `AITags` associated with the image. If no `AITags` are set, it will be
+	// null. These tags can be added using the `google-auto-tagging` or
+	// `aws-auto-tagging` extensions.
+	Source string `json:"source"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Confidence  respjson.Field
+		Name        respjson.Field
+		Source      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r UploadPreTransformSuccessEventDataAITag) RawJSON() string { return r.JSON.raw }
+func (r *UploadPreTransformSuccessEventDataAITag) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Extension names with their processing status at the time of completion of the
+// request. It could have one of the following status values:
+//
+// `success`: The extension has been successfully applied. `failed`: The extension
+// has failed and will not be retried. `pending`: The extension will finish
+// processing in some time. On completion, the final status (success / failed) will
+// be sent to the `webhookUrl` provided.
+//
+// If no extension was requested, then this parameter is not returned.
+type UploadPreTransformSuccessEventDataExtensionStatus struct {
+	// Any of "success", "pending", "failed".
+	AwsAutoTagging string `json:"aws-auto-tagging"`
+	// Any of "success", "pending", "failed".
+	GoogleAutoTagging string `json:"google-auto-tagging"`
+	// Any of "success", "pending", "failed".
+	RemoveBg string `json:"remove-bg"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AwsAutoTagging    respjson.Field
+		GoogleAutoTagging respjson.Field
+		RemoveBg          respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r UploadPreTransformSuccessEventDataExtensionStatus) RawJSON() string { return r.JSON.raw }
+func (r *UploadPreTransformSuccessEventDataExtensionStatus) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// An object containing the file or file version's `id` (versionId) and `name`.
+type UploadPreTransformSuccessEventDataVersionInfo struct {
+	// Unique identifier of the file version.
+	ID string `json:"id"`
+	// Name of the file version.
+	Name string `json:"name"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Name        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r UploadPreTransformSuccessEventDataVersionInfo) RawJSON() string { return r.JSON.raw }
+func (r *UploadPreTransformSuccessEventDataVersionInfo) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type UploadPreTransformSuccessEventRequest struct {
+	// The requested pre-transformation string.
+	Transformation string `json:"transformation,required"`
+	// Unique identifier for the originating request.
+	XRequestID string `json:"x_request_id,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Transformation respjson.Field
+		XRequestID     respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r UploadPreTransformSuccessEventRequest) RawJSON() string { return r.JSON.raw }
+func (r *UploadPreTransformSuccessEventRequest) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // Triggered when a new video transformation request is accepted for processing.
 // This event confirms that ImageKit has received and queued your transformation
 // request. Use this for debugging and tracking transformation lifecycle.
@@ -667,597 +1245,11 @@ func (r *VideoTransformationReadyEventTimings) UnmarshalJSON(data []byte) error 
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Triggered when a pre-transformation completes successfully. The file has been
-// processed with the requested transformation and is now available in the Media
-// Library.
-type UploadPreTransformSuccessWebhookEvent struct {
-	// Unique identifier for the event.
-	ID string `json:"id,required"`
-	// Timestamp of when the event occurred in ISO8601 format.
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
-	// Object containing details of a successful upload.
-	Data    UploadPreTransformSuccessWebhookEventData    `json:"data,required"`
-	Request UploadPreTransformSuccessWebhookEventRequest `json:"request,required"`
-	Type    constant.UploadPreTransformSuccess           `json:"type,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		CreatedAt   respjson.Field
-		Data        respjson.Field
-		Request     respjson.Field
-		Type        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r UploadPreTransformSuccessWebhookEvent) RawJSON() string { return r.JSON.raw }
-func (r *UploadPreTransformSuccessWebhookEvent) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Object containing details of a successful upload.
-type UploadPreTransformSuccessWebhookEventData struct {
-	// An array of tags assigned to the uploaded file by auto tagging.
-	AITags []UploadPreTransformSuccessWebhookEventDataAITag `json:"AITags,nullable"`
-	// The audio codec used in the video (only for video).
-	AudioCodec string `json:"audioCodec"`
-	// The bit rate of the video in kbps (only for video).
-	BitRate int64 `json:"bitRate"`
-	// Value of custom coordinates associated with the image in the format
-	// `x,y,width,height`. If `customCoordinates` are not defined, then it is `null`.
-	// Send `customCoordinates` in `responseFields` in API request to get the value of
-	// this field.
-	CustomCoordinates string `json:"customCoordinates,nullable"`
-	// A key-value data associated with the asset. Use `responseField` in API request
-	// to get `customMetadata` in the upload API response. Before setting any custom
-	// metadata on an asset, you have to create the field using custom metadata fields
-	// API. Send `customMetadata` in `responseFields` in API request to get the value
-	// of this field.
-	CustomMetadata map[string]any `json:"customMetadata"`
-	// Optional text to describe the contents of the file. Can be set by the user or
-	// the ai-auto-description extension.
-	Description string `json:"description"`
-	// The duration of the video in seconds (only for video).
-	Duration int64 `json:"duration"`
-	// Consolidated embedded metadata associated with the file. It includes exif, iptc,
-	// and xmp data. Send `embeddedMetadata` in `responseFields` in API request to get
-	// embeddedMetadata in the upload API response.
-	EmbeddedMetadata map[string]any `json:"embeddedMetadata"`
-	// Extension names with their processing status at the time of completion of the
-	// request. It could have one of the following status values:
-	//
-	// `success`: The extension has been successfully applied. `failed`: The extension
-	// has failed and will not be retried. `pending`: The extension will finish
-	// processing in some time. On completion, the final status (success / failed) will
-	// be sent to the `webhookUrl` provided.
-	//
-	// If no extension was requested, then this parameter is not returned.
-	ExtensionStatus UploadPreTransformSuccessWebhookEventDataExtensionStatus `json:"extensionStatus"`
-	// Unique fileId. Store this fileld in your database, as this will be used to
-	// perform update action on this file.
-	FileID string `json:"fileId"`
-	// The relative path of the file in the media library e.g.
-	// `/marketing-assets/new-banner.jpg`.
-	FilePath string `json:"filePath"`
-	// Type of the uploaded file. Possible values are `image`, `non-image`.
-	FileType string `json:"fileType"`
-	// Height of the image in pixels (Only for images)
-	Height float64 `json:"height"`
-	// Is the file marked as private. It can be either `true` or `false`. Send
-	// `isPrivateFile` in `responseFields` in API request to get the value of this
-	// field.
-	IsPrivateFile bool `json:"isPrivateFile"`
-	// Is the file published or in draft state. It can be either `true` or `false`.
-	// Send `isPublished` in `responseFields` in API request to get the value of this
-	// field.
-	IsPublished bool `json:"isPublished"`
-	// Legacy metadata. Send `metadata` in `responseFields` in API request to get
-	// metadata in the upload API response.
-	Metadata Metadata `json:"metadata"`
-	// Name of the asset.
-	Name string `json:"name"`
-	// Size of the image file in Bytes.
-	Size float64 `json:"size"`
-	// The array of tags associated with the asset. If no tags are set, it will be
-	// `null`. Send `tags` in `responseFields` in API request to get the value of this
-	// field.
-	Tags []string `json:"tags,nullable"`
-	// In the case of an image, a small thumbnail URL.
-	ThumbnailURL string `json:"thumbnailUrl"`
-	// A publicly accessible URL of the file.
-	URL string `json:"url"`
-	// An object containing the file or file version's `id` (versionId) and `name`.
-	VersionInfo UploadPreTransformSuccessWebhookEventDataVersionInfo `json:"versionInfo"`
-	// The video codec used in the video (only for video).
-	VideoCodec string `json:"videoCodec"`
-	// Width of the image in pixels (Only for Images)
-	Width float64 `json:"width"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		AITags            respjson.Field
-		AudioCodec        respjson.Field
-		BitRate           respjson.Field
-		CustomCoordinates respjson.Field
-		CustomMetadata    respjson.Field
-		Description       respjson.Field
-		Duration          respjson.Field
-		EmbeddedMetadata  respjson.Field
-		ExtensionStatus   respjson.Field
-		FileID            respjson.Field
-		FilePath          respjson.Field
-		FileType          respjson.Field
-		Height            respjson.Field
-		IsPrivateFile     respjson.Field
-		IsPublished       respjson.Field
-		Metadata          respjson.Field
-		Name              respjson.Field
-		Size              respjson.Field
-		Tags              respjson.Field
-		ThumbnailURL      respjson.Field
-		URL               respjson.Field
-		VersionInfo       respjson.Field
-		VideoCodec        respjson.Field
-		Width             respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r UploadPreTransformSuccessWebhookEventData) RawJSON() string { return r.JSON.raw }
-func (r *UploadPreTransformSuccessWebhookEventData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type UploadPreTransformSuccessWebhookEventDataAITag struct {
-	// Confidence score of the tag.
-	Confidence float64 `json:"confidence"`
-	// Name of the tag.
-	Name string `json:"name"`
-	// Array of `AITags` associated with the image. If no `AITags` are set, it will be
-	// null. These tags can be added using the `google-auto-tagging` or
-	// `aws-auto-tagging` extensions.
-	Source string `json:"source"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Confidence  respjson.Field
-		Name        respjson.Field
-		Source      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r UploadPreTransformSuccessWebhookEventDataAITag) RawJSON() string { return r.JSON.raw }
-func (r *UploadPreTransformSuccessWebhookEventDataAITag) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Extension names with their processing status at the time of completion of the
-// request. It could have one of the following status values:
-//
-// `success`: The extension has been successfully applied. `failed`: The extension
-// has failed and will not be retried. `pending`: The extension will finish
-// processing in some time. On completion, the final status (success / failed) will
-// be sent to the `webhookUrl` provided.
-//
-// If no extension was requested, then this parameter is not returned.
-type UploadPreTransformSuccessWebhookEventDataExtensionStatus struct {
-	// Any of "success", "pending", "failed".
-	AwsAutoTagging string `json:"aws-auto-tagging"`
-	// Any of "success", "pending", "failed".
-	GoogleAutoTagging string `json:"google-auto-tagging"`
-	// Any of "success", "pending", "failed".
-	RemoveBg string `json:"remove-bg"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		AwsAutoTagging    respjson.Field
-		GoogleAutoTagging respjson.Field
-		RemoveBg          respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r UploadPreTransformSuccessWebhookEventDataExtensionStatus) RawJSON() string { return r.JSON.raw }
-func (r *UploadPreTransformSuccessWebhookEventDataExtensionStatus) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// An object containing the file or file version's `id` (versionId) and `name`.
-type UploadPreTransformSuccessWebhookEventDataVersionInfo struct {
-	// Unique identifier of the file version.
-	ID string `json:"id"`
-	// Name of the file version.
-	Name string `json:"name"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		Name        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r UploadPreTransformSuccessWebhookEventDataVersionInfo) RawJSON() string { return r.JSON.raw }
-func (r *UploadPreTransformSuccessWebhookEventDataVersionInfo) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type UploadPreTransformSuccessWebhookEventRequest struct {
-	// The requested pre-transformation string.
-	Transformation string `json:"transformation,required"`
-	// Unique identifier for the originating request.
-	XRequestID string `json:"x_request_id,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Transformation respjson.Field
-		XRequestID     respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r UploadPreTransformSuccessWebhookEventRequest) RawJSON() string { return r.JSON.raw }
-func (r *UploadPreTransformSuccessWebhookEventRequest) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Triggered when a pre-transformation fails. The file upload may have been
-// accepted, but the requested transformation could not be applied.
-type UploadPreTransformErrorWebhookEvent struct {
-	// Unique identifier for the event.
-	ID string `json:"id,required"`
-	// Timestamp of when the event occurred in ISO8601 format.
-	CreatedAt time.Time                                  `json:"created_at,required" format:"date-time"`
-	Data      UploadPreTransformErrorWebhookEventData    `json:"data,required"`
-	Request   UploadPreTransformErrorWebhookEventRequest `json:"request,required"`
-	Type      constant.UploadPreTransformError           `json:"type,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		CreatedAt   respjson.Field
-		Data        respjson.Field
-		Request     respjson.Field
-		Type        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r UploadPreTransformErrorWebhookEvent) RawJSON() string { return r.JSON.raw }
-func (r *UploadPreTransformErrorWebhookEvent) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type UploadPreTransformErrorWebhookEventData struct {
-	// Name of the file.
-	Name string `json:"name,required"`
-	// Path of the file.
-	Path           string                                                `json:"path,required"`
-	Transformation UploadPreTransformErrorWebhookEventDataTransformation `json:"transformation,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Name           respjson.Field
-		Path           respjson.Field
-		Transformation respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r UploadPreTransformErrorWebhookEventData) RawJSON() string { return r.JSON.raw }
-func (r *UploadPreTransformErrorWebhookEventData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type UploadPreTransformErrorWebhookEventDataTransformation struct {
-	Error UploadPreTransformErrorWebhookEventDataTransformationError `json:"error,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Error       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r UploadPreTransformErrorWebhookEventDataTransformation) RawJSON() string { return r.JSON.raw }
-func (r *UploadPreTransformErrorWebhookEventDataTransformation) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type UploadPreTransformErrorWebhookEventDataTransformationError struct {
-	// Reason for the pre-transformation failure.
-	Reason string `json:"reason,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Reason      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r UploadPreTransformErrorWebhookEventDataTransformationError) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *UploadPreTransformErrorWebhookEventDataTransformationError) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type UploadPreTransformErrorWebhookEventRequest struct {
-	// The requested pre-transformation string.
-	Transformation string `json:"transformation,required"`
-	// Unique identifier for the originating request.
-	XRequestID string `json:"x_request_id,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Transformation respjson.Field
-		XRequestID     respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r UploadPreTransformErrorWebhookEventRequest) RawJSON() string { return r.JSON.raw }
-func (r *UploadPreTransformErrorWebhookEventRequest) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Triggered when a post-transformation completes successfully. The transformed
-// version of the file is now ready and can be accessed via the provided URL. Note
-// that each post-transformation generates a separate webhook event.
-type UploadPostTransformSuccessWebhookEvent struct {
-	// Unique identifier for the event.
-	ID string `json:"id,required"`
-	// Timestamp of when the event occurred in ISO8601 format.
-	CreatedAt time.Time                                     `json:"created_at,required" format:"date-time"`
-	Data      UploadPostTransformSuccessWebhookEventData    `json:"data,required"`
-	Request   UploadPostTransformSuccessWebhookEventRequest `json:"request,required"`
-	Type      constant.UploadPostTransformSuccess           `json:"type,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		CreatedAt   respjson.Field
-		Data        respjson.Field
-		Request     respjson.Field
-		Type        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r UploadPostTransformSuccessWebhookEvent) RawJSON() string { return r.JSON.raw }
-func (r *UploadPostTransformSuccessWebhookEvent) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type UploadPostTransformSuccessWebhookEventData struct {
-	// Unique identifier of the originally uploaded file.
-	FileID string `json:"fileId,required"`
-	// Name of the file.
-	Name string `json:"name,required"`
-	// URL of the generated post-transformation.
-	URL string `json:"url,required" format:"uri"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		FileID      respjson.Field
-		Name        respjson.Field
-		URL         respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r UploadPostTransformSuccessWebhookEventData) RawJSON() string { return r.JSON.raw }
-func (r *UploadPostTransformSuccessWebhookEventData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type UploadPostTransformSuccessWebhookEventRequest struct {
-	Transformation UploadPostTransformSuccessWebhookEventRequestTransformation `json:"transformation,required"`
-	// Unique identifier for the originating request.
-	XRequestID string `json:"x_request_id,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Transformation respjson.Field
-		XRequestID     respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r UploadPostTransformSuccessWebhookEventRequest) RawJSON() string { return r.JSON.raw }
-func (r *UploadPostTransformSuccessWebhookEventRequest) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type UploadPostTransformSuccessWebhookEventRequestTransformation struct {
-	// Type of the requested post-transformation.
-	//
-	// Any of "transformation", "abs", "gif-to-video", "thumbnail".
-	Type string `json:"type,required"`
-	// Only applicable if transformation type is 'abs'. Streaming protocol used.
-	//
-	// Any of "hls", "dash".
-	Protocol string `json:"protocol"`
-	// Value for the requested transformation type.
-	Value string `json:"value"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Type        respjson.Field
-		Protocol    respjson.Field
-		Value       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r UploadPostTransformSuccessWebhookEventRequestTransformation) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *UploadPostTransformSuccessWebhookEventRequestTransformation) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Triggered when a post-transformation fails. The original file remains available,
-// but the requested transformation could not be generated.
-type UploadPostTransformErrorWebhookEvent struct {
-	// Unique identifier for the event.
-	ID string `json:"id,required"`
-	// Timestamp of when the event occurred in ISO8601 format.
-	CreatedAt time.Time                                   `json:"created_at,required" format:"date-time"`
-	Data      UploadPostTransformErrorWebhookEventData    `json:"data,required"`
-	Request   UploadPostTransformErrorWebhookEventRequest `json:"request,required"`
-	Type      constant.UploadPostTransformError           `json:"type,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		CreatedAt   respjson.Field
-		Data        respjson.Field
-		Request     respjson.Field
-		Type        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r UploadPostTransformErrorWebhookEvent) RawJSON() string { return r.JSON.raw }
-func (r *UploadPostTransformErrorWebhookEvent) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type UploadPostTransformErrorWebhookEventData struct {
-	// Unique identifier of the originally uploaded file.
-	FileID string `json:"fileId,required"`
-	// Name of the file.
-	Name string `json:"name,required"`
-	// Path of the file.
-	Path           string                                                 `json:"path,required"`
-	Transformation UploadPostTransformErrorWebhookEventDataTransformation `json:"transformation,required"`
-	// URL of the attempted post-transformation.
-	URL string `json:"url,required" format:"uri"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		FileID         respjson.Field
-		Name           respjson.Field
-		Path           respjson.Field
-		Transformation respjson.Field
-		URL            respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r UploadPostTransformErrorWebhookEventData) RawJSON() string { return r.JSON.raw }
-func (r *UploadPostTransformErrorWebhookEventData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type UploadPostTransformErrorWebhookEventDataTransformation struct {
-	Error UploadPostTransformErrorWebhookEventDataTransformationError `json:"error,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Error       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r UploadPostTransformErrorWebhookEventDataTransformation) RawJSON() string { return r.JSON.raw }
-func (r *UploadPostTransformErrorWebhookEventDataTransformation) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type UploadPostTransformErrorWebhookEventDataTransformationError struct {
-	// Reason for the post-transformation failure.
-	Reason string `json:"reason,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Reason      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r UploadPostTransformErrorWebhookEventDataTransformationError) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *UploadPostTransformErrorWebhookEventDataTransformationError) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type UploadPostTransformErrorWebhookEventRequest struct {
-	Transformation UploadPostTransformErrorWebhookEventRequestTransformation `json:"transformation,required"`
-	// Unique identifier for the originating request.
-	XRequestID string `json:"x_request_id,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Transformation respjson.Field
-		XRequestID     respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r UploadPostTransformErrorWebhookEventRequest) RawJSON() string { return r.JSON.raw }
-func (r *UploadPostTransformErrorWebhookEventRequest) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type UploadPostTransformErrorWebhookEventRequestTransformation struct {
-	// Type of the requested post-transformation.
-	//
-	// Any of "transformation", "abs", "gif-to-video", "thumbnail".
-	Type string `json:"type,required"`
-	// Only applicable if transformation type is 'abs'. Streaming protocol used.
-	//
-	// Any of "hls", "dash".
-	Protocol string `json:"protocol"`
-	// Value for the requested transformation type.
-	Value string `json:"value"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Type        respjson.Field
-		Protocol    respjson.Field
-		Value       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r UploadPostTransformErrorWebhookEventRequestTransformation) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *UploadPostTransformErrorWebhookEventRequestTransformation) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // UnsafeUnwrapWebhookEventUnion contains all possible properties and values from
 // [VideoTransformationAcceptedEvent], [VideoTransformationReadyEvent],
-// [VideoTransformationErrorEvent], [UploadPreTransformSuccessWebhookEvent],
-// [UploadPreTransformErrorWebhookEvent], [UploadPostTransformSuccessWebhookEvent],
-// [UploadPostTransformErrorWebhookEvent].
+// [VideoTransformationErrorEvent], [UploadPreTransformSuccessEvent],
+// [UploadPreTransformErrorEvent], [UploadPostTransformSuccessEvent],
+// [UploadPostTransformErrorEvent].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type UnsafeUnwrapWebhookEventUnion struct {
@@ -1265,17 +1257,13 @@ type UnsafeUnwrapWebhookEventUnion struct {
 	CreatedAt time.Time `json:"created_at"`
 	// This field is a union of [VideoTransformationAcceptedEventData],
 	// [VideoTransformationReadyEventData], [VideoTransformationErrorEventData],
-	// [UploadPreTransformSuccessWebhookEventData],
-	// [UploadPreTransformErrorWebhookEventData],
-	// [UploadPostTransformSuccessWebhookEventData],
-	// [UploadPostTransformErrorWebhookEventData]
+	// [UploadPreTransformSuccessEventData], [UploadPreTransformErrorEventData],
+	// [UploadPostTransformSuccessEventData], [UploadPostTransformErrorEventData]
 	Data UnsafeUnwrapWebhookEventUnionData `json:"data"`
 	// This field is a union of [VideoTransformationAcceptedEventRequest],
 	// [VideoTransformationReadyEventRequest], [VideoTransformationErrorEventRequest],
-	// [UploadPreTransformSuccessWebhookEventRequest],
-	// [UploadPreTransformErrorWebhookEventRequest],
-	// [UploadPostTransformSuccessWebhookEventRequest],
-	// [UploadPostTransformErrorWebhookEventRequest]
+	// [UploadPreTransformSuccessEventRequest], [UploadPreTransformErrorEventRequest],
+	// [UploadPostTransformSuccessEventRequest], [UploadPostTransformErrorEventRequest]
 	Request UnsafeUnwrapWebhookEventUnionRequest `json:"request"`
 	Type    string                               `json:"type"`
 	// This field is from variant [VideoTransformationReadyEvent].
@@ -1306,22 +1294,22 @@ func (u UnsafeUnwrapWebhookEventUnion) AsVideoTransformationErrorEvent() (v Vide
 	return
 }
 
-func (u UnsafeUnwrapWebhookEventUnion) AsUploadPreTransformSuccessWebhookEvent() (v UploadPreTransformSuccessWebhookEvent) {
+func (u UnsafeUnwrapWebhookEventUnion) AsUploadPreTransformSuccessEvent() (v UploadPreTransformSuccessEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u UnsafeUnwrapWebhookEventUnion) AsUploadPreTransformErrorWebhookEvent() (v UploadPreTransformErrorWebhookEvent) {
+func (u UnsafeUnwrapWebhookEventUnion) AsUploadPreTransformErrorEvent() (v UploadPreTransformErrorEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u UnsafeUnwrapWebhookEventUnion) AsUploadPostTransformSuccessWebhookEvent() (v UploadPostTransformSuccessWebhookEvent) {
+func (u UnsafeUnwrapWebhookEventUnion) AsUploadPostTransformSuccessEvent() (v UploadPostTransformSuccessEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u UnsafeUnwrapWebhookEventUnion) AsUploadPostTransformErrorWebhookEvent() (v UploadPostTransformErrorWebhookEvent) {
+func (u UnsafeUnwrapWebhookEventUnion) AsUploadPostTransformErrorEvent() (v UploadPostTransformErrorEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -1347,53 +1335,53 @@ type UnsafeUnwrapWebhookEventUnionData struct {
 	// This field is a union of [VideoTransformationAcceptedEventDataTransformation],
 	// [VideoTransformationReadyEventDataTransformation],
 	// [VideoTransformationErrorEventDataTransformation],
-	// [UploadPreTransformErrorWebhookEventDataTransformation],
-	// [UploadPostTransformErrorWebhookEventDataTransformation]
+	// [UploadPreTransformErrorEventDataTransformation],
+	// [UploadPostTransformErrorEventDataTransformation]
 	Transformation UnsafeUnwrapWebhookEventUnionDataTransformation `json:"transformation"`
-	// This field is from variant [UploadPreTransformSuccessWebhookEventData].
-	AITags []UploadPreTransformSuccessWebhookEventDataAITag `json:"AITags"`
-	// This field is from variant [UploadPreTransformSuccessWebhookEventData].
+	// This field is from variant [UploadPreTransformSuccessEventData].
+	AITags []UploadPreTransformSuccessEventDataAITag `json:"AITags"`
+	// This field is from variant [UploadPreTransformSuccessEventData].
 	AudioCodec string `json:"audioCodec"`
-	// This field is from variant [UploadPreTransformSuccessWebhookEventData].
+	// This field is from variant [UploadPreTransformSuccessEventData].
 	BitRate int64 `json:"bitRate"`
-	// This field is from variant [UploadPreTransformSuccessWebhookEventData].
+	// This field is from variant [UploadPreTransformSuccessEventData].
 	CustomCoordinates string `json:"customCoordinates"`
-	// This field is from variant [UploadPreTransformSuccessWebhookEventData].
+	// This field is from variant [UploadPreTransformSuccessEventData].
 	CustomMetadata map[string]any `json:"customMetadata"`
-	// This field is from variant [UploadPreTransformSuccessWebhookEventData].
+	// This field is from variant [UploadPreTransformSuccessEventData].
 	Description string `json:"description"`
-	// This field is from variant [UploadPreTransformSuccessWebhookEventData].
+	// This field is from variant [UploadPreTransformSuccessEventData].
 	Duration int64 `json:"duration"`
-	// This field is from variant [UploadPreTransformSuccessWebhookEventData].
+	// This field is from variant [UploadPreTransformSuccessEventData].
 	EmbeddedMetadata map[string]any `json:"embeddedMetadata"`
-	// This field is from variant [UploadPreTransformSuccessWebhookEventData].
-	ExtensionStatus UploadPreTransformSuccessWebhookEventDataExtensionStatus `json:"extensionStatus"`
-	FileID          string                                                   `json:"fileId"`
-	// This field is from variant [UploadPreTransformSuccessWebhookEventData].
+	// This field is from variant [UploadPreTransformSuccessEventData].
+	ExtensionStatus UploadPreTransformSuccessEventDataExtensionStatus `json:"extensionStatus"`
+	FileID          string                                            `json:"fileId"`
+	// This field is from variant [UploadPreTransformSuccessEventData].
 	FilePath string `json:"filePath"`
-	// This field is from variant [UploadPreTransformSuccessWebhookEventData].
+	// This field is from variant [UploadPreTransformSuccessEventData].
 	FileType string `json:"fileType"`
-	// This field is from variant [UploadPreTransformSuccessWebhookEventData].
+	// This field is from variant [UploadPreTransformSuccessEventData].
 	Height float64 `json:"height"`
-	// This field is from variant [UploadPreTransformSuccessWebhookEventData].
+	// This field is from variant [UploadPreTransformSuccessEventData].
 	IsPrivateFile bool `json:"isPrivateFile"`
-	// This field is from variant [UploadPreTransformSuccessWebhookEventData].
+	// This field is from variant [UploadPreTransformSuccessEventData].
 	IsPublished bool `json:"isPublished"`
-	// This field is from variant [UploadPreTransformSuccessWebhookEventData].
+	// This field is from variant [UploadPreTransformSuccessEventData].
 	Metadata Metadata `json:"metadata"`
 	Name     string   `json:"name"`
-	// This field is from variant [UploadPreTransformSuccessWebhookEventData].
+	// This field is from variant [UploadPreTransformSuccessEventData].
 	Size float64 `json:"size"`
-	// This field is from variant [UploadPreTransformSuccessWebhookEventData].
+	// This field is from variant [UploadPreTransformSuccessEventData].
 	Tags []string `json:"tags"`
-	// This field is from variant [UploadPreTransformSuccessWebhookEventData].
+	// This field is from variant [UploadPreTransformSuccessEventData].
 	ThumbnailURL string `json:"thumbnailUrl"`
 	URL          string `json:"url"`
-	// This field is from variant [UploadPreTransformSuccessWebhookEventData].
-	VersionInfo UploadPreTransformSuccessWebhookEventDataVersionInfo `json:"versionInfo"`
-	// This field is from variant [UploadPreTransformSuccessWebhookEventData].
+	// This field is from variant [UploadPreTransformSuccessEventData].
+	VersionInfo UploadPreTransformSuccessEventDataVersionInfo `json:"versionInfo"`
+	// This field is from variant [UploadPreTransformSuccessEventData].
 	VideoCodec string `json:"videoCodec"`
-	// This field is from variant [UploadPreTransformSuccessWebhookEventData].
+	// This field is from variant [UploadPreTransformSuccessEventData].
 	Width float64 `json:"width"`
 	Path  string  `json:"path"`
 	JSON  struct {
@@ -1466,8 +1454,8 @@ type UnsafeUnwrapWebhookEventUnionDataTransformation struct {
 	// This field is from variant [VideoTransformationReadyEventDataTransformation].
 	Output VideoTransformationReadyEventDataTransformationOutput `json:"output"`
 	// This field is a union of [VideoTransformationErrorEventDataTransformationError],
-	// [UploadPreTransformErrorWebhookEventDataTransformationError],
-	// [UploadPostTransformErrorWebhookEventDataTransformationError]
+	// [UploadPreTransformErrorEventDataTransformationError],
+	// [UploadPostTransformErrorEventDataTransformationError]
 	Error UnsafeUnwrapWebhookEventUnionDataTransformationError `json:"error"`
 	JSON  struct {
 		Type    respjson.Field
@@ -1543,8 +1531,8 @@ type UnsafeUnwrapWebhookEventUnionRequest struct {
 	XRequestID string `json:"x_request_id"`
 	UserAgent  string `json:"user_agent"`
 	// This field is a union of [string], [string],
-	// [UploadPostTransformSuccessWebhookEventRequestTransformation],
-	// [UploadPostTransformErrorWebhookEventRequestTransformation]
+	// [UploadPostTransformSuccessEventRequestTransformation],
+	// [UploadPostTransformErrorEventRequestTransformation]
 	Transformation UnsafeUnwrapWebhookEventUnionRequestTransformation `json:"transformation"`
 	JSON           struct {
 		URL            respjson.Field
@@ -1590,9 +1578,9 @@ func (r *UnsafeUnwrapWebhookEventUnionRequestTransformation) UnmarshalJSON(data 
 
 // UnwrapWebhookEventUnion contains all possible properties and values from
 // [VideoTransformationAcceptedEvent], [VideoTransformationReadyEvent],
-// [VideoTransformationErrorEvent], [UploadPreTransformSuccessWebhookEvent],
-// [UploadPreTransformErrorWebhookEvent], [UploadPostTransformSuccessWebhookEvent],
-// [UploadPostTransformErrorWebhookEvent].
+// [VideoTransformationErrorEvent], [UploadPreTransformSuccessEvent],
+// [UploadPreTransformErrorEvent], [UploadPostTransformSuccessEvent],
+// [UploadPostTransformErrorEvent].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type UnwrapWebhookEventUnion struct {
@@ -1600,17 +1588,13 @@ type UnwrapWebhookEventUnion struct {
 	CreatedAt time.Time `json:"created_at"`
 	// This field is a union of [VideoTransformationAcceptedEventData],
 	// [VideoTransformationReadyEventData], [VideoTransformationErrorEventData],
-	// [UploadPreTransformSuccessWebhookEventData],
-	// [UploadPreTransformErrorWebhookEventData],
-	// [UploadPostTransformSuccessWebhookEventData],
-	// [UploadPostTransformErrorWebhookEventData]
+	// [UploadPreTransformSuccessEventData], [UploadPreTransformErrorEventData],
+	// [UploadPostTransformSuccessEventData], [UploadPostTransformErrorEventData]
 	Data UnwrapWebhookEventUnionData `json:"data"`
 	// This field is a union of [VideoTransformationAcceptedEventRequest],
 	// [VideoTransformationReadyEventRequest], [VideoTransformationErrorEventRequest],
-	// [UploadPreTransformSuccessWebhookEventRequest],
-	// [UploadPreTransformErrorWebhookEventRequest],
-	// [UploadPostTransformSuccessWebhookEventRequest],
-	// [UploadPostTransformErrorWebhookEventRequest]
+	// [UploadPreTransformSuccessEventRequest], [UploadPreTransformErrorEventRequest],
+	// [UploadPostTransformSuccessEventRequest], [UploadPostTransformErrorEventRequest]
 	Request UnwrapWebhookEventUnionRequest `json:"request"`
 	Type    string                         `json:"type"`
 	// This field is from variant [VideoTransformationReadyEvent].
@@ -1641,22 +1625,22 @@ func (u UnwrapWebhookEventUnion) AsVideoTransformationErrorEvent() (v VideoTrans
 	return
 }
 
-func (u UnwrapWebhookEventUnion) AsUploadPreTransformSuccessWebhookEvent() (v UploadPreTransformSuccessWebhookEvent) {
+func (u UnwrapWebhookEventUnion) AsUploadPreTransformSuccessEvent() (v UploadPreTransformSuccessEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u UnwrapWebhookEventUnion) AsUploadPreTransformErrorWebhookEvent() (v UploadPreTransformErrorWebhookEvent) {
+func (u UnwrapWebhookEventUnion) AsUploadPreTransformErrorEvent() (v UploadPreTransformErrorEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u UnwrapWebhookEventUnion) AsUploadPostTransformSuccessWebhookEvent() (v UploadPostTransformSuccessWebhookEvent) {
+func (u UnwrapWebhookEventUnion) AsUploadPostTransformSuccessEvent() (v UploadPostTransformSuccessEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u UnwrapWebhookEventUnion) AsUploadPostTransformErrorWebhookEvent() (v UploadPostTransformErrorWebhookEvent) {
+func (u UnwrapWebhookEventUnion) AsUploadPostTransformErrorEvent() (v UploadPostTransformErrorEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -1682,53 +1666,53 @@ type UnwrapWebhookEventUnionData struct {
 	// This field is a union of [VideoTransformationAcceptedEventDataTransformation],
 	// [VideoTransformationReadyEventDataTransformation],
 	// [VideoTransformationErrorEventDataTransformation],
-	// [UploadPreTransformErrorWebhookEventDataTransformation],
-	// [UploadPostTransformErrorWebhookEventDataTransformation]
+	// [UploadPreTransformErrorEventDataTransformation],
+	// [UploadPostTransformErrorEventDataTransformation]
 	Transformation UnwrapWebhookEventUnionDataTransformation `json:"transformation"`
-	// This field is from variant [UploadPreTransformSuccessWebhookEventData].
-	AITags []UploadPreTransformSuccessWebhookEventDataAITag `json:"AITags"`
-	// This field is from variant [UploadPreTransformSuccessWebhookEventData].
+	// This field is from variant [UploadPreTransformSuccessEventData].
+	AITags []UploadPreTransformSuccessEventDataAITag `json:"AITags"`
+	// This field is from variant [UploadPreTransformSuccessEventData].
 	AudioCodec string `json:"audioCodec"`
-	// This field is from variant [UploadPreTransformSuccessWebhookEventData].
+	// This field is from variant [UploadPreTransformSuccessEventData].
 	BitRate int64 `json:"bitRate"`
-	// This field is from variant [UploadPreTransformSuccessWebhookEventData].
+	// This field is from variant [UploadPreTransformSuccessEventData].
 	CustomCoordinates string `json:"customCoordinates"`
-	// This field is from variant [UploadPreTransformSuccessWebhookEventData].
+	// This field is from variant [UploadPreTransformSuccessEventData].
 	CustomMetadata map[string]any `json:"customMetadata"`
-	// This field is from variant [UploadPreTransformSuccessWebhookEventData].
+	// This field is from variant [UploadPreTransformSuccessEventData].
 	Description string `json:"description"`
-	// This field is from variant [UploadPreTransformSuccessWebhookEventData].
+	// This field is from variant [UploadPreTransformSuccessEventData].
 	Duration int64 `json:"duration"`
-	// This field is from variant [UploadPreTransformSuccessWebhookEventData].
+	// This field is from variant [UploadPreTransformSuccessEventData].
 	EmbeddedMetadata map[string]any `json:"embeddedMetadata"`
-	// This field is from variant [UploadPreTransformSuccessWebhookEventData].
-	ExtensionStatus UploadPreTransformSuccessWebhookEventDataExtensionStatus `json:"extensionStatus"`
-	FileID          string                                                   `json:"fileId"`
-	// This field is from variant [UploadPreTransformSuccessWebhookEventData].
+	// This field is from variant [UploadPreTransformSuccessEventData].
+	ExtensionStatus UploadPreTransformSuccessEventDataExtensionStatus `json:"extensionStatus"`
+	FileID          string                                            `json:"fileId"`
+	// This field is from variant [UploadPreTransformSuccessEventData].
 	FilePath string `json:"filePath"`
-	// This field is from variant [UploadPreTransformSuccessWebhookEventData].
+	// This field is from variant [UploadPreTransformSuccessEventData].
 	FileType string `json:"fileType"`
-	// This field is from variant [UploadPreTransformSuccessWebhookEventData].
+	// This field is from variant [UploadPreTransformSuccessEventData].
 	Height float64 `json:"height"`
-	// This field is from variant [UploadPreTransformSuccessWebhookEventData].
+	// This field is from variant [UploadPreTransformSuccessEventData].
 	IsPrivateFile bool `json:"isPrivateFile"`
-	// This field is from variant [UploadPreTransformSuccessWebhookEventData].
+	// This field is from variant [UploadPreTransformSuccessEventData].
 	IsPublished bool `json:"isPublished"`
-	// This field is from variant [UploadPreTransformSuccessWebhookEventData].
+	// This field is from variant [UploadPreTransformSuccessEventData].
 	Metadata Metadata `json:"metadata"`
 	Name     string   `json:"name"`
-	// This field is from variant [UploadPreTransformSuccessWebhookEventData].
+	// This field is from variant [UploadPreTransformSuccessEventData].
 	Size float64 `json:"size"`
-	// This field is from variant [UploadPreTransformSuccessWebhookEventData].
+	// This field is from variant [UploadPreTransformSuccessEventData].
 	Tags []string `json:"tags"`
-	// This field is from variant [UploadPreTransformSuccessWebhookEventData].
+	// This field is from variant [UploadPreTransformSuccessEventData].
 	ThumbnailURL string `json:"thumbnailUrl"`
 	URL          string `json:"url"`
-	// This field is from variant [UploadPreTransformSuccessWebhookEventData].
-	VersionInfo UploadPreTransformSuccessWebhookEventDataVersionInfo `json:"versionInfo"`
-	// This field is from variant [UploadPreTransformSuccessWebhookEventData].
+	// This field is from variant [UploadPreTransformSuccessEventData].
+	VersionInfo UploadPreTransformSuccessEventDataVersionInfo `json:"versionInfo"`
+	// This field is from variant [UploadPreTransformSuccessEventData].
 	VideoCodec string `json:"videoCodec"`
-	// This field is from variant [UploadPreTransformSuccessWebhookEventData].
+	// This field is from variant [UploadPreTransformSuccessEventData].
 	Width float64 `json:"width"`
 	Path  string  `json:"path"`
 	JSON  struct {
@@ -1801,8 +1785,8 @@ type UnwrapWebhookEventUnionDataTransformation struct {
 	// This field is from variant [VideoTransformationReadyEventDataTransformation].
 	Output VideoTransformationReadyEventDataTransformationOutput `json:"output"`
 	// This field is a union of [VideoTransformationErrorEventDataTransformationError],
-	// [UploadPreTransformErrorWebhookEventDataTransformationError],
-	// [UploadPostTransformErrorWebhookEventDataTransformationError]
+	// [UploadPreTransformErrorEventDataTransformationError],
+	// [UploadPostTransformErrorEventDataTransformationError]
 	Error UnwrapWebhookEventUnionDataTransformationError `json:"error"`
 	JSON  struct {
 		Type    respjson.Field
@@ -1876,8 +1860,8 @@ type UnwrapWebhookEventUnionRequest struct {
 	XRequestID string `json:"x_request_id"`
 	UserAgent  string `json:"user_agent"`
 	// This field is a union of [string], [string],
-	// [UploadPostTransformSuccessWebhookEventRequestTransformation],
-	// [UploadPostTransformErrorWebhookEventRequestTransformation]
+	// [UploadPostTransformSuccessEventRequestTransformation],
+	// [UploadPostTransformErrorEventRequestTransformation]
 	Transformation UnwrapWebhookEventUnionRequestTransformation `json:"transformation"`
 	JSON           struct {
 		URL            respjson.Field
