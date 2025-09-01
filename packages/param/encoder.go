@@ -6,7 +6,7 @@ import (
 	"reflect"
 	"time"
 
-	shimjson "github.com/stainless-sdks/imagekit-go/internal/encoding/json"
+	shimjson "github.com/imagekit-developer/imagekit-go/internal/encoding/json"
 
 	"github.com/tidwall/sjson"
 )

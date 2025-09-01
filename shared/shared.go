@@ -3,7 +3,7 @@
 package shared
 
 import (
-	"github.com/stainless-sdks/imagekit-go/packages/param"
+	"github.com/imagekit-developer/imagekit-go/packages/param"
 )
 
 // aliased to make [param.APIUnion] private when embedding

@@ -3,7 +3,7 @@
 package imagekit
 
 import (
-	"github.com/stainless-sdks/imagekit-go/option"
+	"github.com/imagekit-developer/imagekit-go/option"
 )
 
 // CacheService contains methods and other services that help with interacting with
