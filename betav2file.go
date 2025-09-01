@@ -222,6 +222,8 @@ func (r *BetaV2FileUploadResponseAITag) UnmarshalJSON(data []byte) error {
 // If no extension was requested, then this parameter is not returned.
 type BetaV2FileUploadResponseExtensionStatus struct {
 	// Any of "success", "pending", "failed".
+	AIAutoDescription string `json:"ai-auto-description"`
+	// Any of "success", "pending", "failed".
 	AwsAutoTagging string `json:"aws-auto-tagging"`
 	// Any of "success", "pending", "failed".
 	GoogleAutoTagging string `json:"google-auto-tagging"`
@@ -229,6 +231,7 @@ type BetaV2FileUploadResponseExtensionStatus struct {
 	RemoveBg string `json:"remove-bg"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		AIAutoDescription respjson.Field
 		AwsAutoTagging    respjson.Field
 		GoogleAutoTagging respjson.Field
 		RemoveBg          respjson.Field
