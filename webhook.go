@@ -4,16 +4,12 @@ package imagekit
 
 import (
 	"encoding/json"
-	"errors"
-	"net/http"
 	"time"
 
 	"github.com/stainless-sdks/imagekit-go/internal/apijson"
-	"github.com/stainless-sdks/imagekit-go/internal/requestconfig"
 	"github.com/stainless-sdks/imagekit-go/option"
 	"github.com/stainless-sdks/imagekit-go/packages/respjson"
 	"github.com/stainless-sdks/imagekit-go/shared/constant"
-	standardwebhooks "github.com/standard-webhooks/standard-webhooks/libraries/go"
 )
 
 // WebhookService contains methods and other services that help with interacting
@@ -44,26 +40,9 @@ func (r *WebhookService) UnsafeUnwrap(payload []byte, opts ...option.RequestOpti
 	return res, nil
 }
 
-func (r *WebhookService) Unwrap(payload []byte, headers http.Header, opts ...option.RequestOption) (*UnwrapWebhookEventUnion, error) {
-	opts = append(opts, r.Options...)
-	cfg, err := requestconfig.PreRequestOptions(opts...)
-	if err != nil {
-		return nil, err
-	}
-	key := cfg.PrivateAPIKey
-	if key == "" {
-		return nil, errors.New("The PrivateAPIKey option must be set in order to verify webhook headers")
-	}
-	wh, err := standardwebhooks.NewWebhook(key)
-	if err != nil {
-		return nil, err
-	}
-	err = wh.Verify(payload, headers)
-	if err != nil {
-		return nil, err
-	}
+func (r *WebhookService) Unwrap(payload []byte, opts ...option.RequestOption) (*UnwrapWebhookEventUnion, error) {
 	res := &UnwrapWebhookEventUnion{}
-	err = res.UnmarshalJSON(payload)
+	err := res.UnmarshalJSON(payload)
 	if err != nil {
 		return res, err
 	}
