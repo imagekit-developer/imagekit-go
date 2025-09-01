@@ -1,4 +1,4 @@
-module github.com/stainless-sdks/imagekit-go
+module github.com/imagekit-developer/imagekit-go
 
 go 1.21.0
 

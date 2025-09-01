@@ -7,7 +7,7 @@ package apijson
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/stainless-sdks/imagekit-go/packages/param"
+	"github.com/imagekit-developer/imagekit-go/packages/param"
 	"reflect"
 	"strconv"
 	"sync"

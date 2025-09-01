@@ -2,7 +2,7 @@ package param_test
 
 import (
 	"encoding/json"
-	"github.com/stainless-sdks/imagekit-go/packages/param"
+	"github.com/imagekit-developer/imagekit-go/packages/param"
 	"testing"
 )
 

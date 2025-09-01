@@ -1,6 +1,6 @@
 # Image Kit Go API Library
 
-<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go"><img src="https://pkg.go.dev/badge/github.com/stainless-sdks/imagekit-go.svg" alt="Go Reference"></a>
+<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go"><img src="https://pkg.go.dev/badge/github.com/imagekit-developer/imagekit-go.svg" alt="Go Reference"></a>
 
 The Image Kit Go library provides convenient access to the [Image Kit REST API](https://imagekit.io/docs)
 from applications written in Go.
@@ -9,17 +9,25 @@ It is generated with [Stainless](https://www.stainless.com/).
 
 ## Installation
 
+<!-- x-release-please-start-version -->
+
 ```go
 import (
-	"github.com/stainless-sdks/imagekit-go" // imported as imagekit
+	"github.com/imagekit-developer/imagekit-go" // imported as imagekit
 )
 ```
 
+<!-- x-release-please-end -->
+
 Or to pin the version:
 
+<!-- x-release-please-start-version -->
+
 ```sh
-go get -u 'github.com/stainless-sdks/imagekit-go@v0.0.1'
+go get -u 'github.com/imagekit-developer/imagekit-go@v0.0.1'
 ```
+
+<!-- x-release-please-end -->
 
 ## Requirements
 
@@ -38,8 +46,8 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/stainless-sdks/imagekit-go"
-	"github.com/stainless-sdks/imagekit-go/option"
+	"github.com/imagekit-developer/imagekit-go"
+	"github.com/imagekit-developer/imagekit-go/option"
 )
 
 func main() {
@@ -270,7 +278,7 @@ client.Files.Upload(context.TODO(), ...,
 
 The request option `option.WithDebugLog(nil)` may be helpful while debugging.
 
-See the [full list of request options](https://pkg.go.dev/github.com/stainless-sdks/imagekit-go/option).
+See the [full list of request options](https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/option).
 
 ### Pagination
 
@@ -509,7 +517,7 @@ This package generally follows [SemVer](https://semver.org/spec/v2.0.0.html) con
 
 We take backwards-compatibility seriously and work hard to ensure you can rely on a smooth upgrade experience.
 
-We are keen for your feedback; please open an [issue](https://www.github.com/stainless-sdks/imagekit-go/issues) with questions, bugs, or suggestions.
+We are keen for your feedback; please open an [issue](https://www.github.com/imagekit-developer/imagekit-go/issues) with questions, bugs, or suggestions.
 
 ## Contributing
 

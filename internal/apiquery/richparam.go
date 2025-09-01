@@ -1,7 +1,7 @@
 package apiquery
 
 import (
-	"github.com/stainless-sdks/imagekit-go/packages/param"
+	"github.com/imagekit-developer/imagekit-go/packages/param"
 	"reflect"
 )
 
