@@ -282,3 +282,11 @@ func WithPassword(value string) RequestOption {
 		return r.Apply(WithHeader("authorization", fmt.Sprintf("Basic %s", base64.StdEncoding.EncodeToString([]byte(r.PrivateAPIKey+":"+r.Password)))))
 	})
 }
+
+// WithWebhookSecret returns a RequestOption that sets the client setting "webhook_secret".
+func WithWebhookSecret(value string) RequestOption {
+	return requestconfig.PreRequestOptionFunc(func(r *requestconfig.RequestConfig) error {
+		r.WebhookSecret = value
+		return nil
+	})
+}

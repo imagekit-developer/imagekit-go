@@ -27,8 +27,8 @@ type Client struct {
 }
 
 // DefaultClientOptions read from the environment (IMAGEKIT_PRIVATE_API_KEY,
-// OPTIONAL_IMAGEKIT_IGNORES_THIS, IMAGE_KIT_BASE_URL). This should be used to
-// initialize new clients.
+// OPTIONAL_IMAGEKIT_IGNORES_THIS, IMAGEKIT_WEBHOOK_SECRET, IMAGE_KIT_BASE_URL).
+// This should be used to initialize new clients.
 func DefaultClientOptions() []option.RequestOption {
 	defaults := []option.RequestOption{option.WithEnvironmentProduction()}
 	if o, ok := os.LookupEnv("IMAGE_KIT_BASE_URL"); ok {
@@ -41,14 +41,17 @@ func DefaultClientOptions() []option.RequestOption {
 	if o, ok := os.LookupEnv("OPTIONAL_IMAGEKIT_IGNORES_THIS"); ok {
 		defaults = append(defaults, option.WithPassword(o))
 	}
+	if o, ok := os.LookupEnv("IMAGEKIT_WEBHOOK_SECRET"); ok {
+		defaults = append(defaults, option.WithWebhookSecret(o))
+	}
 	return defaults
 }
 
 // NewClient generates a new client with the default option read from the
 // environment (IMAGEKIT_PRIVATE_API_KEY, OPTIONAL_IMAGEKIT_IGNORES_THIS,
-// IMAGE_KIT_BASE_URL). The option passed in as arguments are applied after these
-// default arguments, and all option will be passed down to the services and
-// requests that this client makes.
+// IMAGEKIT_WEBHOOK_SECRET, IMAGE_KIT_BASE_URL). The option passed in as arguments
+// are applied after these default arguments, and all option will be passed down to
+// the services and requests that this client makes.
 func NewClient(opts ...option.RequestOption) (r Client) {
 	opts = append(DefaultClientOptions(), opts...)
 
