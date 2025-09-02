@@ -41,8 +41,10 @@ The full API of this library can be found in [api.md](api.md).
 package main
 
 import (
+	"bytes"
 	"context"
 	"fmt"
+	"io"
 
 	"github.com/imagekit-developer/imagekit-go"
 	"github.com/imagekit-developer/imagekit-go/option"
@@ -54,7 +56,7 @@ func main() {
 		option.WithPassword("My Password"),             // defaults to os.LookupEnv("OPTIONAL_IMAGEKIT_IGNORES_THIS")
 	)
 	response, err := client.Files.Upload(context.TODO(), imagekit.FileUploadParams{
-		File:     "https://www.example.com/public-url.jpg",
+		File:     io.Reader(bytes.NewBuffer([]byte("https://www.example.com/public-url.jpg"))),
 		FileName: "file-name.jpg",
 	})
 	if err != nil {
@@ -298,7 +300,7 @@ To handle errors, we recommend that you use the `errors.As` pattern:
 
 ```go
 _, err := client.Files.Upload(context.TODO(), imagekit.FileUploadParams{
-	File:     "https://www.example.com/public-url.jpg",
+	File:     io.Reader(bytes.NewBuffer([]byte("https://www.example.com/public-url.jpg"))),
 	FileName: "file-name.jpg",
 })
 if err != nil {
@@ -328,7 +330,7 @@ defer cancel()
 client.Files.Upload(
 	ctx,
 	imagekit.FileUploadParams{
-		File:     "https://www.example.com/public-url.jpg",
+		File:     io.Reader(bytes.NewBuffer([]byte("https://www.example.com/public-url.jpg"))),
 		FileName: "file-name.jpg",
 	},
 	// This sets the per-retry timeout
@@ -352,19 +354,19 @@ which can be used to wrap any `io.Reader` with the appropriate file name and con
 ```go
 // A file from the file system
 file, err := os.Open("/path/to/file")
-imagekit.BetaV2FileUploadParams{
+imagekit.FileUploadParams{
 	File:     file,
 	FileName: "fileName",
 }
 
 // A file from a string
-imagekit.BetaV2FileUploadParams{
+imagekit.FileUploadParams{
 	File:     strings.NewReader("my file contents"),
 	FileName: "fileName",
 }
 
 // With a custom filename and contentType
-imagekit.BetaV2FileUploadParams{
+imagekit.FileUploadParams{
 	File:     imagekit.NewFile(strings.NewReader(`{"hello": "foo"}`), "file.go", "application/json"),
 	FileName: "fileName",
 }
@@ -388,7 +390,7 @@ client := imagekit.NewClient(
 client.Files.Upload(
 	context.TODO(),
 	imagekit.FileUploadParams{
-		File:     "https://www.example.com/public-url.jpg",
+		File:     io.Reader(bytes.NewBuffer([]byte("https://www.example.com/public-url.jpg"))),
 		FileName: "file-name.jpg",
 	},
 	option.WithMaxRetries(5),
@@ -406,7 +408,7 @@ var response *http.Response
 response, err := client.Files.Upload(
 	context.TODO(),
 	imagekit.FileUploadParams{
-		File:     "https://www.example.com/public-url.jpg",
+		File:     io.Reader(bytes.NewBuffer([]byte("https://www.example.com/public-url.jpg"))),
 		FileName: "file-name.jpg",
 	},
 	option.WithResponseInto(&response),
