@@ -19,7 +19,7 @@ func TestWebhookUnwrap(t *testing.T) {
 		option.WithPrivateAPIKey("My Private API Key"),
 		option.WithPassword("My Password"),
 	)
-	payload := []byte(`{"id":"id","created_at":"2019-12-27T18:11:19.117Z","data":{"asset":{"url":"https://example.com"},"transformation":{"type":"video-transformation","options":{"audio_codec":"aac","auto_rotate":true,"format":"mp4","quality":0,"stream_protocol":"HLS","variants":["string"],"video_codec":"h264"}}},"request":{"url":"https://example.com","x_request_id":"x_request_id","user_agent":"user_agent"},"type":"video.transformation.accepted"}`)
+	payload := []byte(`{"id":"id","type":"video.transformation.accepted","created_at":"2019-12-27T18:11:19.117Z","data":{"asset":{"url":"https://example.com"},"transformation":{"type":"video-transformation","options":{"audio_codec":"aac","auto_rotate":true,"format":"mp4","quality":0,"stream_protocol":"HLS","variants":["string"],"video_codec":"h264"}}},"request":{"url":"https://example.com","x_request_id":"x_request_id","user_agent":"user_agent"}}`)
 	wh, err := standardwebhooks.NewWebhook("whsec_c2VjcmV0Cg==")
 	if err != nil {
 		t.Error("Failed to sign test webhook message")

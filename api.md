@@ -189,6 +189,7 @@ Methods:
 
 Response Types:
 
+- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go">imagekit</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go#BaseWebhookEvent">BaseWebhookEvent</a>
 - <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go">imagekit</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go#UploadPostTransformErrorEvent">UploadPostTransformErrorEvent</a>
 - <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go">imagekit</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go#UploadPostTransformSuccessEvent">UploadPostTransformSuccessEvent</a>
 - <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go">imagekit</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go#UploadPreTransformErrorEvent">UploadPreTransformErrorEvent</a>

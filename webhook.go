@@ -70,9 +70,29 @@ func (r *WebhookService) Unwrap(payload []byte, headers http.Header, opts ...opt
 	return res, nil
 }
 
-type UploadPostTransformErrorEvent struct {
+type BaseWebhookEvent struct {
 	// Unique identifier for the event.
 	ID string `json:"id,required"`
+	// The type of webhook event.
+	Type string `json:"type,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r BaseWebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *BaseWebhookEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Triggered when a post-transformation fails. The original file remains available,
+// but the requested transformation could not be generated.
+type UploadPostTransformErrorEvent struct {
 	// Timestamp of when the event occurred in ISO8601 format.
 	CreatedAt time.Time                            `json:"created_at,required" format:"date-time"`
 	Data      UploadPostTransformErrorEventData    `json:"data,required"`
@@ -80,7 +100,6 @@ type UploadPostTransformErrorEvent struct {
 	Type      constant.UploadPostTransformError    `json:"type,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
 		CreatedAt   respjson.Field
 		Data        respjson.Field
 		Request     respjson.Field
@@ -88,6 +107,7 @@ type UploadPostTransformErrorEvent struct {
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
+	BaseWebhookEvent
 }
 
 // Returns the unmodified JSON received from the API
@@ -203,9 +223,10 @@ func (r *UploadPostTransformErrorEventRequestTransformation) UnmarshalJSON(data 
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Triggered when a post-transformation completes successfully. The transformed
+// version of the file is now ready and can be accessed via the provided URL. Note
+// that each post-transformation generates a separate webhook event.
 type UploadPostTransformSuccessEvent struct {
-	// Unique identifier for the event.
-	ID string `json:"id,required"`
 	// Timestamp of when the event occurred in ISO8601 format.
 	CreatedAt time.Time                              `json:"created_at,required" format:"date-time"`
 	Data      UploadPostTransformSuccessEventData    `json:"data,required"`
@@ -213,7 +234,6 @@ type UploadPostTransformSuccessEvent struct {
 	Type      constant.UploadPostTransformSuccess    `json:"type,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
 		CreatedAt   respjson.Field
 		Data        respjson.Field
 		Request     respjson.Field
@@ -221,6 +241,7 @@ type UploadPostTransformSuccessEvent struct {
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
+	BaseWebhookEvent
 }
 
 // Returns the unmodified JSON received from the API
@@ -298,9 +319,9 @@ func (r *UploadPostTransformSuccessEventRequestTransformation) UnmarshalJSON(dat
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Triggered when a pre-transformation fails. The file upload may have been
+// accepted, but the requested transformation could not be applied.
 type UploadPreTransformErrorEvent struct {
-	// Unique identifier for the event.
-	ID string `json:"id,required"`
 	// Timestamp of when the event occurred in ISO8601 format.
 	CreatedAt time.Time                           `json:"created_at,required" format:"date-time"`
 	Data      UploadPreTransformErrorEventData    `json:"data,required"`
@@ -308,7 +329,6 @@ type UploadPreTransformErrorEvent struct {
 	Type      constant.UploadPreTransformError    `json:"type,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
 		CreatedAt   respjson.Field
 		Data        respjson.Field
 		Request     respjson.Field
@@ -316,6 +336,7 @@ type UploadPreTransformErrorEvent struct {
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
+	BaseWebhookEvent
 }
 
 // Returns the unmodified JSON received from the API
@@ -399,9 +420,10 @@ func (r *UploadPreTransformErrorEventRequest) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Triggered when a pre-transformation completes successfully. The file has been
+// processed with the requested transformation and is now available in the Media
+// Library.
 type UploadPreTransformSuccessEvent struct {
-	// Unique identifier for the event.
-	ID string `json:"id,required"`
 	// Timestamp of when the event occurred in ISO8601 format.
 	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
 	// Object containing details of a successful upload.
@@ -410,7 +432,6 @@ type UploadPreTransformSuccessEvent struct {
 	Type    constant.UploadPreTransformSuccess    `json:"type,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
 		CreatedAt   respjson.Field
 		Data        respjson.Field
 		Request     respjson.Field
@@ -418,6 +439,7 @@ type UploadPreTransformSuccessEvent struct {
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
+	BaseWebhookEvent
 }
 
 // Returns the unmodified JSON received from the API
@@ -641,9 +663,10 @@ func (r *UploadPreTransformSuccessEventRequest) UnmarshalJSON(data []byte) error
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Triggered when a new video transformation request is accepted for processing.
+// This event confirms that ImageKit has received and queued your transformation
+// request. Use this for debugging and tracking transformation lifecycle.
 type VideoTransformationAcceptedEvent struct {
-	// Unique identifier for the event.
-	ID string `json:"id,required"`
 	// Timestamp when the event was created in ISO8601 format.
 	CreatedAt time.Time                            `json:"created_at,required" format:"date-time"`
 	Data      VideoTransformationAcceptedEventData `json:"data,required"`
@@ -652,7 +675,6 @@ type VideoTransformationAcceptedEvent struct {
 	Type    constant.VideoTransformationAccepted    `json:"type,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
 		CreatedAt   respjson.Field
 		Data        respjson.Field
 		Request     respjson.Field
@@ -660,6 +682,7 @@ type VideoTransformationAcceptedEvent struct {
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
+	BaseWebhookEvent
 }
 
 // Returns the unmodified JSON received from the API
@@ -804,9 +827,11 @@ func (r *VideoTransformationAcceptedEventRequest) UnmarshalJSON(data []byte) err
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Triggered when an error occurs during video encoding. Listen to this webhook to
+// log error reasons and debug issues. Check your origin and URL endpoint settings
+// if the reason is related to download failure. For other errors, contact ImageKit
+// support.
 type VideoTransformationErrorEvent struct {
-	// Unique identifier for the event.
-	ID string `json:"id,required"`
 	// Timestamp when the event was created in ISO8601 format.
 	CreatedAt time.Time                         `json:"created_at,required" format:"date-time"`
 	Data      VideoTransformationErrorEventData `json:"data,required"`
@@ -815,7 +840,6 @@ type VideoTransformationErrorEvent struct {
 	Type    constant.VideoTransformationError    `json:"type,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
 		CreatedAt   respjson.Field
 		Data        respjson.Field
 		Request     respjson.Field
@@ -823,6 +847,7 @@ type VideoTransformationErrorEvent struct {
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
+	BaseWebhookEvent
 }
 
 // Returns the unmodified JSON received from the API
@@ -990,9 +1015,11 @@ func (r *VideoTransformationErrorEventRequest) UnmarshalJSON(data []byte) error 
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Triggered when video encoding is finished and the transformed resource is ready
+// to be served. This is the key event to listen for - update your database or CMS
+// flags when you receive this so your application can start showing the
+// transformed video to users.
 type VideoTransformationReadyEvent struct {
-	// Unique identifier for the event.
-	ID string `json:"id,required"`
 	// Timestamp when the event was created in ISO8601 format.
 	CreatedAt time.Time                         `json:"created_at,required" format:"date-time"`
 	Data      VideoTransformationReadyEventData `json:"data,required"`
@@ -1003,7 +1030,6 @@ type VideoTransformationReadyEvent struct {
 	Timings VideoTransformationReadyEventTimings `json:"timings"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
 		CreatedAt   respjson.Field
 		Data        respjson.Field
 		Request     respjson.Field
@@ -1012,6 +1038,7 @@ type VideoTransformationReadyEvent struct {
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
+	BaseWebhookEvent
 }
 
 // Returns the unmodified JSON received from the API
@@ -1235,7 +1262,12 @@ func (r *VideoTransformationReadyEventTimings) UnmarshalJSON(data []byte) error 
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type UnsafeUnwrapWebhookEventUnion struct {
+	// This field is from variant [VideoTransformationAcceptedEvent],
+	// [VideoTransformationReadyEvent], [VideoTransformationErrorEvent],
+	// [UploadPreTransformSuccessEvent], [UploadPreTransformErrorEvent],
+	// [UploadPostTransformSuccessEvent], [UploadPostTransformErrorEvent].
 	ID        string    `json:"id"`
+	Type      string    `json:"type"`
 	CreatedAt time.Time `json:"created_at"`
 	// This field is a union of [VideoTransformationAcceptedEventData],
 	// [VideoTransformationReadyEventData], [VideoTransformationErrorEventData],
@@ -1247,15 +1279,14 @@ type UnsafeUnwrapWebhookEventUnion struct {
 	// [UploadPreTransformSuccessEventRequest], [UploadPreTransformErrorEventRequest],
 	// [UploadPostTransformSuccessEventRequest], [UploadPostTransformErrorEventRequest]
 	Request UnsafeUnwrapWebhookEventUnionRequest `json:"request"`
-	Type    string                               `json:"type"`
 	// This field is from variant [VideoTransformationReadyEvent].
 	Timings VideoTransformationReadyEventTimings `json:"timings"`
 	JSON    struct {
 		ID        respjson.Field
+		Type      respjson.Field
 		CreatedAt respjson.Field
 		Data      respjson.Field
 		Request   respjson.Field
-		Type      respjson.Field
 		Timings   respjson.Field
 		raw       string
 	} `json:"-"`
@@ -1566,7 +1597,12 @@ func (r *UnsafeUnwrapWebhookEventUnionRequestTransformation) UnmarshalJSON(data 
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type UnwrapWebhookEventUnion struct {
+	// This field is from variant [VideoTransformationAcceptedEvent],
+	// [VideoTransformationReadyEvent], [VideoTransformationErrorEvent],
+	// [UploadPreTransformSuccessEvent], [UploadPreTransformErrorEvent],
+	// [UploadPostTransformSuccessEvent], [UploadPostTransformErrorEvent].
 	ID        string    `json:"id"`
+	Type      string    `json:"type"`
 	CreatedAt time.Time `json:"created_at"`
 	// This field is a union of [VideoTransformationAcceptedEventData],
 	// [VideoTransformationReadyEventData], [VideoTransformationErrorEventData],
@@ -1578,15 +1614,14 @@ type UnwrapWebhookEventUnion struct {
 	// [UploadPreTransformSuccessEventRequest], [UploadPreTransformErrorEventRequest],
 	// [UploadPostTransformSuccessEventRequest], [UploadPostTransformErrorEventRequest]
 	Request UnwrapWebhookEventUnionRequest `json:"request"`
-	Type    string                         `json:"type"`
 	// This field is from variant [VideoTransformationReadyEvent].
 	Timings VideoTransformationReadyEventTimings `json:"timings"`
 	JSON    struct {
 		ID        respjson.Field
+		Type      respjson.Field
 		CreatedAt respjson.Field
 		Data      respjson.Field
 		Request   respjson.Field
-		Type      respjson.Field
 		Timings   respjson.Field
 		raw       string
 	} `json:"-"`
