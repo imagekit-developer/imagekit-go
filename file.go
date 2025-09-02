@@ -7,7 +7,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"io"
 	"mime/multipart"
 	"net/http"
 	"time"
@@ -1261,7 +1260,7 @@ type FileUploadParams struct {
 	//
 	// When supplying a URL, the server must receive the response headers within 8
 	// seconds; otherwise the request fails with 400 Bad Request.
-	File io.Reader `json:"file,omitzero,required" format:"binary"`
+	File string `json:"file,required"`
 	// The name with which the file has to be uploaded. The file name can contain:
 	//
 	// - Alphanumeric Characters: `a-z`, `A-Z`, `0-9`.
