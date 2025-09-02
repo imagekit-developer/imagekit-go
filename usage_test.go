@@ -3,7 +3,9 @@
 package imagekit_test
 
 import (
+	"bytes"
 	"context"
+	"io"
 	"os"
 	"testing"
 
@@ -26,7 +28,7 @@ func TestUsage(t *testing.T) {
 		option.WithPassword("My Password"),
 	)
 	response, err := client.Files.Upload(context.TODO(), imagekit.FileUploadParams{
-		File:     "https://www.example.com/public-url.jpg",
+		File:     io.Reader(bytes.NewBuffer([]byte("https://www.example.com/public-url.jpg"))),
 		FileName: "file-name.jpg",
 	})
 	if err != nil {
