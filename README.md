@@ -59,7 +59,7 @@ func main() {
 		option.WithPrivateAPIKey("My Private API Key"), // defaults to os.LookupEnv("IMAGEKIT_PRIVATE_API_KEY")
 		option.WithPassword("My Password"),             // defaults to os.LookupEnv("OPTIONAL_IMAGEKIT_IGNORES_THIS")
 	)
-	response, err := client.Files.Upload(context.TODO(), imagekit.FileUploadParams{
+	response, err := client.Files.Upload(context.TODO(), imagekit.FileUploadParamsFileUploadV1{
 		File:     io.Reader(bytes.NewBuffer([]byte("https://www.example.com/public-url.jpg"))),
 		FileName: "file-name.jpg",
 	})
@@ -303,10 +303,7 @@ When the API returns a non-success status code, we return an error with type
 To handle errors, we recommend that you use the `errors.As` pattern:
 
 ```go
-_, err := client.Files.Upload(context.TODO(), imagekit.FileUploadParams{
-	File:     io.Reader(bytes.NewBuffer([]byte("https://www.example.com/public-url.jpg"))),
-	FileName: "file-name.jpg",
-})
+_, err := client.Files.Upload(context.TODO(), imagekit.FileUploadParams{})
 if err != nil {
 	var apierr *imagekit.Error
 	if errors.As(err, &apierr) {
@@ -333,10 +330,7 @@ ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
 defer cancel()
 client.Files.Upload(
 	ctx,
-	imagekit.FileUploadParams{
-		File:     io.Reader(bytes.NewBuffer([]byte("https://www.example.com/public-url.jpg"))),
-		FileName: "file-name.jpg",
-	},
+	imagekit.FileUploadParams{},
 	// This sets the per-retry timeout
 	option.WithRequestTimeout(20*time.Second),
 )
@@ -358,19 +352,19 @@ which can be used to wrap any `io.Reader` with the appropriate file name and con
 ```go
 // A file from the file system
 file, err := os.Open("/path/to/file")
-imagekit.FileUploadParams{
+imagekit.FileUploadParamsFileUploadV1{
 	File:     file,
 	FileName: "fileName",
 }
 
 // A file from a string
-imagekit.FileUploadParams{
+imagekit.FileUploadParamsFileUploadV1{
 	File:     strings.NewReader("my file contents"),
 	FileName: "fileName",
 }
 
 // With a custom filename and contentType
-imagekit.FileUploadParams{
+imagekit.FileUploadParamsFileUploadV1{
 	File:     imagekit.NewFile(strings.NewReader(`{"hello": "foo"}`), "file.go", "application/json"),
 	FileName: "fileName",
 }
@@ -393,10 +387,7 @@ client := imagekit.NewClient(
 // Override per-request:
 client.Files.Upload(
 	context.TODO(),
-	imagekit.FileUploadParams{
-		File:     io.Reader(bytes.NewBuffer([]byte("https://www.example.com/public-url.jpg"))),
-		FileName: "file-name.jpg",
-	},
+	imagekit.FileUploadParams{},
 	option.WithMaxRetries(5),
 )
 ```
@@ -411,10 +402,7 @@ you need to examine response headers, status codes, or other details.
 var response *http.Response
 response, err := client.Files.Upload(
 	context.TODO(),
-	imagekit.FileUploadParams{
-		File:     io.Reader(bytes.NewBuffer([]byte("https://www.example.com/public-url.jpg"))),
-		FileName: "file-name.jpg",
-	},
+	imagekit.FileUploadParams{},
 	option.WithResponseInto(&response),
 )
 if err != nil {
