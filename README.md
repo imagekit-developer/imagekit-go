@@ -1,6 +1,10 @@
 # Image Kit Go API Library
 
+<!-- x-release-please-start-version -->
+
 <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go"><img src="https://pkg.go.dev/badge/github.com/imagekit-developer/imagekit-go.svg" alt="Go Reference"></a>
+
+<!-- x-release-please-end -->
 
 The Image Kit Go library provides convenient access to the [Image Kit REST API](https://imagekit.io/docs)
 from applications written in Go.
