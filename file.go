@@ -18,6 +18,7 @@ import (
 	"github.com/imagekit-developer/imagekit-go/option"
 	"github.com/imagekit-developer/imagekit-go/packages/param"
 	"github.com/imagekit-developer/imagekit-go/packages/respjson"
+	"github.com/imagekit-developer/imagekit-go/shared"
 	"github.com/imagekit-developer/imagekit-go/shared/constant"
 )
 
@@ -930,7 +931,7 @@ type FileUpdateParamsUpdateUpdateFileDetails struct {
 	CustomMetadata map[string]any `json:"customMetadata,omitzero"`
 	// Array of extensions to be applied to the asset. Each extension can be configured
 	// with specific parameters based on the extension type.
-	Extensions []FileUpdateParamsUpdateUpdateFileDetailsExtensionUnion `json:"extensions,omitzero"`
+	Extensions shared.ExtensionsParam `json:"extensions,omitzero"`
 	// An array of AITags associated with the file that you want to remove, e.g.
 	// `["car", "vehicle", "motorsports"]`.
 	//
@@ -948,172 +949,6 @@ func (r FileUpdateParamsUpdateUpdateFileDetails) MarshalJSON() (data []byte, err
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *FileUpdateParamsUpdateUpdateFileDetails) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Only one field can be non-zero.
-//
-// Use [param.IsOmitted] to confirm if a field is set.
-type FileUpdateParamsUpdateUpdateFileDetailsExtensionUnion struct {
-	OfRemoveBg          *FileUpdateParamsUpdateUpdateFileDetailsExtensionRemoveBg          `json:",omitzero,inline"`
-	OfAutoTagging       *FileUpdateParamsUpdateUpdateFileDetailsExtensionAutoTagging       `json:",omitzero,inline"`
-	OfAIAutoDescription *FileUpdateParamsUpdateUpdateFileDetailsExtensionAIAutoDescription `json:",omitzero,inline"`
-	paramUnion
-}
-
-func (u FileUpdateParamsUpdateUpdateFileDetailsExtensionUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfRemoveBg, u.OfAutoTagging, u.OfAIAutoDescription)
-}
-func (u *FileUpdateParamsUpdateUpdateFileDetailsExtensionUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
-}
-
-func (u *FileUpdateParamsUpdateUpdateFileDetailsExtensionUnion) asAny() any {
-	if !param.IsOmitted(u.OfRemoveBg) {
-		return u.OfRemoveBg
-	} else if !param.IsOmitted(u.OfAutoTagging) {
-		return u.OfAutoTagging
-	} else if !param.IsOmitted(u.OfAIAutoDescription) {
-		return u.OfAIAutoDescription
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u FileUpdateParamsUpdateUpdateFileDetailsExtensionUnion) GetOptions() *FileUpdateParamsUpdateUpdateFileDetailsExtensionRemoveBgOptions {
-	if vt := u.OfRemoveBg; vt != nil {
-		return &vt.Options
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u FileUpdateParamsUpdateUpdateFileDetailsExtensionUnion) GetMaxTags() *int64 {
-	if vt := u.OfAutoTagging; vt != nil {
-		return &vt.MaxTags
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u FileUpdateParamsUpdateUpdateFileDetailsExtensionUnion) GetMinConfidence() *int64 {
-	if vt := u.OfAutoTagging; vt != nil {
-		return &vt.MinConfidence
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u FileUpdateParamsUpdateUpdateFileDetailsExtensionUnion) GetName() *string {
-	if vt := u.OfRemoveBg; vt != nil {
-		return (*string)(&vt.Name)
-	} else if vt := u.OfAutoTagging; vt != nil {
-		return (*string)(&vt.Name)
-	} else if vt := u.OfAIAutoDescription; vt != nil {
-		return (*string)(&vt.Name)
-	}
-	return nil
-}
-
-func init() {
-	apijson.RegisterUnion[FileUpdateParamsUpdateUpdateFileDetailsExtensionUnion](
-		"name",
-		apijson.Discriminator[FileUpdateParamsUpdateUpdateFileDetailsExtensionRemoveBg]("remove-bg"),
-		apijson.Discriminator[FileUpdateParamsUpdateUpdateFileDetailsExtensionAutoTagging]("google-auto-tagging"),
-		apijson.Discriminator[FileUpdateParamsUpdateUpdateFileDetailsExtensionAutoTagging]("aws-auto-tagging"),
-		apijson.Discriminator[FileUpdateParamsUpdateUpdateFileDetailsExtensionAIAutoDescription]("ai-auto-description"),
-	)
-}
-
-// The property Name is required.
-type FileUpdateParamsUpdateUpdateFileDetailsExtensionRemoveBg struct {
-	Options FileUpdateParamsUpdateUpdateFileDetailsExtensionRemoveBgOptions `json:"options,omitzero"`
-	// Specifies the background removal extension.
-	//
-	// This field can be elided, and will marshal its zero value as "remove-bg".
-	Name constant.RemoveBg `json:"name,required"`
-	paramObj
-}
-
-func (r FileUpdateParamsUpdateUpdateFileDetailsExtensionRemoveBg) MarshalJSON() (data []byte, err error) {
-	type shadow FileUpdateParamsUpdateUpdateFileDetailsExtensionRemoveBg
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *FileUpdateParamsUpdateUpdateFileDetailsExtensionRemoveBg) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type FileUpdateParamsUpdateUpdateFileDetailsExtensionRemoveBgOptions struct {
-	// Whether to add an artificial shadow to the result. Default is false. Note:
-	// Adding shadows is currently only supported for car photos.
-	AddShadow param.Opt[bool] `json:"add_shadow,omitzero"`
-	// Specifies a solid color background using hex code (e.g., "81d4fa", "fff") or
-	// color name (e.g., "green"). If this parameter is set, `bg_image_url` must be
-	// empty.
-	BgColor param.Opt[string] `json:"bg_color,omitzero"`
-	// Sets a background image from a URL. If this parameter is set, `bg_color` must be
-	// empty.
-	BgImageURL param.Opt[string] `json:"bg_image_url,omitzero"`
-	// Allows semi-transparent regions in the result. Default is true. Note:
-	// Semitransparency is currently only supported for car windows.
-	Semitransparency param.Opt[bool] `json:"semitransparency,omitzero"`
-	paramObj
-}
-
-func (r FileUpdateParamsUpdateUpdateFileDetailsExtensionRemoveBgOptions) MarshalJSON() (data []byte, err error) {
-	type shadow FileUpdateParamsUpdateUpdateFileDetailsExtensionRemoveBgOptions
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *FileUpdateParamsUpdateUpdateFileDetailsExtensionRemoveBgOptions) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The properties MaxTags, MinConfidence, Name are required.
-type FileUpdateParamsUpdateUpdateFileDetailsExtensionAutoTagging struct {
-	// Maximum number of tags to attach to the asset.
-	MaxTags int64 `json:"maxTags,required"`
-	// Minimum confidence level for tags to be considered valid.
-	MinConfidence int64 `json:"minConfidence,required"`
-	// Specifies the auto-tagging extension used.
-	//
-	// Any of "google-auto-tagging", "aws-auto-tagging".
-	Name string `json:"name,omitzero,required"`
-	paramObj
-}
-
-func (r FileUpdateParamsUpdateUpdateFileDetailsExtensionAutoTagging) MarshalJSON() (data []byte, err error) {
-	type shadow FileUpdateParamsUpdateUpdateFileDetailsExtensionAutoTagging
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *FileUpdateParamsUpdateUpdateFileDetailsExtensionAutoTagging) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[FileUpdateParamsUpdateUpdateFileDetailsExtensionAutoTagging](
-		"name", "google-auto-tagging", "aws-auto-tagging",
-	)
-}
-
-func NewFileUpdateParamsUpdateUpdateFileDetailsExtensionAIAutoDescription() FileUpdateParamsUpdateUpdateFileDetailsExtensionAIAutoDescription {
-	return FileUpdateParamsUpdateUpdateFileDetailsExtensionAIAutoDescription{
-		Name: "ai-auto-description",
-	}
-}
-
-// This struct has a constant value, construct it with
-// [NewFileUpdateParamsUpdateUpdateFileDetailsExtensionAIAutoDescription].
-type FileUpdateParamsUpdateUpdateFileDetailsExtensionAIAutoDescription struct {
-	// Specifies the auto description extension.
-	Name constant.AIAutoDescription `json:"name,required"`
-	paramObj
-}
-
-func (r FileUpdateParamsUpdateUpdateFileDetailsExtensionAIAutoDescription) MarshalJSON() (data []byte, err error) {
-	type shadow FileUpdateParamsUpdateUpdateFileDetailsExtensionAIAutoDescription
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *FileUpdateParamsUpdateUpdateFileDetailsExtensionAIAutoDescription) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1362,7 +1197,7 @@ type FileUploadParams struct {
 	CustomMetadata map[string]any `json:"customMetadata,omitzero"`
 	// Array of extensions to be applied to the asset. Each extension can be configured
 	// with specific parameters based on the extension type.
-	Extensions []FileUploadParamsExtensionUnion `json:"extensions,omitzero"`
+	Extensions shared.ExtensionsParam `json:"extensions,omitzero"`
 	// Array of response field keys to include in the API response body.
 	//
 	// Any of "tags", "customCoordinates", "isPrivateFile", "embeddedMetadata",
@@ -1404,172 +1239,6 @@ func (r FileUploadParams) MarshalMultipart() (data []byte, contentType string, e
 		return nil, "", err
 	}
 	return buf.Bytes(), writer.FormDataContentType(), nil
-}
-
-// Only one field can be non-zero.
-//
-// Use [param.IsOmitted] to confirm if a field is set.
-type FileUploadParamsExtensionUnion struct {
-	OfRemoveBg          *FileUploadParamsExtensionRemoveBg          `json:",omitzero,inline"`
-	OfAutoTagging       *FileUploadParamsExtensionAutoTagging       `json:",omitzero,inline"`
-	OfAIAutoDescription *FileUploadParamsExtensionAIAutoDescription `json:",omitzero,inline"`
-	paramUnion
-}
-
-func (u FileUploadParamsExtensionUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfRemoveBg, u.OfAutoTagging, u.OfAIAutoDescription)
-}
-func (u *FileUploadParamsExtensionUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
-}
-
-func (u *FileUploadParamsExtensionUnion) asAny() any {
-	if !param.IsOmitted(u.OfRemoveBg) {
-		return u.OfRemoveBg
-	} else if !param.IsOmitted(u.OfAutoTagging) {
-		return u.OfAutoTagging
-	} else if !param.IsOmitted(u.OfAIAutoDescription) {
-		return u.OfAIAutoDescription
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u FileUploadParamsExtensionUnion) GetOptions() *FileUploadParamsExtensionRemoveBgOptions {
-	if vt := u.OfRemoveBg; vt != nil {
-		return &vt.Options
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u FileUploadParamsExtensionUnion) GetMaxTags() *int64 {
-	if vt := u.OfAutoTagging; vt != nil {
-		return &vt.MaxTags
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u FileUploadParamsExtensionUnion) GetMinConfidence() *int64 {
-	if vt := u.OfAutoTagging; vt != nil {
-		return &vt.MinConfidence
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u FileUploadParamsExtensionUnion) GetName() *string {
-	if vt := u.OfRemoveBg; vt != nil {
-		return (*string)(&vt.Name)
-	} else if vt := u.OfAutoTagging; vt != nil {
-		return (*string)(&vt.Name)
-	} else if vt := u.OfAIAutoDescription; vt != nil {
-		return (*string)(&vt.Name)
-	}
-	return nil
-}
-
-func init() {
-	apijson.RegisterUnion[FileUploadParamsExtensionUnion](
-		"name",
-		apijson.Discriminator[FileUploadParamsExtensionRemoveBg]("remove-bg"),
-		apijson.Discriminator[FileUploadParamsExtensionAutoTagging]("google-auto-tagging"),
-		apijson.Discriminator[FileUploadParamsExtensionAutoTagging]("aws-auto-tagging"),
-		apijson.Discriminator[FileUploadParamsExtensionAIAutoDescription]("ai-auto-description"),
-	)
-}
-
-// The property Name is required.
-type FileUploadParamsExtensionRemoveBg struct {
-	Options FileUploadParamsExtensionRemoveBgOptions `json:"options,omitzero"`
-	// Specifies the background removal extension.
-	//
-	// This field can be elided, and will marshal its zero value as "remove-bg".
-	Name constant.RemoveBg `json:"name,required"`
-	paramObj
-}
-
-func (r FileUploadParamsExtensionRemoveBg) MarshalJSON() (data []byte, err error) {
-	type shadow FileUploadParamsExtensionRemoveBg
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *FileUploadParamsExtensionRemoveBg) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type FileUploadParamsExtensionRemoveBgOptions struct {
-	// Whether to add an artificial shadow to the result. Default is false. Note:
-	// Adding shadows is currently only supported for car photos.
-	AddShadow param.Opt[bool] `json:"add_shadow,omitzero"`
-	// Specifies a solid color background using hex code (e.g., "81d4fa", "fff") or
-	// color name (e.g., "green"). If this parameter is set, `bg_image_url` must be
-	// empty.
-	BgColor param.Opt[string] `json:"bg_color,omitzero"`
-	// Sets a background image from a URL. If this parameter is set, `bg_color` must be
-	// empty.
-	BgImageURL param.Opt[string] `json:"bg_image_url,omitzero"`
-	// Allows semi-transparent regions in the result. Default is true. Note:
-	// Semitransparency is currently only supported for car windows.
-	Semitransparency param.Opt[bool] `json:"semitransparency,omitzero"`
-	paramObj
-}
-
-func (r FileUploadParamsExtensionRemoveBgOptions) MarshalJSON() (data []byte, err error) {
-	type shadow FileUploadParamsExtensionRemoveBgOptions
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *FileUploadParamsExtensionRemoveBgOptions) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The properties MaxTags, MinConfidence, Name are required.
-type FileUploadParamsExtensionAutoTagging struct {
-	// Maximum number of tags to attach to the asset.
-	MaxTags int64 `json:"maxTags,required"`
-	// Minimum confidence level for tags to be considered valid.
-	MinConfidence int64 `json:"minConfidence,required"`
-	// Specifies the auto-tagging extension used.
-	//
-	// Any of "google-auto-tagging", "aws-auto-tagging".
-	Name string `json:"name,omitzero,required"`
-	paramObj
-}
-
-func (r FileUploadParamsExtensionAutoTagging) MarshalJSON() (data []byte, err error) {
-	type shadow FileUploadParamsExtensionAutoTagging
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *FileUploadParamsExtensionAutoTagging) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[FileUploadParamsExtensionAutoTagging](
-		"name", "google-auto-tagging", "aws-auto-tagging",
-	)
-}
-
-func NewFileUploadParamsExtensionAIAutoDescription() FileUploadParamsExtensionAIAutoDescription {
-	return FileUploadParamsExtensionAIAutoDescription{
-		Name: "ai-auto-description",
-	}
-}
-
-// This struct has a constant value, construct it with
-// [NewFileUploadParamsExtensionAIAutoDescription].
-type FileUploadParamsExtensionAIAutoDescription struct {
-	// Specifies the auto description extension.
-	Name constant.AIAutoDescription `json:"name,required"`
-	paramObj
-}
-
-func (r FileUploadParamsExtensionAIAutoDescription) MarshalJSON() (data []byte, err error) {
-	type shadow FileUploadParamsExtensionAIAutoDescription
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *FileUploadParamsExtensionAIAutoDescription) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
 }
 
 // Configure pre-processing (`pre`) and post-processing (`post`) transformations.
