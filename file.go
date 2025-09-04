@@ -897,9 +897,9 @@ type FileUpdateParams struct {
 	//
 
 	// This field is a request body variant, only one variant field can be set.
-	OfUpdateFileDetails *FileUpdateParamsUpdateUpdateFileDetails `json:",inline"`
+	OfUpdateFileDetails *FileUpdateParamsBodyUpdateFileDetails `json:",inline"`
 	// This field is a request body variant, only one variant field can be set.
-	OfChangePublicationStatus *FileUpdateParamsUpdateChangePublicationStatus `json:",inline"`
+	OfChangePublicationStatus *FileUpdateParamsBodyChangePublicationStatus `json:",inline"`
 
 	paramObj
 }
@@ -911,7 +911,7 @@ func (r *FileUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type FileUpdateParamsUpdateUpdateFileDetails struct {
+type FileUpdateParamsBodyUpdateFileDetails struct {
 	// Define an important area in the image in the format `x,y,width,height` e.g.
 	// `10,10,100,100`. Send `null` to unset this value.
 	CustomCoordinates param.Opt[string] `json:"customCoordinates,omitzero"`
@@ -940,36 +940,36 @@ type FileUpdateParamsUpdateUpdateFileDetails struct {
 	//
 	// Note: The remove operation for `AITags` executes before any of the `extensions`
 	// are processed.
-	RemoveAITags FileUpdateParamsUpdateUpdateFileDetailsRemoveAITagsUnion `json:"removeAITags,omitzero"`
+	RemoveAITags FileUpdateParamsBodyUpdateFileDetailsRemoveAITagsUnion `json:"removeAITags,omitzero"`
 	paramObj
 }
 
-func (r FileUpdateParamsUpdateUpdateFileDetails) MarshalJSON() (data []byte, err error) {
-	type shadow FileUpdateParamsUpdateUpdateFileDetails
+func (r FileUpdateParamsBodyUpdateFileDetails) MarshalJSON() (data []byte, err error) {
+	type shadow FileUpdateParamsBodyUpdateFileDetails
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *FileUpdateParamsUpdateUpdateFileDetails) UnmarshalJSON(data []byte) error {
+func (r *FileUpdateParamsBodyUpdateFileDetails) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
-type FileUpdateParamsUpdateUpdateFileDetailsRemoveAITagsUnion struct {
+type FileUpdateParamsBodyUpdateFileDetailsRemoveAITagsUnion struct {
 	OfStringArray []string `json:",omitzero,inline"`
 	// Construct this variant with constant.ValueOf[constant.All]()
 	OfAll constant.All `json:",omitzero,inline"`
 	paramUnion
 }
 
-func (u FileUpdateParamsUpdateUpdateFileDetailsRemoveAITagsUnion) MarshalJSON() ([]byte, error) {
+func (u FileUpdateParamsBodyUpdateFileDetailsRemoveAITagsUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion(u, u.OfStringArray, u.OfAll)
 }
-func (u *FileUpdateParamsUpdateUpdateFileDetailsRemoveAITagsUnion) UnmarshalJSON(data []byte) error {
+func (u *FileUpdateParamsBodyUpdateFileDetailsRemoveAITagsUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
-func (u *FileUpdateParamsUpdateUpdateFileDetailsRemoveAITagsUnion) asAny() any {
+func (u *FileUpdateParamsBodyUpdateFileDetailsRemoveAITagsUnion) asAny() any {
 	if !param.IsOmitted(u.OfStringArray) {
 		return &u.OfStringArray
 	} else if !param.IsOmitted(u.OfAll) {
@@ -978,24 +978,24 @@ func (u *FileUpdateParamsUpdateUpdateFileDetailsRemoveAITagsUnion) asAny() any {
 	return nil
 }
 
-type FileUpdateParamsUpdateChangePublicationStatus struct {
+type FileUpdateParamsBodyChangePublicationStatus struct {
 	// Configure the publication status of a file and its versions.
-	Publish FileUpdateParamsUpdateChangePublicationStatusPublish `json:"publish,omitzero"`
+	Publish FileUpdateParamsBodyChangePublicationStatusPublish `json:"publish,omitzero"`
 	paramObj
 }
 
-func (r FileUpdateParamsUpdateChangePublicationStatus) MarshalJSON() (data []byte, err error) {
-	type shadow FileUpdateParamsUpdateChangePublicationStatus
+func (r FileUpdateParamsBodyChangePublicationStatus) MarshalJSON() (data []byte, err error) {
+	type shadow FileUpdateParamsBodyChangePublicationStatus
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *FileUpdateParamsUpdateChangePublicationStatus) UnmarshalJSON(data []byte) error {
+func (r *FileUpdateParamsBodyChangePublicationStatus) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Configure the publication status of a file and its versions.
 //
 // The property IsPublished is required.
-type FileUpdateParamsUpdateChangePublicationStatusPublish struct {
+type FileUpdateParamsBodyChangePublicationStatusPublish struct {
 	// Set to `true` to publish the file. Set to `false` to unpublish the file.
 	IsPublished bool `json:"isPublished,required"`
 	// Set to `true` to publish/unpublish all versions of the file. Set to `false` to
@@ -1004,11 +1004,11 @@ type FileUpdateParamsUpdateChangePublicationStatusPublish struct {
 	paramObj
 }
 
-func (r FileUpdateParamsUpdateChangePublicationStatusPublish) MarshalJSON() (data []byte, err error) {
-	type shadow FileUpdateParamsUpdateChangePublicationStatusPublish
+func (r FileUpdateParamsBodyChangePublicationStatusPublish) MarshalJSON() (data []byte, err error) {
+	type shadow FileUpdateParamsBodyChangePublicationStatusPublish
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *FileUpdateParamsUpdateChangePublicationStatusPublish) UnmarshalJSON(data []byte) error {
+func (r *FileUpdateParamsBodyChangePublicationStatusPublish) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

@@ -34,7 +34,7 @@ func TestFileUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"fileId",
 		imagekit.FileUpdateParams{
-			OfUpdateFileDetails: &imagekit.FileUpdateParamsUpdateUpdateFileDetails{
+			OfUpdateFileDetails: &imagekit.FileUpdateParamsBodyUpdateFileDetails{
 				CustomCoordinates: imagekit.String("10,10,100,100"),
 				CustomMetadata: map[string]any{
 					"brand": "bar",
@@ -65,7 +65,7 @@ func TestFileUpdateWithOptionalParams(t *testing.T) {
 				}, shared.ExtensionUnionParam{
 					OfAIAutoDescription: &shared.ExtensionAIAutoDescriptionParam{},
 				}},
-				RemoveAITags: imagekit.FileUpdateParamsUpdateUpdateFileDetailsRemoveAITagsUnion{
+				RemoveAITags: imagekit.FileUpdateParamsBodyUpdateFileDetailsRemoveAITagsUnion{
 					OfStringArray: []string{"car", "vehicle", "motorsports"},
 				},
 				Tags:       []string{"tag1", "tag2"},

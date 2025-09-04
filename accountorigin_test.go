@@ -28,7 +28,7 @@ func TestAccountOriginNewWithOptionalParams(t *testing.T) {
 		option.WithPassword("My Password"),
 	)
 	_, err := client.Accounts.Origins.New(context.TODO(), imagekit.AccountOriginNewParams{
-		Origin: imagekit.OriginRequestUnionParam{
+		OriginRequest: imagekit.OriginRequestUnionParam{
 			OfS3: &imagekit.OriginRequestS3Param{
 				AccessKey:                 "AKIATEST123",
 				Bucket:                    "test-bucket",
@@ -67,7 +67,7 @@ func TestAccountOriginUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		imagekit.AccountOriginUpdateParams{
-			Origin: imagekit.OriginRequestUnionParam{
+			OriginRequest: imagekit.OriginRequestUnionParam{
 				OfS3: &imagekit.OriginRequestS3Param{
 					AccessKey:                 "AKIATEST123",
 					Bucket:                    "test-bucket",
