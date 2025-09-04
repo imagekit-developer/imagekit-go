@@ -1360,7 +1360,7 @@ type FileUploadParams struct {
 	// JSON key-value pairs to associate with the asset. Create the custom metadata
 	// fields before setting these values.
 	CustomMetadata map[string]any `json:"customMetadata,omitzero"`
-	// Array of extensions to be applied to the image. Each extension can be configured
+	// Array of extensions to be applied to the asset. Each extension can be configured
 	// with specific parameters based on the extension type.
 	Extensions []FileUploadParamsExtensionUnion `json:"extensions,omitzero"`
 	// Array of response field keys to include in the API response body.
