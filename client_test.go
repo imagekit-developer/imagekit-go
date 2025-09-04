@@ -41,7 +41,7 @@ func TestUserAgentHeader(t *testing.T) {
 			},
 		}),
 	)
-	client.Files.Upload(context.Background(), imagekit.FileUploadParamsFileUploadV1{
+	client.Files.Upload(context.Background(), imagekit.FileUploadParams{
 		File:     io.Reader(bytes.NewBuffer([]byte("https://www.example.com/public-url.jpg"))),
 		FileName: "file-name.jpg",
 	})
@@ -69,7 +69,7 @@ func TestRetryAfter(t *testing.T) {
 			},
 		}),
 	)
-	_, err := client.Files.Upload(context.Background(), imagekit.FileUploadParamsFileUploadV1{
+	_, err := client.Files.Upload(context.Background(), imagekit.FileUploadParams{
 		File:     io.Reader(bytes.NewBuffer([]byte("https://www.example.com/public-url.jpg"))),
 		FileName: "file-name.jpg",
 	})
@@ -108,7 +108,7 @@ func TestDeleteRetryCountHeader(t *testing.T) {
 		}),
 		option.WithHeaderDel("X-Stainless-Retry-Count"),
 	)
-	_, err := client.Files.Upload(context.Background(), imagekit.FileUploadParamsFileUploadV1{
+	_, err := client.Files.Upload(context.Background(), imagekit.FileUploadParams{
 		File:     io.Reader(bytes.NewBuffer([]byte("https://www.example.com/public-url.jpg"))),
 		FileName: "file-name.jpg",
 	})
@@ -142,7 +142,7 @@ func TestOverwriteRetryCountHeader(t *testing.T) {
 		}),
 		option.WithHeader("X-Stainless-Retry-Count", "42"),
 	)
-	_, err := client.Files.Upload(context.Background(), imagekit.FileUploadParamsFileUploadV1{
+	_, err := client.Files.Upload(context.Background(), imagekit.FileUploadParams{
 		File:     io.Reader(bytes.NewBuffer([]byte("https://www.example.com/public-url.jpg"))),
 		FileName: "file-name.jpg",
 	})
@@ -175,7 +175,7 @@ func TestRetryAfterMs(t *testing.T) {
 			},
 		}),
 	)
-	_, err := client.Files.Upload(context.Background(), imagekit.FileUploadParamsFileUploadV1{
+	_, err := client.Files.Upload(context.Background(), imagekit.FileUploadParams{
 		File:     io.Reader(bytes.NewBuffer([]byte("https://www.example.com/public-url.jpg"))),
 		FileName: "file-name.jpg",
 	})
@@ -202,7 +202,7 @@ func TestContextCancel(t *testing.T) {
 	)
 	cancelCtx, cancel := context.WithCancel(context.Background())
 	cancel()
-	_, err := client.Files.Upload(cancelCtx, imagekit.FileUploadParamsFileUploadV1{
+	_, err := client.Files.Upload(cancelCtx, imagekit.FileUploadParams{
 		File:     io.Reader(bytes.NewBuffer([]byte("https://www.example.com/public-url.jpg"))),
 		FileName: "file-name.jpg",
 	})
@@ -226,7 +226,7 @@ func TestContextCancelDelay(t *testing.T) {
 	)
 	cancelCtx, cancel := context.WithTimeout(context.Background(), 2*time.Millisecond)
 	defer cancel()
-	_, err := client.Files.Upload(cancelCtx, imagekit.FileUploadParamsFileUploadV1{
+	_, err := client.Files.Upload(cancelCtx, imagekit.FileUploadParams{
 		File:     io.Reader(bytes.NewBuffer([]byte("https://www.example.com/public-url.jpg"))),
 		FileName: "file-name.jpg",
 	})
@@ -256,7 +256,7 @@ func TestContextDeadline(t *testing.T) {
 				},
 			}),
 		)
-		_, err := client.Files.Upload(deadlineCtx, imagekit.FileUploadParamsFileUploadV1{
+		_, err := client.Files.Upload(deadlineCtx, imagekit.FileUploadParams{
 			File:     io.Reader(bytes.NewBuffer([]byte("https://www.example.com/public-url.jpg"))),
 			FileName: "file-name.jpg",
 		})

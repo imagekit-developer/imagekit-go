@@ -27,7 +27,7 @@ func TestUsage(t *testing.T) {
 		option.WithPrivateAPIKey("My Private API Key"),
 		option.WithPassword("My Password"),
 	)
-	response, err := client.Files.Upload(context.TODO(), imagekit.FileUploadParamsFileUploadV1{
+	response, err := client.Files.Upload(context.TODO(), imagekit.FileUploadParams{
 		File:     io.Reader(bytes.NewBuffer([]byte("https://www.example.com/public-url.jpg"))),
 		FileName: "file-name.jpg",
 	})

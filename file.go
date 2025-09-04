@@ -1252,39 +1252,6 @@ func (r *FileRenameParams) UnmarshalJSON(data []byte) error {
 }
 
 type FileUploadParams struct {
-
-	//
-	// Request body variants
-	//
-
-	// This field is a request body variant, only one variant field can be set.
-	OfV1 *FileUploadParamsBodyV1 `json:",inline"`
-	// This field is a request body variant, only one variant field can be set.
-	OfByURL *FileUploadParamsBodyByURL `json:",inline"`
-
-	paramObj
-}
-
-func (r FileUploadParams) MarshalMultipart() (data []byte, contentType string, err error) {
-	buf := bytes.NewBuffer(nil)
-	writer := multipart.NewWriter(buf)
-	err = apiform.MarshalRoot(r, writer)
-	if err == nil {
-		err = apiform.WriteExtras(writer, r.ExtraFields())
-	}
-	if err != nil {
-		writer.Close()
-		return nil, "", err
-	}
-	err = writer.Close()
-	if err != nil {
-		return nil, "", err
-	}
-	return buf.Bytes(), writer.FormDataContentType(), nil
-}
-
-// The properties File, FileName are required.
-type FileUploadParamsBodyV1 struct {
 	// The API accepts any of the following:
 	//
 	//   - **Binary data** – send the raw bytes as `multipart/form-data`.
@@ -1395,7 +1362,7 @@ type FileUploadParamsBodyV1 struct {
 	CustomMetadata map[string]any `json:"customMetadata,omitzero"`
 	// Array of extensions to be applied to the image. Each extension can be configured
 	// with specific parameters based on the extension type.
-	Extensions []FileUploadParamsBodyV1ExtensionUnion `json:"extensions,omitzero"`
+	Extensions []FileUploadParamsExtensionUnion `json:"extensions,omitzero"`
 	// Array of response field keys to include in the API response body.
 	//
 	// Any of "tags", "customCoordinates", "isPrivateFile", "embeddedMetadata",
@@ -1417,36 +1384,46 @@ type FileUploadParamsBodyV1 struct {
 	//     in advance, so they're ready for delivery without delay.
 	//
 	// You can mix and match any combination of post-processing types.
-	Transformation FileUploadParamsBodyV1Transformation `json:"transformation,omitzero"`
+	Transformation FileUploadParamsTransformation `json:"transformation,omitzero"`
 	paramObj
 }
 
-func (r FileUploadParamsBodyV1) MarshalJSON() (data []byte, err error) {
-	type shadow FileUploadParamsBodyV1
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *FileUploadParamsBodyV1) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
+func (r FileUploadParams) MarshalMultipart() (data []byte, contentType string, err error) {
+	buf := bytes.NewBuffer(nil)
+	writer := multipart.NewWriter(buf)
+	err = apiform.MarshalRoot(r, writer)
+	if err == nil {
+		err = apiform.WriteExtras(writer, r.ExtraFields())
+	}
+	if err != nil {
+		writer.Close()
+		return nil, "", err
+	}
+	err = writer.Close()
+	if err != nil {
+		return nil, "", err
+	}
+	return buf.Bytes(), writer.FormDataContentType(), nil
 }
 
 // Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
-type FileUploadParamsBodyV1ExtensionUnion struct {
-	OfRemoveBg          *FileUploadParamsBodyV1ExtensionRemoveBg          `json:",omitzero,inline"`
-	OfAutoTagging       *FileUploadParamsBodyV1ExtensionAutoTagging       `json:",omitzero,inline"`
-	OfAIAutoDescription *FileUploadParamsBodyV1ExtensionAIAutoDescription `json:",omitzero,inline"`
+type FileUploadParamsExtensionUnion struct {
+	OfRemoveBg          *FileUploadParamsExtensionRemoveBg          `json:",omitzero,inline"`
+	OfAutoTagging       *FileUploadParamsExtensionAutoTagging       `json:",omitzero,inline"`
+	OfAIAutoDescription *FileUploadParamsExtensionAIAutoDescription `json:",omitzero,inline"`
 	paramUnion
 }
 
-func (u FileUploadParamsBodyV1ExtensionUnion) MarshalJSON() ([]byte, error) {
+func (u FileUploadParamsExtensionUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion(u, u.OfRemoveBg, u.OfAutoTagging, u.OfAIAutoDescription)
 }
-func (u *FileUploadParamsBodyV1ExtensionUnion) UnmarshalJSON(data []byte) error {
+func (u *FileUploadParamsExtensionUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
-func (u *FileUploadParamsBodyV1ExtensionUnion) asAny() any {
+func (u *FileUploadParamsExtensionUnion) asAny() any {
 	if !param.IsOmitted(u.OfRemoveBg) {
 		return u.OfRemoveBg
 	} else if !param.IsOmitted(u.OfAutoTagging) {
@@ -1458,7 +1435,7 @@ func (u *FileUploadParamsBodyV1ExtensionUnion) asAny() any {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u FileUploadParamsBodyV1ExtensionUnion) GetOptions() *FileUploadParamsBodyV1ExtensionRemoveBgOptions {
+func (u FileUploadParamsExtensionUnion) GetOptions() *FileUploadParamsExtensionRemoveBgOptions {
 	if vt := u.OfRemoveBg; vt != nil {
 		return &vt.Options
 	}
@@ -1466,7 +1443,7 @@ func (u FileUploadParamsBodyV1ExtensionUnion) GetOptions() *FileUploadParamsBody
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u FileUploadParamsBodyV1ExtensionUnion) GetMaxTags() *int64 {
+func (u FileUploadParamsExtensionUnion) GetMaxTags() *int64 {
 	if vt := u.OfAutoTagging; vt != nil {
 		return &vt.MaxTags
 	}
@@ -1474,7 +1451,7 @@ func (u FileUploadParamsBodyV1ExtensionUnion) GetMaxTags() *int64 {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u FileUploadParamsBodyV1ExtensionUnion) GetMinConfidence() *int64 {
+func (u FileUploadParamsExtensionUnion) GetMinConfidence() *int64 {
 	if vt := u.OfAutoTagging; vt != nil {
 		return &vt.MinConfidence
 	}
@@ -1482,7 +1459,7 @@ func (u FileUploadParamsBodyV1ExtensionUnion) GetMinConfidence() *int64 {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u FileUploadParamsBodyV1ExtensionUnion) GetName() *string {
+func (u FileUploadParamsExtensionUnion) GetName() *string {
 	if vt := u.OfRemoveBg; vt != nil {
 		return (*string)(&vt.Name)
 	} else if vt := u.OfAutoTagging; vt != nil {
@@ -1494,18 +1471,18 @@ func (u FileUploadParamsBodyV1ExtensionUnion) GetName() *string {
 }
 
 func init() {
-	apijson.RegisterUnion[FileUploadParamsBodyV1ExtensionUnion](
+	apijson.RegisterUnion[FileUploadParamsExtensionUnion](
 		"name",
-		apijson.Discriminator[FileUploadParamsBodyV1ExtensionRemoveBg]("remove-bg"),
-		apijson.Discriminator[FileUploadParamsBodyV1ExtensionAutoTagging]("google-auto-tagging"),
-		apijson.Discriminator[FileUploadParamsBodyV1ExtensionAutoTagging]("aws-auto-tagging"),
-		apijson.Discriminator[FileUploadParamsBodyV1ExtensionAIAutoDescription]("ai-auto-description"),
+		apijson.Discriminator[FileUploadParamsExtensionRemoveBg]("remove-bg"),
+		apijson.Discriminator[FileUploadParamsExtensionAutoTagging]("google-auto-tagging"),
+		apijson.Discriminator[FileUploadParamsExtensionAutoTagging]("aws-auto-tagging"),
+		apijson.Discriminator[FileUploadParamsExtensionAIAutoDescription]("ai-auto-description"),
 	)
 }
 
 // The property Name is required.
-type FileUploadParamsBodyV1ExtensionRemoveBg struct {
-	Options FileUploadParamsBodyV1ExtensionRemoveBgOptions `json:"options,omitzero"`
+type FileUploadParamsExtensionRemoveBg struct {
+	Options FileUploadParamsExtensionRemoveBgOptions `json:"options,omitzero"`
 	// Specifies the background removal extension.
 	//
 	// This field can be elided, and will marshal its zero value as "remove-bg".
@@ -1513,15 +1490,15 @@ type FileUploadParamsBodyV1ExtensionRemoveBg struct {
 	paramObj
 }
 
-func (r FileUploadParamsBodyV1ExtensionRemoveBg) MarshalJSON() (data []byte, err error) {
-	type shadow FileUploadParamsBodyV1ExtensionRemoveBg
+func (r FileUploadParamsExtensionRemoveBg) MarshalJSON() (data []byte, err error) {
+	type shadow FileUploadParamsExtensionRemoveBg
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *FileUploadParamsBodyV1ExtensionRemoveBg) UnmarshalJSON(data []byte) error {
+func (r *FileUploadParamsExtensionRemoveBg) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type FileUploadParamsBodyV1ExtensionRemoveBgOptions struct {
+type FileUploadParamsExtensionRemoveBgOptions struct {
 	// Whether to add an artificial shadow to the result. Default is false. Note:
 	// Adding shadows is currently only supported for car photos.
 	AddShadow param.Opt[bool] `json:"add_shadow,omitzero"`
@@ -1538,16 +1515,16 @@ type FileUploadParamsBodyV1ExtensionRemoveBgOptions struct {
 	paramObj
 }
 
-func (r FileUploadParamsBodyV1ExtensionRemoveBgOptions) MarshalJSON() (data []byte, err error) {
-	type shadow FileUploadParamsBodyV1ExtensionRemoveBgOptions
+func (r FileUploadParamsExtensionRemoveBgOptions) MarshalJSON() (data []byte, err error) {
+	type shadow FileUploadParamsExtensionRemoveBgOptions
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *FileUploadParamsBodyV1ExtensionRemoveBgOptions) UnmarshalJSON(data []byte) error {
+func (r *FileUploadParamsExtensionRemoveBgOptions) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The properties MaxTags, MinConfidence, Name are required.
-type FileUploadParamsBodyV1ExtensionAutoTagging struct {
+type FileUploadParamsExtensionAutoTagging struct {
 	// Maximum number of tags to attach to the asset.
 	MaxTags int64 `json:"maxTags,required"`
 	// Minimum confidence level for tags to be considered valid.
@@ -1559,39 +1536,39 @@ type FileUploadParamsBodyV1ExtensionAutoTagging struct {
 	paramObj
 }
 
-func (r FileUploadParamsBodyV1ExtensionAutoTagging) MarshalJSON() (data []byte, err error) {
-	type shadow FileUploadParamsBodyV1ExtensionAutoTagging
+func (r FileUploadParamsExtensionAutoTagging) MarshalJSON() (data []byte, err error) {
+	type shadow FileUploadParamsExtensionAutoTagging
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *FileUploadParamsBodyV1ExtensionAutoTagging) UnmarshalJSON(data []byte) error {
+func (r *FileUploadParamsExtensionAutoTagging) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[FileUploadParamsBodyV1ExtensionAutoTagging](
+	apijson.RegisterFieldValidator[FileUploadParamsExtensionAutoTagging](
 		"name", "google-auto-tagging", "aws-auto-tagging",
 	)
 }
 
-func NewFileUploadParamsBodyV1ExtensionAIAutoDescription() FileUploadParamsBodyV1ExtensionAIAutoDescription {
-	return FileUploadParamsBodyV1ExtensionAIAutoDescription{
+func NewFileUploadParamsExtensionAIAutoDescription() FileUploadParamsExtensionAIAutoDescription {
+	return FileUploadParamsExtensionAIAutoDescription{
 		Name: "ai-auto-description",
 	}
 }
 
 // This struct has a constant value, construct it with
-// [NewFileUploadParamsBodyV1ExtensionAIAutoDescription].
-type FileUploadParamsBodyV1ExtensionAIAutoDescription struct {
+// [NewFileUploadParamsExtensionAIAutoDescription].
+type FileUploadParamsExtensionAIAutoDescription struct {
 	// Specifies the auto description extension.
 	Name constant.AIAutoDescription `json:"name,required"`
 	paramObj
 }
 
-func (r FileUploadParamsBodyV1ExtensionAIAutoDescription) MarshalJSON() (data []byte, err error) {
-	type shadow FileUploadParamsBodyV1ExtensionAIAutoDescription
+func (r FileUploadParamsExtensionAIAutoDescription) MarshalJSON() (data []byte, err error) {
+	type shadow FileUploadParamsExtensionAIAutoDescription
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *FileUploadParamsBodyV1ExtensionAIAutoDescription) UnmarshalJSON(data []byte) error {
+func (r *FileUploadParamsExtensionAIAutoDescription) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1606,44 +1583,44 @@ func (r *FileUploadParamsBodyV1ExtensionAIAutoDescription) UnmarshalJSON(data []
 //     in advance, so they're ready for delivery without delay.
 //
 // You can mix and match any combination of post-processing types.
-type FileUploadParamsBodyV1Transformation struct {
+type FileUploadParamsTransformation struct {
 	// Transformation string to apply before uploading the file to the Media Library.
 	// Useful for optimizing files at ingestion.
 	Pre param.Opt[string] `json:"pre,omitzero"`
 	// List of transformations to apply _after_ the file is uploaded.
 	// Each item must match one of the following types: `transformation`,
 	// `gif-to-video`, `thumbnail`, `abs`.
-	Post []FileUploadParamsBodyV1TransformationPostUnion `json:"post,omitzero"`
+	Post []FileUploadParamsTransformationPostUnion `json:"post,omitzero"`
 	paramObj
 }
 
-func (r FileUploadParamsBodyV1Transformation) MarshalJSON() (data []byte, err error) {
-	type shadow FileUploadParamsBodyV1Transformation
+func (r FileUploadParamsTransformation) MarshalJSON() (data []byte, err error) {
+	type shadow FileUploadParamsTransformation
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *FileUploadParamsBodyV1Transformation) UnmarshalJSON(data []byte) error {
+func (r *FileUploadParamsTransformation) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
-type FileUploadParamsBodyV1TransformationPostUnion struct {
-	OfTransformation *FileUploadParamsBodyV1TransformationPostTransformation `json:",omitzero,inline"`
-	OfGifToVideo     *FileUploadParamsBodyV1TransformationPostGifToVideo     `json:",omitzero,inline"`
-	OfThumbnail      *FileUploadParamsBodyV1TransformationPostThumbnail      `json:",omitzero,inline"`
-	OfAbs            *FileUploadParamsBodyV1TransformationPostAbs            `json:",omitzero,inline"`
+type FileUploadParamsTransformationPostUnion struct {
+	OfTransformation *FileUploadParamsTransformationPostTransformation `json:",omitzero,inline"`
+	OfGifToVideo     *FileUploadParamsTransformationPostGifToVideo     `json:",omitzero,inline"`
+	OfThumbnail      *FileUploadParamsTransformationPostThumbnail      `json:",omitzero,inline"`
+	OfAbs            *FileUploadParamsTransformationPostAbs            `json:",omitzero,inline"`
 	paramUnion
 }
 
-func (u FileUploadParamsBodyV1TransformationPostUnion) MarshalJSON() ([]byte, error) {
+func (u FileUploadParamsTransformationPostUnion) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion(u, u.OfTransformation, u.OfGifToVideo, u.OfThumbnail, u.OfAbs)
 }
-func (u *FileUploadParamsBodyV1TransformationPostUnion) UnmarshalJSON(data []byte) error {
+func (u *FileUploadParamsTransformationPostUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
-func (u *FileUploadParamsBodyV1TransformationPostUnion) asAny() any {
+func (u *FileUploadParamsTransformationPostUnion) asAny() any {
 	if !param.IsOmitted(u.OfTransformation) {
 		return u.OfTransformation
 	} else if !param.IsOmitted(u.OfGifToVideo) {
@@ -1657,7 +1634,7 @@ func (u *FileUploadParamsBodyV1TransformationPostUnion) asAny() any {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u FileUploadParamsBodyV1TransformationPostUnion) GetProtocol() *string {
+func (u FileUploadParamsTransformationPostUnion) GetProtocol() *string {
 	if vt := u.OfAbs; vt != nil {
 		return &vt.Protocol
 	}
@@ -1665,7 +1642,7 @@ func (u FileUploadParamsBodyV1TransformationPostUnion) GetProtocol() *string {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u FileUploadParamsBodyV1TransformationPostUnion) GetType() *string {
+func (u FileUploadParamsTransformationPostUnion) GetType() *string {
 	if vt := u.OfTransformation; vt != nil {
 		return (*string)(&vt.Type)
 	} else if vt := u.OfGifToVideo; vt != nil {
@@ -1679,7 +1656,7 @@ func (u FileUploadParamsBodyV1TransformationPostUnion) GetType() *string {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u FileUploadParamsBodyV1TransformationPostUnion) GetValue() *string {
+func (u FileUploadParamsTransformationPostUnion) GetValue() *string {
 	if vt := u.OfTransformation; vt != nil {
 		return (*string)(&vt.Value)
 	} else if vt := u.OfGifToVideo; vt != nil && vt.Value.Valid() {
@@ -1693,17 +1670,17 @@ func (u FileUploadParamsBodyV1TransformationPostUnion) GetValue() *string {
 }
 
 func init() {
-	apijson.RegisterUnion[FileUploadParamsBodyV1TransformationPostUnion](
+	apijson.RegisterUnion[FileUploadParamsTransformationPostUnion](
 		"type",
-		apijson.Discriminator[FileUploadParamsBodyV1TransformationPostTransformation]("transformation"),
-		apijson.Discriminator[FileUploadParamsBodyV1TransformationPostGifToVideo]("gif-to-video"),
-		apijson.Discriminator[FileUploadParamsBodyV1TransformationPostThumbnail]("thumbnail"),
-		apijson.Discriminator[FileUploadParamsBodyV1TransformationPostAbs]("abs"),
+		apijson.Discriminator[FileUploadParamsTransformationPostTransformation]("transformation"),
+		apijson.Discriminator[FileUploadParamsTransformationPostGifToVideo]("gif-to-video"),
+		apijson.Discriminator[FileUploadParamsTransformationPostThumbnail]("thumbnail"),
+		apijson.Discriminator[FileUploadParamsTransformationPostAbs]("abs"),
 	)
 }
 
 // The properties Type, Value are required.
-type FileUploadParamsBodyV1TransformationPostTransformation struct {
+type FileUploadParamsTransformationPostTransformation struct {
 	// Transformation string (e.g. `w-200,h-200`).
 	// Same syntax as ImageKit URL-based transformations.
 	Value string `json:"value,required"`
@@ -1714,16 +1691,16 @@ type FileUploadParamsBodyV1TransformationPostTransformation struct {
 	paramObj
 }
 
-func (r FileUploadParamsBodyV1TransformationPostTransformation) MarshalJSON() (data []byte, err error) {
-	type shadow FileUploadParamsBodyV1TransformationPostTransformation
+func (r FileUploadParamsTransformationPostTransformation) MarshalJSON() (data []byte, err error) {
+	type shadow FileUploadParamsTransformationPostTransformation
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *FileUploadParamsBodyV1TransformationPostTransformation) UnmarshalJSON(data []byte) error {
+func (r *FileUploadParamsTransformationPostTransformation) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The property Type is required.
-type FileUploadParamsBodyV1TransformationPostGifToVideo struct {
+type FileUploadParamsTransformationPostGifToVideo struct {
 	// Optional transformation string to apply to the output video.
 	// **Example**: `q-80`
 	Value param.Opt[string] `json:"value,omitzero"`
@@ -1734,16 +1711,16 @@ type FileUploadParamsBodyV1TransformationPostGifToVideo struct {
 	paramObj
 }
 
-func (r FileUploadParamsBodyV1TransformationPostGifToVideo) MarshalJSON() (data []byte, err error) {
-	type shadow FileUploadParamsBodyV1TransformationPostGifToVideo
+func (r FileUploadParamsTransformationPostGifToVideo) MarshalJSON() (data []byte, err error) {
+	type shadow FileUploadParamsTransformationPostGifToVideo
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *FileUploadParamsBodyV1TransformationPostGifToVideo) UnmarshalJSON(data []byte) error {
+func (r *FileUploadParamsTransformationPostGifToVideo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The property Type is required.
-type FileUploadParamsBodyV1TransformationPostThumbnail struct {
+type FileUploadParamsTransformationPostThumbnail struct {
 	// Optional transformation string.
 	// **Example**: `w-150,h-150`
 	Value param.Opt[string] `json:"value,omitzero"`
@@ -1754,16 +1731,16 @@ type FileUploadParamsBodyV1TransformationPostThumbnail struct {
 	paramObj
 }
 
-func (r FileUploadParamsBodyV1TransformationPostThumbnail) MarshalJSON() (data []byte, err error) {
-	type shadow FileUploadParamsBodyV1TransformationPostThumbnail
+func (r FileUploadParamsTransformationPostThumbnail) MarshalJSON() (data []byte, err error) {
+	type shadow FileUploadParamsTransformationPostThumbnail
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *FileUploadParamsBodyV1TransformationPostThumbnail) UnmarshalJSON(data []byte) error {
+func (r *FileUploadParamsTransformationPostThumbnail) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The properties Protocol, Type, Value are required.
-type FileUploadParamsBodyV1TransformationPostAbs struct {
+type FileUploadParamsTransformationPostAbs struct {
 	// Streaming protocol to use (`hls` or `dash`).
 	//
 	// Any of "hls", "dash".
@@ -1777,518 +1754,16 @@ type FileUploadParamsBodyV1TransformationPostAbs struct {
 	paramObj
 }
 
-func (r FileUploadParamsBodyV1TransformationPostAbs) MarshalJSON() (data []byte, err error) {
-	type shadow FileUploadParamsBodyV1TransformationPostAbs
+func (r FileUploadParamsTransformationPostAbs) MarshalJSON() (data []byte, err error) {
+	type shadow FileUploadParamsTransformationPostAbs
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *FileUploadParamsBodyV1TransformationPostAbs) UnmarshalJSON(data []byte) error {
+func (r *FileUploadParamsTransformationPostAbs) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[FileUploadParamsBodyV1TransformationPostAbs](
-		"protocol", "hls", "dash",
-	)
-}
-
-// The properties File, FileName are required.
-type FileUploadParamsBodyByURL struct {
-	// The URL of the file to upload. A publicly reachable URL that ImageKit servers
-	// can fetch. The server must receive the response headers within 8 seconds;
-	// otherwise the request fails with 400 Bad Request.
-	File string `json:"file,required" format:"uri"`
-	// The name with which the file has to be uploaded. The file name can contain:
-	//
-	// - Alphanumeric Characters: `a-z`, `A-Z`, `0-9`.
-	// - Special Characters: `.`, `-`
-	//
-	// Any other character including space will be replaced by `_`
-	FileName string `json:"fileName,required"`
-	// A unique value that the ImageKit.io server will use to recognize and prevent
-	// subsequent retries for the same request. We suggest using V4 UUIDs, or another
-	// random string with enough entropy to avoid collisions. This field is only
-	// required for authentication when uploading a file from the client side.
-	//
-	// **Note**: Sending a value that has been used in the past will result in a
-	// validation error. Even if your previous request resulted in an error, you should
-	// always send a new value for this field.
-	Token param.Opt[string] `json:"token,omitzero"`
-	// Server-side checks to run on the asset. Read more about
-	// [Upload API checks](/docs/api-reference/upload-file/upload-file#upload-api-checks).
-	Checks param.Opt[string] `json:"checks,omitzero"`
-	// Define an important area in the image. This is only relevant for image type
-	// files.
-	//
-	//   - To be passed as a string with the x and y coordinates of the top-left corner,
-	//     and width and height of the area of interest in the format `x,y,width,height`.
-	//     For example - `10,10,100,100`
-	//   - Can be used with fo-customtransformation.
-	//   - If this field is not specified and the file is overwritten, then
-	//     customCoordinates will be removed.
-	CustomCoordinates param.Opt[string] `json:"customCoordinates,omitzero"`
-	// Optional text to describe the contents of the file.
-	Description param.Opt[string] `json:"description,omitzero"`
-	// The time until your signature is valid. It must be a
-	// [Unix time](https://en.wikipedia.org/wiki/Unix_time) in less than 1 hour into
-	// the future. It should be in seconds. This field is only required for
-	// authentication when uploading a file from the client side.
-	Expire param.Opt[int64] `json:"expire,omitzero"`
-	// The folder path in which the image has to be uploaded. If the folder(s) didn't
-	// exist before, a new folder(s) is created.
-	//
-	// The folder name can contain:
-	//
-	// - Alphanumeric Characters: `a-z` , `A-Z` , `0-9`
-	// - Special Characters: `/` , `_` , `-`
-	//
-	// Using multiple `/` creates a nested folder.
-	Folder param.Opt[string] `json:"folder,omitzero"`
-	// Whether to mark the file as private or not.
-	//
-	// If `true`, the file is marked as private and is accessible only using named
-	// transformation or signed URL.
-	IsPrivateFile param.Opt[bool] `json:"isPrivateFile,omitzero"`
-	// Whether to upload file as published or not.
-	//
-	// If `false`, the file is marked as unpublished, which restricts access to the
-	// file only via the media library. Files in draft or unpublished state can only be
-	// publicly accessed after being published.
-	//
-	// The option to upload in draft state is only available in custom enterprise
-	// pricing plans.
-	IsPublished param.Opt[bool] `json:"isPublished,omitzero"`
-	// If set to `true` and a file already exists at the exact location, its AITags
-	// will be removed. Set `overwriteAITags` to `false` to preserve AITags.
-	OverwriteAITags param.Opt[bool] `json:"overwriteAITags,omitzero"`
-	// If the request does not have `customMetadata`, and a file already exists at the
-	// exact location, existing customMetadata will be removed.
-	OverwriteCustomMetadata param.Opt[bool] `json:"overwriteCustomMetadata,omitzero"`
-	// If `false` and `useUniqueFileName` is also `false`, and a file already exists at
-	// the exact location, upload API will return an error immediately.
-	OverwriteFile param.Opt[bool] `json:"overwriteFile,omitzero"`
-	// If the request does not have `tags`, and a file already exists at the exact
-	// location, existing tags will be removed.
-	OverwriteTags param.Opt[bool] `json:"overwriteTags,omitzero"`
-	// Your ImageKit.io public key. This field is only required for authentication when
-	// uploading a file from the client side.
-	PublicKey param.Opt[string] `json:"publicKey,omitzero"`
-	// HMAC-SHA1 digest of the token+expire using your ImageKit.io private API key as a
-	// key. Learn how to create a signature on the page below. This should be in
-	// lowercase.
-	//
-	// Signature must be calculated on the server-side. This field is only required for
-	// authentication when uploading a file from the client side.
-	Signature param.Opt[string] `json:"signature,omitzero"`
-	// Whether to use a unique filename for this file or not.
-	//
-	// If `true`, ImageKit.io will add a unique suffix to the filename parameter to get
-	// a unique filename.
-	//
-	// If `false`, then the image is uploaded with the provided filename parameter, and
-	// any existing file with the same name is replaced.
-	UseUniqueFileName param.Opt[bool] `json:"useUniqueFileName,omitzero"`
-	// The final status of extensions after they have completed execution will be
-	// delivered to this endpoint as a POST request.
-	// [Learn more](/docs/api-reference/digital-asset-management-dam/managing-assets/update-file-details#webhook-payload-structure)
-	// about the webhook payload structure.
-	WebhookURL param.Opt[string] `json:"webhookUrl,omitzero" format:"uri"`
-	// JSON key-value pairs to associate with the asset. Create the custom metadata
-	// fields before setting these values.
-	CustomMetadata map[string]any `json:"customMetadata,omitzero"`
-	// Array of extensions to be applied to the image. Each extension can be configured
-	// with specific parameters based on the extension type.
-	Extensions []FileUploadParamsBodyByURLExtensionUnion `json:"extensions,omitzero"`
-	// Array of response field keys to include in the API response body.
-	//
-	// Any of "tags", "customCoordinates", "isPrivateFile", "embeddedMetadata",
-	// "isPublished", "customMetadata", "metadata".
-	ResponseFields []string `json:"responseFields,omitzero"`
-	// Set the tags while uploading the file. Provide an array of tag strings (e.g.
-	// `["tag1", "tag2", "tag3"]`). The combined length of all tag characters must not
-	// exceed 500, and the `%` character is not allowed. If this field is not specified
-	// and the file is overwritten, the existing tags will be removed.
-	Tags []string `json:"tags,omitzero"`
-	// Configure pre-processing (`pre`) and post-processing (`post`) transformations.
-	//
-	//   - `pre` — applied before the file is uploaded to the Media Library.
-	//     Useful for reducing file size or applying basic optimizations upfront (e.g.,
-	//     resize, compress).
-	//
-	//   - `post` — applied immediately after upload.
-	//     Ideal for generating transformed versions (like video encodes or thumbnails)
-	//     in advance, so they're ready for delivery without delay.
-	//
-	// You can mix and match any combination of post-processing types.
-	Transformation FileUploadParamsBodyByURLTransformation `json:"transformation,omitzero"`
-	paramObj
-}
-
-func (r FileUploadParamsBodyByURL) MarshalJSON() (data []byte, err error) {
-	type shadow FileUploadParamsBodyByURL
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *FileUploadParamsBodyByURL) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Only one field can be non-zero.
-//
-// Use [param.IsOmitted] to confirm if a field is set.
-type FileUploadParamsBodyByURLExtensionUnion struct {
-	OfRemoveBg          *FileUploadParamsBodyByURLExtensionRemoveBg          `json:",omitzero,inline"`
-	OfAutoTagging       *FileUploadParamsBodyByURLExtensionAutoTagging       `json:",omitzero,inline"`
-	OfAIAutoDescription *FileUploadParamsBodyByURLExtensionAIAutoDescription `json:",omitzero,inline"`
-	paramUnion
-}
-
-func (u FileUploadParamsBodyByURLExtensionUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfRemoveBg, u.OfAutoTagging, u.OfAIAutoDescription)
-}
-func (u *FileUploadParamsBodyByURLExtensionUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
-}
-
-func (u *FileUploadParamsBodyByURLExtensionUnion) asAny() any {
-	if !param.IsOmitted(u.OfRemoveBg) {
-		return u.OfRemoveBg
-	} else if !param.IsOmitted(u.OfAutoTagging) {
-		return u.OfAutoTagging
-	} else if !param.IsOmitted(u.OfAIAutoDescription) {
-		return u.OfAIAutoDescription
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u FileUploadParamsBodyByURLExtensionUnion) GetOptions() *FileUploadParamsBodyByURLExtensionRemoveBgOptions {
-	if vt := u.OfRemoveBg; vt != nil {
-		return &vt.Options
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u FileUploadParamsBodyByURLExtensionUnion) GetMaxTags() *int64 {
-	if vt := u.OfAutoTagging; vt != nil {
-		return &vt.MaxTags
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u FileUploadParamsBodyByURLExtensionUnion) GetMinConfidence() *int64 {
-	if vt := u.OfAutoTagging; vt != nil {
-		return &vt.MinConfidence
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u FileUploadParamsBodyByURLExtensionUnion) GetName() *string {
-	if vt := u.OfRemoveBg; vt != nil {
-		return (*string)(&vt.Name)
-	} else if vt := u.OfAutoTagging; vt != nil {
-		return (*string)(&vt.Name)
-	} else if vt := u.OfAIAutoDescription; vt != nil {
-		return (*string)(&vt.Name)
-	}
-	return nil
-}
-
-func init() {
-	apijson.RegisterUnion[FileUploadParamsBodyByURLExtensionUnion](
-		"name",
-		apijson.Discriminator[FileUploadParamsBodyByURLExtensionRemoveBg]("remove-bg"),
-		apijson.Discriminator[FileUploadParamsBodyByURLExtensionAutoTagging]("google-auto-tagging"),
-		apijson.Discriminator[FileUploadParamsBodyByURLExtensionAutoTagging]("aws-auto-tagging"),
-		apijson.Discriminator[FileUploadParamsBodyByURLExtensionAIAutoDescription]("ai-auto-description"),
-	)
-}
-
-// The property Name is required.
-type FileUploadParamsBodyByURLExtensionRemoveBg struct {
-	Options FileUploadParamsBodyByURLExtensionRemoveBgOptions `json:"options,omitzero"`
-	// Specifies the background removal extension.
-	//
-	// This field can be elided, and will marshal its zero value as "remove-bg".
-	Name constant.RemoveBg `json:"name,required"`
-	paramObj
-}
-
-func (r FileUploadParamsBodyByURLExtensionRemoveBg) MarshalJSON() (data []byte, err error) {
-	type shadow FileUploadParamsBodyByURLExtensionRemoveBg
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *FileUploadParamsBodyByURLExtensionRemoveBg) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type FileUploadParamsBodyByURLExtensionRemoveBgOptions struct {
-	// Whether to add an artificial shadow to the result. Default is false. Note:
-	// Adding shadows is currently only supported for car photos.
-	AddShadow param.Opt[bool] `json:"add_shadow,omitzero"`
-	// Specifies a solid color background using hex code (e.g., "81d4fa", "fff") or
-	// color name (e.g., "green"). If this parameter is set, `bg_image_url` must be
-	// empty.
-	BgColor param.Opt[string] `json:"bg_color,omitzero"`
-	// Sets a background image from a URL. If this parameter is set, `bg_color` must be
-	// empty.
-	BgImageURL param.Opt[string] `json:"bg_image_url,omitzero"`
-	// Allows semi-transparent regions in the result. Default is true. Note:
-	// Semitransparency is currently only supported for car windows.
-	Semitransparency param.Opt[bool] `json:"semitransparency,omitzero"`
-	paramObj
-}
-
-func (r FileUploadParamsBodyByURLExtensionRemoveBgOptions) MarshalJSON() (data []byte, err error) {
-	type shadow FileUploadParamsBodyByURLExtensionRemoveBgOptions
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *FileUploadParamsBodyByURLExtensionRemoveBgOptions) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The properties MaxTags, MinConfidence, Name are required.
-type FileUploadParamsBodyByURLExtensionAutoTagging struct {
-	// Maximum number of tags to attach to the asset.
-	MaxTags int64 `json:"maxTags,required"`
-	// Minimum confidence level for tags to be considered valid.
-	MinConfidence int64 `json:"minConfidence,required"`
-	// Specifies the auto-tagging extension used.
-	//
-	// Any of "google-auto-tagging", "aws-auto-tagging".
-	Name string `json:"name,omitzero,required"`
-	paramObj
-}
-
-func (r FileUploadParamsBodyByURLExtensionAutoTagging) MarshalJSON() (data []byte, err error) {
-	type shadow FileUploadParamsBodyByURLExtensionAutoTagging
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *FileUploadParamsBodyByURLExtensionAutoTagging) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[FileUploadParamsBodyByURLExtensionAutoTagging](
-		"name", "google-auto-tagging", "aws-auto-tagging",
-	)
-}
-
-func NewFileUploadParamsBodyByURLExtensionAIAutoDescription() FileUploadParamsBodyByURLExtensionAIAutoDescription {
-	return FileUploadParamsBodyByURLExtensionAIAutoDescription{
-		Name: "ai-auto-description",
-	}
-}
-
-// This struct has a constant value, construct it with
-// [NewFileUploadParamsBodyByURLExtensionAIAutoDescription].
-type FileUploadParamsBodyByURLExtensionAIAutoDescription struct {
-	// Specifies the auto description extension.
-	Name constant.AIAutoDescription `json:"name,required"`
-	paramObj
-}
-
-func (r FileUploadParamsBodyByURLExtensionAIAutoDescription) MarshalJSON() (data []byte, err error) {
-	type shadow FileUploadParamsBodyByURLExtensionAIAutoDescription
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *FileUploadParamsBodyByURLExtensionAIAutoDescription) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Configure pre-processing (`pre`) and post-processing (`post`) transformations.
-//
-//   - `pre` — applied before the file is uploaded to the Media Library.
-//     Useful for reducing file size or applying basic optimizations upfront (e.g.,
-//     resize, compress).
-//
-//   - `post` — applied immediately after upload.
-//     Ideal for generating transformed versions (like video encodes or thumbnails)
-//     in advance, so they're ready for delivery without delay.
-//
-// You can mix and match any combination of post-processing types.
-type FileUploadParamsBodyByURLTransformation struct {
-	// Transformation string to apply before uploading the file to the Media Library.
-	// Useful for optimizing files at ingestion.
-	Pre param.Opt[string] `json:"pre,omitzero"`
-	// List of transformations to apply _after_ the file is uploaded.
-	// Each item must match one of the following types: `transformation`,
-	// `gif-to-video`, `thumbnail`, `abs`.
-	Post []FileUploadParamsBodyByURLTransformationPostUnion `json:"post,omitzero"`
-	paramObj
-}
-
-func (r FileUploadParamsBodyByURLTransformation) MarshalJSON() (data []byte, err error) {
-	type shadow FileUploadParamsBodyByURLTransformation
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *FileUploadParamsBodyByURLTransformation) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Only one field can be non-zero.
-//
-// Use [param.IsOmitted] to confirm if a field is set.
-type FileUploadParamsBodyByURLTransformationPostUnion struct {
-	OfTransformation *FileUploadParamsBodyByURLTransformationPostTransformation `json:",omitzero,inline"`
-	OfGifToVideo     *FileUploadParamsBodyByURLTransformationPostGifToVideo     `json:",omitzero,inline"`
-	OfThumbnail      *FileUploadParamsBodyByURLTransformationPostThumbnail      `json:",omitzero,inline"`
-	OfAbs            *FileUploadParamsBodyByURLTransformationPostAbs            `json:",omitzero,inline"`
-	paramUnion
-}
-
-func (u FileUploadParamsBodyByURLTransformationPostUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfTransformation, u.OfGifToVideo, u.OfThumbnail, u.OfAbs)
-}
-func (u *FileUploadParamsBodyByURLTransformationPostUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
-}
-
-func (u *FileUploadParamsBodyByURLTransformationPostUnion) asAny() any {
-	if !param.IsOmitted(u.OfTransformation) {
-		return u.OfTransformation
-	} else if !param.IsOmitted(u.OfGifToVideo) {
-		return u.OfGifToVideo
-	} else if !param.IsOmitted(u.OfThumbnail) {
-		return u.OfThumbnail
-	} else if !param.IsOmitted(u.OfAbs) {
-		return u.OfAbs
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u FileUploadParamsBodyByURLTransformationPostUnion) GetProtocol() *string {
-	if vt := u.OfAbs; vt != nil {
-		return &vt.Protocol
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u FileUploadParamsBodyByURLTransformationPostUnion) GetType() *string {
-	if vt := u.OfTransformation; vt != nil {
-		return (*string)(&vt.Type)
-	} else if vt := u.OfGifToVideo; vt != nil {
-		return (*string)(&vt.Type)
-	} else if vt := u.OfThumbnail; vt != nil {
-		return (*string)(&vt.Type)
-	} else if vt := u.OfAbs; vt != nil {
-		return (*string)(&vt.Type)
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u FileUploadParamsBodyByURLTransformationPostUnion) GetValue() *string {
-	if vt := u.OfTransformation; vt != nil {
-		return (*string)(&vt.Value)
-	} else if vt := u.OfGifToVideo; vt != nil && vt.Value.Valid() {
-		return &vt.Value.Value
-	} else if vt := u.OfThumbnail; vt != nil && vt.Value.Valid() {
-		return &vt.Value.Value
-	} else if vt := u.OfAbs; vt != nil {
-		return (*string)(&vt.Value)
-	}
-	return nil
-}
-
-func init() {
-	apijson.RegisterUnion[FileUploadParamsBodyByURLTransformationPostUnion](
-		"type",
-		apijson.Discriminator[FileUploadParamsBodyByURLTransformationPostTransformation]("transformation"),
-		apijson.Discriminator[FileUploadParamsBodyByURLTransformationPostGifToVideo]("gif-to-video"),
-		apijson.Discriminator[FileUploadParamsBodyByURLTransformationPostThumbnail]("thumbnail"),
-		apijson.Discriminator[FileUploadParamsBodyByURLTransformationPostAbs]("abs"),
-	)
-}
-
-// The properties Type, Value are required.
-type FileUploadParamsBodyByURLTransformationPostTransformation struct {
-	// Transformation string (e.g. `w-200,h-200`).
-	// Same syntax as ImageKit URL-based transformations.
-	Value string `json:"value,required"`
-	// Transformation type.
-	//
-	// This field can be elided, and will marshal its zero value as "transformation".
-	Type constant.Transformation `json:"type,required"`
-	paramObj
-}
-
-func (r FileUploadParamsBodyByURLTransformationPostTransformation) MarshalJSON() (data []byte, err error) {
-	type shadow FileUploadParamsBodyByURLTransformationPostTransformation
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *FileUploadParamsBodyByURLTransformationPostTransformation) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The property Type is required.
-type FileUploadParamsBodyByURLTransformationPostGifToVideo struct {
-	// Optional transformation string to apply to the output video.
-	// **Example**: `q-80`
-	Value param.Opt[string] `json:"value,omitzero"`
-	// Converts an animated GIF into an MP4.
-	//
-	// This field can be elided, and will marshal its zero value as "gif-to-video".
-	Type constant.GifToVideo `json:"type,required"`
-	paramObj
-}
-
-func (r FileUploadParamsBodyByURLTransformationPostGifToVideo) MarshalJSON() (data []byte, err error) {
-	type shadow FileUploadParamsBodyByURLTransformationPostGifToVideo
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *FileUploadParamsBodyByURLTransformationPostGifToVideo) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The property Type is required.
-type FileUploadParamsBodyByURLTransformationPostThumbnail struct {
-	// Optional transformation string.
-	// **Example**: `w-150,h-150`
-	Value param.Opt[string] `json:"value,omitzero"`
-	// Generates a thumbnail image.
-	//
-	// This field can be elided, and will marshal its zero value as "thumbnail".
-	Type constant.Thumbnail `json:"type,required"`
-	paramObj
-}
-
-func (r FileUploadParamsBodyByURLTransformationPostThumbnail) MarshalJSON() (data []byte, err error) {
-	type shadow FileUploadParamsBodyByURLTransformationPostThumbnail
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *FileUploadParamsBodyByURLTransformationPostThumbnail) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The properties Protocol, Type, Value are required.
-type FileUploadParamsBodyByURLTransformationPostAbs struct {
-	// Streaming protocol to use (`hls` or `dash`).
-	//
-	// Any of "hls", "dash".
-	Protocol string `json:"protocol,omitzero,required"`
-	// List of different representations you want to create separated by an underscore.
-	Value string `json:"value,required"`
-	// Adaptive Bitrate Streaming (ABS) setup.
-	//
-	// This field can be elided, and will marshal its zero value as "abs".
-	Type constant.Abs `json:"type,required"`
-	paramObj
-}
-
-func (r FileUploadParamsBodyByURLTransformationPostAbs) MarshalJSON() (data []byte, err error) {
-	type shadow FileUploadParamsBodyByURLTransformationPostAbs
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *FileUploadParamsBodyByURLTransformationPostAbs) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[FileUploadParamsBodyByURLTransformationPostAbs](
+	apijson.RegisterFieldValidator[FileUploadParamsTransformationPostAbs](
 		"protocol", "hls", "dash",
 	)
 }
