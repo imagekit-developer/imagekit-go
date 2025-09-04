@@ -1069,26 +1069,26 @@ func (r *OriginResponseAkeneoPim) UnmarshalJSON(data []byte) error {
 
 type AccountOriginNewParams struct {
 	// Schema for origin request resources.
-	Origin OriginRequestUnionParam
+	OriginRequest OriginRequestUnionParam
 	paramObj
 }
 
 func (r AccountOriginNewParams) MarshalJSON() (data []byte, err error) {
-	return shimjson.Marshal(r.Origin)
+	return shimjson.Marshal(r.OriginRequest)
 }
 func (r *AccountOriginNewParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.Origin)
+	return json.Unmarshal(data, &r.OriginRequest)
 }
 
 type AccountOriginUpdateParams struct {
 	// Schema for origin request resources.
-	Origin OriginRequestUnionParam
+	OriginRequest OriginRequestUnionParam
 	paramObj
 }
 
 func (r AccountOriginUpdateParams) MarshalJSON() (data []byte, err error) {
-	return shimjson.Marshal(r.Origin)
+	return shimjson.Marshal(r.OriginRequest)
 }
 func (r *AccountOriginUpdateParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.Origin)
+	return json.Unmarshal(data, &r.OriginRequest)
 }
