@@ -13,6 +13,7 @@ import (
 	"github.com/imagekit-developer/imagekit-go"
 	"github.com/imagekit-developer/imagekit-go/internal/testutil"
 	"github.com/imagekit-developer/imagekit-go/option"
+	"github.com/imagekit-developer/imagekit-go/shared"
 )
 
 func TestBetaV2FileUploadWithOptionalParams(t *testing.T) {
@@ -40,23 +41,23 @@ func TestBetaV2FileUploadWithOptionalParams(t *testing.T) {
 			"color": "bar",
 		},
 		Description: imagekit.String("Running shoes"),
-		Extensions: []imagekit.BetaV2FileUploadParamsExtensionUnion{{
-			OfRemoveBg: &imagekit.BetaV2FileUploadParamsExtensionRemoveBg{
-				Options: imagekit.BetaV2FileUploadParamsExtensionRemoveBgOptions{
+		Extensions: shared.ExtensionsParam{shared.ExtensionUnionParam{
+			OfRemoveBg: &shared.ExtensionRemoveBgParam{
+				Options: shared.ExtensionRemoveBgOptionsParam{
 					AddShadow:        imagekit.Bool(true),
 					BgColor:          imagekit.String("bg_color"),
 					BgImageURL:       imagekit.String("bg_image_url"),
 					Semitransparency: imagekit.Bool(true),
 				},
 			},
-		}, {
-			OfAutoTagging: &imagekit.BetaV2FileUploadParamsExtensionAutoTagging{
+		}, shared.ExtensionUnionParam{
+			OfAutoTagging: &shared.ExtensionAutoTaggingParam{
 				MaxTags:       5,
 				MinConfidence: 95,
 				Name:          "google-auto-tagging",
 			},
-		}, {
-			OfAIAutoDescription: &imagekit.BetaV2FileUploadParamsExtensionAIAutoDescription{},
+		}, shared.ExtensionUnionParam{
+			OfAIAutoDescription: &shared.ExtensionAIAutoDescriptionParam{},
 		}},
 		Folder:                  imagekit.String("folder"),
 		IsPrivateFile:           imagekit.Bool(true),

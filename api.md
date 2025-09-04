@@ -1,3 +1,7 @@
+# Shared Params Types
+
+- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/shared#ExtensionsParam">ExtensionsParam</a>
+
 # CustomMetadataFields
 
 Response Types:
