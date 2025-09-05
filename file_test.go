@@ -34,42 +34,44 @@ func TestFileUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"fileId",
 		imagekit.FileUpdateParams{
-			OfUpdateFileDetails: &imagekit.FileUpdateParamsBodyUpdateFileDetails{
-				CustomCoordinates: imagekit.String("10,10,100,100"),
-				CustomMetadata: map[string]any{
-					"brand": "bar",
-					"color": "bar",
-				},
-				Description: imagekit.String("description"),
-				Extensions: shared.ExtensionsParam{shared.ExtensionUnionParam{
-					OfRemoveBg: &shared.ExtensionRemoveBgParam{
-						Options: shared.ExtensionRemoveBgOptionsParam{
-							AddShadow:        imagekit.Bool(true),
-							BgColor:          imagekit.String("bg_color"),
-							BgImageURL:       imagekit.String("bg_image_url"),
-							Semitransparency: imagekit.Bool(true),
+			UpdateFileDetailsRequest: imagekit.UpdateFileDetailsRequestUnionParam{
+				OfUpdateFileDetails: &imagekit.UpdateFileDetailsRequestUpdateFileDetailsParam{
+					CustomCoordinates: imagekit.String("10,10,100,100"),
+					CustomMetadata: map[string]any{
+						"brand": "bar",
+						"color": "bar",
+					},
+					Description: imagekit.String("description"),
+					Extensions: shared.ExtensionsParam{shared.ExtensionUnionParam{
+						OfRemoveBg: &shared.ExtensionRemoveBgParam{
+							Options: shared.ExtensionRemoveBgOptionsParam{
+								AddShadow:        imagekit.Bool(true),
+								BgColor:          imagekit.String("bg_color"),
+								BgImageURL:       imagekit.String("bg_image_url"),
+								Semitransparency: imagekit.Bool(true),
+							},
 						},
+					}, shared.ExtensionUnionParam{
+						OfAutoTagging: &shared.ExtensionAutoTaggingParam{
+							MaxTags:       10,
+							MinConfidence: 80,
+							Name:          "google-auto-tagging",
+						},
+					}, shared.ExtensionUnionParam{
+						OfAutoTagging: &shared.ExtensionAutoTaggingParam{
+							MaxTags:       10,
+							MinConfidence: 80,
+							Name:          "aws-auto-tagging",
+						},
+					}, shared.ExtensionUnionParam{
+						OfAIAutoDescription: &shared.ExtensionAIAutoDescriptionParam{},
+					}},
+					RemoveAITags: imagekit.UpdateFileDetailsRequestUpdateFileDetailsRemoveAITagsUnionParam{
+						OfStringArray: []string{"car", "vehicle", "motorsports"},
 					},
-				}, shared.ExtensionUnionParam{
-					OfAutoTagging: &shared.ExtensionAutoTaggingParam{
-						MaxTags:       10,
-						MinConfidence: 80,
-						Name:          "google-auto-tagging",
-					},
-				}, shared.ExtensionUnionParam{
-					OfAutoTagging: &shared.ExtensionAutoTaggingParam{
-						MaxTags:       10,
-						MinConfidence: 80,
-						Name:          "aws-auto-tagging",
-					},
-				}, shared.ExtensionUnionParam{
-					OfAIAutoDescription: &shared.ExtensionAIAutoDescriptionParam{},
-				}},
-				RemoveAITags: imagekit.FileUpdateParamsBodyUpdateFileDetailsRemoveAITagsUnion{
-					OfStringArray: []string{"car", "vehicle", "motorsports"},
+					Tags:       []string{"tag1", "tag2"},
+					WebhookURL: imagekit.String("https://webhook.site/0d6b6c7a-8e5a-4b3a-8b7c-0d6b6c7a8e5a"),
 				},
-				Tags:       []string{"tag1", "tag2"},
-				WebhookURL: imagekit.String("https://webhook.site/0d6b6c7a-8e5a-4b3a-8b7c-0d6b6c7a8e5a"),
 			},
 		},
 	)
