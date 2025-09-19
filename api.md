@@ -20,7 +20,7 @@ Methods:
 
 Params Types:
 
-- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go">imagekit</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go#UpdateFileRequestParam">UpdateFileRequestParam</a>
+- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go">imagekit</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go#UpdateFileRequestUnionParam">UpdateFileRequestUnionParam</a>
 
 Response Types:
 
