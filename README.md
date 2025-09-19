@@ -56,8 +56,8 @@ import (
 
 func main() {
 	client := imagekit.NewClient(
-		option.WithPrivateAPIKey("My Private API Key"), // defaults to os.LookupEnv("IMAGEKIT_PRIVATE_API_KEY")
-		option.WithPassword("My Password"),             // defaults to os.LookupEnv("OPTIONAL_IMAGEKIT_IGNORES_THIS")
+		option.WithPrivateKey("My Private Key"), // defaults to os.LookupEnv("IMAGEKIT_PRIVATE_API_KEY")
+		option.WithPassword("My Password"),      // defaults to os.LookupEnv("OPTIONAL_IMAGEKIT_IGNORES_THIS")
 	)
 	response, err := client.Files.Upload(context.TODO(), imagekit.FileUploadParams{
 		File:     io.Reader(bytes.NewBuffer([]byte("https://www.example.com/public-url.jpg"))),

@@ -267,11 +267,11 @@ func WithEnvironmentProduction() RequestOption {
 	return requestconfig.WithDefaultBaseURL("https://api.imagekit.io/")
 }
 
-// WithPrivateAPIKey returns a RequestOption that sets the client setting "private_api_key".
-func WithPrivateAPIKey(value string) RequestOption {
+// WithPrivateKey returns a RequestOption that sets the client setting "private_key".
+func WithPrivateKey(value string) RequestOption {
 	return requestconfig.RequestOptionFunc(func(r *requestconfig.RequestConfig) error {
-		r.PrivateAPIKey = value
-		return r.Apply(WithHeader("authorization", fmt.Sprintf("Basic %s", base64.StdEncoding.EncodeToString([]byte(r.PrivateAPIKey+":"+r.Password)))))
+		r.PrivateKey = value
+		return r.Apply(WithHeader("authorization", fmt.Sprintf("Basic %s", base64.StdEncoding.EncodeToString([]byte(r.PrivateKey+":"+r.Password)))))
 	})
 }
 
@@ -279,7 +279,7 @@ func WithPrivateAPIKey(value string) RequestOption {
 func WithPassword(value string) RequestOption {
 	return requestconfig.PreRequestOptionFunc(func(r *requestconfig.RequestConfig) error {
 		r.Password = value
-		return r.Apply(WithHeader("authorization", fmt.Sprintf("Basic %s", base64.StdEncoding.EncodeToString([]byte(r.PrivateAPIKey+":"+r.Password)))))
+		return r.Apply(WithHeader("authorization", fmt.Sprintf("Basic %s", base64.StdEncoding.EncodeToString([]byte(r.PrivateKey+":"+r.Password)))))
 	})
 }
 

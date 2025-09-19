@@ -24,7 +24,7 @@ func TestFileMetadataGet(t *testing.T) {
 	}
 	client := imagekit.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithPrivateAPIKey("My Private API Key"),
+		option.WithPrivateKey("My Private Key"),
 		option.WithPassword("My Password"),
 	)
 	_, err := client.Files.Metadata.Get(context.TODO(), "fileId")
@@ -48,7 +48,7 @@ func TestFileMetadataGetFromURL(t *testing.T) {
 	}
 	client := imagekit.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithPrivateAPIKey("My Private API Key"),
+		option.WithPrivateKey("My Private Key"),
 		option.WithPassword("My Password"),
 	)
 	_, err := client.Files.Metadata.GetFromURL(context.TODO(), imagekit.FileMetadataGetFromURLParams{

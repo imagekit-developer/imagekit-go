@@ -25,7 +25,7 @@ func TestAccountUsageGet(t *testing.T) {
 	}
 	client := imagekit.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithPrivateAPIKey("My Private API Key"),
+		option.WithPrivateKey("My Private Key"),
 		option.WithPassword("My Password"),
 	)
 	_, err := client.Accounts.Usage.Get(context.TODO(), imagekit.AccountUsageGetParams{

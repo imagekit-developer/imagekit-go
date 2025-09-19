@@ -24,7 +24,7 @@ func TestAssetListWithOptionalParams(t *testing.T) {
 	}
 	client := imagekit.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithPrivateAPIKey("My Private API Key"),
+		option.WithPrivateKey("My Private Key"),
 		option.WithPassword("My Password"),
 	)
 	_, err := client.Assets.List(context.TODO(), imagekit.AssetListParams{
