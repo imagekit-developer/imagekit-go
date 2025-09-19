@@ -212,7 +212,7 @@ type RequestConfig struct {
 	CustomHTTPDoer HTTPDoer
 	HTTPClient     *http.Client
 	Middlewares    []middleware
-	PrivateAPIKey  string
+	PrivateKey     string
 	Password       string
 	WebhookSecret  string
 	// If ResponseBodyInto not nil, then we will attempt to deserialize into
@@ -586,7 +586,7 @@ func (cfg *RequestConfig) Clone(ctx context.Context) *RequestConfig {
 		BaseURL:        cfg.BaseURL,
 		HTTPClient:     cfg.HTTPClient,
 		Middlewares:    cfg.Middlewares,
-		PrivateAPIKey:  cfg.PrivateAPIKey,
+		PrivateKey:     cfg.PrivateKey,
 		Password:       cfg.Password,
 		WebhookSecret:  cfg.WebhookSecret,
 	}

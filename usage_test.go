@@ -24,7 +24,7 @@ func TestUsage(t *testing.T) {
 	}
 	client := imagekit.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithPrivateAPIKey("My Private API Key"),
+		option.WithPrivateKey("My Private Key"),
 		option.WithPassword("My Password"),
 	)
 	response, err := client.Files.Upload(context.TODO(), imagekit.FileUploadParams{

@@ -24,7 +24,7 @@ func TestCustomMetadataFieldNewWithOptionalParams(t *testing.T) {
 	}
 	client := imagekit.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithPrivateAPIKey("My Private API Key"),
+		option.WithPrivateKey("My Private Key"),
 		option.WithPassword("My Password"),
 	)
 	_, err := client.CustomMetadataFields.New(context.TODO(), imagekit.CustomMetadataFieldNewParams{
@@ -79,7 +79,7 @@ func TestCustomMetadataFieldUpdateWithOptionalParams(t *testing.T) {
 	}
 	client := imagekit.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithPrivateAPIKey("My Private API Key"),
+		option.WithPrivateKey("My Private Key"),
 		option.WithPassword("My Password"),
 	)
 	_, err := client.CustomMetadataFields.Update(
@@ -136,7 +136,7 @@ func TestCustomMetadataFieldListWithOptionalParams(t *testing.T) {
 	}
 	client := imagekit.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithPrivateAPIKey("My Private API Key"),
+		option.WithPrivateKey("My Private Key"),
 		option.WithPassword("My Password"),
 	)
 	_, err := client.CustomMetadataFields.List(context.TODO(), imagekit.CustomMetadataFieldListParams{
@@ -162,7 +162,7 @@ func TestCustomMetadataFieldDelete(t *testing.T) {
 	}
 	client := imagekit.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithPrivateAPIKey("My Private API Key"),
+		option.WithPrivateKey("My Private Key"),
 		option.WithPassword("My Password"),
 	)
 	_, err := client.CustomMetadataFields.Delete(context.TODO(), "id")

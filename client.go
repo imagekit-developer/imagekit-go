@@ -36,7 +36,7 @@ func DefaultClientOptions() []option.RequestOption {
 	}
 	defaults = append(defaults, option.WithPassword("do_not_set"))
 	if o, ok := os.LookupEnv("IMAGEKIT_PRIVATE_API_KEY"); ok {
-		defaults = append(defaults, option.WithPrivateAPIKey(o))
+		defaults = append(defaults, option.WithPrivateKey(o))
 	}
 	if o, ok := os.LookupEnv("OPTIONAL_IMAGEKIT_IGNORES_THIS"); ok {
 		defaults = append(defaults, option.WithPassword(o))

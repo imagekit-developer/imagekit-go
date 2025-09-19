@@ -24,7 +24,7 @@ func TestAccountURLEndpointNewWithOptionalParams(t *testing.T) {
 	}
 	client := imagekit.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithPrivateAPIKey("My Private API Key"),
+		option.WithPrivateKey("My Private Key"),
 		option.WithPassword("My Password"),
 	)
 	_, err := client.Accounts.URLEndpoints.New(context.TODO(), imagekit.AccountURLEndpointNewParams{
@@ -59,7 +59,7 @@ func TestAccountURLEndpointUpdateWithOptionalParams(t *testing.T) {
 	}
 	client := imagekit.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithPrivateAPIKey("My Private API Key"),
+		option.WithPrivateKey("My Private Key"),
 		option.WithPassword("My Password"),
 	)
 	_, err := client.Accounts.URLEndpoints.Update(
@@ -98,7 +98,7 @@ func TestAccountURLEndpointList(t *testing.T) {
 	}
 	client := imagekit.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithPrivateAPIKey("My Private API Key"),
+		option.WithPrivateKey("My Private Key"),
 		option.WithPassword("My Password"),
 	)
 	_, err := client.Accounts.URLEndpoints.List(context.TODO())
@@ -122,7 +122,7 @@ func TestAccountURLEndpointDelete(t *testing.T) {
 	}
 	client := imagekit.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithPrivateAPIKey("My Private API Key"),
+		option.WithPrivateKey("My Private Key"),
 		option.WithPassword("My Password"),
 	)
 	err := client.Accounts.URLEndpoints.Delete(context.TODO(), "id")
@@ -146,7 +146,7 @@ func TestAccountURLEndpointGet(t *testing.T) {
 	}
 	client := imagekit.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithPrivateAPIKey("My Private API Key"),
+		option.WithPrivateKey("My Private Key"),
 		option.WithPassword("My Password"),
 	)
 	_, err := client.Accounts.URLEndpoints.Get(context.TODO(), "id")

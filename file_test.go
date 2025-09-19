@@ -27,7 +27,7 @@ func TestFileUpdateWithOptionalParams(t *testing.T) {
 	}
 	client := imagekit.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithPrivateAPIKey("My Private API Key"),
+		option.WithPrivateKey("My Private Key"),
 		option.WithPassword("My Password"),
 	)
 	_, err := client.Files.Update(
@@ -95,7 +95,7 @@ func TestFileDelete(t *testing.T) {
 	}
 	client := imagekit.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithPrivateAPIKey("My Private API Key"),
+		option.WithPrivateKey("My Private Key"),
 		option.WithPassword("My Password"),
 	)
 	err := client.Files.Delete(context.TODO(), "fileId")
@@ -119,7 +119,7 @@ func TestFileCopyWithOptionalParams(t *testing.T) {
 	}
 	client := imagekit.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithPrivateAPIKey("My Private API Key"),
+		option.WithPrivateKey("My Private Key"),
 		option.WithPassword("My Password"),
 	)
 	_, err := client.Files.Copy(context.TODO(), imagekit.FileCopyParams{
@@ -147,7 +147,7 @@ func TestFileGet(t *testing.T) {
 	}
 	client := imagekit.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithPrivateAPIKey("My Private API Key"),
+		option.WithPrivateKey("My Private Key"),
 		option.WithPassword("My Password"),
 	)
 	_, err := client.Files.Get(context.TODO(), "fileId")
@@ -171,7 +171,7 @@ func TestFileMove(t *testing.T) {
 	}
 	client := imagekit.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithPrivateAPIKey("My Private API Key"),
+		option.WithPrivateKey("My Private Key"),
 		option.WithPassword("My Password"),
 	)
 	_, err := client.Files.Move(context.TODO(), imagekit.FileMoveParams{
@@ -198,7 +198,7 @@ func TestFileRenameWithOptionalParams(t *testing.T) {
 	}
 	client := imagekit.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithPrivateAPIKey("My Private API Key"),
+		option.WithPrivateKey("My Private Key"),
 		option.WithPassword("My Password"),
 	)
 	_, err := client.Files.Rename(context.TODO(), imagekit.FileRenameParams{
@@ -226,7 +226,7 @@ func TestFileUploadWithOptionalParams(t *testing.T) {
 	}
 	client := imagekit.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithPrivateAPIKey("My Private API Key"),
+		option.WithPrivateKey("My Private Key"),
 		option.WithPassword("My Password"),
 	)
 	_, err := client.Files.Upload(context.TODO(), imagekit.FileUploadParams{

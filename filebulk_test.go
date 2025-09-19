@@ -24,7 +24,7 @@ func TestFileBulkDelete(t *testing.T) {
 	}
 	client := imagekit.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithPrivateAPIKey("My Private API Key"),
+		option.WithPrivateKey("My Private Key"),
 		option.WithPassword("My Password"),
 	)
 	_, err := client.Files.Bulk.Delete(context.TODO(), imagekit.FileBulkDeleteParams{
@@ -50,7 +50,7 @@ func TestFileBulkAddTags(t *testing.T) {
 	}
 	client := imagekit.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithPrivateAPIKey("My Private API Key"),
+		option.WithPrivateKey("My Private Key"),
 		option.WithPassword("My Password"),
 	)
 	_, err := client.Files.Bulk.AddTags(context.TODO(), imagekit.FileBulkAddTagsParams{
@@ -77,7 +77,7 @@ func TestFileBulkRemoveAITags(t *testing.T) {
 	}
 	client := imagekit.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithPrivateAPIKey("My Private API Key"),
+		option.WithPrivateKey("My Private Key"),
 		option.WithPassword("My Password"),
 	)
 	_, err := client.Files.Bulk.RemoveAITags(context.TODO(), imagekit.FileBulkRemoveAITagsParams{
@@ -104,7 +104,7 @@ func TestFileBulkRemoveTags(t *testing.T) {
 	}
 	client := imagekit.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithPrivateAPIKey("My Private API Key"),
+		option.WithPrivateKey("My Private Key"),
 		option.WithPassword("My Password"),
 	)
 	_, err := client.Files.Bulk.RemoveTags(context.TODO(), imagekit.FileBulkRemoveTagsParams{
