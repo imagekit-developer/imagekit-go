@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/imagekit-developer/imagekit-go/internal/apijson"
 	"github.com/imagekit-developer/imagekit-go/internal/apiquery"
@@ -42,7 +43,7 @@ func NewCustomMetadataFieldService(opts ...option.RequestOption) (r CustomMetada
 // on the assets. The value of a field for an asset can be set using the media
 // library UI or programmatically through upload or update assets API.
 func (r *CustomMetadataFieldService) New(ctx context.Context, body CustomMetadataFieldNewParams, opts ...option.RequestOption) (res *CustomMetadataField, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/customMetadataFields"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -50,7 +51,7 @@ func (r *CustomMetadataFieldService) New(ctx context.Context, body CustomMetadat
 
 // This API updates the label or schema of an existing custom metadata field.
 func (r *CustomMetadataFieldService) Update(ctx context.Context, id string, body CustomMetadataFieldUpdateParams, opts ...option.RequestOption) (res *CustomMetadataField, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -64,7 +65,7 @@ func (r *CustomMetadataFieldService) Update(ctx context.Context, id string, body
 // the API returns only non deleted field objects, but you can include deleted
 // fields in the API response.
 func (r *CustomMetadataFieldService) List(ctx context.Context, query CustomMetadataFieldListParams, opts ...option.RequestOption) (res *[]CustomMetadataField, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/customMetadataFields"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
@@ -73,7 +74,7 @@ func (r *CustomMetadataFieldService) List(ctx context.Context, query CustomMetad
 // This API deletes a custom metadata field. Even after deleting a custom metadata
 // field, you cannot create any new custom metadata field with the same name.
 func (r *CustomMetadataFieldService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *CustomMetadataFieldDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

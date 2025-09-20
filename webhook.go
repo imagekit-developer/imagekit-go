@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/imagekit-developer/imagekit-go/internal/apijson"
@@ -45,7 +46,7 @@ func (r *WebhookService) UnsafeUnwrap(payload []byte, opts ...option.RequestOpti
 }
 
 func (r *WebhookService) Unwrap(payload []byte, headers http.Header, opts ...option.RequestOption) (*UnwrapWebhookEventUnion, error) {
-	opts = append(opts, r.Options...)
+	opts = slices.Concat(r.Options, opts)
 	cfg, err := requestconfig.PreRequestOptions(opts...)
 	if err != nil {
 		return nil, err

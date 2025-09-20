@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/imagekit-developer/imagekit-go/internal/apiquery"
 	"github.com/imagekit-developer/imagekit-go/internal/requestconfig"
@@ -39,7 +40,7 @@ func NewFileMetadataService(opts ...option.RequestOption) (r FileMetadataService
 // You can also get the metadata in upload API response by passing `metadata` in
 // `responseFields` parameter.
 func (r *FileMetadataService) Get(ctx context.Context, fileID string, opts ...option.RequestOption) (res *Metadata, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if fileID == "" {
 		err = errors.New("missing required fileId parameter")
 		return
@@ -52,7 +53,7 @@ func (r *FileMetadataService) Get(ctx context.Context, fileID string, opts ...op
 // Get image EXIF, pHash, and other metadata from ImageKit.io powered remote URL
 // using this API.
 func (r *FileMetadataService) GetFromURL(ctx context.Context, query FileMetadataGetFromURLParams, opts ...option.RequestOption) (res *Metadata, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/files/metadata"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

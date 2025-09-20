@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/imagekit-developer/imagekit-go/internal/apijson"
@@ -39,7 +40,7 @@ func NewAccountUsageService(opts ...option.RequestOption) (r AccountUsageService
 // other words, the data covers the period starting from the specified start date
 // up to, but not including, the end date.
 func (r *AccountUsageService) Get(ctx context.Context, query AccountUsageGetParams, opts ...option.RequestOption) (res *AccountUsageGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/accounts/usage"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return

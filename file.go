@@ -11,6 +11,7 @@ import (
 	"io"
 	"mime/multipart"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/imagekit-developer/imagekit-go/internal/apiform"
@@ -53,7 +54,7 @@ func NewFileService(opts ...option.RequestOption) (r FileService) {
 // You can update `tags`, `customCoordinates`, `customMetadata`, publication
 // status, remove existing `AITags` and apply extensions using this API.
 func (r *FileService) Update(ctx context.Context, fileID string, body FileUpdateParams, opts ...option.RequestOption) (res *FileUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if fileID == "" {
 		err = errors.New("missing required fileId parameter")
 		return
@@ -69,7 +70,7 @@ func (r *FileService) Update(ctx context.Context, fileID string, body FileUpdate
 // the response is cached. Deleting a file does not purge the cache. You can purge
 // the cache using purge cache API.
 func (r *FileService) Delete(ctx context.Context, fileID string, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if fileID == "" {
 		err = errors.New("missing required fileId parameter")
@@ -86,7 +87,7 @@ func (r *FileService) Delete(ctx context.Context, fileID string, opts ...option.
 // the source file and its versions (if `includeFileVersions` is set to true) will
 // be appended to the destination file version history.
 func (r *FileService) Copy(ctx context.Context, body FileCopyParams, opts ...option.RequestOption) (res *FileCopyResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/files/copy"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -95,7 +96,7 @@ func (r *FileService) Copy(ctx context.Context, body FileCopyParams, opts ...opt
 // This API returns an object with details or attributes about the current version
 // of the file.
 func (r *FileService) Get(ctx context.Context, fileID string, opts ...option.RequestOption) (res *File, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if fileID == "" {
 		err = errors.New("missing required fileId parameter")
 		return
@@ -110,7 +111,7 @@ func (r *FileService) Get(ctx context.Context, fileID string, opts ...option.Req
 // Note: If any file at the destination has the same name as the source file, then
 // the source file and its versions will be appended to the destination file.
 func (r *FileService) Move(ctx context.Context, body FileMoveParams, opts ...option.RequestOption) (res *FileMoveResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/files/move"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -122,7 +123,7 @@ func (r *FileService) Move(ctx context.Context, body FileMoveParams, opts ...opt
 // Note: The old URLs will stop working. The file/file version URLs cached on CDN
 // will continue to work unless a purge is requested.
 func (r *FileService) Rename(ctx context.Context, body FileRenameParams, opts ...option.RequestOption) (res *FileRenameResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/files/rename"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return
@@ -156,7 +157,7 @@ func (r *FileService) Rename(ctx context.Context, body FileRenameParams, opts ..
 //   - [Quick start guides](/docs/quick-start-guides) for various frameworks and
 //     technologies.
 func (r *FileService) Upload(ctx context.Context, body FileUploadParams, opts ...option.RequestOption) (res *FileUploadResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithBaseURL("https://upload.imagekit.io/")}, opts...)
 	path := "api/v1/files/upload"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)

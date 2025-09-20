@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/imagekit-developer/imagekit-go/internal/apijson"
 	shimjson "github.com/imagekit-developer/imagekit-go/internal/encoding/json"
@@ -40,7 +41,7 @@ func NewAccountOriginService(opts ...option.RequestOption) (r AccountOriginServi
 // **Note:** This API is currently in beta.
 // Creates a new origin and returns the origin object.
 func (r *AccountOriginService) New(ctx context.Context, body AccountOriginNewParams, opts ...option.RequestOption) (res *OriginResponseUnion, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/accounts/origins"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -49,7 +50,7 @@ func (r *AccountOriginService) New(ctx context.Context, body AccountOriginNewPar
 // **Note:** This API is currently in beta.
 // Updates the origin identified by `id` and returns the updated origin object.
 func (r *AccountOriginService) Update(ctx context.Context, id string, body AccountOriginUpdateParams, opts ...option.RequestOption) (res *OriginResponseUnion, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
@@ -62,7 +63,7 @@ func (r *AccountOriginService) Update(ctx context.Context, id string, body Accou
 // **Note:** This API is currently in beta.
 // Returns an array of all configured origins for the current account.
 func (r *AccountOriginService) List(ctx context.Context, opts ...option.RequestOption) (res *[]OriginResponseUnion, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/accounts/origins"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -72,7 +73,7 @@ func (r *AccountOriginService) List(ctx context.Context, opts ...option.RequestO
 // Permanently removes the origin identified by `id`. If the origin is in use by
 // any URL‑endpoints, the API will return an error.
 func (r *AccountOriginService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -86,7 +87,7 @@ func (r *AccountOriginService) Delete(ctx context.Context, id string, opts ...op
 // **Note:** This API is currently in beta.
 // Retrieves the origin identified by `id`.
 func (r *AccountOriginService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *OriginResponseUnion, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

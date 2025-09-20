@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/imagekit-developer/imagekit-go/internal/apijson"
 	"github.com/imagekit-developer/imagekit-go/internal/requestconfig"
@@ -35,7 +36,7 @@ func NewFileVersionService(opts ...option.RequestOption) (r FileVersionService) 
 
 // This API returns details of all versions of a file.
 func (r *FileVersionService) List(ctx context.Context, fileID string, opts ...option.RequestOption) (res *[]File, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if fileID == "" {
 		err = errors.New("missing required fileId parameter")
 		return
@@ -50,7 +51,7 @@ func (r *FileVersionService) List(ctx context.Context, fileID string, opts ...op
 //
 // Note: If you want to delete all versions of a file, use the delete file API.
 func (r *FileVersionService) Delete(ctx context.Context, versionID string, body FileVersionDeleteParams, opts ...option.RequestOption) (res *FileVersionDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if body.FileID == "" {
 		err = errors.New("missing required fileId parameter")
 		return
@@ -66,7 +67,7 @@ func (r *FileVersionService) Delete(ctx context.Context, versionID string, body 
 
 // This API returns an object with details or attributes of a file version.
 func (r *FileVersionService) Get(ctx context.Context, versionID string, query FileVersionGetParams, opts ...option.RequestOption) (res *File, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if query.FileID == "" {
 		err = errors.New("missing required fileId parameter")
 		return
@@ -82,7 +83,7 @@ func (r *FileVersionService) Get(ctx context.Context, versionID string, query Fi
 
 // This API restores a file version as the current file version.
 func (r *FileVersionService) Restore(ctx context.Context, versionID string, body FileVersionRestoreParams, opts ...option.RequestOption) (res *File, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if body.FileID == "" {
 		err = errors.New("missing required fileId parameter")
 		return

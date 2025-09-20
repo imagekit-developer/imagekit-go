@@ -5,6 +5,7 @@ package imagekit
 import (
 	"context"
 	"net/http"
+	"slices"
 
 	"github.com/imagekit-developer/imagekit-go/internal/apijson"
 	"github.com/imagekit-developer/imagekit-go/internal/requestconfig"
@@ -37,7 +38,7 @@ func NewFolderService(opts ...option.RequestOption) (r FolderService) {
 // This will create a new folder. You can specify the folder name and location of
 // the parent folder where this new folder should be created.
 func (r *FolderService) New(ctx context.Context, body FolderNewParams, opts ...option.RequestOption) (res *FolderNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/folder"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -46,7 +47,7 @@ func (r *FolderService) New(ctx context.Context, body FolderNewParams, opts ...o
 // This will delete a folder and all its contents permanently. The API returns an
 // empty response.
 func (r *FolderService) Delete(ctx context.Context, body FolderDeleteParams, opts ...option.RequestOption) (res *FolderDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/folder"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
 	return
@@ -58,7 +59,7 @@ func (r *FolderService) Delete(ctx context.Context, body FolderDeleteParams, opt
 // source file, then the source file and its versions will be appended to the
 // destination file version history.
 func (r *FolderService) Copy(ctx context.Context, body FolderCopyParams, opts ...option.RequestOption) (res *FolderCopyResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/bulkJobs/copyFolder"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -69,7 +70,7 @@ func (r *FolderService) Copy(ctx context.Context, body FolderCopyParams, opts ..
 // destination has the same name as the source file, then the source file and its
 // versions will be appended to the destination file version history.
 func (r *FolderService) Move(ctx context.Context, body FolderMoveParams, opts ...option.RequestOption) (res *FolderMoveResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/bulkJobs/moveFolder"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -79,7 +80,7 @@ func (r *FolderService) Move(ctx context.Context, body FolderMoveParams, opts ..
 // assets and sub-folders will remain unchanged, but their paths will be updated to
 // reflect the new folder name.
 func (r *FolderService) Rename(ctx context.Context, body FolderRenameParams, opts ...option.RequestOption) (res *FolderRenameResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/bulkJobs/renameFolder"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
