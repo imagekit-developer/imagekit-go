@@ -6,7 +6,7 @@
 
 <!-- x-release-please-end -->
 
-The Image Kit Go library provides convenient access to the [Image Kit REST API](https://imagekit.io/docs)
+The Image Kit Go library provides convenient access to the [Image Kit REST API](https://imagekit.io/docs/api-reference)
 from applications written in Go.
 
 It is generated with [Stainless](https://www.stainless.com/).
