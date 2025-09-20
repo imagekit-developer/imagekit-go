@@ -8,6 +8,7 @@ import (
 	"io"
 	"mime/multipart"
 	"net/http"
+	"slices"
 
 	"github.com/imagekit-developer/imagekit-go/internal/apiform"
 	"github.com/imagekit-developer/imagekit-go/internal/apijson"
@@ -66,7 +67,7 @@ func NewBetaV2FileService(opts ...option.RequestOption) (r BetaV2FileService) {
 //   - [Quick start guides](/docs/quick-start-guides) for various frameworks and
 //     technologies.
 func (r *BetaV2FileService) Upload(ctx context.Context, body BetaV2FileUploadParams, opts ...option.RequestOption) (res *BetaV2FileUploadResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithBaseURL("https://upload.imagekit.io/")}, opts...)
 	path := "api/v2/files/upload"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)

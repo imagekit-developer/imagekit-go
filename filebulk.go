@@ -5,6 +5,7 @@ package imagekit
 import (
 	"context"
 	"net/http"
+	"slices"
 
 	"github.com/imagekit-developer/imagekit-go/internal/apijson"
 	"github.com/imagekit-developer/imagekit-go/internal/requestconfig"
@@ -40,7 +41,7 @@ func NewFileBulkService(opts ...option.RequestOption) (r FileBulkService) {
 //
 // A maximum of 100 files can be deleted at a time.
 func (r *FileBulkService) Delete(ctx context.Context, body FileBulkDeleteParams, opts ...option.RequestOption) (res *FileBulkDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/files/batch/deleteByFileIds"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -49,7 +50,7 @@ func (r *FileBulkService) Delete(ctx context.Context, body FileBulkDeleteParams,
 // This API adds tags to multiple files in bulk. A maximum of 50 files can be
 // specified at a time.
 func (r *FileBulkService) AddTags(ctx context.Context, body FileBulkAddTagsParams, opts ...option.RequestOption) (res *FileBulkAddTagsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/files/addTags"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -58,7 +59,7 @@ func (r *FileBulkService) AddTags(ctx context.Context, body FileBulkAddTagsParam
 // This API removes AITags from multiple files in bulk. A maximum of 50 files can
 // be specified at a time.
 func (r *FileBulkService) RemoveAITags(ctx context.Context, body FileBulkRemoveAITagsParams, opts ...option.RequestOption) (res *FileBulkRemoveAITagsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/files/removeAITags"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -67,7 +68,7 @@ func (r *FileBulkService) RemoveAITags(ctx context.Context, body FileBulkRemoveA
 // This API removes tags from multiple files in bulk. A maximum of 50 files can be
 // specified at a time.
 func (r *FileBulkService) RemoveTags(ctx context.Context, body FileBulkRemoveTagsParams, opts ...option.RequestOption) (res *FileBulkRemoveTagsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/files/removeTags"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return

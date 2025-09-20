@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/imagekit-developer/imagekit-go/internal/apijson"
 	"github.com/imagekit-developer/imagekit-go/internal/requestconfig"
@@ -35,7 +36,7 @@ func NewFolderJobService(opts ...option.RequestOption) (r FolderJobService) {
 
 // This API returns the status of a bulk job like copy and move folder operations.
 func (r *FolderJobService) Get(ctx context.Context, jobID string, opts ...option.RequestOption) (res *FolderJobGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if jobID == "" {
 		err = errors.New("missing required jobId parameter")
 		return

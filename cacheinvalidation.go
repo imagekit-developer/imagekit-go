@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/imagekit-developer/imagekit-go/internal/apijson"
 	"github.com/imagekit-developer/imagekit-go/internal/requestconfig"
@@ -38,7 +39,7 @@ func NewCacheInvalidationService(opts ...option.RequestOption) (r CacheInvalidat
 // Purge cache is an asynchronous process and it may take some time to reflect the
 // changes.
 func (r *CacheInvalidationService) New(ctx context.Context, body CacheInvalidationNewParams, opts ...option.RequestOption) (res *CacheInvalidationNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/files/purge"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -46,7 +47,7 @@ func (r *CacheInvalidationService) New(ctx context.Context, body CacheInvalidati
 
 // This API returns the status of a purge cache request.
 func (r *CacheInvalidationService) Get(ctx context.Context, requestID string, opts ...option.RequestOption) (res *CacheInvalidationGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if requestID == "" {
 		err = errors.New("missing required requestId parameter")
 		return

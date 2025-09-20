@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/url"
+	"slices"
 	"time"
 
 	"github.com/imagekit-developer/imagekit-go/internal/apijson"
@@ -41,7 +42,7 @@ func NewAssetService(opts ...option.RequestOption) (r AssetService) {
 // by generating a query string in a Lucene-like syntax and provide this generated
 // string as the value of the `searchQuery`.
 func (r *AssetService) List(ctx context.Context, query AssetListParams, opts ...option.RequestOption) (res *[]AssetListResponseUnion, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v1/files"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
