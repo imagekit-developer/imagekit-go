@@ -1,7 +1,7 @@
 package apiform
 
 import (
-	"github.com/imagekit-developer/imagekit-go/packages/param"
+	"github.com/stainless-sdks/imagekit-go/packages/param"
 	"mime/multipart"
 	"reflect"
 )

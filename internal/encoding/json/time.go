@@ -2,7 +2,7 @@
 package json
 
 import (
-	"github.com/imagekit-developer/imagekit-go/internal/encoding/json/shims"
+	"github.com/stainless-sdks/imagekit-go/internal/encoding/json/shims"
 	"reflect"
 	"time"
 )

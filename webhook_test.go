@@ -8,8 +8,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/imagekit-developer/imagekit-go"
-	"github.com/imagekit-developer/imagekit-go/option"
+	"github.com/stainless-sdks/imagekit-go"
+	"github.com/stainless-sdks/imagekit-go/option"
 	standardwebhooks "github.com/standard-webhooks/standard-webhooks/libraries/go"
 )
 
