@@ -9,9 +9,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/imagekit-developer/imagekit-go"
-	"github.com/imagekit-developer/imagekit-go/internal/testutil"
-	"github.com/imagekit-developer/imagekit-go/option"
+	"github.com/stainless-sdks/imagekit-go"
+	"github.com/stainless-sdks/imagekit-go/internal/testutil"
+	"github.com/stainless-sdks/imagekit-go/option"
 )
 
 func TestAccountUsageGet(t *testing.T) {

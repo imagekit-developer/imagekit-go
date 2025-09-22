@@ -8,8 +8,8 @@ import (
 	"os"
 	"slices"
 
-	"github.com/imagekit-developer/imagekit-go/internal/requestconfig"
-	"github.com/imagekit-developer/imagekit-go/option"
+	"github.com/stainless-sdks/imagekit-go/internal/requestconfig"
+	"github.com/stainless-sdks/imagekit-go/option"
 )
 
 // Client creates a struct with services and top level methods that help with

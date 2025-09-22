@@ -9,7 +9,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/imagekit-developer/imagekit-go/packages/param"
+	"github.com/stainless-sdks/imagekit-go/packages/param"
 )
 
 var encoders sync.Map // map[reflect.Type]encoderFunc

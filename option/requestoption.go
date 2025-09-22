@@ -12,7 +12,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/imagekit-developer/imagekit-go/internal/requestconfig"
+	"github.com/stainless-sdks/imagekit-go/internal/requestconfig"
 	"github.com/tidwall/sjson"
 )
 
@@ -20,7 +20,7 @@ import (
 // which can be supplied to clients, services, and methods. You can read more about this functional
 // options pattern in our [README].
 //
-// [README]: https://pkg.go.dev/github.com/imagekit-developer/imagekit-go#readme-requestoptions
+// [README]: https://pkg.go.dev/github.com/stainless-sdks/imagekit-go#readme-requestoptions
 type RequestOption = requestconfig.RequestOption
 
 // WithBaseURL returns a RequestOption that sets the BaseURL for the client.

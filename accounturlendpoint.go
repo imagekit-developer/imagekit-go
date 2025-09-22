@@ -10,13 +10,13 @@ import (
 	"net/http"
 	"slices"
 
-	"github.com/imagekit-developer/imagekit-go/internal/apijson"
-	shimjson "github.com/imagekit-developer/imagekit-go/internal/encoding/json"
-	"github.com/imagekit-developer/imagekit-go/internal/requestconfig"
-	"github.com/imagekit-developer/imagekit-go/option"
-	"github.com/imagekit-developer/imagekit-go/packages/param"
-	"github.com/imagekit-developer/imagekit-go/packages/respjson"
-	"github.com/imagekit-developer/imagekit-go/shared/constant"
+	"github.com/stainless-sdks/imagekit-go/internal/apijson"
+	shimjson "github.com/stainless-sdks/imagekit-go/internal/encoding/json"
+	"github.com/stainless-sdks/imagekit-go/internal/requestconfig"
+	"github.com/stainless-sdks/imagekit-go/option"
+	"github.com/stainless-sdks/imagekit-go/packages/param"
+	"github.com/stainless-sdks/imagekit-go/packages/respjson"
+	"github.com/stainless-sdks/imagekit-go/shared/constant"
 )
 
 // AccountURLEndpointService contains methods and other services that help with

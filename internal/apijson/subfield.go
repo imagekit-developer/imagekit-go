@@ -1,7 +1,7 @@
 package apijson
 
 import (
-	"github.com/imagekit-developer/imagekit-go/packages/respjson"
+	"github.com/stainless-sdks/imagekit-go/packages/respjson"
 	"reflect"
 )
 

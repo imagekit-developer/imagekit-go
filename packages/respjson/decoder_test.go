@@ -3,8 +3,8 @@ package respjson_test
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/imagekit-developer/imagekit-go/internal/apijson"
-	rj "github.com/imagekit-developer/imagekit-go/packages/respjson"
+	"github.com/stainless-sdks/imagekit-go/internal/apijson"
+	rj "github.com/stainless-sdks/imagekit-go/packages/respjson"
 	"reflect"
 	"testing"
 )

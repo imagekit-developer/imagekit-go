@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"net/http/httputil"
 
-	"github.com/imagekit-developer/imagekit-go/internal/apijson"
-	"github.com/imagekit-developer/imagekit-go/packages/respjson"
+	"github.com/stainless-sdks/imagekit-go/internal/apijson"
+	"github.com/stainless-sdks/imagekit-go/packages/respjson"
 )
 
 // Error represents an error that originates from the API, i.e. when a request is
