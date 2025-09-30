@@ -365,6 +365,14 @@ type BetaV2FileUploadParams struct {
 	// Any of "tags", "customCoordinates", "isPrivateFile", "embeddedMetadata",
 	// "isPublished", "customMetadata", "metadata", "selectedFieldsSchema".
 	ResponseFields []string `json:"responseFields,omitzero"`
+	// This field is included in the response only if the Path policy feature is
+	// available in the plan. It contains schema definitions for the custom metadata
+	// fields selected for the specified file path. Field selection can only be done
+	// when the Path policy feature is enabled.
+	//
+	// Keys are the names of the custom metadata fields; the value object has details
+	// about the custom metadata schema.
+	SelectedFieldsSchema map[string]BetaV2FileUploadParamsSelectedFieldsSchema `json:"selectedFieldsSchema,omitzero"`
 	// Set the tags while uploading the file. Provide an array of tag strings (e.g.
 	// `["tag1", "tag2", "tag3"]`). The combined length of all tag characters must not
 	// exceed 500, and the `%` character is not allowed. If this field is not specified
@@ -401,6 +409,193 @@ func (r BetaV2FileUploadParams) MarshalMultipart() (data []byte, contentType str
 		return nil, "", err
 	}
 	return buf.Bytes(), writer.FormDataContentType(), nil
+}
+
+// The property Type is required.
+type BetaV2FileUploadParamsSelectedFieldsSchema struct {
+	// Type of the custom metadata field.
+	//
+	// Any of "Text", "Textarea", "Number", "Date", "Boolean", "SingleSelect",
+	// "MultiSelect".
+	Type string `json:"type,omitzero,required"`
+	// Specifies if the custom metadata field is required or not.
+	IsValueRequired param.Opt[bool] `json:"isValueRequired,omitzero"`
+	// Maximum length of string. Only set if `type` is set to `Text` or `Textarea`.
+	MaxLength param.Opt[float64] `json:"maxLength,omitzero"`
+	// Minimum length of string. Only set if `type` is set to `Text` or `Textarea`.
+	MinLength param.Opt[float64] `json:"minLength,omitzero"`
+	// Indicates whether the custom metadata field is read only. A read only field
+	// cannot be modified after being set. This field is configurable only via the
+	// **Path policy** feature.
+	ReadOnly param.Opt[bool] `json:"readOnly,omitzero"`
+	// Specifies if the selectOptions array is truncated. It is truncated when number
+	// of options are > 100.
+	SelectOptionsTruncated param.Opt[bool] `json:"selectOptionsTruncated,omitzero"`
+	// The default value for this custom metadata field. The value should match the
+	// `type` of custom metadata field.
+	DefaultValue BetaV2FileUploadParamsSelectedFieldsSchemaDefaultValueUnion `json:"defaultValue,omitzero"`
+	// Maximum value of the field. Only set if field type is `Date` or `Number`. For
+	// `Date` type field, the value will be in ISO8601 string format. For `Number` type
+	// field, it will be a numeric value.
+	MaxValue BetaV2FileUploadParamsSelectedFieldsSchemaMaxValueUnion `json:"maxValue,omitzero"`
+	// Minimum value of the field. Only set if field type is `Date` or `Number`. For
+	// `Date` type field, the value will be in ISO8601 string format. For `Number` type
+	// field, it will be a numeric value.
+	MinValue BetaV2FileUploadParamsSelectedFieldsSchemaMinValueUnion `json:"minValue,omitzero"`
+	// An array of allowed values when field type is `SingleSelect` or `MultiSelect`.
+	SelectOptions []BetaV2FileUploadParamsSelectedFieldsSchemaSelectOptionUnion `json:"selectOptions,omitzero"`
+	paramObj
+}
+
+func (r BetaV2FileUploadParamsSelectedFieldsSchema) MarshalJSON() (data []byte, err error) {
+	type shadow BetaV2FileUploadParamsSelectedFieldsSchema
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *BetaV2FileUploadParamsSelectedFieldsSchema) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[BetaV2FileUploadParamsSelectedFieldsSchema](
+		"type", "Text", "Textarea", "Number", "Date", "Boolean", "SingleSelect", "MultiSelect",
+	)
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type BetaV2FileUploadParamsSelectedFieldsSchemaDefaultValueUnion struct {
+	OfString param.Opt[string]                                                      `json:",omitzero,inline"`
+	OfFloat  param.Opt[float64]                                                     `json:",omitzero,inline"`
+	OfBool   param.Opt[bool]                                                        `json:",omitzero,inline"`
+	OfMixed  []BetaV2FileUploadParamsSelectedFieldsSchemaDefaultValueMixedItemUnion `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u BetaV2FileUploadParamsSelectedFieldsSchemaDefaultValueUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfString, u.OfFloat, u.OfBool, u.OfMixed)
+}
+func (u *BetaV2FileUploadParamsSelectedFieldsSchemaDefaultValueUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *BetaV2FileUploadParamsSelectedFieldsSchemaDefaultValueUnion) asAny() any {
+	if !param.IsOmitted(u.OfString) {
+		return &u.OfString.Value
+	} else if !param.IsOmitted(u.OfFloat) {
+		return &u.OfFloat.Value
+	} else if !param.IsOmitted(u.OfBool) {
+		return &u.OfBool.Value
+	} else if !param.IsOmitted(u.OfMixed) {
+		return &u.OfMixed
+	}
+	return nil
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type BetaV2FileUploadParamsSelectedFieldsSchemaDefaultValueMixedItemUnion struct {
+	OfString param.Opt[string]  `json:",omitzero,inline"`
+	OfFloat  param.Opt[float64] `json:",omitzero,inline"`
+	OfBool   param.Opt[bool]    `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u BetaV2FileUploadParamsSelectedFieldsSchemaDefaultValueMixedItemUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfString, u.OfFloat, u.OfBool)
+}
+func (u *BetaV2FileUploadParamsSelectedFieldsSchemaDefaultValueMixedItemUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *BetaV2FileUploadParamsSelectedFieldsSchemaDefaultValueMixedItemUnion) asAny() any {
+	if !param.IsOmitted(u.OfString) {
+		return &u.OfString.Value
+	} else if !param.IsOmitted(u.OfFloat) {
+		return &u.OfFloat.Value
+	} else if !param.IsOmitted(u.OfBool) {
+		return &u.OfBool.Value
+	}
+	return nil
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type BetaV2FileUploadParamsSelectedFieldsSchemaMaxValueUnion struct {
+	OfString param.Opt[string]  `json:",omitzero,inline"`
+	OfFloat  param.Opt[float64] `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u BetaV2FileUploadParamsSelectedFieldsSchemaMaxValueUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfString, u.OfFloat)
+}
+func (u *BetaV2FileUploadParamsSelectedFieldsSchemaMaxValueUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *BetaV2FileUploadParamsSelectedFieldsSchemaMaxValueUnion) asAny() any {
+	if !param.IsOmitted(u.OfString) {
+		return &u.OfString.Value
+	} else if !param.IsOmitted(u.OfFloat) {
+		return &u.OfFloat.Value
+	}
+	return nil
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type BetaV2FileUploadParamsSelectedFieldsSchemaMinValueUnion struct {
+	OfString param.Opt[string]  `json:",omitzero,inline"`
+	OfFloat  param.Opt[float64] `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u BetaV2FileUploadParamsSelectedFieldsSchemaMinValueUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfString, u.OfFloat)
+}
+func (u *BetaV2FileUploadParamsSelectedFieldsSchemaMinValueUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *BetaV2FileUploadParamsSelectedFieldsSchemaMinValueUnion) asAny() any {
+	if !param.IsOmitted(u.OfString) {
+		return &u.OfString.Value
+	} else if !param.IsOmitted(u.OfFloat) {
+		return &u.OfFloat.Value
+	}
+	return nil
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type BetaV2FileUploadParamsSelectedFieldsSchemaSelectOptionUnion struct {
+	OfString param.Opt[string]  `json:",omitzero,inline"`
+	OfFloat  param.Opt[float64] `json:",omitzero,inline"`
+	OfBool   param.Opt[bool]    `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u BetaV2FileUploadParamsSelectedFieldsSchemaSelectOptionUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfString, u.OfFloat, u.OfBool)
+}
+func (u *BetaV2FileUploadParamsSelectedFieldsSchemaSelectOptionUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *BetaV2FileUploadParamsSelectedFieldsSchemaSelectOptionUnion) asAny() any {
+	if !param.IsOmitted(u.OfString) {
+		return &u.OfString.Value
+	} else if !param.IsOmitted(u.OfFloat) {
+		return &u.OfFloat.Value
+	} else if !param.IsOmitted(u.OfBool) {
+		return &u.OfBool.Value
+	}
+	return nil
 }
 
 // Configure pre-processing (`pre`) and post-processing (`post`) transformations.

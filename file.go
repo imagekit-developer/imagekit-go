@@ -199,6 +199,14 @@ type File struct {
 	Mime string `json:"mime"`
 	// Name of the asset.
 	Name string `json:"name"`
+	// This field is included in the response only if the Path policy feature is
+	// available in the plan. It contains schema definitions for the custom metadata
+	// fields selected for the specified file path. Field selection can only be done
+	// when the Path policy feature is enabled.
+	//
+	// Keys are the names of the custom metadata fields; the value object has details
+	// about the custom metadata schema.
+	SelectedFieldsSchema map[string]FileSelectedFieldsSchema `json:"selectedFieldsSchema"`
 	// Size of the file in bytes.
 	Size float64 `json:"size"`
 	// An array of tags assigned to the file. Tags are used to search files in the
@@ -222,30 +230,31 @@ type File struct {
 	Width float64 `json:"width"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		AITags            respjson.Field
-		CreatedAt         respjson.Field
-		CustomCoordinates respjson.Field
-		CustomMetadata    respjson.Field
-		Description       respjson.Field
-		FileID            respjson.Field
-		FilePath          respjson.Field
-		FileType          respjson.Field
-		HasAlpha          respjson.Field
-		Height            respjson.Field
-		IsPrivateFile     respjson.Field
-		IsPublished       respjson.Field
-		Mime              respjson.Field
-		Name              respjson.Field
-		Size              respjson.Field
-		Tags              respjson.Field
-		Thumbnail         respjson.Field
-		Type              respjson.Field
-		UpdatedAt         respjson.Field
-		URL               respjson.Field
-		VersionInfo       respjson.Field
-		Width             respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
+		AITags               respjson.Field
+		CreatedAt            respjson.Field
+		CustomCoordinates    respjson.Field
+		CustomMetadata       respjson.Field
+		Description          respjson.Field
+		FileID               respjson.Field
+		FilePath             respjson.Field
+		FileType             respjson.Field
+		HasAlpha             respjson.Field
+		Height               respjson.Field
+		IsPrivateFile        respjson.Field
+		IsPublished          respjson.Field
+		Mime                 respjson.Field
+		Name                 respjson.Field
+		SelectedFieldsSchema respjson.Field
+		Size                 respjson.Field
+		Tags                 respjson.Field
+		Thumbnail            respjson.Field
+		Type                 respjson.Field
+		UpdatedAt            respjson.Field
+		URL                  respjson.Field
+		VersionInfo          respjson.Field
+		Width                respjson.Field
+		ExtraFields          map[string]respjson.Field
+		raw                  string
 	} `json:"-"`
 }
 
@@ -276,6 +285,275 @@ type FileAITag struct {
 // Returns the unmodified JSON received from the API
 func (r FileAITag) RawJSON() string { return r.JSON.raw }
 func (r *FileAITag) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type FileSelectedFieldsSchema struct {
+	// Type of the custom metadata field.
+	//
+	// Any of "Text", "Textarea", "Number", "Date", "Boolean", "SingleSelect",
+	// "MultiSelect".
+	Type string `json:"type,required"`
+	// The default value for this custom metadata field. The value should match the
+	// `type` of custom metadata field.
+	DefaultValue FileSelectedFieldsSchemaDefaultValueUnion `json:"defaultValue"`
+	// Specifies if the custom metadata field is required or not.
+	IsValueRequired bool `json:"isValueRequired"`
+	// Maximum length of string. Only set if `type` is set to `Text` or `Textarea`.
+	MaxLength float64 `json:"maxLength"`
+	// Maximum value of the field. Only set if field type is `Date` or `Number`. For
+	// `Date` type field, the value will be in ISO8601 string format. For `Number` type
+	// field, it will be a numeric value.
+	MaxValue FileSelectedFieldsSchemaMaxValueUnion `json:"maxValue"`
+	// Minimum length of string. Only set if `type` is set to `Text` or `Textarea`.
+	MinLength float64 `json:"minLength"`
+	// Minimum value of the field. Only set if field type is `Date` or `Number`. For
+	// `Date` type field, the value will be in ISO8601 string format. For `Number` type
+	// field, it will be a numeric value.
+	MinValue FileSelectedFieldsSchemaMinValueUnion `json:"minValue"`
+	// Indicates whether the custom metadata field is read only. A read only field
+	// cannot be modified after being set. This field is configurable only via the
+	// **Path policy** feature.
+	ReadOnly bool `json:"readOnly"`
+	// An array of allowed values when field type is `SingleSelect` or `MultiSelect`.
+	SelectOptions []FileSelectedFieldsSchemaSelectOptionUnion `json:"selectOptions"`
+	// Specifies if the selectOptions array is truncated. It is truncated when number
+	// of options are > 100.
+	SelectOptionsTruncated bool `json:"selectOptionsTruncated"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type                   respjson.Field
+		DefaultValue           respjson.Field
+		IsValueRequired        respjson.Field
+		MaxLength              respjson.Field
+		MaxValue               respjson.Field
+		MinLength              respjson.Field
+		MinValue               respjson.Field
+		ReadOnly               respjson.Field
+		SelectOptions          respjson.Field
+		SelectOptionsTruncated respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r FileSelectedFieldsSchema) RawJSON() string { return r.JSON.raw }
+func (r *FileSelectedFieldsSchema) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// FileSelectedFieldsSchemaDefaultValueUnion contains all possible properties and
+// values from [string], [float64], [bool],
+// [[]FileSelectedFieldsSchemaDefaultValueMixedItemUnion].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool OfMixed]
+type FileSelectedFieldsSchemaDefaultValueUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a
+	// [[]FileSelectedFieldsSchemaDefaultValueMixedItemUnion] instead of an object.
+	OfMixed []FileSelectedFieldsSchemaDefaultValueMixedItemUnion `json:",inline"`
+	JSON    struct {
+		OfString respjson.Field
+		OfFloat  respjson.Field
+		OfBool   respjson.Field
+		OfMixed  respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u FileSelectedFieldsSchemaDefaultValueUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u FileSelectedFieldsSchemaDefaultValueUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u FileSelectedFieldsSchemaDefaultValueUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u FileSelectedFieldsSchemaDefaultValueUnion) AsMixed() (v []FileSelectedFieldsSchemaDefaultValueMixedItemUnion) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u FileSelectedFieldsSchemaDefaultValueUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *FileSelectedFieldsSchemaDefaultValueUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// FileSelectedFieldsSchemaDefaultValueMixedItemUnion contains all possible
+// properties and values from [string], [float64], [bool].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool]
+type FileSelectedFieldsSchemaDefaultValueMixedItemUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	JSON   struct {
+		OfString respjson.Field
+		OfFloat  respjson.Field
+		OfBool   respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u FileSelectedFieldsSchemaDefaultValueMixedItemUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u FileSelectedFieldsSchemaDefaultValueMixedItemUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u FileSelectedFieldsSchemaDefaultValueMixedItemUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u FileSelectedFieldsSchemaDefaultValueMixedItemUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *FileSelectedFieldsSchemaDefaultValueMixedItemUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// FileSelectedFieldsSchemaMaxValueUnion contains all possible properties and
+// values from [string], [float64].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat]
+type FileSelectedFieldsSchemaMaxValueUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	JSON    struct {
+		OfString respjson.Field
+		OfFloat  respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u FileSelectedFieldsSchemaMaxValueUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u FileSelectedFieldsSchemaMaxValueUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u FileSelectedFieldsSchemaMaxValueUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *FileSelectedFieldsSchemaMaxValueUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// FileSelectedFieldsSchemaMinValueUnion contains all possible properties and
+// values from [string], [float64].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat]
+type FileSelectedFieldsSchemaMinValueUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	JSON    struct {
+		OfString respjson.Field
+		OfFloat  respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u FileSelectedFieldsSchemaMinValueUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u FileSelectedFieldsSchemaMinValueUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u FileSelectedFieldsSchemaMinValueUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *FileSelectedFieldsSchemaMinValueUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// FileSelectedFieldsSchemaSelectOptionUnion contains all possible properties and
+// values from [string], [float64], [bool].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool]
+type FileSelectedFieldsSchemaSelectOptionUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	JSON   struct {
+		OfString respjson.Field
+		OfFloat  respjson.Field
+		OfBool   respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u FileSelectedFieldsSchemaSelectOptionUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u FileSelectedFieldsSchemaSelectOptionUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u FileSelectedFieldsSchemaSelectOptionUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u FileSelectedFieldsSchemaSelectOptionUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *FileSelectedFieldsSchemaSelectOptionUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1223,6 +1501,14 @@ type FileUploadParams struct {
 	// Any of "tags", "customCoordinates", "isPrivateFile", "embeddedMetadata",
 	// "isPublished", "customMetadata", "metadata", "selectedFieldsSchema".
 	ResponseFields []string `json:"responseFields,omitzero"`
+	// This field is included in the response only if the Path policy feature is
+	// available in the plan. It contains schema definitions for the custom metadata
+	// fields selected for the specified file path. Field selection can only be done
+	// when the Path policy feature is enabled.
+	//
+	// Keys are the names of the custom metadata fields; the value object has details
+	// about the custom metadata schema.
+	SelectedFieldsSchema map[string]FileUploadParamsSelectedFieldsSchema `json:"selectedFieldsSchema,omitzero"`
 	// Set the tags while uploading the file. Provide an array of tag strings (e.g.
 	// `["tag1", "tag2", "tag3"]`). The combined length of all tag characters must not
 	// exceed 500, and the `%` character is not allowed. If this field is not specified
@@ -1259,6 +1545,193 @@ func (r FileUploadParams) MarshalMultipart() (data []byte, contentType string, e
 		return nil, "", err
 	}
 	return buf.Bytes(), writer.FormDataContentType(), nil
+}
+
+// The property Type is required.
+type FileUploadParamsSelectedFieldsSchema struct {
+	// Type of the custom metadata field.
+	//
+	// Any of "Text", "Textarea", "Number", "Date", "Boolean", "SingleSelect",
+	// "MultiSelect".
+	Type string `json:"type,omitzero,required"`
+	// Specifies if the custom metadata field is required or not.
+	IsValueRequired param.Opt[bool] `json:"isValueRequired,omitzero"`
+	// Maximum length of string. Only set if `type` is set to `Text` or `Textarea`.
+	MaxLength param.Opt[float64] `json:"maxLength,omitzero"`
+	// Minimum length of string. Only set if `type` is set to `Text` or `Textarea`.
+	MinLength param.Opt[float64] `json:"minLength,omitzero"`
+	// Indicates whether the custom metadata field is read only. A read only field
+	// cannot be modified after being set. This field is configurable only via the
+	// **Path policy** feature.
+	ReadOnly param.Opt[bool] `json:"readOnly,omitzero"`
+	// Specifies if the selectOptions array is truncated. It is truncated when number
+	// of options are > 100.
+	SelectOptionsTruncated param.Opt[bool] `json:"selectOptionsTruncated,omitzero"`
+	// The default value for this custom metadata field. The value should match the
+	// `type` of custom metadata field.
+	DefaultValue FileUploadParamsSelectedFieldsSchemaDefaultValueUnion `json:"defaultValue,omitzero"`
+	// Maximum value of the field. Only set if field type is `Date` or `Number`. For
+	// `Date` type field, the value will be in ISO8601 string format. For `Number` type
+	// field, it will be a numeric value.
+	MaxValue FileUploadParamsSelectedFieldsSchemaMaxValueUnion `json:"maxValue,omitzero"`
+	// Minimum value of the field. Only set if field type is `Date` or `Number`. For
+	// `Date` type field, the value will be in ISO8601 string format. For `Number` type
+	// field, it will be a numeric value.
+	MinValue FileUploadParamsSelectedFieldsSchemaMinValueUnion `json:"minValue,omitzero"`
+	// An array of allowed values when field type is `SingleSelect` or `MultiSelect`.
+	SelectOptions []FileUploadParamsSelectedFieldsSchemaSelectOptionUnion `json:"selectOptions,omitzero"`
+	paramObj
+}
+
+func (r FileUploadParamsSelectedFieldsSchema) MarshalJSON() (data []byte, err error) {
+	type shadow FileUploadParamsSelectedFieldsSchema
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *FileUploadParamsSelectedFieldsSchema) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[FileUploadParamsSelectedFieldsSchema](
+		"type", "Text", "Textarea", "Number", "Date", "Boolean", "SingleSelect", "MultiSelect",
+	)
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type FileUploadParamsSelectedFieldsSchemaDefaultValueUnion struct {
+	OfString param.Opt[string]                                                `json:",omitzero,inline"`
+	OfFloat  param.Opt[float64]                                               `json:",omitzero,inline"`
+	OfBool   param.Opt[bool]                                                  `json:",omitzero,inline"`
+	OfMixed  []FileUploadParamsSelectedFieldsSchemaDefaultValueMixedItemUnion `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u FileUploadParamsSelectedFieldsSchemaDefaultValueUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfString, u.OfFloat, u.OfBool, u.OfMixed)
+}
+func (u *FileUploadParamsSelectedFieldsSchemaDefaultValueUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *FileUploadParamsSelectedFieldsSchemaDefaultValueUnion) asAny() any {
+	if !param.IsOmitted(u.OfString) {
+		return &u.OfString.Value
+	} else if !param.IsOmitted(u.OfFloat) {
+		return &u.OfFloat.Value
+	} else if !param.IsOmitted(u.OfBool) {
+		return &u.OfBool.Value
+	} else if !param.IsOmitted(u.OfMixed) {
+		return &u.OfMixed
+	}
+	return nil
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type FileUploadParamsSelectedFieldsSchemaDefaultValueMixedItemUnion struct {
+	OfString param.Opt[string]  `json:",omitzero,inline"`
+	OfFloat  param.Opt[float64] `json:",omitzero,inline"`
+	OfBool   param.Opt[bool]    `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u FileUploadParamsSelectedFieldsSchemaDefaultValueMixedItemUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfString, u.OfFloat, u.OfBool)
+}
+func (u *FileUploadParamsSelectedFieldsSchemaDefaultValueMixedItemUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *FileUploadParamsSelectedFieldsSchemaDefaultValueMixedItemUnion) asAny() any {
+	if !param.IsOmitted(u.OfString) {
+		return &u.OfString.Value
+	} else if !param.IsOmitted(u.OfFloat) {
+		return &u.OfFloat.Value
+	} else if !param.IsOmitted(u.OfBool) {
+		return &u.OfBool.Value
+	}
+	return nil
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type FileUploadParamsSelectedFieldsSchemaMaxValueUnion struct {
+	OfString param.Opt[string]  `json:",omitzero,inline"`
+	OfFloat  param.Opt[float64] `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u FileUploadParamsSelectedFieldsSchemaMaxValueUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfString, u.OfFloat)
+}
+func (u *FileUploadParamsSelectedFieldsSchemaMaxValueUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *FileUploadParamsSelectedFieldsSchemaMaxValueUnion) asAny() any {
+	if !param.IsOmitted(u.OfString) {
+		return &u.OfString.Value
+	} else if !param.IsOmitted(u.OfFloat) {
+		return &u.OfFloat.Value
+	}
+	return nil
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type FileUploadParamsSelectedFieldsSchemaMinValueUnion struct {
+	OfString param.Opt[string]  `json:",omitzero,inline"`
+	OfFloat  param.Opt[float64] `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u FileUploadParamsSelectedFieldsSchemaMinValueUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfString, u.OfFloat)
+}
+func (u *FileUploadParamsSelectedFieldsSchemaMinValueUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *FileUploadParamsSelectedFieldsSchemaMinValueUnion) asAny() any {
+	if !param.IsOmitted(u.OfString) {
+		return &u.OfString.Value
+	} else if !param.IsOmitted(u.OfFloat) {
+		return &u.OfFloat.Value
+	}
+	return nil
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type FileUploadParamsSelectedFieldsSchemaSelectOptionUnion struct {
+	OfString param.Opt[string]  `json:",omitzero,inline"`
+	OfFloat  param.Opt[float64] `json:",omitzero,inline"`
+	OfBool   param.Opt[bool]    `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u FileUploadParamsSelectedFieldsSchemaSelectOptionUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfString, u.OfFloat, u.OfBool)
+}
+func (u *FileUploadParamsSelectedFieldsSchemaSelectOptionUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *FileUploadParamsSelectedFieldsSchemaSelectOptionUnion) asAny() any {
+	if !param.IsOmitted(u.OfString) {
+		return &u.OfString.Value
+	} else if !param.IsOmitted(u.OfFloat) {
+		return &u.OfFloat.Value
+	} else if !param.IsOmitted(u.OfBool) {
+		return &u.OfBool.Value
+	}
+	return nil
 }
 
 // Configure pre-processing (`pre`) and post-processing (`post`) transformations.

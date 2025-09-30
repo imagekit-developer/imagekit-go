@@ -82,6 +82,8 @@ type AssetListResponseUnion struct {
 	Mime string `json:"mime"`
 	Name string `json:"name"`
 	// This field is from variant [File].
+	SelectedFieldsSchema map[string]FileSelectedFieldsSchema `json:"selectedFieldsSchema"`
+	// This field is from variant [File].
 	Size float64 `json:"size"`
 	// This field is from variant [File].
 	Tags []string `json:"tags"`
@@ -101,31 +103,32 @@ type AssetListResponseUnion struct {
 	// This field is from variant [Folder].
 	FolderPath string `json:"folderPath"`
 	JSON       struct {
-		AITags            respjson.Field
-		CreatedAt         respjson.Field
-		CustomCoordinates respjson.Field
-		CustomMetadata    respjson.Field
-		Description       respjson.Field
-		FileID            respjson.Field
-		FilePath          respjson.Field
-		FileType          respjson.Field
-		HasAlpha          respjson.Field
-		Height            respjson.Field
-		IsPrivateFile     respjson.Field
-		IsPublished       respjson.Field
-		Mime              respjson.Field
-		Name              respjson.Field
-		Size              respjson.Field
-		Tags              respjson.Field
-		Thumbnail         respjson.Field
-		Type              respjson.Field
-		UpdatedAt         respjson.Field
-		URL               respjson.Field
-		VersionInfo       respjson.Field
-		Width             respjson.Field
-		FolderID          respjson.Field
-		FolderPath        respjson.Field
-		raw               string
+		AITags               respjson.Field
+		CreatedAt            respjson.Field
+		CustomCoordinates    respjson.Field
+		CustomMetadata       respjson.Field
+		Description          respjson.Field
+		FileID               respjson.Field
+		FilePath             respjson.Field
+		FileType             respjson.Field
+		HasAlpha             respjson.Field
+		Height               respjson.Field
+		IsPrivateFile        respjson.Field
+		IsPublished          respjson.Field
+		Mime                 respjson.Field
+		Name                 respjson.Field
+		SelectedFieldsSchema respjson.Field
+		Size                 respjson.Field
+		Tags                 respjson.Field
+		Thumbnail            respjson.Field
+		Type                 respjson.Field
+		UpdatedAt            respjson.Field
+		URL                  respjson.Field
+		VersionInfo          respjson.Field
+		Width                respjson.Field
+		FolderID             respjson.Field
+		FolderPath           respjson.Field
+		raw                  string
 	} `json:"-"`
 }
 

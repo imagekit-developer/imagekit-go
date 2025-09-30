@@ -67,7 +67,39 @@ func TestBetaV2FileUploadWithOptionalParams(t *testing.T) {
 		OverwriteFile:           imagekit.Bool(true),
 		OverwriteTags:           imagekit.Bool(true),
 		ResponseFields:          []string{"tags", "customCoordinates", "isPrivateFile"},
-		Tags:                    []string{"t-shirt", "round-neck", "men"},
+		SelectedFieldsSchema: map[string]imagekit.BetaV2FileUploadParamsSelectedFieldsSchema{
+			"foo": {
+				Type: "Text",
+				DefaultValue: imagekit.BetaV2FileUploadParamsSelectedFieldsSchemaDefaultValueUnion{
+					OfString: imagekit.String("string"),
+				},
+				IsValueRequired: imagekit.Bool(true),
+				MaxLength:       imagekit.Float(0),
+				MaxValue: imagekit.BetaV2FileUploadParamsSelectedFieldsSchemaMaxValueUnion{
+					OfString: imagekit.String("string"),
+				},
+				MinLength: imagekit.Float(0),
+				MinValue: imagekit.BetaV2FileUploadParamsSelectedFieldsSchemaMinValueUnion{
+					OfString: imagekit.String("string"),
+				},
+				ReadOnly: imagekit.Bool(true),
+				SelectOptions: []imagekit.BetaV2FileUploadParamsSelectedFieldsSchemaSelectOptionUnion{{
+					OfString: imagekit.String("small"),
+				}, {
+					OfString: imagekit.String("medium"),
+				}, {
+					OfString: imagekit.String("large"),
+				}, {
+					OfFloat: imagekit.Float(30),
+				}, {
+					OfFloat: imagekit.Float(40),
+				}, {
+					OfBool: imagekit.Bool(true),
+				}},
+				SelectOptionsTruncated: imagekit.Bool(true),
+			},
+		},
+		Tags: []string{"t-shirt", "round-neck", "men"},
 		Transformation: imagekit.BetaV2FileUploadParamsTransformation{
 			Post: []imagekit.BetaV2FileUploadParamsTransformationPostUnion{{
 				OfThumbnail: &imagekit.BetaV2FileUploadParamsTransformationPostThumbnail{

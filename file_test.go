@@ -268,8 +268,40 @@ func TestFileUploadWithOptionalParams(t *testing.T) {
 		OverwriteTags:           imagekit.Bool(true),
 		PublicKey:               imagekit.String("publicKey"),
 		ResponseFields:          []string{"tags", "customCoordinates", "isPrivateFile"},
-		Signature:               imagekit.String("signature"),
-		Tags:                    []string{"t-shirt", "round-neck", "men"},
+		SelectedFieldsSchema: map[string]imagekit.FileUploadParamsSelectedFieldsSchema{
+			"foo": {
+				Type: "Text",
+				DefaultValue: imagekit.FileUploadParamsSelectedFieldsSchemaDefaultValueUnion{
+					OfString: imagekit.String("string"),
+				},
+				IsValueRequired: imagekit.Bool(true),
+				MaxLength:       imagekit.Float(0),
+				MaxValue: imagekit.FileUploadParamsSelectedFieldsSchemaMaxValueUnion{
+					OfString: imagekit.String("string"),
+				},
+				MinLength: imagekit.Float(0),
+				MinValue: imagekit.FileUploadParamsSelectedFieldsSchemaMinValueUnion{
+					OfString: imagekit.String("string"),
+				},
+				ReadOnly: imagekit.Bool(true),
+				SelectOptions: []imagekit.FileUploadParamsSelectedFieldsSchemaSelectOptionUnion{{
+					OfString: imagekit.String("small"),
+				}, {
+					OfString: imagekit.String("medium"),
+				}, {
+					OfString: imagekit.String("large"),
+				}, {
+					OfFloat: imagekit.Float(30),
+				}, {
+					OfFloat: imagekit.Float(40),
+				}, {
+					OfBool: imagekit.Bool(true),
+				}},
+				SelectOptionsTruncated: imagekit.Bool(true),
+			},
+		},
+		Signature: imagekit.String("signature"),
+		Tags:      []string{"t-shirt", "round-neck", "men"},
 		Transformation: imagekit.FileUploadParamsTransformation{
 			Post: []imagekit.FileUploadParamsTransformationPostUnion{{
 				OfThumbnail: &imagekit.FileUploadParamsTransformationPostThumbnail{
