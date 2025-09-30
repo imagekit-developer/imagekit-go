@@ -126,7 +126,7 @@ type CustomMetadataFieldSchema struct {
 	// Any of "Text", "Textarea", "Number", "Date", "Boolean", "SingleSelect",
 	// "MultiSelect".
 	Type string `json:"type,required"`
-	// The default value for this custom metadata field. Date type of default value
+	// The default value for this custom metadata field. Data type of default value
 	// depends on the field type.
 	DefaultValue CustomMetadataFieldSchemaDefaultValueUnion `json:"defaultValue"`
 	// Specifies if the this custom metadata field is required or not.
