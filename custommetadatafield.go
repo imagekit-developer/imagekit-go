@@ -64,6 +64,11 @@ func (r *CustomMetadataFieldService) Update(ctx context.Context, id string, body
 // This API returns the array of created custom metadata field objects. By default
 // the API returns only non deleted field objects, but you can include deleted
 // fields in the API response.
+//
+// You can also filter results by a specific folder path to retrieve custom
+// metadata fields applicable at that location. This path-specific filtering is
+// useful when using the **Path policy** feature to determine which custom metadata
+// fields are selected for a given path.
 func (r *CustomMetadataFieldService) List(ctx context.Context, query CustomMetadataFieldListParams, opts ...option.RequestOption) (res *[]CustomMetadataField, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/customMetadataFields"
@@ -797,6 +802,11 @@ func (u *CustomMetadataFieldUpdateParamsSchemaSelectOptionUnion) asAny() any {
 }
 
 type CustomMetadataFieldListParams struct {
+	// The folder path (e.g., `/path/to/folder`) for which to retrieve applicable
+	// custom metadata fields.
+	// Useful for determining path-specific field selections when the
+	// [Path policy](https://imagekit.io/docs/dam/path-policy) feature is in use.
+	FolderPath param.Opt[string] `query:"folderPath,omitzero" json:"-"`
 	// Set it to `true` to include deleted field objects in the API response.
 	IncludeDeleted param.Opt[bool] `query:"includeDeleted,omitzero" json:"-"`
 	paramObj

@@ -140,6 +140,7 @@ func TestCustomMetadataFieldListWithOptionalParams(t *testing.T) {
 		option.WithPassword("My Password"),
 	)
 	_, err := client.CustomMetadataFields.List(context.TODO(), imagekit.CustomMetadataFieldListParams{
+		FolderPath:     imagekit.String("folderPath"),
 		IncludeDeleted: imagekit.Bool(true),
 	})
 	if err != nil {

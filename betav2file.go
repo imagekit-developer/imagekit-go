@@ -363,7 +363,7 @@ type BetaV2FileUploadParams struct {
 	// Array of response field keys to include in the API response body.
 	//
 	// Any of "tags", "customCoordinates", "isPrivateFile", "embeddedMetadata",
-	// "isPublished", "customMetadata", "metadata".
+	// "isPublished", "customMetadata", "metadata", "selectedFieldsSchema".
 	ResponseFields []string `json:"responseFields,omitzero"`
 	// Set the tags while uploading the file. Provide an array of tag strings (e.g.
 	// `["tag1", "tag2", "tag3"]`). The combined length of all tag characters must not
