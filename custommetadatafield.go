@@ -803,9 +803,9 @@ func (u *CustomMetadataFieldUpdateParamsSchemaSelectOptionUnion) asAny() any {
 
 type CustomMetadataFieldListParams struct {
 	// The folder path (e.g., `/path/to/folder`) for which to retrieve applicable
-	// custom metadata fields.
-	// Useful for determining path-specific field selections when the
-	// [Path policy](https://imagekit.io/docs/dam/path-policy) feature is in use.
+	// custom metadata fields. Useful for determining path-specific field selections
+	// when the [Path policy](https://imagekit.io/docs/dam/path-policy) feature is in
+	// use.
 	FolderPath param.Opt[string] `query:"folderPath,omitzero" json:"-"`
 	// Set it to `true` to include deleted field objects in the API response.
 	IncludeDeleted param.Opt[bool] `query:"includeDeleted,omitzero" json:"-"`
