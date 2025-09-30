@@ -510,6 +510,14 @@ type UploadPreTransformSuccessEventData struct {
 	Metadata Metadata `json:"metadata"`
 	// Name of the asset.
 	Name string `json:"name"`
+	// This field is included in the response only if the Path policy feature is
+	// available in the plan. It contains schema definitions for the custom metadata
+	// fields selected for the specified file path. Field selection can only be done
+	// when the Path policy feature is enabled.
+	//
+	// Keys are the names of the custom metadata fields; the value object has details
+	// about the custom metadata schema.
+	SelectedFieldsSchema map[string]UploadPreTransformSuccessEventDataSelectedFieldsSchema `json:"selectedFieldsSchema"`
 	// Size of the image file in Bytes.
 	Size float64 `json:"size"`
 	// The array of tags associated with the asset. If no tags are set, it will be
@@ -528,32 +536,33 @@ type UploadPreTransformSuccessEventData struct {
 	Width float64 `json:"width"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		AITags            respjson.Field
-		AudioCodec        respjson.Field
-		BitRate           respjson.Field
-		CustomCoordinates respjson.Field
-		CustomMetadata    respjson.Field
-		Description       respjson.Field
-		Duration          respjson.Field
-		EmbeddedMetadata  respjson.Field
-		ExtensionStatus   respjson.Field
-		FileID            respjson.Field
-		FilePath          respjson.Field
-		FileType          respjson.Field
-		Height            respjson.Field
-		IsPrivateFile     respjson.Field
-		IsPublished       respjson.Field
-		Metadata          respjson.Field
-		Name              respjson.Field
-		Size              respjson.Field
-		Tags              respjson.Field
-		ThumbnailURL      respjson.Field
-		URL               respjson.Field
-		VersionInfo       respjson.Field
-		VideoCodec        respjson.Field
-		Width             respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
+		AITags               respjson.Field
+		AudioCodec           respjson.Field
+		BitRate              respjson.Field
+		CustomCoordinates    respjson.Field
+		CustomMetadata       respjson.Field
+		Description          respjson.Field
+		Duration             respjson.Field
+		EmbeddedMetadata     respjson.Field
+		ExtensionStatus      respjson.Field
+		FileID               respjson.Field
+		FilePath             respjson.Field
+		FileType             respjson.Field
+		Height               respjson.Field
+		IsPrivateFile        respjson.Field
+		IsPublished          respjson.Field
+		Metadata             respjson.Field
+		Name                 respjson.Field
+		SelectedFieldsSchema respjson.Field
+		Size                 respjson.Field
+		Tags                 respjson.Field
+		ThumbnailURL         respjson.Field
+		URL                  respjson.Field
+		VersionInfo          respjson.Field
+		VideoCodec           respjson.Field
+		Width                respjson.Field
+		ExtraFields          map[string]respjson.Field
+		raw                  string
 	} `json:"-"`
 }
 
@@ -620,6 +629,286 @@ type UploadPreTransformSuccessEventDataExtensionStatus struct {
 // Returns the unmodified JSON received from the API
 func (r UploadPreTransformSuccessEventDataExtensionStatus) RawJSON() string { return r.JSON.raw }
 func (r *UploadPreTransformSuccessEventDataExtensionStatus) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type UploadPreTransformSuccessEventDataSelectedFieldsSchema struct {
+	// Type of the custom metadata field.
+	//
+	// Any of "Text", "Textarea", "Number", "Date", "Boolean", "SingleSelect",
+	// "MultiSelect".
+	Type string `json:"type,required"`
+	// The default value for this custom metadata field. The value should match the
+	// `type` of custom metadata field.
+	DefaultValue UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueUnion `json:"defaultValue"`
+	// Specifies if the custom metadata field is required or not.
+	IsValueRequired bool `json:"isValueRequired"`
+	// Maximum length of string. Only set if `type` is set to `Text` or `Textarea`.
+	MaxLength float64 `json:"maxLength"`
+	// Maximum value of the field. Only set if field type is `Date` or `Number`. For
+	// `Date` type field, the value will be in ISO8601 string format. For `Number` type
+	// field, it will be a numeric value.
+	MaxValue UploadPreTransformSuccessEventDataSelectedFieldsSchemaMaxValueUnion `json:"maxValue"`
+	// Minimum length of string. Only set if `type` is set to `Text` or `Textarea`.
+	MinLength float64 `json:"minLength"`
+	// Minimum value of the field. Only set if field type is `Date` or `Number`. For
+	// `Date` type field, the value will be in ISO8601 string format. For `Number` type
+	// field, it will be a numeric value.
+	MinValue UploadPreTransformSuccessEventDataSelectedFieldsSchemaMinValueUnion `json:"minValue"`
+	// Indicates whether the custom metadata field is read only. A read only field
+	// cannot be modified after being set. This field is configurable only via the
+	// **Path policy** feature.
+	ReadOnly bool `json:"readOnly"`
+	// An array of allowed values when field type is `SingleSelect` or `MultiSelect`.
+	SelectOptions []UploadPreTransformSuccessEventDataSelectedFieldsSchemaSelectOptionUnion `json:"selectOptions"`
+	// Specifies if the selectOptions array is truncated. It is truncated when number
+	// of options are > 100.
+	SelectOptionsTruncated bool `json:"selectOptionsTruncated"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type                   respjson.Field
+		DefaultValue           respjson.Field
+		IsValueRequired        respjson.Field
+		MaxLength              respjson.Field
+		MaxValue               respjson.Field
+		MinLength              respjson.Field
+		MinValue               respjson.Field
+		ReadOnly               respjson.Field
+		SelectOptions          respjson.Field
+		SelectOptionsTruncated respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r UploadPreTransformSuccessEventDataSelectedFieldsSchema) RawJSON() string { return r.JSON.raw }
+func (r *UploadPreTransformSuccessEventDataSelectedFieldsSchema) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueUnion contains
+// all possible properties and values from [string], [float64], [bool],
+// [[]UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueMixedItemUnion].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool OfMixed]
+type UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a
+	// [[]UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueMixedItemUnion]
+	// instead of an object.
+	OfMixed []UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueMixedItemUnion `json:",inline"`
+	JSON    struct {
+		OfString respjson.Field
+		OfFloat  respjson.Field
+		OfBool   respjson.Field
+		OfMixed  respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueUnion) AsMixed() (v []UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueMixedItemUnion) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueMixedItemUnion
+// contains all possible properties and values from [string], [float64], [bool].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool]
+type UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueMixedItemUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	JSON   struct {
+		OfString respjson.Field
+		OfFloat  respjson.Field
+		OfBool   respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueMixedItemUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueMixedItemUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueMixedItemUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueMixedItemUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueMixedItemUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// UploadPreTransformSuccessEventDataSelectedFieldsSchemaMaxValueUnion contains all
+// possible properties and values from [string], [float64].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat]
+type UploadPreTransformSuccessEventDataSelectedFieldsSchemaMaxValueUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	JSON    struct {
+		OfString respjson.Field
+		OfFloat  respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u UploadPreTransformSuccessEventDataSelectedFieldsSchemaMaxValueUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UploadPreTransformSuccessEventDataSelectedFieldsSchemaMaxValueUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u UploadPreTransformSuccessEventDataSelectedFieldsSchemaMaxValueUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *UploadPreTransformSuccessEventDataSelectedFieldsSchemaMaxValueUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// UploadPreTransformSuccessEventDataSelectedFieldsSchemaMinValueUnion contains all
+// possible properties and values from [string], [float64].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat]
+type UploadPreTransformSuccessEventDataSelectedFieldsSchemaMinValueUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	JSON    struct {
+		OfString respjson.Field
+		OfFloat  respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u UploadPreTransformSuccessEventDataSelectedFieldsSchemaMinValueUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UploadPreTransformSuccessEventDataSelectedFieldsSchemaMinValueUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u UploadPreTransformSuccessEventDataSelectedFieldsSchemaMinValueUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *UploadPreTransformSuccessEventDataSelectedFieldsSchemaMinValueUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// UploadPreTransformSuccessEventDataSelectedFieldsSchemaSelectOptionUnion contains
+// all possible properties and values from [string], [float64], [bool].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool]
+type UploadPreTransformSuccessEventDataSelectedFieldsSchemaSelectOptionUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	JSON   struct {
+		OfString respjson.Field
+		OfFloat  respjson.Field
+		OfBool   respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u UploadPreTransformSuccessEventDataSelectedFieldsSchemaSelectOptionUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UploadPreTransformSuccessEventDataSelectedFieldsSchemaSelectOptionUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UploadPreTransformSuccessEventDataSelectedFieldsSchemaSelectOptionUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u UploadPreTransformSuccessEventDataSelectedFieldsSchemaSelectOptionUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *UploadPreTransformSuccessEventDataSelectedFieldsSchemaSelectOptionUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1385,6 +1674,8 @@ type UnsafeUnwrapWebhookEventUnionData struct {
 	Metadata Metadata `json:"metadata"`
 	Name     string   `json:"name"`
 	// This field is from variant [UploadPreTransformSuccessEventData].
+	SelectedFieldsSchema map[string]UploadPreTransformSuccessEventDataSelectedFieldsSchema `json:"selectedFieldsSchema"`
+	// This field is from variant [UploadPreTransformSuccessEventData].
 	Size float64 `json:"size"`
 	// This field is from variant [UploadPreTransformSuccessEventData].
 	Tags []string `json:"tags"`
@@ -1399,34 +1690,35 @@ type UnsafeUnwrapWebhookEventUnionData struct {
 	Width float64 `json:"width"`
 	Path  string  `json:"path"`
 	JSON  struct {
-		Asset             respjson.Field
-		Transformation    respjson.Field
-		AITags            respjson.Field
-		AudioCodec        respjson.Field
-		BitRate           respjson.Field
-		CustomCoordinates respjson.Field
-		CustomMetadata    respjson.Field
-		Description       respjson.Field
-		Duration          respjson.Field
-		EmbeddedMetadata  respjson.Field
-		ExtensionStatus   respjson.Field
-		FileID            respjson.Field
-		FilePath          respjson.Field
-		FileType          respjson.Field
-		Height            respjson.Field
-		IsPrivateFile     respjson.Field
-		IsPublished       respjson.Field
-		Metadata          respjson.Field
-		Name              respjson.Field
-		Size              respjson.Field
-		Tags              respjson.Field
-		ThumbnailURL      respjson.Field
-		URL               respjson.Field
-		VersionInfo       respjson.Field
-		VideoCodec        respjson.Field
-		Width             respjson.Field
-		Path              respjson.Field
-		raw               string
+		Asset                respjson.Field
+		Transformation       respjson.Field
+		AITags               respjson.Field
+		AudioCodec           respjson.Field
+		BitRate              respjson.Field
+		CustomCoordinates    respjson.Field
+		CustomMetadata       respjson.Field
+		Description          respjson.Field
+		Duration             respjson.Field
+		EmbeddedMetadata     respjson.Field
+		ExtensionStatus      respjson.Field
+		FileID               respjson.Field
+		FilePath             respjson.Field
+		FileType             respjson.Field
+		Height               respjson.Field
+		IsPrivateFile        respjson.Field
+		IsPublished          respjson.Field
+		Metadata             respjson.Field
+		Name                 respjson.Field
+		SelectedFieldsSchema respjson.Field
+		Size                 respjson.Field
+		Tags                 respjson.Field
+		ThumbnailURL         respjson.Field
+		URL                  respjson.Field
+		VersionInfo          respjson.Field
+		VideoCodec           respjson.Field
+		Width                respjson.Field
+		Path                 respjson.Field
+		raw                  string
 	} `json:"-"`
 }
 
@@ -1720,6 +2012,8 @@ type UnwrapWebhookEventUnionData struct {
 	Metadata Metadata `json:"metadata"`
 	Name     string   `json:"name"`
 	// This field is from variant [UploadPreTransformSuccessEventData].
+	SelectedFieldsSchema map[string]UploadPreTransformSuccessEventDataSelectedFieldsSchema `json:"selectedFieldsSchema"`
+	// This field is from variant [UploadPreTransformSuccessEventData].
 	Size float64 `json:"size"`
 	// This field is from variant [UploadPreTransformSuccessEventData].
 	Tags []string `json:"tags"`
@@ -1734,34 +2028,35 @@ type UnwrapWebhookEventUnionData struct {
 	Width float64 `json:"width"`
 	Path  string  `json:"path"`
 	JSON  struct {
-		Asset             respjson.Field
-		Transformation    respjson.Field
-		AITags            respjson.Field
-		AudioCodec        respjson.Field
-		BitRate           respjson.Field
-		CustomCoordinates respjson.Field
-		CustomMetadata    respjson.Field
-		Description       respjson.Field
-		Duration          respjson.Field
-		EmbeddedMetadata  respjson.Field
-		ExtensionStatus   respjson.Field
-		FileID            respjson.Field
-		FilePath          respjson.Field
-		FileType          respjson.Field
-		Height            respjson.Field
-		IsPrivateFile     respjson.Field
-		IsPublished       respjson.Field
-		Metadata          respjson.Field
-		Name              respjson.Field
-		Size              respjson.Field
-		Tags              respjson.Field
-		ThumbnailURL      respjson.Field
-		URL               respjson.Field
-		VersionInfo       respjson.Field
-		VideoCodec        respjson.Field
-		Width             respjson.Field
-		Path              respjson.Field
-		raw               string
+		Asset                respjson.Field
+		Transformation       respjson.Field
+		AITags               respjson.Field
+		AudioCodec           respjson.Field
+		BitRate              respjson.Field
+		CustomCoordinates    respjson.Field
+		CustomMetadata       respjson.Field
+		Description          respjson.Field
+		Duration             respjson.Field
+		EmbeddedMetadata     respjson.Field
+		ExtensionStatus      respjson.Field
+		FileID               respjson.Field
+		FilePath             respjson.Field
+		FileType             respjson.Field
+		Height               respjson.Field
+		IsPrivateFile        respjson.Field
+		IsPublished          respjson.Field
+		Metadata             respjson.Field
+		Name                 respjson.Field
+		SelectedFieldsSchema respjson.Field
+		Size                 respjson.Field
+		Tags                 respjson.Field
+		ThumbnailURL         respjson.Field
+		URL                  respjson.Field
+		VersionInfo          respjson.Field
+		VideoCodec           respjson.Field
+		Width                respjson.Field
+		Path                 respjson.Field
+		raw                  string
 	} `json:"-"`
 }
 
