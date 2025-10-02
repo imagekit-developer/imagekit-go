@@ -12,6 +12,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"slices"
+	"strings"
 	"time"
 
 	"github.com/stainless-sdks/imagekit-go/internal/apiform"
@@ -1805,7 +1806,85 @@ type FileUploadParams struct {
 func (r FileUploadParams) MarshalMultipart() (data []byte, contentType string, err error) {
 	buf := bytes.NewBuffer(nil)
 	writer := multipart.NewWriter(buf)
-	err = apiform.MarshalRoot(r, writer)
+
+	// Convert tags array to comma-separated string
+	if len(r.Tags) > 0 {
+		tagsStr := strings.Join(r.Tags, ",")
+		err = writer.WriteField("tags", tagsStr)
+		if err != nil {
+			writer.Close()
+			return nil, "", err
+		}
+	}
+
+	// Convert responseFields array to comma-separated string
+	if len(r.ResponseFields) > 0 {
+		responseFieldsStr := strings.Join(r.ResponseFields, ",")
+		err = writer.WriteField("responseFields", responseFieldsStr)
+		if err != nil {
+			writer.Close()
+			return nil, "", err
+		}
+	}
+
+	// Convert extensions array to JSON string
+	if len(r.Extensions) > 0 {
+		extensionsJSON, jsonErr := json.Marshal(r.Extensions)
+		if jsonErr != nil {
+			writer.Close()
+			return nil, "", fmt.Errorf("failed to marshal extensions: %w", jsonErr)
+		}
+		err = writer.WriteField("extensions", string(extensionsJSON))
+		if err != nil {
+			writer.Close()
+			return nil, "", err
+		}
+	}
+
+	// Convert customMetadata object to JSON string
+	if len(r.CustomMetadata) > 0 {
+		customMetadataJSON, jsonErr := json.Marshal(r.CustomMetadata)
+		if jsonErr != nil {
+			writer.Close()
+			return nil, "", fmt.Errorf("failed to marshal customMetadata: %w", jsonErr)
+		}
+		err = writer.WriteField("customMetadata", string(customMetadataJSON))
+		if err != nil {
+			writer.Close()
+			return nil, "", err
+		}
+	}
+
+	// Convert transformation object to JSON string
+	// Check if transformation has any non-zero values
+	hasTransformation := false
+	if r.Transformation.Pre.Valid() || len(r.Transformation.Post) > 0 {
+		hasTransformation = true
+	}
+
+	if hasTransformation {
+		transformationJSON, jsonErr := json.Marshal(r.Transformation)
+		if jsonErr != nil {
+			writer.Close()
+			return nil, "", fmt.Errorf("failed to marshal transformation: %w", jsonErr)
+		}
+		err = writer.WriteField("transformation", string(transformationJSON))
+		if err != nil {
+			writer.Close()
+			return nil, "", err
+		}
+	}
+
+	// Create a copy of the params without the fields we've already handled to avoid double marshaling
+	rCopy := r
+	rCopy.Tags = nil
+	rCopy.ResponseFields = nil
+	rCopy.Extensions = nil
+	rCopy.CustomMetadata = nil
+	// Reset transformation to empty
+	rCopy.Transformation = FileUploadParamsTransformation{}
+
+	err = apiform.MarshalRoot(rCopy, writer)
 	if err == nil {
 		err = apiform.WriteExtras(writer, r.ExtraFields())
 	}
