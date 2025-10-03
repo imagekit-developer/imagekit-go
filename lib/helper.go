@@ -15,20 +15,107 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/stainless-sdks/imagekit-go/internal/requestconfig"
+	"github.com/stainless-sdks/imagekit-go/option"
 	"github.com/stainless-sdks/imagekit-go/packages/param"
 	"github.com/stainless-sdks/imagekit-go/shared"
 )
 
-// Helper provides utility functions for ImageKit SDK
+// HelperService contains utility methods for ImageKit SDK operations like URL building,
+// transformation string generation, and authentication parameter generation.
+//
+// Note, unlike clients, this service does not read variables from the environment
+// automatically. You should not instantiate this service directly, and instead use
+// the [NewHelperService] method instead.
+type HelperService struct {
+	Options    []option.RequestOption
+	privateKey string
+}
+
+// NewHelperService generates a new helper service that applies the given options.
+// It extracts the private key from the options for use in signing and authentication.
+func NewHelperService(opts ...option.RequestOption) (r *HelperService) {
+	r = &HelperService{Options: opts}
+
+	// Extract private key from options
+	// We need to apply options carefully to avoid nil pointer errors
+	cfg := &requestconfig.RequestConfig{}
+	for _, opt := range opts {
+		// Skip if opt is nil
+		if opt != nil {
+			// Safely apply the option, catching any panics
+			func() {
+				defer func() {
+					if recovered := recover(); recovered != nil {
+						// Ignore panics during option application
+						// This can happen when some options reference uninitialized fields
+					}
+				}()
+				opt.Apply(cfg)
+			}()
+		}
+	}
+	r.privateKey = cfg.PrivateKey
+
+	return
+}
+
+// Helper provides utility functions for ImageKit SDK (legacy support)
 type Helper struct {
 	privateKey string
 }
 
-// NewHelper creates a new Helper instance
+// NewHelper creates a new Helper instance (legacy support)
 func NewHelper(privateKey string) *Helper {
 	return &Helper{
 		privateKey: privateKey,
 	}
+}
+
+// BuildURL generates a URL for accessing an image or file with optional transformations.
+// This is useful for generating URLs on the server-side for images stored in ImageKit.
+func (r *HelperService) BuildURL(opts shared.SrcOptionsParam) string {
+	h := &Helper{privateKey: r.privateKey}
+	return h.BuildSrc(opts)
+}
+
+// BuildTransformationString generates a transformation string from transformation parameters.
+// This is useful when you need just the transformation string without building a full URL.
+func (r *HelperService) BuildTransformationString(transformation []shared.TransformationParam) string {
+	h := &Helper{privateKey: r.privateKey}
+	return h.BuildTransformationString(transformation)
+}
+
+// GetAuthenticationParameters generates authentication parameters for client-side file uploads.
+// This is required when implementing direct upload from the browser or mobile apps.
+//
+// Parameters:
+//   - token: A unique token for this upload request. If empty, a UUID will be generated.
+//   - expire: Unix timestamp when this authentication should expire. If 0, defaults to 30 minutes from now.
+//
+// Returns a map containing:
+//   - "token": The authentication token
+//   - "expire": The expiration timestamp
+//   - "signature": The HMAC signature
+func (r *HelperService) GetAuthenticationParameters(token string, expire int64) map[string]interface{} {
+	if r.privateKey == "" {
+		panic("Private API key is required for authentication parameters generation")
+	}
+
+	defaultTimeDiff := int64(60 * 30) // 30 minutes
+	defaultExpire := time.Now().Unix() + defaultTimeDiff
+
+	finalToken := token
+	if finalToken == "" {
+		finalToken = uuid.New().String()
+	}
+
+	finalExpire := expire
+	if finalExpire == 0 {
+		finalExpire = defaultExpire
+	}
+
+	return getAuthenticationParameters(finalToken, finalExpire, r.privateKey)
 }
 
 const (
@@ -45,60 +132,6 @@ var (
 	simpleOverlayPathRegex = regexp.MustCompile(`^[a-zA-Z0-9-._/ ]*$`)
 	simpleOverlayTextRegex = regexp.MustCompile(`^[a-zA-Z0-9-._ ]*$`)
 )
-
-// Mapping from JSON field names to transformation keys
-var transformationKeyMap = map[string]string{
-	"width":          "w",
-	"height":         "h",
-	"aspectRatio":    "ar",
-	"quality":        "q",
-	"crop":           "c",
-	"cropMode":       "cm",
-	"x":              "x",
-	"y":              "y",
-	"xCenter":        "xc",
-	"yCenter":        "yc",
-	"focus":          "fo",
-	"format":         "f",
-	"radius":         "r",
-	"background":     "bg",
-	"border":         "b",
-	"rotation":       "rt",
-	"blur":           "bl",
-	"named":          "n",
-	"progressive":    "pr",
-	"lossless":       "lo",
-	"trim":           "t",
-	"metadata":       "md",
-	"colorProfile":   "cp",
-	"defaultImage":   "di",
-	"dpr":            "dpr",
-	"effectSharpen":  "e-sharpen",
-	"effectUSM":      "e-usm",
-	"effectContrast": "e-contrast",
-	"effectGray":     "e-grayscale",
-	"effectShadow":   "e-shadow",
-	"effectGradient": "e-gradient",
-	"original":       "orig",
-	"raw":            "raw",
-	"page":           "pg",
-	"flip":           "fl",
-	"opacity":        "o",
-	"zoom":           "z",
-	"videoCodec":     "vc",
-	"audioCodec":     "ac",
-	"startOffset":    "so",
-	"endOffset":      "eo",
-	"duration":       "du",
-	"fontFamily":     "ff",
-	"fontSize":       "fs",
-	"fontColor":      "co",
-	"innerAlignment": "ia",
-	"padding":        "pa",
-	"alpha":          "al",
-	"typography":     "tg",
-	"lineHeight":     "lh",
-}
 
 // BuildSrc builds a source URL with the given options
 func (h *Helper) BuildSrc(opts shared.SrcOptionsParam) string {

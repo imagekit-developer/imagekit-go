@@ -9,6 +9,7 @@ import (
 	"slices"
 
 	"github.com/stainless-sdks/imagekit-go/internal/requestconfig"
+	"github.com/stainless-sdks/imagekit-go/lib"
 	"github.com/stainless-sdks/imagekit-go/option"
 )
 
@@ -26,6 +27,7 @@ type Client struct {
 	Accounts             AccountService
 	Beta                 BetaService
 	Webhooks             WebhookService
+	Helper               *lib.HelperService
 }
 
 // DefaultClientOptions read from the environment (IMAGEKIT_PRIVATE_KEY,
@@ -68,6 +70,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.Accounts = NewAccountService(opts...)
 	r.Beta = NewBetaService(opts...)
 	r.Webhooks = NewWebhookService(opts...)
+	r.Helper = lib.NewHelperService(opts...)
 
 	return
 }

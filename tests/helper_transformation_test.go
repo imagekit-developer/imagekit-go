@@ -1,22 +1,25 @@
-package lib
+package imagekit_test
 
 import (
 	"testing"
+
+	"github.com/stainless-sdks/imagekit-go"
+	"github.com/stainless-sdks/imagekit-go/option"
 
 	"github.com/stainless-sdks/imagekit-go/packages/param"
 	"github.com/stainless-sdks/imagekit-go/shared"
 )
 
 func TestBuildTransformationStringDetailed(t *testing.T) {
-	helper := NewHelper("test-key")
+	client := imagekit.NewClient(option.WithPrivateKey("test-key"))
 
 	t.Run("should return empty string for empty transformation array", func(t *testing.T) {
-		result := helper.BuildTransformationString(nil)
+		result := client.Helper.BuildTransformationString(nil)
 		if result != "" {
 			t.Errorf("Expected empty string, got %s", result)
 		}
 
-		result = helper.BuildTransformationString([]shared.TransformationParam{})
+		result = client.Helper.BuildTransformationString([]shared.TransformationParam{})
 		if result != "" {
 			t.Errorf("Expected empty string, got %s", result)
 		}
@@ -31,7 +34,7 @@ func TestBuildTransformationStringDetailed(t *testing.T) {
 			},
 		}
 
-		result := helper.BuildTransformationString(transformation)
+		result := client.Helper.BuildTransformationString(transformation)
 		expected := "w-300"
 		if result != expected {
 			t.Errorf("Expected %s, got %s", expected, result)
@@ -50,7 +53,7 @@ func TestBuildTransformationStringDetailed(t *testing.T) {
 			},
 		}
 
-		result := helper.BuildTransformationString(transformation)
+		result := client.Helper.BuildTransformationString(transformation)
 		expected := "w-300,h-200"
 		if result != expected {
 			t.Errorf("Expected %s, got %s", expected, result)
@@ -71,7 +74,7 @@ func TestBuildTransformationStringDetailed(t *testing.T) {
 			},
 		}
 
-		result := helper.BuildTransformationString(transformation)
+		result := client.Helper.BuildTransformationString(transformation)
 		expected := "w-300:h-200"
 		if result != expected {
 			t.Errorf("Expected %s, got %s", expected, result)
@@ -84,7 +87,7 @@ func TestBuildTransformationStringDetailed(t *testing.T) {
 			{}, // Empty transformation
 		}
 
-		result := helper.BuildTransformationString(transformation)
+		result := client.Helper.BuildTransformationString(transformation)
 		expected := "" // Should return empty string for empty transformations
 		if result != expected {
 			t.Errorf("Expected %s, got %s", expected, result)
@@ -103,7 +106,7 @@ func TestBuildTransformationStringDetailed(t *testing.T) {
 			},
 		}
 
-		result := helper.BuildTransformationString(transformation)
+		result := client.Helper.BuildTransformationString(transformation)
 		expected := "l-text,i-Hello,l-end"
 		if result != expected {
 			t.Errorf("Expected %s, got %s", expected, result)
@@ -117,7 +120,7 @@ func TestBuildTransformationStringDetailed(t *testing.T) {
 			},
 		}
 
-		result := helper.BuildTransformationString(transformation)
+		result := client.Helper.BuildTransformationString(transformation)
 		expected := "custom-transform-123"
 		if result != expected {
 			t.Errorf("Expected %s, got %s", expected, result)
@@ -134,7 +137,7 @@ func TestBuildTransformationStringDetailed(t *testing.T) {
 			},
 		}
 
-		result := helper.BuildTransformationString(transformation)
+		result := client.Helper.BuildTransformationString(transformation)
 		expected := "w-300,custom-param-123"
 		if result != expected {
 			t.Errorf("Expected %s, got %s", expected, result)
@@ -148,7 +151,7 @@ func TestBuildTransformationStringDetailed(t *testing.T) {
 			},
 		}
 
-		result := helper.BuildTransformationString(transformation)
+		result := client.Helper.BuildTransformationString(transformation)
 		expected := "q-80"
 		if result != expected {
 			t.Errorf("Expected %s, got %s", expected, result)
@@ -164,7 +167,7 @@ func TestBuildTransformationStringDetailed(t *testing.T) {
 			},
 		}
 
-		result := helper.BuildTransformationString(transformation)
+		result := client.Helper.BuildTransformationString(transformation)
 		expected := "ar-4:3"
 		if result != expected {
 			t.Errorf("Expected %s, got %s", expected, result)

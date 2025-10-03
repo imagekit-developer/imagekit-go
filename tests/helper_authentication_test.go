@@ -1,20 +1,23 @@
-package lib
+package imagekit_test
 
 import (
 	"regexp"
 	"testing"
 	"time"
+
+	"github.com/stainless-sdks/imagekit-go"
+	"github.com/stainless-sdks/imagekit-go/option"
 )
 
 func TestGetAuthenticationParametersDetailed(t *testing.T) {
 	privateKey := "private_key_test"
-	helper := NewHelper(privateKey)
+	client := imagekit.NewClient(option.WithPrivateKey(privateKey))
 
 	t.Run("should return correct authentication parameters with provided token and expire", func(t *testing.T) {
 		token := "your_token"
 		expire := int64(1582269249)
 
-		params := helper.GetAuthenticationParameters(token, expire)
+		params := client.Helper.GetAuthenticationParameters(token, expire)
 
 		// Expected exact match with Node.js output
 		expectedSignature := "e71bcd6031016b060d349d212e23e85c791decdd"
@@ -31,7 +34,7 @@ func TestGetAuthenticationParametersDetailed(t *testing.T) {
 	})
 
 	t.Run("should return authentication parameters with required properties when no params provided", func(t *testing.T) {
-		params := helper.GetAuthenticationParameters("", 0)
+		params := client.Helper.GetAuthenticationParameters("", 0)
 
 		// Check that all required properties exist
 		if _, exists := params["token"]; !exists {
@@ -82,7 +85,7 @@ func TestGetAuthenticationParametersDetailed(t *testing.T) {
 		token := "test-token"
 		expire := int64(0)
 
-		params := helper.GetAuthenticationParameters(token, expire)
+		params := client.Helper.GetAuthenticationParameters(token, expire)
 
 		if params["token"] != token {
 			t.Errorf("Expected token %s, got %v", token, params["token"])
@@ -116,7 +119,7 @@ func TestGetAuthenticationParametersDetailed(t *testing.T) {
 		token := "" // Empty string is falsy
 		expire := int64(1582269249)
 
-		params := helper.GetAuthenticationParameters(token, expire)
+		params := client.Helper.GetAuthenticationParameters(token, expire)
 
 		// Since empty string is falsy, it should generate a UUID
 		tokenResult, ok := params["token"].(string)
@@ -150,7 +153,7 @@ func TestGetAuthenticationParametersDetailed(t *testing.T) {
 
 	// Additional test to match Node.js behavior - panic when private key is not provided
 	t.Run("should panic when private key is not provided", func(t *testing.T) {
-		helper := NewHelper("")
+		client := imagekit.NewClient(option.WithPrivateKey(""))
 
 		defer func() {
 			if r := recover(); r == nil {
@@ -158,6 +161,6 @@ func TestGetAuthenticationParametersDetailed(t *testing.T) {
 			}
 		}()
 
-		helper.GetAuthenticationParameters("test", 123)
+		client.Helper.GetAuthenticationParameters("test", 123)
 	})
 }

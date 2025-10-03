@@ -1,6 +1,8 @@
-package lib
+package imagekit_test
 
 import (
+	"github.com/stainless-sdks/imagekit-go/option"
+	"github.com/stainless-sdks/imagekit-go"
 	"strings"
 	"testing"
 
@@ -10,10 +12,10 @@ import (
 
 func TestURLSigning(t *testing.T) {
 	privateKey := "dummy-key"
-	helper := NewHelper(privateKey)
+	client := imagekit.NewClient(option.WithPrivateKey(privateKey))
 
 	t.Run("should generate a signed URL when signed is true without expiresIn", func(t *testing.T) {
-		url := helper.BuildSrc(shared.SrcOptionsParam{
+		url := client.Helper.BuildURL(shared.SrcOptionsParam{
 			URLEndpoint: "https://ik.imagekit.io/demo/",
 			Src:         "sdk-testing-files/future-search.png",
 			Signed:      param.Opt[bool]{Value: true},
@@ -26,7 +28,7 @@ func TestURLSigning(t *testing.T) {
 	})
 
 	t.Run("should generate a signed URL when signed is true with expiresIn", func(t *testing.T) {
-		url := helper.BuildSrc(shared.SrcOptionsParam{
+		url := client.Helper.BuildURL(shared.SrcOptionsParam{
 			URLEndpoint: "https://ik.imagekit.io/demo/",
 			Src:         "sdk-testing-files/future-search.png",
 			Signed:      param.Opt[bool]{Value: true},
@@ -40,7 +42,7 @@ func TestURLSigning(t *testing.T) {
 	})
 
 	t.Run("should generate a signed URL when expiresIn is above 0 even if signed is false", func(t *testing.T) {
-		url := helper.BuildSrc(shared.SrcOptionsParam{
+		url := client.Helper.BuildURL(shared.SrcOptionsParam{
 			URLEndpoint: "https://ik.imagekit.io/demo/",
 			Src:         "sdk-testing-files/future-search.png",
 			Signed:      param.Opt[bool]{Value: false},
@@ -54,7 +56,7 @@ func TestURLSigning(t *testing.T) {
 	})
 
 	t.Run("Special characters", func(t *testing.T) {
-		url := helper.BuildSrc(shared.SrcOptionsParam{
+		url := client.Helper.BuildURL(shared.SrcOptionsParam{
 			URLEndpoint: "https://ik.imagekit.io/demo/",
 			Src:         "sdk-testing-files/हिन्दी.png",
 			Signed:      param.Opt[bool]{Value: true},
@@ -87,7 +89,7 @@ func TestURLSigning(t *testing.T) {
 			},
 		}
 
-		url := helper.BuildSrc(shared.SrcOptionsParam{
+		url := client.Helper.BuildURL(shared.SrcOptionsParam{
 			URLEndpoint:    "https://ik.imagekit.io/demo/",
 			Src:            "sdk-testing-files/हिन्दी.png",
 			Transformation: transformation,
@@ -106,7 +108,7 @@ func TestURLSigning(t *testing.T) {
 			"cache":   "false",
 		}
 
-		url := helper.BuildSrc(shared.SrcOptionsParam{
+		url := client.Helper.BuildURL(shared.SrcOptionsParam{
 			URLEndpoint:     "https://ik.imagekit.io/demo/",
 			Src:             "sdk-testing-files/future-search.png",
 			QueryParameters: queryParams,
@@ -135,7 +137,7 @@ func TestURLSigning(t *testing.T) {
 			"version": "2.0",
 		}
 
-		url := helper.BuildSrc(shared.SrcOptionsParam{
+		url := client.Helper.BuildURL(shared.SrcOptionsParam{
 			URLEndpoint:     "https://ik.imagekit.io/demo/",
 			Src:             "sdk-testing-files/future-search.png",
 			Transformation:  transformation,
@@ -150,7 +152,7 @@ func TestURLSigning(t *testing.T) {
 	})
 
 	t.Run("should not sign URL when signed is false", func(t *testing.T) {
-		url := helper.BuildSrc(shared.SrcOptionsParam{
+		url := client.Helper.BuildURL(shared.SrcOptionsParam{
 			URLEndpoint: "https://ik.imagekit.io/demo/",
 			Src:         "sdk-testing-files/future-search.png",
 			Signed:      param.Opt[bool]{Value: false},
@@ -184,7 +186,7 @@ func TestURLSigning(t *testing.T) {
 			"version": "2.0",
 		}
 
-		url := helper.BuildSrc(shared.SrcOptionsParam{
+		url := client.Helper.BuildURL(shared.SrcOptionsParam{
 			URLEndpoint:            "https://ik.imagekit.io/demo/",
 			Src:                    "sdk-testing-files/future-search.png",
 			Transformation:         transformation,

@@ -1,6 +1,8 @@
-package lib
+package imagekit_test
 
 import (
+	"github.com/stainless-sdks/imagekit-go/option"
+	"github.com/stainless-sdks/imagekit-go"
 	"testing"
 
 	"github.com/stainless-sdks/imagekit-go/packages/param"
@@ -10,7 +12,7 @@ import (
 
 func TestOverlayTransformations(t *testing.T) {
 	privateKey := "My Private API Key"
-	helper := NewHelper(privateKey)
+	client := imagekit.NewClient(option.WithPrivateKey(privateKey))
 
 	t.Run("Ignore if type is missing", func(t *testing.T) {
 		transformation := []shared.TransformationParam{
@@ -21,7 +23,7 @@ func TestOverlayTransformations(t *testing.T) {
 			},
 		}
 
-		url := helper.BuildSrc(shared.SrcOptionsParam{
+		url := client.Helper.BuildURL(shared.SrcOptionsParam{
 			URLEndpoint:            "https://ik.imagekit.io/test_url_endpoint",
 			TransformationPosition: shared.TransformationPositionPath,
 			Src:                    "/base-image.jpg",
@@ -46,7 +48,7 @@ func TestOverlayTransformations(t *testing.T) {
 			},
 		}
 
-		url := helper.BuildSrc(shared.SrcOptionsParam{
+		url := client.Helper.BuildURL(shared.SrcOptionsParam{
 			URLEndpoint:            "https://ik.imagekit.io/test_url_endpoint",
 			TransformationPosition: shared.TransformationPositionPath,
 			Src:                    "/base-image.jpg",
@@ -71,7 +73,7 @@ func TestOverlayTransformations(t *testing.T) {
 			},
 		}
 
-		url := helper.BuildSrc(shared.SrcOptionsParam{
+		url := client.Helper.BuildURL(shared.SrcOptionsParam{
 			URLEndpoint:            "https://ik.imagekit.io/test_url_endpoint",
 			TransformationPosition: shared.TransformationPositionPath,
 			Src:                    "/base-image.jpg",
@@ -96,7 +98,7 @@ func TestOverlayTransformations(t *testing.T) {
 			},
 		}
 
-		url := helper.BuildSrc(shared.SrcOptionsParam{
+		url := client.Helper.BuildURL(shared.SrcOptionsParam{
 			URLEndpoint:            "https://ik.imagekit.io/test_url_endpoint",
 			TransformationPosition: shared.TransformationPositionPath,
 			Src:                    "/base-image.jpg",
@@ -121,7 +123,7 @@ func TestOverlayTransformations(t *testing.T) {
 			},
 		}
 
-		url := helper.BuildSrc(shared.SrcOptionsParam{
+		url := client.Helper.BuildURL(shared.SrcOptionsParam{
 			URLEndpoint:            "https://ik.imagekit.io/test_url_endpoint",
 			TransformationPosition: shared.TransformationPositionPath,
 			Src:                    "/base-image.jpg",
@@ -146,7 +148,7 @@ func TestOverlayTransformations(t *testing.T) {
 			},
 		}
 
-		url := helper.BuildSrc(shared.SrcOptionsParam{
+		url := client.Helper.BuildURL(shared.SrcOptionsParam{
 			URLEndpoint:            "https://ik.imagekit.io/test_url_endpoint",
 			TransformationPosition: shared.TransformationPositionPath,
 			Src:                    "/base-image.jpg",
@@ -171,7 +173,7 @@ func TestOverlayTransformations(t *testing.T) {
 			},
 		}
 
-		url := helper.BuildSrc(shared.SrcOptionsParam{
+		url := client.Helper.BuildURL(shared.SrcOptionsParam{
 			URLEndpoint:            "https://ik.imagekit.io/test_url_endpoint",
 			TransformationPosition: shared.TransformationPositionPath,
 			Src:                    "/base-image.jpg",
@@ -196,7 +198,7 @@ func TestOverlayTransformations(t *testing.T) {
 			},
 		}
 
-		url := helper.BuildSrc(shared.SrcOptionsParam{
+		url := client.Helper.BuildURL(shared.SrcOptionsParam{
 			URLEndpoint:            "https://ik.imagekit.io/test_url_endpoint",
 			TransformationPosition: shared.TransformationPositionPath,
 			Src:                    "/base-image.jpg",
@@ -221,7 +223,7 @@ func TestOverlayTransformations(t *testing.T) {
 			},
 		}
 
-		url := helper.BuildSrc(shared.SrcOptionsParam{
+		url := client.Helper.BuildURL(shared.SrcOptionsParam{
 			URLEndpoint:            "https://ik.imagekit.io/test_url_endpoint",
 			TransformationPosition: shared.TransformationPositionPath,
 			Src:                    "/base-video.mp4",
@@ -246,7 +248,7 @@ func TestOverlayTransformations(t *testing.T) {
 			},
 		}
 
-		url := helper.BuildSrc(shared.SrcOptionsParam{
+		url := client.Helper.BuildURL(shared.SrcOptionsParam{
 			URLEndpoint:            "https://ik.imagekit.io/test_url_endpoint",
 			TransformationPosition: shared.TransformationPositionPath,
 			Src:                    "/base-video.mp4",
@@ -271,7 +273,7 @@ func TestOverlayTransformations(t *testing.T) {
 			},
 		}
 
-		url := helper.BuildSrc(shared.SrcOptionsParam{
+		url := client.Helper.BuildURL(shared.SrcOptionsParam{
 			URLEndpoint:            "https://ik.imagekit.io/test_url_endpoint",
 			TransformationPosition: shared.TransformationPositionPath,
 			Src:                    "/base-image.jpg",
@@ -451,7 +453,7 @@ func TestOverlayTransformations(t *testing.T) {
 			},
 		}
 
-		url := helper.BuildSrc(shared.SrcOptionsParam{
+		url := client.Helper.BuildURL(shared.SrcOptionsParam{
 			URLEndpoint:            "https://ik.imagekit.io/test_url_endpoint",
 			TransformationPosition: shared.TransformationPositionPath,
 			Src:                    "/base-image.jpg",
@@ -467,7 +469,7 @@ func TestOverlayTransformations(t *testing.T) {
 
 func TestOverlayEncoding(t *testing.T) {
 	privateKey := "My Private API Key"
-	helper := NewHelper(privateKey)
+	client := imagekit.NewClient(option.WithPrivateKey(privateKey))
 
 	t.Run("Nested simple path, should use i instead of ie, handle slash properly", func(t *testing.T) {
 		transformation := []shared.TransformationParam{
@@ -481,7 +483,7 @@ func TestOverlayEncoding(t *testing.T) {
 			},
 		}
 
-		url := helper.BuildSrc(shared.SrcOptionsParam{
+		url := client.Helper.BuildURL(shared.SrcOptionsParam{
 			URLEndpoint:            "https://ik.imagekit.io/demo",
 			TransformationPosition: shared.TransformationPositionPath,
 			Src:                    "/medium_cafe_B1iTdD0C.jpg",
@@ -506,7 +508,7 @@ func TestOverlayEncoding(t *testing.T) {
 			},
 		}
 
-		url := helper.BuildSrc(shared.SrcOptionsParam{
+		url := client.Helper.BuildURL(shared.SrcOptionsParam{
 			URLEndpoint:            "https://ik.imagekit.io/demo",
 			TransformationPosition: shared.TransformationPositionPath,
 			Src:                    "/medium_cafe_B1iTdD0C.jpg",
@@ -531,7 +533,7 @@ func TestOverlayEncoding(t *testing.T) {
 			},
 		}
 
-		url := helper.BuildSrc(shared.SrcOptionsParam{
+		url := client.Helper.BuildURL(shared.SrcOptionsParam{
 			URLEndpoint:            "https://ik.imagekit.io/demo",
 			TransformationPosition: shared.TransformationPositionPath,
 			Src:                    "/medium_cafe_B1iTdD0C.jpg",
@@ -561,7 +563,7 @@ func TestOverlayEncoding(t *testing.T) {
 			},
 		}
 
-		url := helper.BuildSrc(shared.SrcOptionsParam{
+		url := client.Helper.BuildURL(shared.SrcOptionsParam{
 			URLEndpoint:            "https://ik.imagekit.io/demo",
 			TransformationPosition: shared.TransformationPositionPath,
 			Src:                    "/medium_cafe_B1iTdD0C.jpg",
@@ -586,7 +588,7 @@ func TestOverlayEncoding(t *testing.T) {
 			},
 		}
 
-		url := helper.BuildSrc(shared.SrcOptionsParam{
+		url := client.Helper.BuildURL(shared.SrcOptionsParam{
 			URLEndpoint:            "https://ik.imagekit.io/demo",
 			TransformationPosition: shared.TransformationPositionPath,
 			Src:                    "/medium_cafe_B1iTdD0C.jpg",
@@ -611,7 +613,7 @@ func TestOverlayEncoding(t *testing.T) {
 			},
 		}
 
-		url := helper.BuildSrc(shared.SrcOptionsParam{
+		url := client.Helper.BuildURL(shared.SrcOptionsParam{
 			URLEndpoint:            "https://ik.imagekit.io/demo",
 			TransformationPosition: shared.TransformationPositionPath,
 			Src:                    "/medium_cafe_B1iTdD0C.jpg",
@@ -637,7 +639,7 @@ func TestOverlayEncoding(t *testing.T) {
 			},
 		}
 
-		url := helper.BuildSrc(shared.SrcOptionsParam{
+		url := client.Helper.BuildURL(shared.SrcOptionsParam{
 			URLEndpoint:            "https://ik.imagekit.io/demo",
 			TransformationPosition: shared.TransformationPositionPath,
 			Src:                    "/sample.jpg",
@@ -663,7 +665,7 @@ func TestOverlayEncoding(t *testing.T) {
 			},
 		}
 
-		url := helper.BuildSrc(shared.SrcOptionsParam{
+		url := client.Helper.BuildURL(shared.SrcOptionsParam{
 			URLEndpoint:            "https://ik.imagekit.io/demo",
 			TransformationPosition: shared.TransformationPositionPath,
 			Src:                    "/sample.jpg",
@@ -689,7 +691,7 @@ func TestOverlayEncoding(t *testing.T) {
 			},
 		}
 
-		url := helper.BuildSrc(shared.SrcOptionsParam{
+		url := client.Helper.BuildURL(shared.SrcOptionsParam{
 			URLEndpoint:            "https://ik.imagekit.io/demo",
 			TransformationPosition: shared.TransformationPositionPath,
 			Src:                    "/sample.jpg",
@@ -715,7 +717,7 @@ func TestOverlayEncoding(t *testing.T) {
 			},
 		}
 
-		url := helper.BuildSrc(shared.SrcOptionsParam{
+		url := client.Helper.BuildURL(shared.SrcOptionsParam{
 			URLEndpoint:            "https://ik.imagekit.io/demo",
 			TransformationPosition: shared.TransformationPositionPath,
 			Src:                    "/sample.jpg",
@@ -741,7 +743,7 @@ func TestOverlayEncoding(t *testing.T) {
 			},
 		}
 
-		url := helper.BuildSrc(shared.SrcOptionsParam{
+		url := client.Helper.BuildURL(shared.SrcOptionsParam{
 			URLEndpoint:            "https://ik.imagekit.io/demo",
 			TransformationPosition: shared.TransformationPositionPath,
 			Src:                    "/sample.mp4",
@@ -767,7 +769,7 @@ func TestOverlayEncoding(t *testing.T) {
 			},
 		}
 
-		url := helper.BuildSrc(shared.SrcOptionsParam{
+		url := client.Helper.BuildURL(shared.SrcOptionsParam{
 			URLEndpoint:            "https://ik.imagekit.io/demo",
 			TransformationPosition: shared.TransformationPositionPath,
 			Src:                    "/sample.mp4",
@@ -793,7 +795,7 @@ func TestOverlayEncoding(t *testing.T) {
 			},
 		}
 
-		url := helper.BuildSrc(shared.SrcOptionsParam{
+		url := client.Helper.BuildURL(shared.SrcOptionsParam{
 			URLEndpoint:            "https://ik.imagekit.io/demo",
 			TransformationPosition: shared.TransformationPositionPath,
 			Src:                    "/sample.mp4",
@@ -818,7 +820,7 @@ func TestOverlayEncoding(t *testing.T) {
 			},
 		}
 
-		url := helper.BuildSrc(shared.SrcOptionsParam{
+		url := client.Helper.BuildURL(shared.SrcOptionsParam{
 			URLEndpoint:            "https://ik.imagekit.io/demo",
 			TransformationPosition: shared.TransformationPositionQuery,
 			Src:                    "/sample.jpg",
