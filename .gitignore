@@ -2,3 +2,5 @@
 codegen.log
 Brewfile.lock.json
 .idea/
+temp*
+node-sdk-diff*
