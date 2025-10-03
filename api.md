@@ -1,6 +1,28 @@
 # Shared Params Types
 
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go/shared#BaseOverlayParam">BaseOverlayParam</a>
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go/shared#ExtensionsParam">ExtensionsParam</a>
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go/shared#ImageOverlayParam">ImageOverlayParam</a>
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go/shared#OverlayUnionParam">OverlayUnionParam</a>
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go/shared#OverlayPositionParam">OverlayPositionParam</a>
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go/shared#OverlayTimingParam">OverlayTimingParam</a>
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go/shared#SolidColorOverlayParam">SolidColorOverlayParam</a>
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go/shared#SolidColorOverlayTransformationParam">SolidColorOverlayTransformationParam</a>
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go/shared#SrcOptionsParam">SrcOptionsParam</a>
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go/shared#StreamingResolution">StreamingResolution</a>
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go/shared#SubtitleOverlayParam">SubtitleOverlayParam</a>
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go/shared#SubtitleOverlayTransformationParam">SubtitleOverlayTransformationParam</a>
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go/shared#TextOverlayParam">TextOverlayParam</a>
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go/shared#TextOverlayTransformationParam">TextOverlayTransformationParam</a>
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go/shared#TransformationParam">TransformationParam</a>
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go/shared#TransformationPosition">TransformationPosition</a>
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go/shared#VideoOverlayParam">VideoOverlayParam</a>
+
+# Dummy
+
+Methods:
+
+- <code title="post /v1/dummy/test">client.Dummy.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go#DummyService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go">imagekit</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go#DummyNewParams">DummyNewParams</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
 
 # CustomMetadataFields
 
