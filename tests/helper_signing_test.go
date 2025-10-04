@@ -1,10 +1,11 @@
 package imagekit_test
 
 import (
-	"github.com/stainless-sdks/imagekit-go/option"
-	"github.com/stainless-sdks/imagekit-go"
 	"strings"
 	"testing"
+
+	"github.com/stainless-sdks/imagekit-go"
+	"github.com/stainless-sdks/imagekit-go/option"
 
 	"github.com/stainless-sdks/imagekit-go/packages/param"
 	"github.com/stainless-sdks/imagekit-go/shared"
@@ -41,7 +42,7 @@ func TestURLSigning(t *testing.T) {
 		}
 	})
 
-	t.Run("should generate a signed URL when expiresIn is above 0 even if signed is false", func(t *testing.T) {
+	t.Run("should generate a signed URL when expiresIn is above 0 and even if signed is false", func(t *testing.T) {
 		url := client.Helper.BuildURL(shared.SrcOptionsParam{
 			URLEndpoint: "https://ik.imagekit.io/demo/",
 			Src:         "sdk-testing-files/future-search.png",
@@ -55,7 +56,7 @@ func TestURLSigning(t *testing.T) {
 		}
 	})
 
-	t.Run("Special characters", func(t *testing.T) {
+	t.Run("should generate signed URL with special characters in filename", func(t *testing.T) {
 		url := client.Helper.BuildURL(shared.SrcOptionsParam{
 			URLEndpoint: "https://ik.imagekit.io/demo/",
 			Src:         "sdk-testing-files/हिन्दी.png",
@@ -68,7 +69,7 @@ func TestURLSigning(t *testing.T) {
 		}
 	})
 
-	t.Run("Text overlay with special characters", func(t *testing.T) {
+	t.Run("should generate signed URL with text overlay containing special characters", func(t *testing.T) {
 		transformation := []shared.TransformationParam{
 			{
 				Overlay: shared.OverlayUnionParam{
@@ -97,6 +98,41 @@ func TestURLSigning(t *testing.T) {
 		})
 
 		expected := "https://ik.imagekit.io/demo/sdk-testing-files/%E0%A4%B9%E0%A4%BF%E0%A4%A8%E0%A5%8D%E0%A4%A6%E0%A5%80.png?tr=l-text,ie-4KS54KS%2F4KSo4KWN4KSm4KWA,fs-32,ff-sdk-testing-files@@Poppins-Regular_Q15GrYWmL.ttf,co-red,l-end&ik-s=705e41579d368caa6530a4375355325277fcfe5c"
+		if url != expected {
+			t.Errorf("Expected %s, got %s", expected, url)
+		}
+	})
+
+	t.Run("should generate signed URL with text overlay and special characters using path transformation position", func(t *testing.T) {
+		transformation := []shared.TransformationParam{
+			{
+				Overlay: shared.OverlayUnionParam{
+					OfText: &shared.TextOverlayParam{
+						Text: "हिन्दी",
+						Type: "text",
+						Transformation: []shared.TextOverlayTransformationParam{
+							{
+								FontColor: param.Opt[string]{Value: "red"},
+								FontSize: shared.TextOverlayTransformationFontSizeUnionParam{
+									OfString: param.Opt[string]{Value: "32"},
+								},
+								FontFamily: param.Opt[string]{Value: "sdk-testing-files/Poppins-Regular_Q15GrYWmL.ttf"},
+							},
+						},
+					},
+				},
+			},
+		}
+
+		url := client.Helper.BuildURL(shared.SrcOptionsParam{
+			URLEndpoint:            "https://ik.imagekit.io/demo/",
+			Src:                    "sdk-testing-files/हिन्दी.png",
+			TransformationPosition: shared.TransformationPositionPath,
+			Transformation:         transformation,
+			Signed:                 param.Opt[bool]{Value: true},
+		})
+
+		expected := "https://ik.imagekit.io/demo/tr:l-text,ie-4KS54KS%2F4KSo4KWN4KSm4KWA,fs-32,ff-sdk-testing-files@@Poppins-Regular_Q15GrYWmL.ttf,co-red,l-end/sdk-testing-files/%E0%A4%B9%E0%A4%BF%E0%A4%A8%E0%A5%8D%E0%A4%A6%E0%A5%80.png?ik-s=20958f6126fd67c90653f55a49f2b7bb938d9d1c"
 		if url != expected {
 			t.Errorf("Expected %s, got %s", expected, url)
 		}
@@ -170,7 +206,7 @@ func TestURLSigning(t *testing.T) {
 		}
 	})
 
-	t.Run("transformationPosition as path", func(t *testing.T) {
+	t.Run("should generate signed URL with transformations in path position and query parameters", func(t *testing.T) {
 		transformation := []shared.TransformationParam{
 			{
 				Width: shared.TransformationWidthUnionParam{

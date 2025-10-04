@@ -135,23 +135,20 @@ var (
 
 // BuildSrc builds a source URL with the given options
 func (h *Helper) BuildSrc(opts shared.SrcOptionsParam) string {
-	if opts.Src == "" {
-		return ""
-	}
-
+	// Set defaults
 	if opts.URLEndpoint == "" {
-		return ""
+		opts.URLEndpoint = ""
 	}
-
-	// Handle invalid URLs
-	if opts.Src == "https://" {
-		return ""
+	if opts.Src == "" {
+		opts.Src = ""
 	}
-
-	// Set default transformation position
 	transformationPosition := opts.TransformationPosition
 	if transformationPosition == "" {
 		transformationPosition = shared.TransformationPositionQuery
+	}
+
+	if opts.Src == "" {
+		return ""
 	}
 
 	isAbsoluteURL := strings.HasPrefix(opts.Src, "http://") || strings.HasPrefix(opts.Src, "https://")
@@ -159,30 +156,10 @@ func (h *Helper) BuildSrc(opts shared.SrcOptionsParam) string {
 	var urlObj *url.URL
 	var err error
 	var isSrcParameterUsedForURL bool
-	var urlEndpointPattern string
 
+	// Try to parse URL
 	if !isAbsoluteURL {
-		// Parse URL endpoint to get the pattern
-		endpointURL, err := url.Parse(opts.URLEndpoint)
-		if err != nil {
-			return ""
-		}
-		urlEndpointPattern = endpointURL.Path
-
-		// Clean src path - remove multiple leading slashes
-		cleanSrc := opts.Src
-		for strings.HasPrefix(cleanSrc, "//") {
-			cleanSrc = strings.TrimPrefix(cleanSrc, "/")
-		}
-
-		// Join endpoint and src properly
-		baseURL := strings.TrimSuffix(opts.URLEndpoint, urlEndpointPattern)
-		if !strings.HasSuffix(baseURL, "/") && !strings.HasPrefix(cleanSrc, "/") {
-			baseURL += "/"
-		}
-
-		fullURL := baseURL + cleanSrc
-		urlObj, err = url.Parse(fullURL)
+		urlObj, err = url.Parse(opts.URLEndpoint)
 		if err != nil {
 			return ""
 		}
@@ -203,76 +180,70 @@ func (h *Helper) BuildSrc(opts shared.SrcOptionsParam) string {
 		urlObj.RawQuery = query.Encode()
 	}
 
+	// Build transformation string
+	transformationString := h.buildTransformationStringInternal(opts.Transformation)
+
 	// Determine if transformation will be in query params
 	addAsQuery := transformationPosition == shared.TransformationPositionQuery || isSrcParameterUsedForURL
 
-	// Build transformation string with context
-	transformationString := h.buildTransformationStringInternal(opts.Transformation)
+	// Transformation placeholder to avoid URL encoding issues
+	const transformationPlaceholder = "PLEASEREPLACEJUSTBEFORESIGN"
 
-	// Add transformations to path if needed
-	if transformationString != "" {
-		if !addAsQuery {
-			// Add to path
-			urlObj.Path = pathJoin([]string{
-				transformationParameter + chainTransformDelimiter + transformationString,
-				urlObj.Path,
-			})
+	if !isAbsoluteURL {
+		// For non-absolute URLs, construct the path: endpoint_path + transformations + src
+		endpointURL, _ := url.Parse(opts.URLEndpoint)
+		endpointPath := endpointURL.Path
+		pathParts := []string{endpointPath}
+
+		if transformationString != "" && !addAsQuery {
+			pathParts = append(pathParts, transformationParameter+chainTransformDelimiter+transformationPlaceholder)
 		}
+
+		pathParts = append(pathParts, opts.Src)
+		urlObj.Path = pathJoin(pathParts)
 	}
 
-	// Add URL endpoint pattern back if needed
-	if urlEndpointPattern != "" && !isSrcParameterUsedForURL {
-		urlObj.Path = pathJoin([]string{urlEndpointPattern, urlObj.Path})
-	} else if !isSrcParameterUsedForURL {
-		urlObj.Path = pathJoin([]string{urlObj.Path})
-	}
-
-	// Handle URL signing
-	shouldSign := (!param.IsOmitted(opts.Signed) && opts.Signed.Value) || (!param.IsOmitted(opts.ExpiresIn) && opts.ExpiresIn.Value > 0)
-
-	// Build final URL
-	var finalURL string
-	if shouldSign {
-		// For signed URLs, use urlObj.String() which properly encodes the path (including non-ASCII characters)
-		// This ensures the signature is calculated on the correctly encoded URL
-		finalURL = urlObj.String()
-	} else {
-		// For unsigned URLs, build manually to avoid encoding the path
-		// This keeps the URL more readable
-		finalURL = fmt.Sprintf("%s://%s%s", urlObj.Scheme, urlObj.Host, urlObj.Path)
-		if urlObj.RawQuery != "" {
-			finalURL += "?" + urlObj.RawQuery
-		}
-	}
+	// First, build the complete URL with transformations
+	finalURL := urlObj.String()
 
 	// Add transformation parameter manually to avoid URL encoding
-	// Query.set() would encode commas and colons in transformation string,
+	// URLSearchParams.set() would encode commas and colons in transformation string,
 	// It would work correctly but not very readable e.g., "w-300,h-400" is better than "w-300%2Ch-400"
-	if transformationString != "" {
-		addAsQuery := transformationPosition == shared.TransformationPositionQuery || isSrcParameterUsedForURL
-		if addAsQuery {
-			separator := "?"
-			if strings.Contains(finalURL, "?") {
-				separator = "&"
-			}
-			finalURL = fmt.Sprintf("%s%s%s=%s", finalURL, separator, transformationParameter, transformationString)
+	if transformationString != "" && addAsQuery {
+		separator := "&"
+		if urlObj.RawQuery == "" {
+			separator = "?"
 		}
+		finalURL = fmt.Sprintf("%s%s%s=%s", finalURL, separator, transformationParameter, transformationPlaceholder)
 	}
 
+	// Replace the placeholder with actual transformation string
+	// We don't put actual transformation string before signing to avoid issues with URL encoding
+	if transformationString != "" {
+		finalURL = strings.Replace(finalURL, transformationPlaceholder, transformationString, -1)
+	}
+
+	// Then sign the URL if needed
+	shouldSign := (!param.IsOmitted(opts.Signed) && opts.Signed.Value) || (!param.IsOmitted(opts.ExpiresIn) && opts.ExpiresIn.Value > 0)
 	if shouldSign {
 		expiryTimestamp := getSignatureTimestamp(opts.ExpiresIn)
 
 		urlSignature := h.getSignature(finalURL, opts.URLEndpoint, expiryTimestamp)
 
-		separator := "?"
-		if strings.Contains(finalURL, "?") {
-			separator = "&"
+		// Add signature parameters to the final URL
+		// Use URL object to properly determine if we need ? or & separator
+		finalURLObj, _ := url.Parse(finalURL)
+		hasExistingParams := finalURLObj.RawQuery != ""
+		separator := "&"
+		if !hasExistingParams {
+			separator = "?"
 		}
 
 		if expiryTimestamp != defaultTimestamp {
-			finalURL = fmt.Sprintf("%s%s%s=%d&%s=%s", finalURL, separator, timestampParameter, expiryTimestamp, signatureParameter, urlSignature)
+			finalURL += fmt.Sprintf("%s%s=%d", separator, timestampParameter, expiryTimestamp)
+			finalURL += fmt.Sprintf("&%s=%s", signatureParameter, urlSignature)
 		} else {
-			finalURL = fmt.Sprintf("%s%s%s=%s", finalURL, separator, signatureParameter, urlSignature)
+			finalURL += fmt.Sprintf("%s%s=%s", separator, signatureParameter, urlSignature)
 		}
 	}
 

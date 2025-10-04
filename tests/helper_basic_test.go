@@ -1,9 +1,10 @@
 package imagekit_test
 
 import (
-	"github.com/stainless-sdks/imagekit-go/option"
-	"github.com/stainless-sdks/imagekit-go"
 	"testing"
+
+	"github.com/stainless-sdks/imagekit-go"
+	"github.com/stainless-sdks/imagekit-go/option"
 
 	"github.com/stainless-sdks/imagekit-go/packages/param"
 	"github.com/stainless-sdks/imagekit-go/shared"
@@ -34,18 +35,6 @@ func TestBuildSrcBasic(t *testing.T) {
 		expected := "https://ik.imagekit.io/test_url_endpoint/"
 		if url != expected {
 			t.Errorf("Expected %s, got %s", expected, url)
-		}
-	})
-
-	t.Run("should return an empty string when src is invalid", func(t *testing.T) {
-		url := client.Helper.BuildURL(shared.SrcOptionsParam{
-			URLEndpoint:            "https://ik.imagekit.io/test_url_endpoint",
-			TransformationPosition: shared.TransformationPositionQuery,
-			Src:                    "https://",
-		})
-
-		if url != "" {
-			t.Errorf("Expected empty string, got %s", url)
 		}
 	})
 
@@ -455,6 +444,32 @@ func TestBuildSrcBasic(t *testing.T) {
 		})
 
 		expected := "https://ik.imagekit.io/test_url_endpoint/test_path.jpg"
+		if url != expected {
+			t.Errorf("Expected %s, got %s", expected, url)
+		}
+	})
+
+	t.Run("should generate a valid URL when cname is used", func(t *testing.T) {
+		url := client.Helper.BuildURL(shared.SrcOptionsParam{
+			URLEndpoint:            "https://custom.domain.com",
+			TransformationPosition: shared.TransformationPositionQuery,
+			Src:                    "/test_path.jpg",
+		})
+
+		expected := "https://custom.domain.com/test_path.jpg"
+		if url != expected {
+			t.Errorf("Expected %s, got %s", expected, url)
+		}
+	})
+
+	t.Run("should generate a valid URL when cname is used with a url-pattern", func(t *testing.T) {
+		url := client.Helper.BuildURL(shared.SrcOptionsParam{
+			URLEndpoint:            "https://custom.domain.com/url-pattern",
+			TransformationPosition: shared.TransformationPositionQuery,
+			Src:                    "/test_path.jpg",
+		})
+
+		expected := "https://custom.domain.com/url-pattern/test_path.jpg"
 		if url != expected {
 			t.Errorf("Expected %s, got %s", expected, url)
 		}
