@@ -18,12 +18,6 @@
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go/shared#TransformationPosition">TransformationPosition</a>
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go/shared#VideoOverlayParam">VideoOverlayParam</a>
 
-# Dummy
-
-Methods:
-
-- <code title="post /v1/dummy/test">client.Dummy.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go#DummyService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go">imagekit</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/imagekit-go#DummyNewParams">DummyNewParams</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
-
 # CustomMetadataFields
 
 Response Types:
