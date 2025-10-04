@@ -34,34 +34,33 @@ type HelperService struct {
 
 // NewHelperService generates a new helper service that applies the given options.
 // It extracts the private key from the options for use in signing and authentication.
-func NewHelperService(opts ...option.RequestOption) (r *HelperService) {
-	r = &HelperService{Options: opts}
+func NewHelperService(opts ...option.RequestOption) (r HelperService) {
+	r = HelperService{Options: opts}
 
-	// Extract private key from options
-	// We need to apply options carefully to avoid nil pointer errors
+	// Extract private key from options using a safer approach
+	// We'll create a new config and apply only the options that we can safely handle
 	cfg := &requestconfig.RequestConfig{}
+
+	// Apply options one by one, skipping any that cause issues
 	for _, opt := range opts {
-		// Skip if opt is nil
 		if opt != nil {
-			// Safely apply the option, catching any panics
+			// Try to apply the option, but catch any panics
 			func() {
 				defer func() {
 					if recovered := recover(); recovered != nil {
-						// Ignore panics during option application
-						// This can happen when some options reference uninitialized fields
+						// Skip this option if it causes a panic
 					}
 				}()
 				opt.Apply(cfg)
 			}()
 		}
 	}
-	r.privateKey = cfg.PrivateKey
 
+	r.privateKey = cfg.PrivateKey
 	return
 }
 
-// BuildURL generates a URL for accessing an image or file with optional transformations.
-// This is useful for generating URLs on the server-side for images stored in ImageKit.
+// Builds a source URL with the given options.
 func (r *HelperService) BuildURL(opts shared.SrcOptionsParam) string {
 	// Set defaults
 	if opts.URLEndpoint == "" {
@@ -178,14 +177,13 @@ func (r *HelperService) BuildURL(opts shared.SrcOptionsParam) string {
 	return finalURL
 }
 
-// BuildTransformationString generates a transformation string from transformation parameters.
-// This is useful when you need just the transformation string without building a full URL.
+// Builds a transformation string from the given transformations.
 func (r *HelperService) BuildTransformationString(transformation []shared.TransformationParam) string {
 	return r.buildTransformationStringInternal(transformation)
 }
 
-// GetAuthenticationParameters generates authentication parameters for client-side file uploads.
-// This is required when implementing direct upload from the browser or mobile apps.
+// Generates authentication parameters for client-side file uploads using ImageKit's Upload API V1.
+// This method creates the required authentication signature that allows secure file uploads directly from the browser or mobile applications without exposing your private API key.
 //
 // Parameters:
 //   - token: A unique token for this upload request. If empty, a UUID will be generated.
@@ -195,9 +193,9 @@ func (r *HelperService) BuildTransformationString(transformation []shared.Transf
 //   - "token": The authentication token
 //   - "expire": The expiration timestamp
 //   - "signature": The HMAC signature
-func (r *HelperService) GetAuthenticationParameters(token string, expire int64) map[string]interface{} {
+func (r *HelperService) GetAuthenticationParameters(token string, expire int64) (map[string]interface{}, error) {
 	if r.privateKey == "" {
-		panic("Private API key is required for authentication parameters generation")
+		return nil, fmt.Errorf("private API key is required for authentication parameters generation")
 	}
 
 	defaultTimeDiff := int64(60 * 30) // 30 minutes
@@ -213,7 +211,7 @@ func (r *HelperService) GetAuthenticationParameters(token string, expire int64) 
 		finalExpire = defaultExpire
 	}
 
-	return getAuthenticationParameters(finalToken, finalExpire, r.privateKey)
+	return getAuthenticationParameters(finalToken, finalExpire, r.privateKey), nil
 }
 
 // buildTransformationStringInternal builds a transformation string with context

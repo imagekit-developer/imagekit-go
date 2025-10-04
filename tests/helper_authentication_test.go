@@ -17,7 +17,10 @@ func TestGetAuthenticationParametersDetailed(t *testing.T) {
 		token := "your_token"
 		expire := int64(1582269249)
 
-		params := client.Helper.GetAuthenticationParameters(token, expire)
+		params, err := client.Helper.GetAuthenticationParameters(token, expire)
+		if err != nil {
+			t.Errorf("Expected no error, got %v", err)
+		}
 
 		// Expected exact match with Node.js output
 		expectedSignature := "e71bcd6031016b060d349d212e23e85c791decdd"
@@ -34,7 +37,10 @@ func TestGetAuthenticationParametersDetailed(t *testing.T) {
 	})
 
 	t.Run("should return authentication parameters with required properties when no params provided", func(t *testing.T) {
-		params := client.Helper.GetAuthenticationParameters("", 0)
+		params, err := client.Helper.GetAuthenticationParameters("", 0)
+		if err != nil {
+			t.Errorf("Expected no error, got %v", err)
+		}
 
 		// Check that all required properties exist
 		if _, exists := params["token"]; !exists {
@@ -85,7 +91,10 @@ func TestGetAuthenticationParametersDetailed(t *testing.T) {
 		token := "test-token"
 		expire := int64(0)
 
-		params := client.Helper.GetAuthenticationParameters(token, expire)
+		params, err := client.Helper.GetAuthenticationParameters(token, expire)
+		if err != nil {
+			t.Errorf("Expected no error, got %v", err)
+		}
 
 		if params["token"] != token {
 			t.Errorf("Expected token %s, got %v", token, params["token"])
@@ -119,7 +128,10 @@ func TestGetAuthenticationParametersDetailed(t *testing.T) {
 		token := "" // Empty string is falsy
 		expire := int64(1582269249)
 
-		params := client.Helper.GetAuthenticationParameters(token, expire)
+		params, err := client.Helper.GetAuthenticationParameters(token, expire)
+		if err != nil {
+			t.Errorf("Expected no error, got %v", err)
+		}
 
 		// Since empty string is falsy, it should generate a UUID
 		tokenResult, ok := params["token"].(string)
@@ -151,16 +163,17 @@ func TestGetAuthenticationParametersDetailed(t *testing.T) {
 		}
 	})
 
-	// Additional test to match Node.js behavior - panic when private key is not provided
-	t.Run("should panic when private key is not provided", func(t *testing.T) {
+	// Additional test to match Go idiomatic behavior - return error when private key is not provided
+	t.Run("should return error when private key is not provided", func(t *testing.T) {
 		client := imagekit.NewClient(option.WithPrivateKey(""))
 
-		defer func() {
-			if r := recover(); r == nil {
-				t.Errorf("Expected panic when private key is empty")
-			}
-		}()
-
-		client.Helper.GetAuthenticationParameters("test", 123)
+		_, err := client.Helper.GetAuthenticationParameters("test", 123)
+		if err == nil {
+			t.Errorf("Expected error when private key is empty, got nil")
+		}
+		expectedErrMsg := "private API key is required for authentication parameters generation"
+		if err.Error() != expectedErrMsg {
+			t.Errorf("Expected error message '%s', got '%s'", expectedErrMsg, err.Error())
+		}
 	})
 }

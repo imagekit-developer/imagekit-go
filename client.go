@@ -27,7 +27,7 @@ type Client struct {
 	Accounts             AccountService
 	Beta                 BetaService
 	Webhooks             WebhookService
-	Helper               *lib.HelperService
+	Helper               lib.HelperService
 }
 
 // DefaultClientOptions read from the environment (IMAGEKIT_PRIVATE_KEY,
