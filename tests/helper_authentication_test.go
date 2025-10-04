@@ -58,9 +58,9 @@ func TestGetAuthenticationParametersDetailed(t *testing.T) {
 		if !ok {
 			t.Errorf("Expected token to be string, got %T", params["token"])
 		} else {
-			uuidRegex := regexp.MustCompile(`^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$`)
-			if !uuidRegex.MatchString(token) {
-				t.Errorf("Expected token to be UUID format, got %s", token)
+			hexTokenRegex := regexp.MustCompile(`^[0-9a-f]{32}$`)
+			if !hexTokenRegex.MatchString(token) {
+				t.Errorf("Expected token to be 32-character hex format, got %s", token)
 			}
 		}
 
@@ -141,9 +141,9 @@ func TestGetAuthenticationParametersDetailed(t *testing.T) {
 			if tokenResult == "" {
 				t.Errorf("Expected token to be generated when empty string is provided")
 			}
-			uuidRegex := regexp.MustCompile(`^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$`)
-			if !uuidRegex.MatchString(tokenResult) {
-				t.Errorf("Expected generated token to be UUID format, got %s", tokenResult)
+			hexTokenRegex := regexp.MustCompile(`^[0-9a-f]{32}$`)
+			if !hexTokenRegex.MatchString(tokenResult) {
+				t.Errorf("Expected generated token to be 32-character hex format, got %s", tokenResult)
 			}
 		}
 

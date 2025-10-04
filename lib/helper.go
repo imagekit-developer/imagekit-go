@@ -4,6 +4,7 @@ package lib
 
 import (
 	"crypto/hmac"
+	"crypto/rand"
 	"crypto/sha1"
 	"encoding/base64"
 	"encoding/hex"
@@ -14,7 +15,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/google/uuid"
 	"github.com/stainless-sdks/imagekit-go/internal/requestconfig"
 	"github.com/stainless-sdks/imagekit-go/option"
 	"github.com/stainless-sdks/imagekit-go/packages/param"
@@ -203,7 +203,13 @@ func (r *HelperService) GetAuthenticationParameters(token string, expire int64) 
 
 	finalToken := token
 	if finalToken == "" {
-		finalToken = uuid.New().String()
+		// Generate 16 random bytes (128 bits of entropy - more than UUID v4's 122 bits)
+		tokenBytes := make([]byte, 16)
+		if _, err := rand.Read(tokenBytes); err != nil {
+			return nil, fmt.Errorf("failed to generate random token: %w", err)
+		}
+		// Use hex encoding for readability and compatibility
+		finalToken = hex.EncodeToString(tokenBytes)
 	}
 
 	finalExpire := expire
