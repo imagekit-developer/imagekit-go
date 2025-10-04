@@ -60,81 +60,9 @@ func NewHelperService(opts ...option.RequestOption) (r *HelperService) {
 	return
 }
 
-// Helper provides utility functions for ImageKit SDK (legacy support)
-type Helper struct {
-	privateKey string
-}
-
-// NewHelper creates a new Helper instance (legacy support)
-func NewHelper(privateKey string) *Helper {
-	return &Helper{
-		privateKey: privateKey,
-	}
-}
-
 // BuildURL generates a URL for accessing an image or file with optional transformations.
 // This is useful for generating URLs on the server-side for images stored in ImageKit.
 func (r *HelperService) BuildURL(opts shared.SrcOptionsParam) string {
-	h := &Helper{privateKey: r.privateKey}
-	return h.BuildSrc(opts)
-}
-
-// BuildTransformationString generates a transformation string from transformation parameters.
-// This is useful when you need just the transformation string without building a full URL.
-func (r *HelperService) BuildTransformationString(transformation []shared.TransformationParam) string {
-	h := &Helper{privateKey: r.privateKey}
-	return h.BuildTransformationString(transformation)
-}
-
-// GetAuthenticationParameters generates authentication parameters for client-side file uploads.
-// This is required when implementing direct upload from the browser or mobile apps.
-//
-// Parameters:
-//   - token: A unique token for this upload request. If empty, a UUID will be generated.
-//   - expire: Unix timestamp when this authentication should expire. If 0, defaults to 30 minutes from now.
-//
-// Returns a map containing:
-//   - "token": The authentication token
-//   - "expire": The expiration timestamp
-//   - "signature": The HMAC signature
-func (r *HelperService) GetAuthenticationParameters(token string, expire int64) map[string]interface{} {
-	if r.privateKey == "" {
-		panic("Private API key is required for authentication parameters generation")
-	}
-
-	defaultTimeDiff := int64(60 * 30) // 30 minutes
-	defaultExpire := time.Now().Unix() + defaultTimeDiff
-
-	finalToken := token
-	if finalToken == "" {
-		finalToken = uuid.New().String()
-	}
-
-	finalExpire := expire
-	if finalExpire == 0 {
-		finalExpire = defaultExpire
-	}
-
-	return getAuthenticationParameters(finalToken, finalExpire, r.privateKey)
-}
-
-const (
-	transformationParameter    = "tr"
-	signatureParameter         = "ik-s"
-	timestampParameter         = "ik-t"
-	defaultTimestamp           = 9999999999
-	chainTransformDelimiter    = ":"
-	transformDelimiter         = ","
-	transformKeyValueDelimiter = "-"
-)
-
-var (
-	simpleOverlayPathRegex = regexp.MustCompile(`^[a-zA-Z0-9-._/ ]*$`)
-	simpleOverlayTextRegex = regexp.MustCompile(`^[a-zA-Z0-9-._ ]*$`)
-)
-
-// BuildSrc builds a source URL with the given options
-func (h *Helper) BuildSrc(opts shared.SrcOptionsParam) string {
 	// Set defaults
 	if opts.URLEndpoint == "" {
 		opts.URLEndpoint = ""
@@ -181,7 +109,7 @@ func (h *Helper) BuildSrc(opts shared.SrcOptionsParam) string {
 	}
 
 	// Build transformation string
-	transformationString := h.buildTransformationStringInternal(opts.Transformation)
+	transformationString := r.buildTransformationStringInternal(opts.Transformation)
 
 	// Determine if transformation will be in query params
 	addAsQuery := transformationPosition == shared.TransformationPositionQuery || isSrcParameterUsedForURL
@@ -228,7 +156,7 @@ func (h *Helper) BuildSrc(opts shared.SrcOptionsParam) string {
 	if shouldSign {
 		expiryTimestamp := getSignatureTimestamp(opts.ExpiresIn)
 
-		urlSignature := h.getSignature(finalURL, opts.URLEndpoint, expiryTimestamp)
+		urlSignature := r.getSignature(finalURL, opts.URLEndpoint, expiryTimestamp)
 
 		// Add signature parameters to the final URL
 		// Use URL object to properly determine if we need ? or & separator
@@ -250,13 +178,46 @@ func (h *Helper) BuildSrc(opts shared.SrcOptionsParam) string {
 	return finalURL
 }
 
-// BuildTransformationString builds a transformation string from the given transformations
-func (h *Helper) BuildTransformationString(transformation []shared.TransformationParam) string {
-	return h.buildTransformationStringInternal(transformation)
+// BuildTransformationString generates a transformation string from transformation parameters.
+// This is useful when you need just the transformation string without building a full URL.
+func (r *HelperService) BuildTransformationString(transformation []shared.TransformationParam) string {
+	return r.buildTransformationStringInternal(transformation)
+}
+
+// GetAuthenticationParameters generates authentication parameters for client-side file uploads.
+// This is required when implementing direct upload from the browser or mobile apps.
+//
+// Parameters:
+//   - token: A unique token for this upload request. If empty, a UUID will be generated.
+//   - expire: Unix timestamp when this authentication should expire. If 0, defaults to 30 minutes from now.
+//
+// Returns a map containing:
+//   - "token": The authentication token
+//   - "expire": The expiration timestamp
+//   - "signature": The HMAC signature
+func (r *HelperService) GetAuthenticationParameters(token string, expire int64) map[string]interface{} {
+	if r.privateKey == "" {
+		panic("Private API key is required for authentication parameters generation")
+	}
+
+	defaultTimeDiff := int64(60 * 30) // 30 minutes
+	defaultExpire := time.Now().Unix() + defaultTimeDiff
+
+	finalToken := token
+	if finalToken == "" {
+		finalToken = uuid.New().String()
+	}
+
+	finalExpire := expire
+	if finalExpire == 0 {
+		finalExpire = defaultExpire
+	}
+
+	return getAuthenticationParameters(finalToken, finalExpire, r.privateKey)
 }
 
 // buildTransformationStringInternal builds a transformation string with context
-func (h *Helper) buildTransformationStringInternal(transformation []shared.TransformationParam) string {
+func (r *HelperService) buildTransformationStringInternal(transformation []shared.TransformationParam) string {
 	if len(transformation) == 0 {
 		return ""
 	}
@@ -272,27 +233,27 @@ func (h *Helper) buildTransformationStringInternal(transformation []shared.Trans
 			getter func() string
 		}{
 			{"w", func() string {
-				return h.getUnionParamValue(currentTransform.Width.OfFloat, currentTransform.Width.OfString)
+				return r.getUnionParamValue(currentTransform.Width.OfFloat, currentTransform.Width.OfString)
 			}},
 			{"h", func() string {
-				return h.getUnionParamValue(currentTransform.Height.OfFloat, currentTransform.Height.OfString)
+				return r.getUnionParamValue(currentTransform.Height.OfFloat, currentTransform.Height.OfString)
 			}},
-			{"q", func() string { return h.getOptParamValue(currentTransform.Quality) }},
+			{"q", func() string { return r.getOptParamValue(currentTransform.Quality) }},
 			{"ar", func() string {
-				return h.getUnionParamValue(currentTransform.AspectRatio.OfFloat, currentTransform.AspectRatio.OfString)
+				return r.getUnionParamValue(currentTransform.AspectRatio.OfFloat, currentTransform.AspectRatio.OfString)
 			}},
-			{"c", func() string { return h.getEnumValue(string(currentTransform.Crop)) }},
-			{"cm", func() string { return h.getEnumValue(string(currentTransform.CropMode)) }},
-			{"fo", func() string { return h.getOptParamValue(currentTransform.Focus) }},
-			{"f", func() string { return h.getEnumValue(string(currentTransform.Format)) }},
+			{"c", func() string { return r.getEnumValue(string(currentTransform.Crop)) }},
+			{"cm", func() string { return r.getEnumValue(string(currentTransform.CropMode)) }},
+			{"fo", func() string { return r.getOptParamValue(currentTransform.Focus) }},
+			{"f", func() string { return r.getEnumValue(string(currentTransform.Format)) }},
 			{"r", func() string {
 				if !param.IsOmitted(currentTransform.Radius.OfMax) {
 					return "max"
 				}
-				return h.getOptParamValue(currentTransform.Radius.OfFloat)
+				return r.getOptParamValue(currentTransform.Radius.OfFloat)
 			}},
-			{"bg", func() string { return h.getOptParamValue(currentTransform.Background) }},
-			{"b", func() string { return h.getOptParamValue(currentTransform.Border) }},
+			{"bg", func() string { return r.getOptParamValue(currentTransform.Background) }},
+			{"b", func() string { return r.getOptParamValue(currentTransform.Border) }},
 			{"di", func() string {
 				if !param.IsOmitted(currentTransform.DefaultImage) && currentTransform.DefaultImage.Value != "" {
 					value := currentTransform.DefaultImage.Value
@@ -301,43 +262,43 @@ func (h *Helper) buildTransformationStringInternal(transformation []shared.Trans
 				}
 				return ""
 			}},
-			{"dpr", func() string { return h.getOptParamValue(currentTransform.Dpr) }},
-			{"x", func() string { return h.getUnionParamValue(currentTransform.X.OfFloat, currentTransform.X.OfString) }},
-			{"y", func() string { return h.getUnionParamValue(currentTransform.Y.OfFloat, currentTransform.Y.OfString) }},
+			{"dpr", func() string { return r.getOptParamValue(currentTransform.Dpr) }},
+			{"x", func() string { return r.getUnionParamValue(currentTransform.X.OfFloat, currentTransform.X.OfString) }},
+			{"y", func() string { return r.getUnionParamValue(currentTransform.Y.OfFloat, currentTransform.Y.OfString) }},
 			{"xc", func() string {
-				return h.getUnionParamValue(currentTransform.XCenter.OfFloat, currentTransform.XCenter.OfString)
+				return r.getUnionParamValue(currentTransform.XCenter.OfFloat, currentTransform.XCenter.OfString)
 			}},
 			{"yc", func() string {
-				return h.getUnionParamValue(currentTransform.YCenter.OfFloat, currentTransform.YCenter.OfString)
+				return r.getUnionParamValue(currentTransform.YCenter.OfFloat, currentTransform.YCenter.OfString)
 			}},
-			{"o", func() string { return h.getOptParamValue(currentTransform.Opacity) }},
-			{"z", func() string { return h.getOptParamValue(currentTransform.Zoom) }},
+			{"o", func() string { return r.getOptParamValue(currentTransform.Opacity) }},
+			{"z", func() string { return r.getOptParamValue(currentTransform.Zoom) }},
 			{"rt", func() string {
-				return h.getUnionParamValue(currentTransform.Rotation.OfFloat, currentTransform.Rotation.OfString)
+				return r.getUnionParamValue(currentTransform.Rotation.OfFloat, currentTransform.Rotation.OfString)
 			}},
-			{"bl", func() string { return h.getOptParamValue(currentTransform.Blur) }},
-			{"n", func() string { return h.getOptParamValue(currentTransform.Named) }},
-			{"pr", func() string { return h.getOptParamValue(currentTransform.Progressive) }},
-			{"lo", func() string { return h.getOptParamValue(currentTransform.Lossless) }},
-			{"fl", func() string { return h.getEnumValue(string(currentTransform.Flip)) }},
+			{"bl", func() string { return r.getOptParamValue(currentTransform.Blur) }},
+			{"n", func() string { return r.getOptParamValue(currentTransform.Named) }},
+			{"pr", func() string { return r.getOptParamValue(currentTransform.Progressive) }},
+			{"lo", func() string { return r.getOptParamValue(currentTransform.Lossless) }},
+			{"fl", func() string { return r.getEnumValue(string(currentTransform.Flip)) }},
 			{"t", func() string {
 				if !param.IsOmitted(currentTransform.Trim.OfTransformationTrimBoolean) && currentTransform.Trim.OfTransformationTrimBoolean.Value {
 					return "true"
 				}
-				return h.getOptParamValue(currentTransform.Trim.OfFloat)
+				return r.getOptParamValue(currentTransform.Trim.OfFloat)
 			}},
-			{"md", func() string { return h.getOptParamValue(currentTransform.Metadata) }},
-			{"cp", func() string { return h.getOptParamValue(currentTransform.ColorProfile) }},
-			{"vc", func() string { return h.getEnumValue(string(currentTransform.VideoCodec)) }},
-			{"ac", func() string { return h.getEnumValue(string(currentTransform.AudioCodec)) }},
+			{"md", func() string { return r.getOptParamValue(currentTransform.Metadata) }},
+			{"cp", func() string { return r.getOptParamValue(currentTransform.ColorProfile) }},
+			{"vc", func() string { return r.getEnumValue(string(currentTransform.VideoCodec)) }},
+			{"ac", func() string { return r.getEnumValue(string(currentTransform.AudioCodec)) }},
 			{"so", func() string {
-				return h.getUnionParamValue(currentTransform.StartOffset.OfFloat, currentTransform.StartOffset.OfString)
+				return r.getUnionParamValue(currentTransform.StartOffset.OfFloat, currentTransform.StartOffset.OfString)
 			}},
 			{"eo", func() string {
-				return h.getUnionParamValue(currentTransform.EndOffset.OfFloat, currentTransform.EndOffset.OfString)
+				return r.getUnionParamValue(currentTransform.EndOffset.OfFloat, currentTransform.EndOffset.OfString)
 			}},
 			{"du", func() string {
-				return h.getUnionParamValue(currentTransform.Duration.OfFloat, currentTransform.Duration.OfString)
+				return r.getUnionParamValue(currentTransform.Duration.OfFloat, currentTransform.Duration.OfString)
 			}},
 			{"sr", func() string {
 				if len(currentTransform.StreamingResolutions) > 0 {
@@ -381,15 +342,15 @@ func (h *Helper) buildTransformationStringInternal(transformation []shared.Trans
 		// Process AI transformations with parameters
 		if !param.IsOmitted(currentTransform.AIDropShadow.OfTransformationAIDropShadowBoolean) && currentTransform.AIDropShadow.OfTransformationAIDropShadowBoolean.Value {
 			parsedTransformStep = append(parsedTransformStep, "e-dropshadow")
-		} else if value := h.getOptParamValue(currentTransform.AIDropShadow.OfString); value != "" {
+		} else if value := r.getOptParamValue(currentTransform.AIDropShadow.OfString); value != "" {
 			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("e-dropshadow%s%s", transformKeyValueDelimiter, value))
 		}
 
-		if value := h.getOptParamValue(currentTransform.AIChangeBackground); value != "" {
+		if value := r.getOptParamValue(currentTransform.AIChangeBackground); value != "" {
 			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("e-changebg%s%s", transformKeyValueDelimiter, value))
 		}
 
-		if value := h.getOptParamValue(currentTransform.AIEdit); value != "" {
+		if value := r.getOptParamValue(currentTransform.AIEdit); value != "" {
 			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("e-edit%s%s", transformKeyValueDelimiter, value))
 		}
 
@@ -402,7 +363,7 @@ func (h *Helper) buildTransformationStringInternal(transformation []shared.Trans
 				if !param.IsOmitted(currentTransform.Shadow.OfTransformationShadowBoolean) && currentTransform.Shadow.OfTransformationShadowBoolean.Value {
 					return "", true
 				}
-				if value := h.getOptParamValue(currentTransform.Shadow.OfString); value != "" {
+				if value := r.getOptParamValue(currentTransform.Shadow.OfString); value != "" {
 					return value, false
 				}
 				return "", false
@@ -411,7 +372,7 @@ func (h *Helper) buildTransformationStringInternal(transformation []shared.Trans
 				if !param.IsOmitted(currentTransform.Sharpen.OfTransformationSharpenBoolean) && currentTransform.Sharpen.OfTransformationSharpenBoolean.Value {
 					return "", true
 				}
-				if value := h.getOptParamValue(currentTransform.Sharpen.OfFloat); value != "" {
+				if value := r.getOptParamValue(currentTransform.Sharpen.OfFloat); value != "" {
 					return value, false
 				}
 				return "", false
@@ -420,7 +381,7 @@ func (h *Helper) buildTransformationStringInternal(transformation []shared.Trans
 				if !param.IsOmitted(currentTransform.UnsharpMask.OfTransformationUnsharpMaskBoolean) && currentTransform.UnsharpMask.OfTransformationUnsharpMaskBoolean.Value {
 					return "", true
 				}
-				if value := h.getOptParamValue(currentTransform.UnsharpMask.OfString); value != "" {
+				if value := r.getOptParamValue(currentTransform.UnsharpMask.OfString); value != "" {
 					return value, false
 				}
 				return "", false
@@ -429,7 +390,7 @@ func (h *Helper) buildTransformationStringInternal(transformation []shared.Trans
 				if !param.IsOmitted(currentTransform.Gradient.OfTransformationGradientBoolean) && currentTransform.Gradient.OfTransformationGradientBoolean.Value {
 					return "", true
 				}
-				if value := h.getOptParamValue(currentTransform.Gradient.OfString); value != "" {
+				if value := r.getOptParamValue(currentTransform.Gradient.OfString); value != "" {
 					return value, false
 				}
 				return "", false
@@ -452,12 +413,12 @@ func (h *Helper) buildTransformationStringInternal(transformation []shared.Trans
 		}
 
 		// Handle Page
-		if value := h.getUnionParamValue(currentTransform.Page.OfFloat, currentTransform.Page.OfString); value != "" {
+		if value := r.getUnionParamValue(currentTransform.Page.OfFloat, currentTransform.Page.OfString); value != "" {
 			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("pg%s%s", transformKeyValueDelimiter, value))
 		}
 
 		// Handle Overlay
-		if overlayString := h.processOverlay(currentTransform.Overlay); overlayString != "" {
+		if overlayString := r.processOverlay(currentTransform.Overlay); overlayString != "" {
 			parsedTransformStep = append(parsedTransformStep, overlayString)
 		}
 
@@ -475,7 +436,7 @@ func (h *Helper) buildTransformationStringInternal(transformation []shared.Trans
 }
 
 // Helper methods to reduce repetition
-func (h *Helper) getOptParamValue(opt interface{}) string {
+func (r *HelperService) getOptParamValue(opt interface{}) string {
 	switch v := opt.(type) {
 	case param.Opt[string]:
 		if !param.IsOmitted(v) {
@@ -493,7 +454,7 @@ func (h *Helper) getOptParamValue(opt interface{}) string {
 	return ""
 }
 
-func (h *Helper) getUnionParamValue(floatOpt param.Opt[float64], stringOpt param.Opt[string]) string {
+func (r *HelperService) getUnionParamValue(floatOpt param.Opt[float64], stringOpt param.Opt[string]) string {
 	if !param.IsOmitted(floatOpt) {
 		return fmt.Sprintf("%g", floatOpt.Value)
 	}
@@ -503,79 +464,14 @@ func (h *Helper) getUnionParamValue(floatOpt param.Opt[float64], stringOpt param
 	return ""
 }
 
-func (h *Helper) getEnumValue(value string) string {
+func (r *HelperService) getEnumValue(value string) string {
 	if value != "" {
 		return value
 	}
 	return ""
 }
 
-// GetAuthenticationParameters generates authentication parameters for client-side file uploads
-func (h *Helper) GetAuthenticationParameters(token string, expire int64) map[string]interface{} {
-	if h.privateKey == "" {
-		panic("Private API key is required for authentication parameters generation")
-	}
-
-	defaultTimeDiff := int64(60 * 30) // 30 minutes
-	defaultExpire := time.Now().Unix() + defaultTimeDiff
-
-	finalToken := token
-	if finalToken == "" {
-		finalToken = uuid.New().String()
-	}
-
-	finalExpire := expire
-	if finalExpire == 0 {
-		finalExpire = defaultExpire
-	}
-
-	return getAuthenticationParameters(finalToken, finalExpire, h.privateKey)
-}
-
-// Helper functions
-
-func getAuthenticationParameters(token string, expire int64, privateKey string) map[string]interface{} {
-	signature := createHmacSha1(privateKey, token+strconv.FormatInt(expire, 10))
-
-	return map[string]interface{}{
-		"token":     token,
-		"expire":    expire,
-		"signature": signature,
-	}
-}
-
-func createHmacSha1(key, data string) string {
-	h := hmac.New(sha1.New, []byte(key))
-	h.Write([]byte(data))
-	return hex.EncodeToString(h.Sum(nil))
-}
-
-func removeTrailingSlash(str string) string {
-	if len(str) > 0 && str[len(str)-1] == '/' {
-		return str[:len(str)-1]
-	}
-	return str
-}
-
-func removeLeadingSlash(str string) string {
-	if len(str) > 0 && str[0] == '/' {
-		return str[1:]
-	}
-	return str
-}
-
-func pathJoin(parts []string) string {
-	if len(parts) == 0 {
-		return ""
-	}
-
-	joined := strings.Join(parts, "/")
-	// Replace multiple slashes with single slash
-	re := regexp.MustCompile("/+")
-	return re.ReplaceAllString(joined, "/")
-}
-
-func (h *Helper) processOverlay(overlay shared.OverlayUnionParam) string {
+func (r *HelperService) processOverlay(overlay shared.OverlayUnionParam) string {
 	var entries []string
 	var baseOverlay *shared.BaseOverlayParam
 	var transformationString string
@@ -599,7 +495,7 @@ func (h *Helper) processOverlay(overlay shared.OverlayUnionParam) string {
 
 		// Process text overlay transformations
 		if len(textOverlay.Transformation) > 0 {
-			transformationString = h.buildTextOverlayTransformation(textOverlay.Transformation)
+			transformationString = r.buildTextOverlayTransformation(textOverlay.Transformation)
 		}
 	}
 
@@ -621,7 +517,7 @@ func (h *Helper) processOverlay(overlay shared.OverlayUnionParam) string {
 
 		// Process image overlay transformations (regular transformations)
 		if len(imageOverlay.Transformation) > 0 {
-			transformationString = h.buildTransformationStringInternal(imageOverlay.Transformation)
+			transformationString = r.buildTransformationStringInternal(imageOverlay.Transformation)
 		}
 	}
 
@@ -643,7 +539,7 @@ func (h *Helper) processOverlay(overlay shared.OverlayUnionParam) string {
 
 		// Process video overlay transformations (regular transformations)
 		if len(videoOverlay.Transformation) > 0 {
-			transformationString = h.buildTransformationStringInternal(videoOverlay.Transformation)
+			transformationString = r.buildTransformationStringInternal(videoOverlay.Transformation)
 		}
 	}
 
@@ -665,7 +561,7 @@ func (h *Helper) processOverlay(overlay shared.OverlayUnionParam) string {
 
 		// Process subtitle overlay transformations
 		if len(subtitleOverlay.Transformation) > 0 {
-			transformationString = h.buildSubtitleOverlayTransformation(subtitleOverlay.Transformation)
+			transformationString = r.buildSubtitleOverlayTransformation(subtitleOverlay.Transformation)
 		}
 	}
 
@@ -683,7 +579,7 @@ func (h *Helper) processOverlay(overlay shared.OverlayUnionParam) string {
 
 		// Process solid color overlay transformations
 		if len(solidColorOverlay.Transformation) > 0 {
-			transformationString = h.buildSolidColorOverlayTransformation(solidColorOverlay.Transformation)
+			transformationString = r.buildSolidColorOverlayTransformation(solidColorOverlay.Transformation)
 		}
 	}
 
@@ -742,7 +638,19 @@ func (h *Helper) processOverlay(overlay shared.OverlayUnionParam) string {
 	return ""
 }
 
-func (h *Helper) buildTextOverlayTransformation(transformations []shared.TextOverlayTransformationParam) string {
+func (r *HelperService) getSignature(finalURL, urlEndpoint string, expiryTimestamp int64) string {
+	if r.privateKey == "" || finalURL == "" || urlEndpoint == "" {
+		return ""
+	}
+
+	// Create the string to sign: relative path + expiry timestamp
+	urlEndpointWithSlash := addTrailingSlash(urlEndpoint)
+	stringToSign := strings.Replace(finalURL, urlEndpointWithSlash, "", 1) + strconv.FormatInt(expiryTimestamp, 10)
+
+	return createHmacSha1(r.privateKey, stringToSign)
+}
+
+func (r *HelperService) buildTextOverlayTransformation(transformations []shared.TextOverlayTransformationParam) string {
 	if len(transformations) == 0 {
 		return ""
 	}
@@ -833,7 +741,7 @@ func (h *Helper) buildTextOverlayTransformation(transformations []shared.TextOve
 	return strings.Join(entries, transformDelimiter)
 }
 
-func (h *Helper) buildSubtitleOverlayTransformation(transformations []shared.SubtitleOverlayTransformationParam) string {
+func (r *HelperService) buildSubtitleOverlayTransformation(transformations []shared.SubtitleOverlayTransformationParam) string {
 	if len(transformations) == 0 {
 		return ""
 	}
@@ -880,7 +788,7 @@ func (h *Helper) buildSubtitleOverlayTransformation(transformations []shared.Sub
 	return strings.Join(entries, transformDelimiter)
 }
 
-func (h *Helper) buildSolidColorOverlayTransformation(transformations []shared.SolidColorOverlayTransformationParam) string {
+func (r *HelperService) buildSolidColorOverlayTransformation(transformations []shared.SolidColorOverlayTransformationParam) string {
 	if len(transformations) == 0 {
 		return ""
 	}
@@ -928,6 +836,63 @@ func (h *Helper) buildSolidColorOverlayTransformation(transformations []shared.S
 	}
 
 	return strings.Join(entries, transformDelimiter)
+}
+
+const (
+	transformationParameter    = "tr"
+	signatureParameter         = "ik-s"
+	timestampParameter         = "ik-t"
+	defaultTimestamp           = 9999999999
+	chainTransformDelimiter    = ":"
+	transformDelimiter         = ","
+	transformKeyValueDelimiter = "-"
+)
+
+var (
+	simpleOverlayPathRegex = regexp.MustCompile(`^[a-zA-Z0-9-._/ ]*$`)
+	simpleOverlayTextRegex = regexp.MustCompile(`^[a-zA-Z0-9-._ ]*$`)
+)
+
+// Helper functions
+func getAuthenticationParameters(token string, expire int64, privateKey string) map[string]interface{} {
+	signature := createHmacSha1(privateKey, token+strconv.FormatInt(expire, 10))
+
+	return map[string]interface{}{
+		"token":     token,
+		"expire":    expire,
+		"signature": signature,
+	}
+}
+
+func createHmacSha1(key, data string) string {
+	h := hmac.New(sha1.New, []byte(key))
+	h.Write([]byte(data))
+	return hex.EncodeToString(h.Sum(nil))
+}
+
+func removeTrailingSlash(str string) string {
+	if len(str) > 0 && str[len(str)-1] == '/' {
+		return str[:len(str)-1]
+	}
+	return str
+}
+
+func removeLeadingSlash(str string) string {
+	if len(str) > 0 && str[0] == '/' {
+		return str[1:]
+	}
+	return str
+}
+
+func pathJoin(parts []string) string {
+	if len(parts) == 0 {
+		return ""
+	}
+
+	joined := strings.Join(parts, "/")
+	// Replace multiple slashes with single slash
+	re := regexp.MustCompile("/+")
+	return re.ReplaceAllString(joined, "/")
 }
 
 func processInputPath(str, encoding string) string {
@@ -982,18 +947,6 @@ func getSignatureTimestamp(expiresIn param.Opt[float64]) int64 {
 
 	currentTimestamp := time.Now().Unix()
 	return currentTimestamp + seconds
-}
-
-func (h *Helper) getSignature(finalURL, urlEndpoint string, expiryTimestamp int64) string {
-	if h.privateKey == "" || finalURL == "" || urlEndpoint == "" {
-		return ""
-	}
-
-	// Create the string to sign: relative path + expiry timestamp
-	urlEndpointWithSlash := addTrailingSlash(urlEndpoint)
-	stringToSign := strings.Replace(finalURL, urlEndpointWithSlash, "", 1) + strconv.FormatInt(expiryTimestamp, 10)
-
-	return createHmacSha1(h.privateKey, stringToSign)
 }
 
 func addTrailingSlash(str string) string {
