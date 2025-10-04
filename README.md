@@ -668,6 +668,52 @@ func main() {
 }
 ```
 
+### Using Raw transformations for undocumented features
+
+ImageKit frequently adds new transformation parameters that might not yet be documented in the SDK. You can use the `Raw` parameter to access these features or create custom transformation strings:
+
+```go
+package main
+
+import (
+	"fmt"
+	
+	"github.com/stainless-sdks/imagekit-go"
+	"github.com/stainless-sdks/imagekit-go/option"
+	"github.com/stainless-sdks/imagekit-go/packages/param"
+	"github.com/stainless-sdks/imagekit-go/shared"
+)
+
+func main() {
+	client := imagekit.NewClient(
+		option.WithPrivateKey("private_key_xxx"),
+	)
+
+	// Using Raw transformation for undocumented or new parameters
+	url := client.Helper.BuildURL(shared.SrcOptionsParam{
+		URLEndpoint: "https://ik.imagekit.io/your_imagekit_id",
+		Src:         "/path/to/image.jpg",
+		Transformation: []shared.TransformationParam{
+			{
+				// Combine documented transformations with raw parameters
+				Width: shared.TransformationWidthUnionParam{
+					OfFloat: param.Opt[float64]{Value: 400},
+				},
+				Height: shared.TransformationHeightUnionParam{
+					OfFloat: param.Opt[float64]{Value: 300},
+				},
+			},
+			{
+				// Use Raw for undocumented transformations or complex parameters
+				Raw: param.Opt[string]{Value: "something-new"},
+			},
+		},
+	})
+	fmt.Println(url)
+	// Result: https://ik.imagekit.io/your_imagekit_id/path/to/image.jpg?tr=w-400,h-300:something-new
+}
+```
+
 ## Authentication parameters for client-side uploads
 
 Generate authentication parameters for secure client-side file uploads:
