@@ -1,4 +1,4 @@
-# Image Kit Go API Library
+# ImageKit.io Go SDK
 
 <!-- x-release-please-start-version -->
 
@@ -6,8 +6,41 @@
 
 <!-- x-release-please-end -->
 
-The Image Kit Go library provides convenient access to the [Image Kit REST API](https://imagekit.io/docs/api-reference)
-from applications written in Go.
+The ImageKit Go SDK is a comprehensive library designed to simplify the integration of ImageKit into your server-side applications. It provides powerful tools for working with the ImageKit REST API, including building and transforming URLs, generating signed URLs for secure content delivery, verifying webhooks, and handling file uploads.
+
+The full API of this library can be found in [api.md](api.md).
+
+For additional details, refer to the [ImageKit REST API documentation](https://imagekit.io/docs/api-reference).
+
+## Table of Contents
+
+- [Installation](#installation)
+- [Requirements](#requirements)
+- [Usage](#usage)
+  - [Request fields](#request-fields)
+  - [Request unions](#request-unions)
+  - [Response objects](#response-objects)
+  - [Response Unions](#response-unions)
+  - [RequestOptions](#requestoptions)
+- [URL generation](#url-generation)
+  - [Basic URL generation](#basic-url-generation)
+  - [URL generation with transformations](#url-generation-with-transformations)
+  - [URL generation with image overlay](#url-generation-with-image-overlay)
+  - [URL generation with text overlay](#url-generation-with-text-overlay)
+  - [URL generation with multiple overlays](#url-generation-with-multiple-overlays)
+  - [Signed URLs for secure delivery](#signed-urls-for-secure-delivery)
+- [Authentication parameters for client-side uploads](#authentication-parameters-for-client-side-uploads)
+- [Webhook verification](#webhook-verification)
+- [Advanced Usage](#advanced-usage)
+  - [Errors](#errors)
+  - [Timeouts](#timeouts)
+  - [File uploads](#file-uploads)
+  - [Retries](#retries)
+  - [Accessing raw response data](#accessing-raw-response-data-eg-response-headers)
+  - [Making custom/undocumented requests](#making-customundocumented-requests)
+  - [Middleware](#middleware)
+- [Semantic versioning](#semantic-versioning)
+- [Contributing](#contributing)
 
 ## Installation
 
@@ -35,10 +68,9 @@ The full API of this library can be found in [api.md](api.md).
 package main
 
 import (
-	"bytes"
 	"context"
 	"fmt"
-	"io"
+	"os"
 
 	"github.com/stainless-sdks/imagekit-go"
 	"github.com/stainless-sdks/imagekit-go/option"
@@ -46,17 +78,23 @@ import (
 
 func main() {
 	client := imagekit.NewClient(
-		option.WithPrivateKey("My Private Key"), // defaults to os.LookupEnv("IMAGEKIT_PRIVATE_KEY")
-		option.WithPassword("My Password"),      // defaults to os.LookupEnv("OPTIONAL_IMAGEKIT_IGNORES_THIS")
+		option.WithPrivateKey("private_key_xxx"), // defaults to os.LookupEnv("IMAGEKIT_PRIVATE_KEY")
 	)
+	
+	file, err := os.Open("/path/to/your/image.jpg")
+	if err != nil {
+		panic(err.Error())
+	}
+	defer file.Close()
+	
 	response, err := client.Files.Upload(context.TODO(), imagekit.FileUploadParams{
-		File:     io.Reader(bytes.NewBuffer([]byte("https://www.example.com/public-url.jpg"))),
-		FileName: "file-name.jpg",
+		File:     file,
+		FileName: "uploaded-image.jpg",
 	})
 	if err != nil {
 		panic(err.Error())
 	}
-	fmt.Printf("%+v\n", response.VideoCodec)
+	fmt.Printf("%+v\n", response)
 }
 
 ```
@@ -274,14 +312,486 @@ The request option `option.WithDebugLog(nil)` may be helpful while debugging.
 
 See the [full list of request options](https://pkg.go.dev/github.com/stainless-sdks/imagekit-go/option).
 
-### Pagination
+## URL generation
 
-This library provides some conveniences for working with paginated list endpoints.
+The ImageKit SDK provides a powerful `Helper.BuildURL()` method for generating optimized image and video URLs with transformations. Here are examples ranging from simple URLs to complex transformations with overlays and signed URLs.
 
-You can use `.ListAutoPaging()` methods to iterate through items across all pages:
+### Basic URL generation
 
-Or you can use simple `.List()` methods to fetch a single page and receive a standard response object
-with additional helper methods like `.GetNextPage()`, e.g.:
+Generate a simple URL without any transformations:
+
+```go
+package main
+
+import (
+	"fmt"
+	
+	"github.com/stainless-sdks/imagekit-go"
+	"github.com/stainless-sdks/imagekit-go/option"
+	"github.com/stainless-sdks/imagekit-go/shared"
+)
+
+func main() {
+	client := imagekit.NewClient(
+		option.WithPrivateKey("private_key_xxx"),
+	)
+
+	// Basic URL without transformations
+	url := client.Helper.BuildURL(shared.SrcOptionsParam{
+		URLEndpoint: "https://ik.imagekit.io/your_imagekit_id",
+		Src:         "/path/to/image.jpg",
+	})
+	fmt.Println(url)
+	// Result: https://ik.imagekit.io/your_imagekit_id/path/to/image.jpg
+}
+```
+
+### URL generation with transformations
+
+Apply common transformations like resizing, cropping, and format conversion:
+
+```go
+package main
+
+import (
+	"fmt"
+	
+	"github.com/stainless-sdks/imagekit-go"
+	"github.com/stainless-sdks/imagekit-go/option"
+	"github.com/stainless-sdks/imagekit-go/packages/param"
+	"github.com/stainless-sdks/imagekit-go/shared"
+)
+
+func main() {
+	client := imagekit.NewClient(
+		option.WithPrivateKey("private_key_xxx"),
+	)
+
+	// URL with basic transformations
+	url := client.Helper.BuildURL(shared.SrcOptionsParam{
+		URLEndpoint: "https://ik.imagekit.io/your_imagekit_id",
+		Src:         "/path/to/image.jpg",
+		Transformation: []shared.TransformationParam{
+			{
+				Width: shared.TransformationWidthUnionParam{
+					OfFloat: param.Opt[float64]{Value: 400},
+				},
+				Height: shared.TransformationHeightUnionParam{
+					OfFloat: param.Opt[float64]{Value: 300},
+				},
+				Crop:    shared.TransformationCropMaintainRatio,
+				Quality:  param.Opt[float64]{Value: 80},
+				Format:   shared.TransformationFormatWebp,
+			},
+		},
+	})
+	fmt.Println(url)
+	// Result: https://ik.imagekit.io/your_imagekit_id/path/to/image.jpg?tr=w-400,h-300,c-maintain_ratio,q-80,f-webp
+}
+```
+
+### URL generation with image overlay
+
+Add image overlays to your base image:
+
+```go
+package main
+
+import (
+	"fmt"
+	
+	"github.com/stainless-sdks/imagekit-go"
+	"github.com/stainless-sdks/imagekit-go/option"
+	"github.com/stainless-sdks/imagekit-go/packages/param"
+	"github.com/stainless-sdks/imagekit-go/shared"
+	"github.com/stainless-sdks/imagekit-go/shared/constant"
+)
+
+func main() {
+	client := imagekit.NewClient(
+		option.WithPrivateKey("private_key_xxx"),
+	)
+
+	// URL with image overlay
+	url := client.Helper.BuildURL(shared.SrcOptionsParam{
+		URLEndpoint: "https://ik.imagekit.io/your_imagekit_id",
+		Src:         "/path/to/base-image.jpg",
+		Transformation: []shared.TransformationParam{
+			{
+				Width: shared.TransformationWidthUnionParam{
+					OfFloat: param.Opt[float64]{Value: 500},
+				},
+				Height: shared.TransformationHeightUnionParam{
+					OfFloat: param.Opt[float64]{Value: 400},
+				},
+				Overlay: shared.OverlayUnionParam{
+					OfImage: &shared.ImageOverlayParam{
+						Type:  constant.Image("image"),
+						Input: "/path/to/overlay-logo.png",
+						BaseOverlayParam: shared.BaseOverlayParam{
+							Position: shared.OverlayPositionParam{
+								X: shared.OverlayPositionXUnionParam{
+									OfFloat: param.Opt[float64]{Value: 10},
+								},
+								Y: shared.OverlayPositionYUnionParam{
+									OfFloat: param.Opt[float64]{Value: 10},
+								},
+							},
+						},
+						Transformation: []shared.TransformationParam{
+							{
+								Width: shared.TransformationWidthUnionParam{
+									OfFloat: param.Opt[float64]{Value: 100},
+								},
+								Height: shared.TransformationHeightUnionParam{
+									OfFloat: param.Opt[float64]{Value: 50},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	})
+	fmt.Println(url)
+	// Result: URL with image overlay positioned at x:10, y:10
+}
+```
+
+### URL generation with text overlay
+
+Add customized text overlays:
+
+```go
+package main
+
+import (
+	"fmt"
+	
+	"github.com/stainless-sdks/imagekit-go"
+	"github.com/stainless-sdks/imagekit-go/option"
+	"github.com/stainless-sdks/imagekit-go/packages/param"
+	"github.com/stainless-sdks/imagekit-go/shared"
+	"github.com/stainless-sdks/imagekit-go/shared/constant"
+)
+
+func main() {
+	client := imagekit.NewClient(
+		option.WithPrivateKey("private_key_xxx"),
+	)
+
+	// URL with text overlay
+	url := client.Helper.BuildURL(shared.SrcOptionsParam{
+		URLEndpoint: "https://ik.imagekit.io/your_imagekit_id",
+		Src:         "/path/to/base-image.jpg",
+		Transformation: []shared.TransformationParam{
+			{
+				Width: shared.TransformationWidthUnionParam{
+					OfFloat: param.Opt[float64]{Value: 600},
+				},
+				Height: shared.TransformationHeightUnionParam{
+					OfFloat: param.Opt[float64]{Value: 400},
+				},
+				Overlay: shared.OverlayUnionParam{
+					OfText: &shared.TextOverlayParam{
+						Type: constant.Text("text"),
+						Text: "Sample Text Overlay",
+						BaseOverlayParam: shared.BaseOverlayParam{
+							Position: shared.OverlayPositionParam{
+								X: shared.OverlayPositionXUnionParam{
+									OfFloat: param.Opt[float64]{Value: 50},
+								},
+								Y: shared.OverlayPositionYUnionParam{
+									OfFloat: param.Opt[float64]{Value: 50},
+								},
+								Focus: shared.OverlayPositionFocusCenter,
+							},
+						},
+						Transformation: []shared.TextOverlayTransformationParam{
+							{
+								FontSize: shared.TextOverlayTransformationFontSizeUnionParam{
+									OfFloat: param.Opt[float64]{Value: 40},
+								},
+								FontFamily: param.Opt[string]{Value: "Arial"},
+								FontColor:  param.Opt[string]{Value: "FFFFFF"},
+								Typography: param.Opt[string]{Value: "b"}, // bold
+							},
+						},
+					},
+				},
+			},
+		},
+	})
+	fmt.Println(url)
+	// Result: URL with bold white Arial text overlay at center position
+}
+```
+
+### URL generation with multiple overlays
+
+Combine multiple overlays for complex compositions:
+
+```go
+package main
+
+import (
+	"fmt"
+	
+	"github.com/stainless-sdks/imagekit-go"
+	"github.com/stainless-sdks/imagekit-go/option"
+	"github.com/stainless-sdks/imagekit-go/packages/param"
+	"github.com/stainless-sdks/imagekit-go/shared"
+	"github.com/stainless-sdks/imagekit-go/shared/constant"
+)
+
+func main() {
+	client := imagekit.NewClient(
+		option.WithPrivateKey("private_key_xxx"),
+	)
+
+	// URL with multiple overlays (text + image)
+	url := client.Helper.BuildURL(shared.SrcOptionsParam{
+		URLEndpoint: "https://ik.imagekit.io/your_imagekit_id",
+		Src:         "/path/to/base-image.jpg",
+		Transformation: []shared.TransformationParam{
+			{
+				Width: shared.TransformationWidthUnionParam{
+					OfFloat: param.Opt[float64]{Value: 800},
+				},
+				Height: shared.TransformationHeightUnionParam{
+					OfFloat: param.Opt[float64]{Value: 600},
+				},
+				Overlay: shared.OverlayUnionParam{
+					OfText: &shared.TextOverlayParam{
+						Type: constant.Text("text"),
+						Text: "Header Text",
+						BaseOverlayParam: shared.BaseOverlayParam{
+							Position: shared.OverlayPositionParam{
+								X: shared.OverlayPositionXUnionParam{
+									OfFloat: param.Opt[float64]{Value: 20},
+								},
+								Y: shared.OverlayPositionYUnionParam{
+									OfFloat: param.Opt[float64]{Value: 20},
+								},
+							},
+						},
+						Transformation: []shared.TextOverlayTransformationParam{
+							{
+								FontSize: shared.TextOverlayTransformationFontSizeUnionParam{
+									OfFloat: param.Opt[float64]{Value: 30},
+								},
+								FontColor: param.Opt[string]{Value: "000000"},
+							},
+						},
+					},
+				},
+			},
+			{
+				Overlay: shared.OverlayUnionParam{
+					OfImage: &shared.ImageOverlayParam{
+						Type:  constant.Image("image"),
+						Input: "/watermark.png",
+						BaseOverlayParam: shared.BaseOverlayParam{
+							Position: shared.OverlayPositionParam{
+								Focus: shared.OverlayPositionFocusBottomRight,
+							},
+						},
+						Transformation: []shared.TransformationParam{
+							{
+								Width: shared.TransformationWidthUnionParam{
+									OfFloat: param.Opt[float64]{Value: 100},
+								},
+								Opacity: param.Opt[float64]{Value: 70},
+							},
+						},
+					},
+				},
+			},
+		},
+	})
+	fmt.Println(url)
+	// Result: URL with text overlay at top-left and semi-transparent watermark at bottom-right
+}
+```
+
+### Signed URLs for secure delivery
+
+Generate signed URLs that expire after a specified time for secure content delivery:
+
+```go
+package main
+
+import (
+	"fmt"
+	
+	"github.com/stainless-sdks/imagekit-go"
+	"github.com/stainless-sdks/imagekit-go/option"
+	"github.com/stainless-sdks/imagekit-go/packages/param"
+	"github.com/stainless-sdks/imagekit-go/shared"
+)
+
+func main() {
+	client := imagekit.NewClient(
+		option.WithPrivateKey("private_key_xxx"),
+	)
+
+	// Generate a signed URL that expires in 1 hour (3600 seconds)
+	url := client.Helper.BuildURL(shared.SrcOptionsParam{
+		URLEndpoint: "https://ik.imagekit.io/your_imagekit_id",
+		Src:         "/private/secure-image.jpg",
+		Transformation: []shared.TransformationParam{
+			{
+				Width: shared.TransformationWidthUnionParam{
+					OfFloat: param.Opt[float64]{Value: 400},
+				},
+				Height: shared.TransformationHeightUnionParam{
+					OfFloat: param.Opt[float64]{Value: 300},
+				},
+				Quality: param.Opt[float64]{Value: 90},
+			},
+		},
+		Signed:    param.Opt[bool]{Value: true},
+		ExpiresIn: param.Opt[float64]{Value: 3600}, // URL expires in 1 hour
+	})
+	fmt.Println(url)
+	// Result: URL with signature parameters (?ik-t=timestamp&ik-s=signature)
+
+	// Generate a signed URL that doesn't expire
+	permanentSignedUrl := client.Helper.BuildURL(shared.SrcOptionsParam{
+		URLEndpoint: "https://ik.imagekit.io/your_imagekit_id",
+		Src:         "/private/secure-image.jpg",
+		Signed:      param.Opt[bool]{Value: true},
+		// No ExpiresIn means the URL won't expire
+	})
+	fmt.Println(permanentSignedUrl)
+	// Result: URL with signature parameter (?ik-s=signature)
+}
+```
+
+## Authentication parameters for client-side uploads
+
+Generate authentication parameters for secure client-side file uploads:
+
+```go
+package main
+
+import (
+	"fmt"
+	
+	"github.com/stainless-sdks/imagekit-go"
+	"github.com/stainless-sdks/imagekit-go/option"
+)
+
+func main() {
+	client := imagekit.NewClient(
+		option.WithPrivateKey("private_key_xxx"),
+	)
+
+	// Generate authentication parameters for client-side uploads
+	authParams := client.Helper.GetAuthenticationParameters("", 0)
+	fmt.Printf("%+v\n", authParams)
+	// Result: map[expire:<timestamp> signature:<hmac-signature> token:<uuid-token>]
+
+	// Generate with custom token and expiry
+	customAuthParams := client.Helper.GetAuthenticationParameters("my-custom-token", 1800)
+	fmt.Printf("%+v\n", customAuthParams)
+	// Result: map[expire:1800 signature:<hmac-signature> token:my-custom-token]
+}
+```
+
+These authentication parameters can be used in client-side upload forms to securely upload files without exposing your private API key.
+
+## Webhook verification
+
+The ImageKit SDK provides utilities to verify webhook signatures for secure event handling. This ensures that webhook requests are actually coming from ImageKit and haven't been tampered with.
+
+### Verifying webhook signatures
+
+```go
+package main
+
+import (
+	"fmt"
+	"io"
+	"log"
+	"net/http"
+	"os"
+
+	"github.com/stainless-sdks/imagekit-go"
+	"github.com/stainless-sdks/imagekit-go/option"
+)
+
+func main() {
+	client := imagekit.NewClient(
+		option.WithPrivateKey("private_key_xxx"),
+		option.WithWebhookSecret("webhook_secret_xxx"), // Required for webhook verification
+	)
+
+	// Webhook handler with proper request body handling
+	http.HandleFunc("/webhook", func(w http.ResponseWriter, req *http.Request) {
+		// Limit request body size to prevent abuse (64KB should be sufficient for most webhooks)
+		const MaxBodyBytes = int64(65536)
+		req.Body = http.MaxBytesReader(w, req.Body, MaxBodyBytes)
+		
+		// Read the raw webhook payload
+		payload, err := io.ReadAll(req.Body)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error reading request body: %v\n", err)
+			w.WriteHeader(http.StatusServiceUnavailable)
+			return
+		}
+
+		// Verify and unwrap webhook payload
+		event, err := client.Webhooks.Unwrap(payload, req.Header)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Invalid webhook signature or malformed payload: %v\n", err)
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+
+		fmt.Printf("Webhook signature is valid. Event type: %s\n", event.Type)
+		
+		// Process the webhook event based on type
+		switch event.Type {
+		case "video.transformation.accepted":
+			videoEvent := event.AsVideoTransformationAcceptedEvent()
+			fmt.Printf("Video transformation accepted: %s\n", videoEvent.Data.Asset.URL)
+			// Call your business logic function
+			// handleVideoTransformationAccepted(videoEvent)
+			
+		case "upload.pre-transform.success":
+			uploadEvent := event.AsUploadPreTransformSuccessEvent()
+			fmt.Printf("Upload pre-transform success: %s\n", uploadEvent.Data.Name)
+			// Call your business logic function
+			// handleUploadPreTransformSuccess(uploadEvent)
+			
+		case "upload.post-transform.success":
+			postEvent := event.AsUploadPostTransformSuccessEvent()
+			fmt.Printf("Upload post-transform success: %s\n", postEvent.Data.Name)
+			// Call your business logic function
+			// handleUploadPostTransformSuccess(postEvent)
+			
+		case "upload.success":
+			uploadEvent := event.AsUploadSuccessEvent()
+			fmt.Printf("Upload success: %s\n", uploadEvent.Data.Name)
+			// Call your business logic function
+			// handleUploadSuccess(uploadEvent)
+			
+		// Handle other event types as needed
+		default:
+			fmt.Fprintf(os.Stderr, "Unhandled event type: %s\n", event.Type)
+		}
+
+		w.WriteHeader(http.StatusOK)
+	})
+
+	// Start the server
+	fmt.Println("Webhook server listening on :8080")
+	log.Fatal(http.ListenAndServe(":8080", nil))
+}
+```
+
+For detailed information about webhook setup, signature verification, and handling different webhook events, refer to the [ImageKit webhook documentation](https://imagekit.io/docs/webhooks#verify-webhook-signature).
 
 ### Errors
 
