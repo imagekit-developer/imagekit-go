@@ -3,6 +3,7 @@
 package imagekit
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"net/http"
@@ -55,7 +56,8 @@ func (r *WebhookService) Unwrap(payload []byte, headers http.Header, opts ...opt
 	if key == "" {
 		return nil, errors.New("The WebhookSecret option must be set in order to verify webhook headers")
 	}
-	wh, err := standardwebhooks.NewWebhook(key)
+	encodedKey := base64.StdEncoding.EncodeToString([]byte(key))
+	wh, err := standardwebhooks.NewWebhook(encodedKey)
 	if err != nil {
 		return nil, err
 	}
