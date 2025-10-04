@@ -166,7 +166,7 @@ func TestAITransformations(t *testing.T) {
 		transformation := []shared.TransformationParam{
 			{
 				Gradient: shared.TransformationGradientUnionParam{
-					OfString: param.Opt[string]{Value: "linear-top-FF0000-0000FF"},
+					OfString: param.Opt[string]{Value: "ld-top_from-green_to-00FF0010_sp-1"},
 				},
 			},
 		}
@@ -178,7 +178,7 @@ func TestAITransformations(t *testing.T) {
 			Transformation:         transformation,
 		})
 
-		expected := "https://ik.imagekit.io/test_url_endpoint/test_path1.jpg?tr=e-gradient-linear-top-FF0000-0000FF"
+		expected := "https://ik.imagekit.io/test_url_endpoint/test_path1.jpg?tr=e-gradient-ld-top_from-green_to-00FF0010_sp-1"
 		if url != expected {
 			t.Errorf("Expected %s, got %s", expected, url)
 		}
