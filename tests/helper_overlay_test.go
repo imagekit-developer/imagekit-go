@@ -1,9 +1,10 @@
 package imagekit_test
 
 import (
-	"github.com/stainless-sdks/imagekit-go/option"
-	"github.com/stainless-sdks/imagekit-go"
 	"testing"
+
+	"github.com/stainless-sdks/imagekit-go"
+	"github.com/stainless-sdks/imagekit-go/option"
 
 	"github.com/stainless-sdks/imagekit-go/packages/param"
 	"github.com/stainless-sdks/imagekit-go/shared"
@@ -14,7 +15,7 @@ func TestOverlayTransformations(t *testing.T) {
 	privateKey := "My Private API Key"
 	client := imagekit.NewClient(option.WithPrivateKey(privateKey))
 
-	t.Run("Ignore if type is missing", func(t *testing.T) {
+	t.Run("should ignore overlay when type property is missing", func(t *testing.T) {
 		transformation := []shared.TransformationParam{
 			{
 				Width: shared.TransformationWidthUnionParam{
@@ -36,7 +37,7 @@ func TestOverlayTransformations(t *testing.T) {
 		}
 	})
 
-	t.Run("Ignore invalid values if text is missing", func(t *testing.T) {
+	t.Run("should ignore text overlay when text property is missing", func(t *testing.T) {
 		transformation := []shared.TransformationParam{
 			{
 				Overlay: shared.OverlayUnionParam{
@@ -61,7 +62,7 @@ func TestOverlayTransformations(t *testing.T) {
 		}
 	})
 
-	t.Run("Ignore invalid values if input (image)", func(t *testing.T) {
+	t.Run("should ignore image overlay when input property is missing", func(t *testing.T) {
 		transformation := []shared.TransformationParam{
 			{
 				Overlay: shared.OverlayUnionParam{
@@ -86,7 +87,7 @@ func TestOverlayTransformations(t *testing.T) {
 		}
 	})
 
-	t.Run("Ignore invalid values if input (video)", func(t *testing.T) {
+	t.Run("should ignore video overlay when input property is missing", func(t *testing.T) {
 		transformation := []shared.TransformationParam{
 			{
 				Overlay: shared.OverlayUnionParam{
@@ -111,7 +112,7 @@ func TestOverlayTransformations(t *testing.T) {
 		}
 	})
 
-	t.Run("Ignore invalid values if input (subtitle)", func(t *testing.T) {
+	t.Run("should ignore subtitle overlay when input property is missing", func(t *testing.T) {
 		transformation := []shared.TransformationParam{
 			{
 				Overlay: shared.OverlayUnionParam{
@@ -136,7 +137,7 @@ func TestOverlayTransformations(t *testing.T) {
 		}
 	})
 
-	t.Run("Ignore invalid values if color is missing (solidColor)", func(t *testing.T) {
+	t.Run("should ignore solid color overlay when color property is missing", func(t *testing.T) {
 		transformation := []shared.TransformationParam{
 			{
 				Overlay: shared.OverlayUnionParam{
@@ -161,7 +162,7 @@ func TestOverlayTransformations(t *testing.T) {
 		}
 	})
 
-	t.Run("Text overlay generates correct URL with encoded overlay text", func(t *testing.T) {
+	t.Run("should generate URL with text overlay using URL encoding", func(t *testing.T) {
 		transformation := []shared.TransformationParam{
 			{
 				Overlay: shared.OverlayUnionParam{
@@ -186,7 +187,7 @@ func TestOverlayTransformations(t *testing.T) {
 		}
 	})
 
-	t.Run("Image overlay generates correct URL with input logo.png", func(t *testing.T) {
+	t.Run("should generate URL with image overlay from input file", func(t *testing.T) {
 		transformation := []shared.TransformationParam{
 			{
 				Overlay: shared.OverlayUnionParam{
@@ -211,7 +212,7 @@ func TestOverlayTransformations(t *testing.T) {
 		}
 	})
 
-	t.Run("Video overlay generates correct URL with input play-pause-loop.mp4", func(t *testing.T) {
+	t.Run("should generate URL with video overlay from input file", func(t *testing.T) {
 		transformation := []shared.TransformationParam{
 			{
 				Overlay: shared.OverlayUnionParam{
@@ -236,7 +237,7 @@ func TestOverlayTransformations(t *testing.T) {
 		}
 	})
 
-	t.Run("Subtitle overlay generates correct URL with input subtitle.srt", func(t *testing.T) {
+	t.Run("should generate URL with subtitle overlay from input file", func(t *testing.T) {
 		transformation := []shared.TransformationParam{
 			{
 				Overlay: shared.OverlayUnionParam{
@@ -261,7 +262,7 @@ func TestOverlayTransformations(t *testing.T) {
 		}
 	})
 
-	t.Run("Solid color overlay generates correct URL with background color FF0000", func(t *testing.T) {
+	t.Run("should generate URL with solid color overlay using background color", func(t *testing.T) {
 		transformation := []shared.TransformationParam{
 			{
 				Overlay: shared.OverlayUnionParam{
@@ -286,7 +287,7 @@ func TestOverlayTransformations(t *testing.T) {
 		}
 	})
 
-	t.Run("Combined overlay transformations generate correct URL including nested overlays", func(t *testing.T) {
+	t.Run("should generate URL with multiple complex overlays including nested transformations", func(t *testing.T) {
 		transformation := []shared.TransformationParam{
 			{
 				// Text overlay
@@ -471,7 +472,7 @@ func TestOverlayEncoding(t *testing.T) {
 	privateKey := "My Private API Key"
 	client := imagekit.NewClient(option.WithPrivateKey(privateKey))
 
-	t.Run("Nested simple path, should use i instead of ie, handle slash properly", func(t *testing.T) {
+	t.Run("should use plain encoding for simple image paths with slashes converted to @@", func(t *testing.T) {
 		transformation := []shared.TransformationParam{
 			{
 				Overlay: shared.OverlayUnionParam{
@@ -496,7 +497,7 @@ func TestOverlayEncoding(t *testing.T) {
 		}
 	})
 
-	t.Run("Nested non-simple path, should use ie instead of i", func(t *testing.T) {
+	t.Run("should use base64 encoding for image paths containing special characters", func(t *testing.T) {
 		transformation := []shared.TransformationParam{
 			{
 				Overlay: shared.OverlayUnionParam{
@@ -521,7 +522,7 @@ func TestOverlayEncoding(t *testing.T) {
 		}
 	})
 
-	t.Run("Simple text overlay, should use i instead of ie", func(t *testing.T) {
+	t.Run("should use plain encoding for simple text overlays", func(t *testing.T) {
 		transformation := []shared.TransformationParam{
 			{
 				Overlay: shared.OverlayUnionParam{
@@ -546,7 +547,7 @@ func TestOverlayEncoding(t *testing.T) {
 		}
 	})
 
-	t.Run("Handle slash in fontFamily in case of custom fonts", func(t *testing.T) {
+	t.Run("should convert slashes to @@ in fontFamily paths for custom fonts", func(t *testing.T) {
 		transformation := []shared.TransformationParam{
 			{
 				Overlay: shared.OverlayUnionParam{
@@ -576,7 +577,7 @@ func TestOverlayEncoding(t *testing.T) {
 		}
 	})
 
-	t.Run("Simple text overlay with spaces and other safe characters, should use i instead of ie", func(t *testing.T) {
+	t.Run("should use URL encoding for text overlays with spaces and safe characters", func(t *testing.T) {
 		transformation := []shared.TransformationParam{
 			{
 				Overlay: shared.OverlayUnionParam{
@@ -601,7 +602,7 @@ func TestOverlayEncoding(t *testing.T) {
 		}
 	})
 
-	t.Run("Non simple text overlay, should use ie instead of i", func(t *testing.T) {
+	t.Run("should use base64 encoding for text overlays with special unicode characters", func(t *testing.T) {
 		transformation := []shared.TransformationParam{
 			{
 				Overlay: shared.OverlayUnionParam{
@@ -626,7 +627,7 @@ func TestOverlayEncoding(t *testing.T) {
 		}
 	})
 
-	t.Run("Text overlay with explicit plain encoding", func(t *testing.T) {
+	t.Run("should use plain encoding when explicitly specified for text overlay", func(t *testing.T) {
 		transformation := []shared.TransformationParam{
 			{
 				Overlay: shared.OverlayUnionParam{
@@ -652,7 +653,7 @@ func TestOverlayEncoding(t *testing.T) {
 		}
 	})
 
-	t.Run("Text overlay with explicit base64 encoding", func(t *testing.T) {
+	t.Run("should use base64 encoding when explicitly specified for text overlay", func(t *testing.T) {
 		transformation := []shared.TransformationParam{
 			{
 				Overlay: shared.OverlayUnionParam{
@@ -678,7 +679,7 @@ func TestOverlayEncoding(t *testing.T) {
 		}
 	})
 
-	t.Run("Image overlay with explicit plain encoding", func(t *testing.T) {
+	t.Run("should use plain encoding when explicitly specified for image overlay", func(t *testing.T) {
 		transformation := []shared.TransformationParam{
 			{
 				Overlay: shared.OverlayUnionParam{
@@ -704,7 +705,7 @@ func TestOverlayEncoding(t *testing.T) {
 		}
 	})
 
-	t.Run("Image overlay with explicit base64 encoding", func(t *testing.T) {
+	t.Run("should use base64 encoding when explicitly specified for image overlay", func(t *testing.T) {
 		transformation := []shared.TransformationParam{
 			{
 				Overlay: shared.OverlayUnionParam{
@@ -730,7 +731,7 @@ func TestOverlayEncoding(t *testing.T) {
 		}
 	})
 
-	t.Run("Video overlay with explicit base64 encoding", func(t *testing.T) {
+	t.Run("should use base64 encoding when explicitly specified for video overlay", func(t *testing.T) {
 		transformation := []shared.TransformationParam{
 			{
 				Overlay: shared.OverlayUnionParam{
@@ -756,7 +757,7 @@ func TestOverlayEncoding(t *testing.T) {
 		}
 	})
 
-	t.Run("Subtitle overlay with explicit plain encoding", func(t *testing.T) {
+	t.Run("should use plain encoding when explicitly specified for subtitle overlay", func(t *testing.T) {
 		transformation := []shared.TransformationParam{
 			{
 				Overlay: shared.OverlayUnionParam{
@@ -782,7 +783,7 @@ func TestOverlayEncoding(t *testing.T) {
 		}
 	})
 
-	t.Run("Subtitle overlay with explicit base64 encoding", func(t *testing.T) {
+	t.Run("should use base64 encoding when explicitly specified for subtitle overlay", func(t *testing.T) {
 		transformation := []shared.TransformationParam{
 			{
 				Overlay: shared.OverlayUnionParam{
@@ -808,7 +809,7 @@ func TestOverlayEncoding(t *testing.T) {
 		}
 	})
 
-	t.Run("Avoid double encoding when transformation string is in query params", func(t *testing.T) {
+	t.Run("should properly encode overlay text when transformations are in query parameters", func(t *testing.T) {
 		transformation := []shared.TransformationParam{
 			{
 				Overlay: shared.OverlayUnionParam{
