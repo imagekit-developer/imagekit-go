@@ -293,6 +293,38 @@ func (h *Helper) buildTransformationStringInternal(transformation []shared.Trans
 			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("ar%s%g", transformKeyValueDelimiter, currentTransform.AspectRatio.OfFloat.Value))
 		}
 
+		// Handle Crop
+		if currentTransform.Crop != "" {
+			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("c%s%s", transformKeyValueDelimiter, currentTransform.Crop))
+		}
+
+		// Handle CropMode
+		if currentTransform.CropMode != "" {
+			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("cm%s%s", transformKeyValueDelimiter, currentTransform.CropMode))
+		}
+
+		// Handle Focus
+		if !param.IsOmitted(currentTransform.Focus) {
+			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("fo%s%s", transformKeyValueDelimiter, currentTransform.Focus.Value))
+		}
+
+		// Handle Format
+		if currentTransform.Format != "" {
+			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("f%s%s", transformKeyValueDelimiter, currentTransform.Format))
+		}
+
+		// Handle Radius
+		if !param.IsOmitted(currentTransform.Radius.OfFloat) {
+			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("r%s%g", transformKeyValueDelimiter, currentTransform.Radius.OfFloat.Value))
+		} else if !param.IsOmitted(currentTransform.Radius.OfMax) {
+			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("r%s%s", transformKeyValueDelimiter, "max"))
+		}
+
+		// Handle Background
+		if !param.IsOmitted(currentTransform.Background) {
+			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("bg%s%s", transformKeyValueDelimiter, currentTransform.Background.Value))
+		}
+
 		// Handle Border
 		if !param.IsOmitted(currentTransform.Border) {
 			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("b%s%s", transformKeyValueDelimiter, currentTransform.Border.Value))
@@ -306,11 +338,71 @@ func (h *Helper) buildTransformationStringInternal(transformation []shared.Trans
 			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("di%s%s", transformKeyValueDelimiter, value))
 		}
 
+		// Handle DPR
+		if !param.IsOmitted(currentTransform.Dpr) {
+			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("dpr%s%g", transformKeyValueDelimiter, currentTransform.Dpr.Value))
+		}
+
+		// Handle X, Y, XCenter, YCenter coordinates
+		if !param.IsOmitted(currentTransform.X.OfFloat) {
+			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("x%s%g", transformKeyValueDelimiter, currentTransform.X.OfFloat.Value))
+		} else if !param.IsOmitted(currentTransform.X.OfString) {
+			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("x%s%s", transformKeyValueDelimiter, currentTransform.X.OfString.Value))
+		}
+
+		if !param.IsOmitted(currentTransform.Y.OfFloat) {
+			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("y%s%g", transformKeyValueDelimiter, currentTransform.Y.OfFloat.Value))
+		} else if !param.IsOmitted(currentTransform.Y.OfString) {
+			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("y%s%s", transformKeyValueDelimiter, currentTransform.Y.OfString.Value))
+		}
+
+		if !param.IsOmitted(currentTransform.XCenter.OfFloat) {
+			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("xc%s%g", transformKeyValueDelimiter, currentTransform.XCenter.OfFloat.Value))
+		} else if !param.IsOmitted(currentTransform.XCenter.OfString) {
+			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("xc%s%s", transformKeyValueDelimiter, currentTransform.XCenter.OfString.Value))
+		}
+
+		if !param.IsOmitted(currentTransform.YCenter.OfFloat) {
+			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("yc%s%g", transformKeyValueDelimiter, currentTransform.YCenter.OfFloat.Value))
+		} else if !param.IsOmitted(currentTransform.YCenter.OfString) {
+			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("yc%s%s", transformKeyValueDelimiter, currentTransform.YCenter.OfString.Value))
+		}
+
+		// Handle Opacity
+		if !param.IsOmitted(currentTransform.Opacity) {
+			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("o%s%g", transformKeyValueDelimiter, currentTransform.Opacity.Value))
+		}
+
+		// Handle Zoom
+		if !param.IsOmitted(currentTransform.Zoom) {
+			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("z%s%g", transformKeyValueDelimiter, currentTransform.Zoom.Value))
+		}
+
 		// Handle Rotation
 		if !param.IsOmitted(currentTransform.Rotation.OfFloat) {
 			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("rt%s%g", transformKeyValueDelimiter, currentTransform.Rotation.OfFloat.Value))
 		} else if !param.IsOmitted(currentTransform.Rotation.OfString) {
 			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("rt%s%s", transformKeyValueDelimiter, currentTransform.Rotation.OfString.Value))
+		}
+
+		// Handle Blur
+		if !param.IsOmitted(currentTransform.Blur) {
+			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("bl%s%g", transformKeyValueDelimiter, currentTransform.Blur.Value))
+		}
+
+		// Handle Named
+		if !param.IsOmitted(currentTransform.Named) {
+			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("n%s%s", transformKeyValueDelimiter, currentTransform.Named.Value))
+		}
+
+		// Handle Progressive
+		if !param.IsOmitted(currentTransform.Progressive) {
+			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("pr%s%t", transformKeyValueDelimiter, currentTransform.Progressive.Value))
+		}
+
+		// Handle Lossless
+		if !param.IsOmitted(currentTransform.Lossless) {
+			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("lo%s%t", transformKeyValueDelimiter, currentTransform.Lossless.Value))
 		}
 
 		// Handle Flip
@@ -327,7 +419,69 @@ func (h *Helper) buildTransformationStringInternal(transformation []shared.Trans
 			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("t%s%g", transformKeyValueDelimiter, currentTransform.Trim.OfFloat.Value))
 		}
 
+		// Handle Metadata
+		if !param.IsOmitted(currentTransform.Metadata) {
+			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("md%s%t", transformKeyValueDelimiter, currentTransform.Metadata.Value))
+		}
+
+		// Handle ColorProfile
+		if !param.IsOmitted(currentTransform.ColorProfile) {
+			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("cp%s%t", transformKeyValueDelimiter, currentTransform.ColorProfile.Value))
+		}
+
+		// Handle Video transformations
+		if currentTransform.VideoCodec != "" {
+			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("vc%s%s", transformKeyValueDelimiter, currentTransform.VideoCodec))
+		}
+
+		if currentTransform.AudioCodec != "" {
+			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("ac%s%s", transformKeyValueDelimiter, currentTransform.AudioCodec))
+		}
+
+		if !param.IsOmitted(currentTransform.StartOffset.OfFloat) {
+			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("so%s%g", transformKeyValueDelimiter, currentTransform.StartOffset.OfFloat.Value))
+		} else if !param.IsOmitted(currentTransform.StartOffset.OfString) {
+			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("so%s%s", transformKeyValueDelimiter, currentTransform.StartOffset.OfString.Value))
+		}
+
+		if !param.IsOmitted(currentTransform.EndOffset.OfFloat) {
+			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("eo%s%g", transformKeyValueDelimiter, currentTransform.EndOffset.OfFloat.Value))
+		} else if !param.IsOmitted(currentTransform.EndOffset.OfString) {
+			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("eo%s%s", transformKeyValueDelimiter, currentTransform.EndOffset.OfString.Value))
+		}
+
+		if !param.IsOmitted(currentTransform.Duration.OfFloat) {
+			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("du%s%g", transformKeyValueDelimiter, currentTransform.Duration.OfFloat.Value))
+		} else if !param.IsOmitted(currentTransform.Duration.OfString) {
+			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("du%s%s", transformKeyValueDelimiter, currentTransform.Duration.OfString.Value))
+		}
+
+		// Handle StreamingResolutions
+		if len(currentTransform.StreamingResolutions) > 0 {
+			var resolutions []string
+			for _, res := range currentTransform.StreamingResolutions {
+				resolutions = append(resolutions, string(res))
+			}
+			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("sr%s%s", transformKeyValueDelimiter, strings.Join(resolutions, "_")))
+		}
+
 		// Handle AI transformations
+		if currentTransform.Grayscale {
+			parsedTransformStep = append(parsedTransformStep, "e-grayscale")
+		}
+
+		if currentTransform.AIUpscale {
+			parsedTransformStep = append(parsedTransformStep, "e-upscale")
+		}
+
+		if currentTransform.AIRetouch {
+			parsedTransformStep = append(parsedTransformStep, "e-retouch")
+		}
+
+		if currentTransform.AIVariation {
+			parsedTransformStep = append(parsedTransformStep, "e-genvar")
+		}
+
 		if currentTransform.AIRemoveBackground {
 			parsedTransformStep = append(parsedTransformStep, "e-bgremove")
 		}
@@ -336,16 +490,60 @@ func (h *Helper) buildTransformationStringInternal(transformation []shared.Trans
 			parsedTransformStep = append(parsedTransformStep, "e-removedotbg")
 		}
 
+		if currentTransform.ContrastStretch {
+			parsedTransformStep = append(parsedTransformStep, "e-contrast")
+		}
+
 		if !param.IsOmitted(currentTransform.AIDropShadow.OfTransformationAIDropShadowBoolean) && currentTransform.AIDropShadow.OfTransformationAIDropShadowBoolean.Value {
 			parsedTransformStep = append(parsedTransformStep, "e-dropshadow")
 		} else if !param.IsOmitted(currentTransform.AIDropShadow.OfString) {
 			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("e-dropshadow%s%s", transformKeyValueDelimiter, currentTransform.AIDropShadow.OfString.Value))
 		}
 
+		// Handle AI transformations with parameters
+		if !param.IsOmitted(currentTransform.AIChangeBackground) {
+			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("e-changebg%s%s", transformKeyValueDelimiter, currentTransform.AIChangeBackground.Value))
+		}
+
+		if !param.IsOmitted(currentTransform.AIEdit) {
+			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("e-edit%s%s", transformKeyValueDelimiter, currentTransform.AIEdit.Value))
+		}
+
+		// Handle effects and enhancements
+		if !param.IsOmitted(currentTransform.Shadow.OfTransformationShadowBoolean) && currentTransform.Shadow.OfTransformationShadowBoolean.Value {
+			parsedTransformStep = append(parsedTransformStep, "e-shadow")
+		} else if !param.IsOmitted(currentTransform.Shadow.OfString) {
+			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("e-shadow%s%s", transformKeyValueDelimiter, currentTransform.Shadow.OfString.Value))
+		}
+
+		if !param.IsOmitted(currentTransform.Sharpen.OfTransformationSharpenBoolean) && currentTransform.Sharpen.OfTransformationSharpenBoolean.Value {
+			parsedTransformStep = append(parsedTransformStep, "e-sharpen")
+		} else if !param.IsOmitted(currentTransform.Sharpen.OfFloat) {
+			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("e-sharpen%s%g", transformKeyValueDelimiter, currentTransform.Sharpen.OfFloat.Value))
+		}
+
+		if !param.IsOmitted(currentTransform.UnsharpMask.OfTransformationUnsharpMaskBoolean) && currentTransform.UnsharpMask.OfTransformationUnsharpMaskBoolean.Value {
+			parsedTransformStep = append(parsedTransformStep, "e-usm")
+		} else if !param.IsOmitted(currentTransform.UnsharpMask.OfString) {
+			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("e-usm%s%s", transformKeyValueDelimiter, currentTransform.UnsharpMask.OfString.Value))
+		}
+
 		if !param.IsOmitted(currentTransform.Gradient.OfTransformationGradientBoolean) && currentTransform.Gradient.OfTransformationGradientBoolean.Value {
 			parsedTransformStep = append(parsedTransformStep, "e-gradient")
 		} else if !param.IsOmitted(currentTransform.Gradient.OfString) {
 			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("e-gradient%s%s", transformKeyValueDelimiter, currentTransform.Gradient.OfString.Value))
+		}
+
+		// Handle Original
+		if !param.IsOmitted(currentTransform.Original) && currentTransform.Original.Value {
+			parsedTransformStep = append(parsedTransformStep, "orig-true")
+		}
+
+		// Handle Page
+		if !param.IsOmitted(currentTransform.Page.OfFloat) {
+			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("pg%s%g", transformKeyValueDelimiter, currentTransform.Page.OfFloat.Value))
+		} else if !param.IsOmitted(currentTransform.Page.OfString) {
+			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("pg%s%s", transformKeyValueDelimiter, currentTransform.Page.OfString.Value))
 		}
 
 		// Handle Overlay
