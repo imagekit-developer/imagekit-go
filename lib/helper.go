@@ -266,272 +266,184 @@ func (h *Helper) buildTransformationStringInternal(transformation []shared.Trans
 	for _, currentTransform := range transformation {
 		var parsedTransformStep []string
 
-		// Process parameters in canonical order to match Node.js SDK
-		// Width comes before Height in canonical order
-		if !param.IsOmitted(currentTransform.Width.OfFloat) {
-			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("w%s%g", transformKeyValueDelimiter, currentTransform.Width.OfFloat.Value))
-		} else if !param.IsOmitted(currentTransform.Width.OfString) {
-			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("w%s%s", transformKeyValueDelimiter, currentTransform.Width.OfString.Value))
+		// Define transformation mappings in order
+		transformMappings := []struct {
+			key    string
+			getter func() string
+		}{
+			{"w", func() string {
+				return h.getUnionParamValue(currentTransform.Width.OfFloat, currentTransform.Width.OfString)
+			}},
+			{"h", func() string {
+				return h.getUnionParamValue(currentTransform.Height.OfFloat, currentTransform.Height.OfString)
+			}},
+			{"q", func() string { return h.getOptParamValue(currentTransform.Quality) }},
+			{"ar", func() string {
+				return h.getUnionParamValue(currentTransform.AspectRatio.OfFloat, currentTransform.AspectRatio.OfString)
+			}},
+			{"c", func() string { return h.getEnumValue(string(currentTransform.Crop)) }},
+			{"cm", func() string { return h.getEnumValue(string(currentTransform.CropMode)) }},
+			{"fo", func() string { return h.getOptParamValue(currentTransform.Focus) }},
+			{"f", func() string { return h.getEnumValue(string(currentTransform.Format)) }},
+			{"r", func() string {
+				if !param.IsOmitted(currentTransform.Radius.OfMax) {
+					return "max"
+				}
+				return h.getOptParamValue(currentTransform.Radius.OfFloat)
+			}},
+			{"bg", func() string { return h.getOptParamValue(currentTransform.Background) }},
+			{"b", func() string { return h.getOptParamValue(currentTransform.Border) }},
+			{"di", func() string {
+				if !param.IsOmitted(currentTransform.DefaultImage) && currentTransform.DefaultImage.Value != "" {
+					value := currentTransform.DefaultImage.Value
+					value = removeTrailingSlash(removeLeadingSlash(value))
+					return strings.ReplaceAll(value, "/", "@@")
+				}
+				return ""
+			}},
+			{"dpr", func() string { return h.getOptParamValue(currentTransform.Dpr) }},
+			{"x", func() string { return h.getUnionParamValue(currentTransform.X.OfFloat, currentTransform.X.OfString) }},
+			{"y", func() string { return h.getUnionParamValue(currentTransform.Y.OfFloat, currentTransform.Y.OfString) }},
+			{"xc", func() string {
+				return h.getUnionParamValue(currentTransform.XCenter.OfFloat, currentTransform.XCenter.OfString)
+			}},
+			{"yc", func() string {
+				return h.getUnionParamValue(currentTransform.YCenter.OfFloat, currentTransform.YCenter.OfString)
+			}},
+			{"o", func() string { return h.getOptParamValue(currentTransform.Opacity) }},
+			{"z", func() string { return h.getOptParamValue(currentTransform.Zoom) }},
+			{"rt", func() string {
+				return h.getUnionParamValue(currentTransform.Rotation.OfFloat, currentTransform.Rotation.OfString)
+			}},
+			{"bl", func() string { return h.getOptParamValue(currentTransform.Blur) }},
+			{"n", func() string { return h.getOptParamValue(currentTransform.Named) }},
+			{"pr", func() string { return h.getOptParamValue(currentTransform.Progressive) }},
+			{"lo", func() string { return h.getOptParamValue(currentTransform.Lossless) }},
+			{"fl", func() string { return h.getEnumValue(string(currentTransform.Flip)) }},
+			{"t", func() string {
+				if !param.IsOmitted(currentTransform.Trim.OfTransformationTrimBoolean) && currentTransform.Trim.OfTransformationTrimBoolean.Value {
+					return "true"
+				}
+				return h.getOptParamValue(currentTransform.Trim.OfFloat)
+			}},
+			{"md", func() string { return h.getOptParamValue(currentTransform.Metadata) }},
+			{"cp", func() string { return h.getOptParamValue(currentTransform.ColorProfile) }},
+			{"vc", func() string { return h.getEnumValue(string(currentTransform.VideoCodec)) }},
+			{"ac", func() string { return h.getEnumValue(string(currentTransform.AudioCodec)) }},
+			{"so", func() string {
+				return h.getUnionParamValue(currentTransform.StartOffset.OfFloat, currentTransform.StartOffset.OfString)
+			}},
+			{"eo", func() string {
+				return h.getUnionParamValue(currentTransform.EndOffset.OfFloat, currentTransform.EndOffset.OfString)
+			}},
+			{"du", func() string {
+				return h.getUnionParamValue(currentTransform.Duration.OfFloat, currentTransform.Duration.OfString)
+			}},
+			{"sr", func() string {
+				if len(currentTransform.StreamingResolutions) > 0 {
+					var resolutions []string
+					for _, res := range currentTransform.StreamingResolutions {
+						resolutions = append(resolutions, string(res))
+					}
+					return strings.Join(resolutions, "_")
+				}
+				return ""
+			}},
 		}
 
-		// Height comes after Width
-		if !param.IsOmitted(currentTransform.Height.OfFloat) {
-			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("h%s%g", transformKeyValueDelimiter, currentTransform.Height.OfFloat.Value))
-		} else if !param.IsOmitted(currentTransform.Height.OfString) {
-			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("h%s%s", transformKeyValueDelimiter, currentTransform.Height.OfString.Value))
-		}
-
-		// Handle Quality
-		if !param.IsOmitted(currentTransform.Quality) {
-			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("q%s%g", transformKeyValueDelimiter, currentTransform.Quality.Value))
-		}
-
-		// Handle Aspect Ratio
-		if !param.IsOmitted(currentTransform.AspectRatio.OfString) {
-			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("ar%s%s", transformKeyValueDelimiter, currentTransform.AspectRatio.OfString.Value))
-		} else if !param.IsOmitted(currentTransform.AspectRatio.OfFloat) {
-			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("ar%s%g", transformKeyValueDelimiter, currentTransform.AspectRatio.OfFloat.Value))
-		}
-
-		// Handle Crop
-		if currentTransform.Crop != "" {
-			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("c%s%s", transformKeyValueDelimiter, currentTransform.Crop))
-		}
-
-		// Handle CropMode
-		if currentTransform.CropMode != "" {
-			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("cm%s%s", transformKeyValueDelimiter, currentTransform.CropMode))
-		}
-
-		// Handle Focus
-		if !param.IsOmitted(currentTransform.Focus) {
-			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("fo%s%s", transformKeyValueDelimiter, currentTransform.Focus.Value))
-		}
-
-		// Handle Format
-		if currentTransform.Format != "" {
-			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("f%s%s", transformKeyValueDelimiter, currentTransform.Format))
-		}
-
-		// Handle Radius
-		if !param.IsOmitted(currentTransform.Radius.OfFloat) {
-			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("r%s%g", transformKeyValueDelimiter, currentTransform.Radius.OfFloat.Value))
-		} else if !param.IsOmitted(currentTransform.Radius.OfMax) {
-			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("r%s%s", transformKeyValueDelimiter, "max"))
-		}
-
-		// Handle Background
-		if !param.IsOmitted(currentTransform.Background) {
-			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("bg%s%s", transformKeyValueDelimiter, currentTransform.Background.Value))
-		}
-
-		// Handle Border
-		if !param.IsOmitted(currentTransform.Border) {
-			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("b%s%s", transformKeyValueDelimiter, currentTransform.Border.Value))
-		}
-
-		// Handle Default Image
-		if !param.IsOmitted(currentTransform.DefaultImage) && currentTransform.DefaultImage.Value != "" {
-			value := currentTransform.DefaultImage.Value
-			value = removeTrailingSlash(removeLeadingSlash(value))
-			value = strings.ReplaceAll(value, "/", "@@")
-			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("di%s%s", transformKeyValueDelimiter, value))
-		}
-
-		// Handle DPR
-		if !param.IsOmitted(currentTransform.Dpr) {
-			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("dpr%s%g", transformKeyValueDelimiter, currentTransform.Dpr.Value))
-		}
-
-		// Handle X, Y, XCenter, YCenter coordinates
-		if !param.IsOmitted(currentTransform.X.OfFloat) {
-			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("x%s%g", transformKeyValueDelimiter, currentTransform.X.OfFloat.Value))
-		} else if !param.IsOmitted(currentTransform.X.OfString) {
-			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("x%s%s", transformKeyValueDelimiter, currentTransform.X.OfString.Value))
-		}
-
-		if !param.IsOmitted(currentTransform.Y.OfFloat) {
-			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("y%s%g", transformKeyValueDelimiter, currentTransform.Y.OfFloat.Value))
-		} else if !param.IsOmitted(currentTransform.Y.OfString) {
-			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("y%s%s", transformKeyValueDelimiter, currentTransform.Y.OfString.Value))
-		}
-
-		if !param.IsOmitted(currentTransform.XCenter.OfFloat) {
-			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("xc%s%g", transformKeyValueDelimiter, currentTransform.XCenter.OfFloat.Value))
-		} else if !param.IsOmitted(currentTransform.XCenter.OfString) {
-			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("xc%s%s", transformKeyValueDelimiter, currentTransform.XCenter.OfString.Value))
-		}
-
-		if !param.IsOmitted(currentTransform.YCenter.OfFloat) {
-			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("yc%s%g", transformKeyValueDelimiter, currentTransform.YCenter.OfFloat.Value))
-		} else if !param.IsOmitted(currentTransform.YCenter.OfString) {
-			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("yc%s%s", transformKeyValueDelimiter, currentTransform.YCenter.OfString.Value))
-		}
-
-		// Handle Opacity
-		if !param.IsOmitted(currentTransform.Opacity) {
-			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("o%s%g", transformKeyValueDelimiter, currentTransform.Opacity.Value))
-		}
-
-		// Handle Zoom
-		if !param.IsOmitted(currentTransform.Zoom) {
-			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("z%s%g", transformKeyValueDelimiter, currentTransform.Zoom.Value))
-		}
-
-		// Handle Rotation
-		if !param.IsOmitted(currentTransform.Rotation.OfFloat) {
-			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("rt%s%g", transformKeyValueDelimiter, currentTransform.Rotation.OfFloat.Value))
-		} else if !param.IsOmitted(currentTransform.Rotation.OfString) {
-			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("rt%s%s", transformKeyValueDelimiter, currentTransform.Rotation.OfString.Value))
-		}
-
-		// Handle Blur
-		if !param.IsOmitted(currentTransform.Blur) {
-			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("bl%s%g", transformKeyValueDelimiter, currentTransform.Blur.Value))
-		}
-
-		// Handle Named
-		if !param.IsOmitted(currentTransform.Named) {
-			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("n%s%s", transformKeyValueDelimiter, currentTransform.Named.Value))
-		}
-
-		// Handle Progressive
-		if !param.IsOmitted(currentTransform.Progressive) {
-			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("pr%s%t", transformKeyValueDelimiter, currentTransform.Progressive.Value))
-		}
-
-		// Handle Lossless
-		if !param.IsOmitted(currentTransform.Lossless) {
-			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("lo%s%t", transformKeyValueDelimiter, currentTransform.Lossless.Value))
-		}
-
-		// Handle Flip
-		if currentTransform.Flip != "" {
-			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("fl%s%s", transformKeyValueDelimiter, currentTransform.Flip))
-		}
-
-		// Handle Trim
-		if !param.IsOmitted(currentTransform.Trim.OfTransformationTrimBoolean) {
-			if currentTransform.Trim.OfTransformationTrimBoolean.Value {
-				parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("t%strue", transformKeyValueDelimiter))
+		// Process basic transformations
+		for _, mapping := range transformMappings {
+			if value := mapping.getter(); value != "" {
+				parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("%s%s%s", mapping.key, transformKeyValueDelimiter, value))
 			}
-		} else if !param.IsOmitted(currentTransform.Trim.OfFloat) {
-			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("t%s%g", transformKeyValueDelimiter, currentTransform.Trim.OfFloat.Value))
 		}
 
-		// Handle Metadata
-		if !param.IsOmitted(currentTransform.Metadata) {
-			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("md%s%t", transformKeyValueDelimiter, currentTransform.Metadata.Value))
+		// Process AI transformations (boolean flags)
+		aiFlags := []struct {
+			flag  bool
+			value string
+		}{
+			{currentTransform.Grayscale, "e-grayscale"},
+			{currentTransform.AIUpscale, "e-upscale"},
+			{currentTransform.AIRetouch, "e-retouch"},
+			{currentTransform.AIVariation, "e-genvar"},
+			{currentTransform.AIRemoveBackground, "e-bgremove"},
+			{currentTransform.AIRemoveBackgroundExternal, "e-removedotbg"},
+			{currentTransform.ContrastStretch, "e-contrast"},
 		}
 
-		// Handle ColorProfile
-		if !param.IsOmitted(currentTransform.ColorProfile) {
-			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("cp%s%t", transformKeyValueDelimiter, currentTransform.ColorProfile.Value))
-		}
-
-		// Handle Video transformations
-		if currentTransform.VideoCodec != "" {
-			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("vc%s%s", transformKeyValueDelimiter, currentTransform.VideoCodec))
-		}
-
-		if currentTransform.AudioCodec != "" {
-			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("ac%s%s", transformKeyValueDelimiter, currentTransform.AudioCodec))
-		}
-
-		if !param.IsOmitted(currentTransform.StartOffset.OfFloat) {
-			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("so%s%g", transformKeyValueDelimiter, currentTransform.StartOffset.OfFloat.Value))
-		} else if !param.IsOmitted(currentTransform.StartOffset.OfString) {
-			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("so%s%s", transformKeyValueDelimiter, currentTransform.StartOffset.OfString.Value))
-		}
-
-		if !param.IsOmitted(currentTransform.EndOffset.OfFloat) {
-			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("eo%s%g", transformKeyValueDelimiter, currentTransform.EndOffset.OfFloat.Value))
-		} else if !param.IsOmitted(currentTransform.EndOffset.OfString) {
-			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("eo%s%s", transformKeyValueDelimiter, currentTransform.EndOffset.OfString.Value))
-		}
-
-		if !param.IsOmitted(currentTransform.Duration.OfFloat) {
-			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("du%s%g", transformKeyValueDelimiter, currentTransform.Duration.OfFloat.Value))
-		} else if !param.IsOmitted(currentTransform.Duration.OfString) {
-			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("du%s%s", transformKeyValueDelimiter, currentTransform.Duration.OfString.Value))
-		}
-
-		// Handle StreamingResolutions
-		if len(currentTransform.StreamingResolutions) > 0 {
-			var resolutions []string
-			for _, res := range currentTransform.StreamingResolutions {
-				resolutions = append(resolutions, string(res))
+		for _, flag := range aiFlags {
+			if flag.flag {
+				parsedTransformStep = append(parsedTransformStep, flag.value)
 			}
-			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("sr%s%s", transformKeyValueDelimiter, strings.Join(resolutions, "_")))
 		}
 
-		// Handle AI transformations
-		if currentTransform.Grayscale {
-			parsedTransformStep = append(parsedTransformStep, "e-grayscale")
-		}
-
-		if currentTransform.AIUpscale {
-			parsedTransformStep = append(parsedTransformStep, "e-upscale")
-		}
-
-		if currentTransform.AIRetouch {
-			parsedTransformStep = append(parsedTransformStep, "e-retouch")
-		}
-
-		if currentTransform.AIVariation {
-			parsedTransformStep = append(parsedTransformStep, "e-genvar")
-		}
-
-		if currentTransform.AIRemoveBackground {
-			parsedTransformStep = append(parsedTransformStep, "e-bgremove")
-		}
-
-		if currentTransform.AIRemoveBackgroundExternal {
-			parsedTransformStep = append(parsedTransformStep, "e-removedotbg")
-		}
-
-		if currentTransform.ContrastStretch {
-			parsedTransformStep = append(parsedTransformStep, "e-contrast")
-		}
-
+		// Process AI transformations with parameters
 		if !param.IsOmitted(currentTransform.AIDropShadow.OfTransformationAIDropShadowBoolean) && currentTransform.AIDropShadow.OfTransformationAIDropShadowBoolean.Value {
 			parsedTransformStep = append(parsedTransformStep, "e-dropshadow")
-		} else if !param.IsOmitted(currentTransform.AIDropShadow.OfString) {
-			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("e-dropshadow%s%s", transformKeyValueDelimiter, currentTransform.AIDropShadow.OfString.Value))
+		} else if value := h.getOptParamValue(currentTransform.AIDropShadow.OfString); value != "" {
+			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("e-dropshadow%s%s", transformKeyValueDelimiter, value))
 		}
 
-		// Handle AI transformations with parameters
-		if !param.IsOmitted(currentTransform.AIChangeBackground) {
-			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("e-changebg%s%s", transformKeyValueDelimiter, currentTransform.AIChangeBackground.Value))
+		if value := h.getOptParamValue(currentTransform.AIChangeBackground); value != "" {
+			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("e-changebg%s%s", transformKeyValueDelimiter, value))
 		}
 
-		if !param.IsOmitted(currentTransform.AIEdit) {
-			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("e-edit%s%s", transformKeyValueDelimiter, currentTransform.AIEdit.Value))
+		if value := h.getOptParamValue(currentTransform.AIEdit); value != "" {
+			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("e-edit%s%s", transformKeyValueDelimiter, value))
 		}
 
-		// Handle effects and enhancements
-		if !param.IsOmitted(currentTransform.Shadow.OfTransformationShadowBoolean) && currentTransform.Shadow.OfTransformationShadowBoolean.Value {
-			parsedTransformStep = append(parsedTransformStep, "e-shadow")
-		} else if !param.IsOmitted(currentTransform.Shadow.OfString) {
-			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("e-shadow%s%s", transformKeyValueDelimiter, currentTransform.Shadow.OfString.Value))
+		// Process effects
+		effectMappings := []struct {
+			prefix string
+			getter func() (string, bool)
+		}{
+			{"e-shadow", func() (string, bool) {
+				if !param.IsOmitted(currentTransform.Shadow.OfTransformationShadowBoolean) && currentTransform.Shadow.OfTransformationShadowBoolean.Value {
+					return "", true
+				}
+				if value := h.getOptParamValue(currentTransform.Shadow.OfString); value != "" {
+					return value, false
+				}
+				return "", false
+			}},
+			{"e-sharpen", func() (string, bool) {
+				if !param.IsOmitted(currentTransform.Sharpen.OfTransformationSharpenBoolean) && currentTransform.Sharpen.OfTransformationSharpenBoolean.Value {
+					return "", true
+				}
+				if value := h.getOptParamValue(currentTransform.Sharpen.OfFloat); value != "" {
+					return value, false
+				}
+				return "", false
+			}},
+			{"e-usm", func() (string, bool) {
+				if !param.IsOmitted(currentTransform.UnsharpMask.OfTransformationUnsharpMaskBoolean) && currentTransform.UnsharpMask.OfTransformationUnsharpMaskBoolean.Value {
+					return "", true
+				}
+				if value := h.getOptParamValue(currentTransform.UnsharpMask.OfString); value != "" {
+					return value, false
+				}
+				return "", false
+			}},
+			{"e-gradient", func() (string, bool) {
+				if !param.IsOmitted(currentTransform.Gradient.OfTransformationGradientBoolean) && currentTransform.Gradient.OfTransformationGradientBoolean.Value {
+					return "", true
+				}
+				if value := h.getOptParamValue(currentTransform.Gradient.OfString); value != "" {
+					return value, false
+				}
+				return "", false
+			}},
 		}
 
-		if !param.IsOmitted(currentTransform.Sharpen.OfTransformationSharpenBoolean) && currentTransform.Sharpen.OfTransformationSharpenBoolean.Value {
-			parsedTransformStep = append(parsedTransformStep, "e-sharpen")
-		} else if !param.IsOmitted(currentTransform.Sharpen.OfFloat) {
-			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("e-sharpen%s%g", transformKeyValueDelimiter, currentTransform.Sharpen.OfFloat.Value))
-		}
-
-		if !param.IsOmitted(currentTransform.UnsharpMask.OfTransformationUnsharpMaskBoolean) && currentTransform.UnsharpMask.OfTransformationUnsharpMaskBoolean.Value {
-			parsedTransformStep = append(parsedTransformStep, "e-usm")
-		} else if !param.IsOmitted(currentTransform.UnsharpMask.OfString) {
-			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("e-usm%s%s", transformKeyValueDelimiter, currentTransform.UnsharpMask.OfString.Value))
-		}
-
-		if !param.IsOmitted(currentTransform.Gradient.OfTransformationGradientBoolean) && currentTransform.Gradient.OfTransformationGradientBoolean.Value {
-			parsedTransformStep = append(parsedTransformStep, "e-gradient")
-		} else if !param.IsOmitted(currentTransform.Gradient.OfString) {
-			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("e-gradient%s%s", transformKeyValueDelimiter, currentTransform.Gradient.OfString.Value))
+		for _, effect := range effectMappings {
+			if value, isFlag := effect.getter(); value != "" || isFlag {
+				if isFlag {
+					parsedTransformStep = append(parsedTransformStep, effect.prefix)
+				} else {
+					parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("%s%s%s", effect.prefix, transformKeyValueDelimiter, value))
+				}
+			}
 		}
 
 		// Handle Original
@@ -540,10 +452,8 @@ func (h *Helper) buildTransformationStringInternal(transformation []shared.Trans
 		}
 
 		// Handle Page
-		if !param.IsOmitted(currentTransform.Page.OfFloat) {
-			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("pg%s%g", transformKeyValueDelimiter, currentTransform.Page.OfFloat.Value))
-		} else if !param.IsOmitted(currentTransform.Page.OfString) {
-			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("pg%s%s", transformKeyValueDelimiter, currentTransform.Page.OfString.Value))
+		if value := h.getUnionParamValue(currentTransform.Page.OfFloat, currentTransform.Page.OfString); value != "" {
+			parsedTransformStep = append(parsedTransformStep, fmt.Sprintf("pg%s%s", transformKeyValueDelimiter, value))
 		}
 
 		// Handle Overlay
@@ -562,6 +472,42 @@ func (h *Helper) buildTransformationStringInternal(transformation []shared.Trans
 	}
 
 	return strings.Join(parsedTransforms, chainTransformDelimiter)
+}
+
+// Helper methods to reduce repetition
+func (h *Helper) getOptParamValue(opt interface{}) string {
+	switch v := opt.(type) {
+	case param.Opt[string]:
+		if !param.IsOmitted(v) {
+			return v.Value
+		}
+	case param.Opt[float64]:
+		if !param.IsOmitted(v) {
+			return fmt.Sprintf("%g", v.Value)
+		}
+	case param.Opt[bool]:
+		if !param.IsOmitted(v) {
+			return fmt.Sprintf("%t", v.Value)
+		}
+	}
+	return ""
+}
+
+func (h *Helper) getUnionParamValue(floatOpt param.Opt[float64], stringOpt param.Opt[string]) string {
+	if !param.IsOmitted(floatOpt) {
+		return fmt.Sprintf("%g", floatOpt.Value)
+	}
+	if !param.IsOmitted(stringOpt) {
+		return stringOpt.Value
+	}
+	return ""
+}
+
+func (h *Helper) getEnumValue(value string) string {
+	if value != "" {
+		return value
+	}
+	return ""
 }
 
 // GetAuthenticationParameters generates authentication parameters for client-side file uploads
