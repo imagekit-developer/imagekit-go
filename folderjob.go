@@ -9,10 +9,10 @@ import (
 	"net/http"
 	"slices"
 
-	"github.com/stainless-sdks/imagekit-go/internal/apijson"
-	"github.com/stainless-sdks/imagekit-go/internal/requestconfig"
-	"github.com/stainless-sdks/imagekit-go/option"
-	"github.com/stainless-sdks/imagekit-go/packages/respjson"
+	"github.com/imagekit-developer/imagekit-go/internal/apijson"
+	"github.com/imagekit-developer/imagekit-go/internal/requestconfig"
+	"github.com/imagekit-developer/imagekit-go/option"
+	"github.com/imagekit-developer/imagekit-go/packages/respjson"
 )
 
 // FolderJobService contains methods and other services that help with interacting

@@ -11,12 +11,12 @@ import (
 	"net/url"
 	"slices"
 
-	"github.com/stainless-sdks/imagekit-go/internal/apijson"
-	"github.com/stainless-sdks/imagekit-go/internal/apiquery"
-	"github.com/stainless-sdks/imagekit-go/internal/requestconfig"
-	"github.com/stainless-sdks/imagekit-go/option"
-	"github.com/stainless-sdks/imagekit-go/packages/param"
-	"github.com/stainless-sdks/imagekit-go/packages/respjson"
+	"github.com/imagekit-developer/imagekit-go/internal/apijson"
+	"github.com/imagekit-developer/imagekit-go/internal/apiquery"
+	"github.com/imagekit-developer/imagekit-go/internal/requestconfig"
+	"github.com/imagekit-developer/imagekit-go/option"
+	"github.com/imagekit-developer/imagekit-go/packages/param"
+	"github.com/imagekit-developer/imagekit-go/packages/respjson"
 )
 
 // CustomMetadataFieldService contains methods and other services that help with
