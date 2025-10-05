@@ -4,3 +4,4 @@ Brewfile.lock.json
 .idea/
 temp*
 node-sdk-diff*
+.env*
