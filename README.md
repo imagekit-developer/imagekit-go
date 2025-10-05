@@ -769,8 +769,8 @@ import (
 
 func main() {
 	client := imagekit.NewClient(
-		option.WithPrivateKey("private_key_xxx"),
-		option.WithWebhookSecret("webhook_secret_xxx"), // Required for webhook verification
+		option.WithPrivateKey("your_private_key"),
+		option.WithWebhookSecret("whsec_..."), // Copy from ImageKit dashboard
 	)
 
 	// Webhook handler with proper request body handling
@@ -795,37 +795,43 @@ func main() {
 			return
 		}
 
-		fmt.Printf("Webhook signature is valid. Event type: %s\n", event.Type)
+		fmt.Printf("Verified webhook event: %s\n", event.Type)
 		
-		// Process the webhook event based on type
+		// Handle different event types with full type safety
 		switch event.Type {
 		case "video.transformation.accepted":
 			videoEvent := event.AsVideoTransformationAcceptedEvent()
 			fmt.Printf("Video transformation accepted: %s\n", videoEvent.Data.Asset.URL)
-			// Call your business logic function
+			// Debugging: Track transformation requests
 			// handleVideoTransformationAccepted(videoEvent)
+			
+		case "video.transformation.ready":
+			videoEvent := event.AsVideoTransformationReadyEvent()
+			fmt.Printf("Video transformation ready: %s\n", videoEvent.Data.Transformation.Output.URL)
+			// Update your database/CMS to show the transformed video
+			// handleVideoTransformationReady(videoEvent)
+			
+		case "video.transformation.error":
+			videoEvent := event.AsVideoTransformationErrorEvent()
+			fmt.Printf("Video transformation error: %s\n", videoEvent.Data.Transformation.Error.Reason)
+			// Log error and check your origin/URL endpoint settings
+			// handleVideoTransformationError(videoEvent)
 			
 		case "upload.pre-transform.success":
 			uploadEvent := event.AsUploadPreTransformSuccessEvent()
-			fmt.Printf("Upload pre-transform success: %s\n", uploadEvent.Data.Name)
-			// Call your business logic function
+			fmt.Printf("Pre-transform success: %s\n", uploadEvent.Data.FileID)
+			// File uploaded and pre-transformation completed
 			// handleUploadPreTransformSuccess(uploadEvent)
 			
 		case "upload.post-transform.success":
 			postEvent := event.AsUploadPostTransformSuccessEvent()
-			fmt.Printf("Upload post-transform success: %s\n", postEvent.Data.Name)
-			// Call your business logic function
+			fmt.Printf("Post-transform success: %s\n", postEvent.Data.Name)
+			// Additional transformation completed
 			// handleUploadPostTransformSuccess(postEvent)
-			
-		case "upload.success":
-			uploadEvent := event.AsUploadSuccessEvent()
-			fmt.Printf("Upload success: %s\n", uploadEvent.Data.Name)
-			// Call your business logic function
-			// handleUploadSuccess(uploadEvent)
 			
 		// Handle other event types as needed
 		default:
-			fmt.Fprintf(os.Stderr, "Unhandled event type: %s\n", event.Type)
+			fmt.Printf("Unhandled event type: %s\n", event.Type)
 		}
 
 		w.WriteHeader(http.StatusOK)
