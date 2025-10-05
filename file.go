@@ -1667,15 +1667,8 @@ func (r *FileRenameParams) UnmarshalJSON(data []byte) error {
 }
 
 type FileUploadParams struct {
-	// The API accepts any of the following:
-	//
-	//   - **Binary data** – send the raw bytes as `multipart/form-data`.
-	//   - **HTTP / HTTPS URL** – a publicly reachable URL that ImageKit’s servers can
-	//     fetch.
-	//   - **Base64 string** – the file encoded as a Base64 data URI or plain Base64.
-	//
-	// When supplying a URL, the server must receive the response headers within 8
-	// seconds; otherwise the request fails with 400 Bad Request.
+	// File is the upload payload. It MUST be a non-nil io.Reader (e.g., *os.File,
+	// *bytes.Reader, *bytes.Buffer, *strings.Reader, or any stream).
 	File io.Reader `json:"file,omitzero,required" format:"binary"`
 	// The name with which the file has to be uploaded. The file name can contain:
 	//
