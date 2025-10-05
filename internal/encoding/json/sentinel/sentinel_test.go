@@ -1,8 +1,8 @@
 package sentinel_test
 
 import (
-	"github.com/stainless-sdks/imagekit-go/internal/encoding/json/sentinel"
-	"github.com/stainless-sdks/imagekit-go/packages/param"
+	"github.com/imagekit-developer/imagekit-go/internal/encoding/json/sentinel"
+	"github.com/imagekit-developer/imagekit-go/packages/param"
 	"reflect"
 	"slices"
 	"testing"

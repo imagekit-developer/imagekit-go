@@ -10,10 +10,10 @@ import (
 	"os"
 	"testing"
 
-	"github.com/stainless-sdks/imagekit-go"
-	"github.com/stainless-sdks/imagekit-go/internal/testutil"
-	"github.com/stainless-sdks/imagekit-go/option"
-	"github.com/stainless-sdks/imagekit-go/shared"
+	"github.com/imagekit-developer/imagekit-go"
+	"github.com/imagekit-developer/imagekit-go/internal/testutil"
+	"github.com/imagekit-developer/imagekit-go/option"
+	"github.com/imagekit-developer/imagekit-go/shared"
 )
 
 func TestBetaV2FileUploadWithOptionalParams(t *testing.T) {
