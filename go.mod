@@ -1,4 +1,4 @@
-module github.com/imagekit-developer/imagekit-go
+module github.com/imagekit-developer/imagekit-go/v2
 
 go 1.22
 

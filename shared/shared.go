@@ -3,9 +3,9 @@
 package shared
 
 import (
-	"github.com/imagekit-developer/imagekit-go/internal/apijson"
-	"github.com/imagekit-developer/imagekit-go/packages/param"
-	"github.com/imagekit-developer/imagekit-go/shared/constant"
+	"github.com/imagekit-developer/imagekit-go/v2/internal/apijson"
+	"github.com/imagekit-developer/imagekit-go/v2/packages/param"
+	"github.com/imagekit-developer/imagekit-go/v2/shared/constant"
 )
 
 // aliased to make [param.APIUnion] private when embedding

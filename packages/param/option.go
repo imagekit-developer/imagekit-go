@@ -3,7 +3,7 @@ package param
 import (
 	"encoding/json"
 	"fmt"
-	shimjson "github.com/imagekit-developer/imagekit-go/internal/encoding/json"
+	shimjson "github.com/imagekit-developer/imagekit-go/v2/internal/encoding/json"
 	"time"
 )
 

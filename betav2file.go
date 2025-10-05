@@ -13,14 +13,14 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/imagekit-developer/imagekit-go/internal/apiform"
-	"github.com/imagekit-developer/imagekit-go/internal/apijson"
-	"github.com/imagekit-developer/imagekit-go/internal/requestconfig"
-	"github.com/imagekit-developer/imagekit-go/option"
-	"github.com/imagekit-developer/imagekit-go/packages/param"
-	"github.com/imagekit-developer/imagekit-go/packages/respjson"
-	"github.com/imagekit-developer/imagekit-go/shared"
-	"github.com/imagekit-developer/imagekit-go/shared/constant"
+	"github.com/imagekit-developer/imagekit-go/v2/internal/apiform"
+	"github.com/imagekit-developer/imagekit-go/v2/internal/apijson"
+	"github.com/imagekit-developer/imagekit-go/v2/internal/requestconfig"
+	"github.com/imagekit-developer/imagekit-go/v2/option"
+	"github.com/imagekit-developer/imagekit-go/v2/packages/param"
+	"github.com/imagekit-developer/imagekit-go/v2/packages/respjson"
+	"github.com/imagekit-developer/imagekit-go/v2/shared"
+	"github.com/imagekit-developer/imagekit-go/v2/shared/constant"
 )
 
 // BetaV2FileService contains methods and other services that help with interacting

@@ -13,7 +13,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/imagekit-developer/imagekit-go/packages/param"
+	"github.com/imagekit-developer/imagekit-go/v2/packages/param"
 )
 
 var encoders sync.Map // map[encoderEntry]encoderFunc

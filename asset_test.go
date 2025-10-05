@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/imagekit-developer/imagekit-go"
-	"github.com/imagekit-developer/imagekit-go/internal/testutil"
-	"github.com/imagekit-developer/imagekit-go/option"
+	"github.com/imagekit-developer/imagekit-go/v2"
+	"github.com/imagekit-developer/imagekit-go/v2/internal/testutil"
+	"github.com/imagekit-developer/imagekit-go/v2/option"
 )
 
 func TestAssetListWithOptionalParams(t *testing.T) {

@@ -2,7 +2,7 @@ package apijson
 
 import (
 	"errors"
-	"github.com/imagekit-developer/imagekit-go/packages/param"
+	"github.com/imagekit-developer/imagekit-go/v2/packages/param"
 	"reflect"
 
 	"github.com/tidwall/gjson"

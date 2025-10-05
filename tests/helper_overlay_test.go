@@ -3,12 +3,12 @@ package imagekit_test
 import (
 	"testing"
 
-	"github.com/imagekit-developer/imagekit-go"
-	"github.com/imagekit-developer/imagekit-go/option"
+	"github.com/imagekit-developer/imagekit-go/v2"
+	"github.com/imagekit-developer/imagekit-go/v2/option"
 
-	"github.com/imagekit-developer/imagekit-go/packages/param"
-	"github.com/imagekit-developer/imagekit-go/shared"
-	"github.com/imagekit-developer/imagekit-go/shared/constant"
+	"github.com/imagekit-developer/imagekit-go/v2/packages/param"
+	"github.com/imagekit-developer/imagekit-go/v2/shared"
+	"github.com/imagekit-developer/imagekit-go/v2/shared/constant"
 )
 
 func TestOverlayTransformations(t *testing.T) {

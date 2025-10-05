@@ -1,8 +1,8 @@
 package paramutil
 
 import (
-	"github.com/imagekit-developer/imagekit-go/packages/param"
-	"github.com/imagekit-developer/imagekit-go/packages/respjson"
+	"github.com/imagekit-developer/imagekit-go/v2/packages/param"
+	"github.com/imagekit-developer/imagekit-go/v2/packages/respjson"
 )
 
 func AddrIfPresent[T comparable](v param.Opt[T]) *T {

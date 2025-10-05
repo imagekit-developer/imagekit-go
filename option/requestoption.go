@@ -12,7 +12,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/imagekit-developer/imagekit-go/internal/requestconfig"
+	"github.com/imagekit-developer/imagekit-go/v2/internal/requestconfig"
 	"github.com/tidwall/sjson"
 )
 

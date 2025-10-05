@@ -2,7 +2,7 @@
 
 <!-- x-release-please-start-version -->
 
-<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go"><img src="https://pkg.go.dev/badge/github.com/imagekit-developer/imagekit-go.svg" alt="Go Reference"></a>
+<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2"><img src="https://pkg.go.dev/badge/github.com/imagekit-developer/imagekit-go.svg" alt="Go Reference"></a>
 
 <!-- x-release-please-end -->
 
@@ -48,7 +48,7 @@ For additional details, refer to the [ImageKit REST API documentation](https://i
 
 ```go
 import (
-	"github.com/imagekit-developer/imagekit-go" // imported as imagekit
+	"github.com/imagekit-developer/imagekit-go/v2" // imported as imagekit
 )
 ```
 
@@ -59,7 +59,7 @@ Or to pin the version:
 <!-- x-release-please-start-version -->
 
 ```sh
-go get -u 'github.com/imagekit-developer/imagekit-go@v0.0.1'
+go get -u 'github.com/imagekit-developer/imagekit-go@v2.0.0'
 ```
 
 <!-- x-release-please-end -->
@@ -80,8 +80,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/imagekit-developer/imagekit-go"
-	"github.com/imagekit-developer/imagekit-go/option"
+	"github.com/imagekit-developer/imagekit-go/v2"
+	"github.com/imagekit-developer/imagekit-go/v2/option"
 )
 
 func main() {
@@ -334,9 +334,9 @@ package main
 import (
 	"fmt"
 	
-	"github.com/imagekit-developer/imagekit-go"
-	"github.com/imagekit-developer/imagekit-go/option"
-	"github.com/imagekit-developer/imagekit-go/shared"
+	"github.com/imagekit-developer/imagekit-go/v2"
+	"github.com/imagekit-developer/imagekit-go/v2/option"
+	"github.com/imagekit-developer/imagekit-go/v2/shared"
 )
 
 func main() {
@@ -364,10 +364,10 @@ package main
 import (
 	"fmt"
 	
-	"github.com/imagekit-developer/imagekit-go"
-	"github.com/imagekit-developer/imagekit-go/option"
-	"github.com/imagekit-developer/imagekit-go/packages/param"
-	"github.com/imagekit-developer/imagekit-go/shared"
+	"github.com/imagekit-developer/imagekit-go/v2"
+	"github.com/imagekit-developer/imagekit-go/v2/option"
+	"github.com/imagekit-developer/imagekit-go/v2/packages/param"
+	"github.com/imagekit-developer/imagekit-go/v2/shared"
 )
 
 func main() {
@@ -408,11 +408,11 @@ package main
 import (
 	"fmt"
 	
-	"github.com/imagekit-developer/imagekit-go"
-	"github.com/imagekit-developer/imagekit-go/option"
-	"github.com/imagekit-developer/imagekit-go/packages/param"
-	"github.com/imagekit-developer/imagekit-go/shared"
-	"github.com/imagekit-developer/imagekit-go/shared/constant"
+	"github.com/imagekit-developer/imagekit-go/v2"
+	"github.com/imagekit-developer/imagekit-go/v2/option"
+	"github.com/imagekit-developer/imagekit-go/v2/packages/param"
+	"github.com/imagekit-developer/imagekit-go/v2/shared"
+	"github.com/imagekit-developer/imagekit-go/v2/shared/constant"
 )
 
 func main() {
@@ -476,11 +476,11 @@ package main
 import (
 	"fmt"
 	
-	"github.com/imagekit-developer/imagekit-go"
-	"github.com/imagekit-developer/imagekit-go/option"
-	"github.com/imagekit-developer/imagekit-go/packages/param"
-	"github.com/imagekit-developer/imagekit-go/shared"
-	"github.com/imagekit-developer/imagekit-go/shared/constant"
+	"github.com/imagekit-developer/imagekit-go/v2"
+	"github.com/imagekit-developer/imagekit-go/v2/option"
+	"github.com/imagekit-developer/imagekit-go/v2/packages/param"
+	"github.com/imagekit-developer/imagekit-go/v2/shared"
+	"github.com/imagekit-developer/imagekit-go/v2/shared/constant"
 )
 
 func main() {
@@ -545,11 +545,11 @@ package main
 import (
 	"fmt"
 	
-	"github.com/imagekit-developer/imagekit-go"
-	"github.com/imagekit-developer/imagekit-go/option"
-	"github.com/imagekit-developer/imagekit-go/packages/param"
-	"github.com/imagekit-developer/imagekit-go/shared"
-	"github.com/imagekit-developer/imagekit-go/shared/constant"
+	"github.com/imagekit-developer/imagekit-go/v2"
+	"github.com/imagekit-developer/imagekit-go/v2/option"
+	"github.com/imagekit-developer/imagekit-go/v2/packages/param"
+	"github.com/imagekit-developer/imagekit-go/v2/shared"
+	"github.com/imagekit-developer/imagekit-go/v2/shared/constant"
 )
 
 func main() {
@@ -632,10 +632,10 @@ package main
 import (
 	"fmt"
 	
-	"github.com/imagekit-developer/imagekit-go"
-	"github.com/imagekit-developer/imagekit-go/option"
-	"github.com/imagekit-developer/imagekit-go/packages/param"
-	"github.com/imagekit-developer/imagekit-go/shared"
+	"github.com/imagekit-developer/imagekit-go/v2"
+	"github.com/imagekit-developer/imagekit-go/v2/option"
+	"github.com/imagekit-developer/imagekit-go/v2/packages/param"
+	"github.com/imagekit-developer/imagekit-go/v2/shared"
 )
 
 func main() {
@@ -686,10 +686,10 @@ package main
 import (
 	"fmt"
 	
-	"github.com/imagekit-developer/imagekit-go"
-	"github.com/imagekit-developer/imagekit-go/option"
-	"github.com/imagekit-developer/imagekit-go/packages/param"
-	"github.com/imagekit-developer/imagekit-go/shared"
+	"github.com/imagekit-developer/imagekit-go/v2"
+	"github.com/imagekit-developer/imagekit-go/v2/option"
+	"github.com/imagekit-developer/imagekit-go/v2/packages/param"
+	"github.com/imagekit-developer/imagekit-go/v2/shared"
 )
 
 func main() {
@@ -732,8 +732,8 @@ package main
 import (
 	"fmt"
 	
-	"github.com/imagekit-developer/imagekit-go"
-	"github.com/imagekit-developer/imagekit-go/option"
+	"github.com/imagekit-developer/imagekit-go/v2"
+	"github.com/imagekit-developer/imagekit-go/v2/option"
 )
 
 func main() {
@@ -771,8 +771,8 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/imagekit-developer/imagekit-go"
-	"github.com/imagekit-developer/imagekit-go/option"
+	"github.com/imagekit-developer/imagekit-go/v2"
+	"github.com/imagekit-developer/imagekit-go/v2/option"
 )
 
 func main() {
