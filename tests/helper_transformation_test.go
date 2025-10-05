@@ -3,11 +3,11 @@ package imagekit_test
 import (
 	"testing"
 
-	"github.com/stainless-sdks/imagekit-go"
-	"github.com/stainless-sdks/imagekit-go/option"
+	"github.com/imagekit-developer/imagekit-go"
+	"github.com/imagekit-developer/imagekit-go/option"
 
-	"github.com/stainless-sdks/imagekit-go/packages/param"
-	"github.com/stainless-sdks/imagekit-go/shared"
+	"github.com/imagekit-developer/imagekit-go/packages/param"
+	"github.com/imagekit-developer/imagekit-go/shared"
 )
 
 func TestBuildTransformationStringDetailed(t *testing.T) {

@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/stainless-sdks/imagekit-go"
-	"github.com/stainless-sdks/imagekit-go/option"
+	"github.com/imagekit-developer/imagekit-go"
+	"github.com/imagekit-developer/imagekit-go/option"
 )
 
 func TestGetAuthenticationParametersDetailed(t *testing.T) {
