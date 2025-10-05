@@ -849,9 +849,15 @@ When the API returns a non-success status code, we return an error with type
 To handle errors, we recommend that you use the `errors.As` pattern:
 
 ```go
-_, err := client.Files.Upload(context.TODO(), imagekit.FileUploadParams{
-	File:     io.Reader(bytes.NewBuffer([]byte("https://www.example.com/public-url.jpg"))),
-	FileName: "file-name.jpg",
+file, err := os.Open("/path/to/your/image.jpg")
+if err != nil {
+	panic(err.Error())
+}
+defer file.Close()
+
+_, err = client.Files.Upload(context.TODO(), imagekit.FileUploadParams{
+	File:     file,
+	FileName: "uploaded-image.jpg",
 })
 if err != nil {
 	var apierr *imagekit.Error
@@ -877,11 +883,18 @@ To set a per-retry timeout, use `option.WithRequestTimeout()`.
 // This sets the timeout for the request, including all the retries.
 ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
 defer cancel()
+
+file, err := os.Open("/path/to/your/image.jpg")
+if err != nil {
+	panic(err.Error())
+}
+defer file.Close()
+
 client.Files.Upload(
 	ctx,
 	imagekit.FileUploadParams{
-		File:     io.Reader(bytes.NewBuffer([]byte("https://www.example.com/public-url.jpg"))),
-		FileName: "file-name.jpg",
+		File:     file,
+		FileName: "uploaded-image.jpg",
 	},
 	// This sets the per-retry timeout
 	option.WithRequestTimeout(20*time.Second),
@@ -901,25 +914,49 @@ file returned by `os.Open` will be sent with the file name on disk.
 We also provide a helper `imagekit.NewFile(reader io.Reader, filename string, contentType string)`
 which can be used to wrap any `io.Reader` with the appropriate file name and content type.
 
+Here are common file upload patterns:
+
 ```go
-// A file from the file system
-file, err := os.Open("/path/to/file")
-imagekit.FileUploadParams{
+// Upload from local file system
+file, err := os.Open("/path/to/your/image.jpg")
+if err != nil {
+	panic(err.Error())
+}
+defer file.Close()
+
+response, err := client.Files.Upload(context.TODO(), imagekit.FileUploadParams{
 	File:     file,
-	FileName: "fileName",
+	FileName: "uploaded-image.jpg",
+})
+
+// Upload from remote URL
+resp, err := http.Get("https://example.com/remote-image.jpg")
+if err != nil {
+	panic(err.Error())
+}
+defer resp.Body.Close()
+
+if resp.StatusCode != http.StatusOK {
+	panic("Failed to fetch remote image")
 }
 
-// A file from a string
-imagekit.FileUploadParams{
-	File:     strings.NewReader("my file contents"),
-	FileName: "fileName",
-}
+response, err := client.Files.Upload(context.TODO(), imagekit.FileUploadParams{
+	File:     resp.Body,
+	FileName: "remote-image.jpg",
+})
 
-// With a custom filename and contentType
-imagekit.FileUploadParams{
-	File:     imagekit.NewFile(strings.NewReader(`{"hello": "foo"}`), "file.go", "application/json"),
-	FileName: "fileName",
-}
+// Upload from binary data
+imageData := []byte{/* your binary data */}
+response, err := client.Files.Upload(context.TODO(), imagekit.FileUploadParams{
+	File:     bytes.NewReader(imageData),
+	FileName: "binary-upload.jpg",
+})
+
+// Upload with custom content type
+response, err := client.Files.Upload(context.TODO(), imagekit.FileUploadParams{
+	File:     imagekit.NewFile(bytes.NewReader(imageData), "custom.jpg", "image/jpeg"),
+	FileName: "custom-upload.jpg",
+})
 ```
 
 ### Retries
@@ -937,11 +974,17 @@ client := imagekit.NewClient(
 )
 
 // Override per-request:
+file, err := os.Open("/path/to/your/image.jpg")
+if err != nil {
+	panic(err.Error())
+}
+defer file.Close()
+
 client.Files.Upload(
 	context.TODO(),
 	imagekit.FileUploadParams{
-		File:     io.Reader(bytes.NewBuffer([]byte("https://www.example.com/public-url.jpg"))),
-		FileName: "file-name.jpg",
+		File:     file,
+		FileName: "uploaded-image.jpg",
 	},
 	option.WithMaxRetries(5),
 )
@@ -955,11 +998,18 @@ you need to examine response headers, status codes, or other details.
 ```go
 // Create a variable to store the HTTP response
 var response *http.Response
-response, err := client.Files.Upload(
+
+file, err := os.Open("/path/to/your/image.jpg")
+if err != nil {
+	panic(err.Error())
+}
+defer file.Close()
+
+response, err = client.Files.Upload(
 	context.TODO(),
 	imagekit.FileUploadParams{
-		File:     io.Reader(bytes.NewBuffer([]byte("https://www.example.com/public-url.jpg"))),
-		FileName: "file-name.jpg",
+		File:     file,
+		FileName: "uploaded-image.jpg",
 	},
 	option.WithResponseInto(&response),
 )
