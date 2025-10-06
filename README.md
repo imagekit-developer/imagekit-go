@@ -1,660 +1,1138 @@
-[<img width="250" alt="ImageKit.io" src="https://raw.githubusercontent.com/imagekit-developer/imagekit-javascript/master/assets/imagekit-light-logo.svg"/>](https://imagekit.io)
-
 # ImageKit.io Go SDK
-[![CI](https://github.com/imagekit-developer/imagekit-go/workflows/CI/badge.svg)](https://github.com/imagekit-developer/imagekit-go/)
-[![codecov](https://codecov.io/gh/imagekit-developer/imagekit-go/branch/dev/graph/badge.svg)](https://codecov.io/gh/imagekit-developer/imagekit-go)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Twitter Follow](https://img.shields.io/twitter/follow/imagekitio?label=Follow&style=social)](https://twitter.com/ImagekitIo)
 
-Go SDK for [ImageKit](https://imagekit.io/) implements all the backend API, URL-generation, and other utility functions.
+<!-- x-release-please-start-version -->
 
-ImageKit is complete media storage, optimization, and transformation solution that comes with an [image and video CDN](https://imagekit.io). It can be integrated with your existing infrastructure - storage like AWS S3, web servers, your CDN, and custom domain names, allowing you to deliver optimized images in minutes with minimal code changes.
+<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2"><img src="https://pkg.go.dev/badge/github.com/imagekit-developer/imagekit-go.svg" alt="Go Reference"></a>
 
-All methods except url generation and utility functions return a response with `ResponseMetaData`, which holds the raw response header, HTTP status code, and raw response body. The Response object also contains the `Data` attribute except when the underlying API call is not supposed to return any data such as delete file API.
+<!-- x-release-please-end -->
 
-Table of contents -
+The ImageKit Go SDK is a comprehensive library designed to simplify the integration of ImageKit into your server-side applications. It provides powerful tools for working with the ImageKit REST API, including building and transforming URLs, generating signed URLs for secure content delivery, verifying webhooks, and handling file uploads.
 
- * [Installation](#installation)
- * [Initialization](#initialization)
- * [Response Format](#response-format)
- * [Error Handling](#error-handling)
- * [URL Generation](#url-generation)
- * [File Upload](#file-upload)
- * [File Management](#file-management)
- * [Metadata API](#metadata-api)
- * [Utility Functions](#utility-functions)
- * [Rate Limits](#rate-limits)
- * [Support](#support)
- * [Links](#links)
+The full API of this library can be found in [api.md](api.md).
 
+For additional details, refer to the [ImageKit REST API documentation](https://imagekit.io/docs/api-reference).
 
-## Version Support
+## Table of Contents
 
-| SDK Version | Go        |
-|-------------|-----------|
-| 1.x         | >=1.18     |
-
+- [Installation](#installation)
+- [Requirements](#requirements)
+- [Usage](#usage)
+  - [Request fields](#request-fields)
+  - [Request unions](#request-unions)
+  - [Response objects](#response-objects)
+  - [Response Unions](#response-unions)
+  - [RequestOptions](#requestoptions)
+- [URL generation](#url-generation)
+  - [Basic URL generation](#basic-url-generation)
+  - [URL generation with transformations](#url-generation-with-transformations)
+  - [URL generation with image overlay](#url-generation-with-image-overlay)
+  - [URL generation with text overlay](#url-generation-with-text-overlay)
+  - [URL generation with multiple overlays](#url-generation-with-multiple-overlays)
+  - [Signed URLs for secure delivery](#signed-urls-for-secure-delivery)
+- [Authentication parameters for client-side uploads](#authentication-parameters-for-client-side-uploads)
+- [Webhook verification](#webhook-verification)
+- [Advanced Usage](#advanced-usage)
+  - [Errors](#errors)
+  - [Timeouts](#timeouts)
+  - [File uploads](#file-uploads)
+  - [Retries](#retries)
+  - [Accessing raw response data](#accessing-raw-response-data-eg-response-headers)
+  - [Making custom/undocumented requests](#making-customundocumented-requests)
+  - [Middleware](#middleware)
+- [Semantic versioning](#semantic-versioning)
+- [Contributing](#contributing)
 
 ## Installation
 
-```bash
-go get github.com/imagekit-developer/imagekit-go
-```
-
-## Initialization
+<!-- x-release-please-start-version -->
 
 ```go
 import (
-    "github.com/imagekit-developer/imagekit-go"
+	"github.com/imagekit-developer/imagekit-go/v2" // imported as imagekit
 )
-
-// Using environment variables IMAGEKIT_PRIVATE_KEY, IMAGEKIT_PUBLIC_KEY and IMAGEKIT_ENDPOINT_URL
-ik, err := ImageKit.New()
-
-// Using keys in argument
-ik, err := ImageKit.NewFromParams(imagekit.NewParams{
-    PrivateKey: privateKey,
-    PublicKey: publicKey,
-    UrlEndpoint: urlEndpoint
-})
 ```
 
-## Response Format
-Results returned by functions that call backend API(such as media management, metadata, cache APIs) embeds raw response in `ResponseMetaData`, which can be used to get the response HTTP `StatusCode`, `Header`, and `Body`. The JSON response body is parsed to the appropriate SDK type and assigned to the `Data`  attribute.
+<!-- x-release-please-end -->
 
-```
-resp, err := ik.Metadata.FromFile(ctx, fileId)
-log.Println(resp.ResponseMetaData.Header, resp.Data.Url)
+Or to pin the version:
 
-```
+<!-- x-release-please-start-version -->
 
-Functions that do not get any response body from API do not include the `Data` attribute in the response. In such cases, only `ResponseMetaData` is available.
-
-## Error Handling
-ImageKit API returns a non-2xx status code upon error.
-SDK defines the following errors in the API package based on the status code returned:
-
-```
-imagekit-go/api:
-400: ErrBadRequest
-401: ErrUnauthorized
-403: ErrForbidden
-404: ErrNotFound
-429: ErrTooManyRequests
-500, 502, 503, 504: ErrServer
-default: "Undefined Error"
+```sh
+go get -u 'github.com/imagekit-developer/imagekit-go@v2.0.0'
 ```
 
-`err` can be tested using `errors.Is`
+<!-- x-release-please-end -->
 
-```
-if errors.Is(err, api.ErrForbidden) {
-    log.Println(err.Message)
-}
-```
+## Requirements
 
-[See full documentation](https://docs.imagekit.io/api-reference/api-introduction) for further detail.
+This library requires Go 1.22+.
 
-## URL-generation
+## Usage
 
-### 1. Using image path and image hostname or endpoint
-This method allows you to create an URL to access a file using the relative file path and the ImageKit URL endpoint (`urlEndpoint`). The file can be an image, video, or any other static file supported by ImageKit.
+The full API of this library can be found in [api.md](api.md).
 
-```
+```go
+package main
+
 import (
-    ikurl "github.com/imagekit-developer/imagekit-go/url"
+	"context"
+	"fmt"
+	"os"
+
+	"github.com/imagekit-developer/imagekit-go/v2"
+	"github.com/imagekit-developer/imagekit-go/v2/option"
 )
 
-url, err := ik.Url(ikurl.UrlParam{
-    Path: "/default-image.jpg",
-    UrlEndpoint: "https://ik.imagekit.io/your_imagekit_id/endpoint/",
-    Transformations: []map[string]any{
-        {
-            "width":  400,
-            "height": 300,
-            "rotation": 90,
-        },
-    },
+func main() {
+	client := imagekit.NewClient(
+		option.WithPrivateKey("private_key_xxx"), // defaults to os.LookupEnv("IMAGEKIT_PRIVATE_KEY")
+	)
+	
+	file, err := os.Open("/path/to/your/image.jpg")
+	if err != nil {
+		panic(err.Error())
+	}
+	defer file.Close()
+	
+	response, err := client.Files.Upload(context.TODO(), imagekit.FileUploadParams{
+		File:     file,
+		FileName: "uploaded-image.jpg",
+	})
+	if err != nil {
+		panic(err.Error())
+	}
+	fmt.Printf("%+v\n", response)
+}
+
+```
+
+### Request fields
+
+The imagekit library uses the [`omitzero`](https://tip.golang.org/doc/go1.24#encodingjsonpkgencodingjson)
+semantics from the Go 1.24+ `encoding/json` release for request fields.
+
+Required primitive fields (`int64`, `string`, etc.) feature the tag <code>\`json:"...,required"\`</code>. These
+fields are always serialized, even their zero values.
+
+Optional primitive types are wrapped in a `param.Opt[T]`. These fields can be set with the provided constructors, `imagekit.String(string)`, `imagekit.Int(int64)`, etc.
+
+Any `param.Opt[T]`, map, slice, struct or string enum uses the
+tag <code>\`json:"...,omitzero"\`</code>. Its zero value is considered omitted.
+
+The `param.IsOmitted(any)` function can confirm the presence of any `omitzero` field.
+
+```go
+p := imagekit.ExampleParams{
+	ID:   "id_xxx",               // required property
+	Name: imagekit.String("..."), // optional property
+
+	Point: imagekit.Point{
+		X: 0,               // required field will serialize as 0
+		Y: imagekit.Int(1), // optional field will serialize as 1
+		// ... omitted non-required fields will not be serialized
+	},
+
+	Origin: imagekit.Origin{}, // the zero value of [Origin] is considered omitted
+}
+```
+
+To send `null` instead of a `param.Opt[T]`, use `param.Null[T]()`.
+To send `null` instead of a struct `T`, use `param.NullStruct[T]()`.
+
+```go
+p.Name = param.Null[string]()       // 'null' instead of string
+p.Point = param.NullStruct[Point]() // 'null' instead of struct
+
+param.IsNull(p.Name)  // true
+param.IsNull(p.Point) // true
+```
+
+Request structs contain a `.SetExtraFields(map[string]any)` method which can send non-conforming
+fields in the request body. Extra fields overwrite any struct fields with a matching
+key. For security reasons, only use `SetExtraFields` with trusted data.
+
+To send a custom value instead of a struct, use `param.Override[T](value)`.
+
+```go
+// In cases where the API specifies a given type,
+// but you want to send something else, use [SetExtraFields]:
+p.SetExtraFields(map[string]any{
+	"x": 0.01, // send "x" as a float instead of int
 })
-```
-This results in a URL like:
-```
-https://ik.imagekit.io/your_imagekit_id/endpoint/tr:h-300,w-400:rt-90/default-image.jpg
+
+// Send a number instead of an object
+custom := param.Override[imagekit.FooParams](12)
 ```
 
-### 2. Using full image URL
-This method allows you to add transformation parameters to an absolute URL. For example, if you have configured a custom CNAME and have absolute asset URLs in your database or CMS, you will often need this.
+### Request unions
 
+Unions are represented as a struct with fields prefixed by "Of" for each of it's variants,
+only one field can be non-zero. The non-zero field will be serialized.
+
+Sub-properties of the union can be accessed via methods on the union struct.
+These methods return a mutable pointer to the underlying data, if present.
+
+```go
+// Only one field can be non-zero, use param.IsOmitted() to check if a field is set
+type AnimalUnionParam struct {
+	OfCat *Cat `json:",omitzero,inline`
+	OfDog *Dog `json:",omitzero,inline`
+}
+
+animal := AnimalUnionParam{
+	OfCat: &Cat{
+		Name: "Whiskers",
+		Owner: PersonParam{
+			Address: AddressParam{Street: "3333 Coyote Hill Rd", Zip: 0},
+		},
+	},
+}
+
+// Mutating a field
+if address := animal.GetOwner().GetAddress(); address != nil {
+	address.ZipCode = 94304
+}
 ```
+
+### Response objects
+
+All fields in response structs are ordinary value types (not pointers or wrappers).
+Response structs also include a special `JSON` field containing metadata about
+each property.
+
+```go
+type Animal struct {
+	Name   string `json:"name,nullable"`
+	Owners int    `json:"owners"`
+	Age    int    `json:"age"`
+	JSON   struct {
+		Name        respjson.Field
+		Owner       respjson.Field
+		Age         respjson.Field
+		ExtraFields map[string]respjson.Field
+	} `json:"-"`
+}
+```
+
+To handle optional data, use the `.Valid()` method on the JSON field.
+`.Valid()` returns true if a field is not `null`, not present, or couldn't be marshaled.
+
+If `.Valid()` is false, the corresponding field will simply be its zero value.
+
+```go
+raw := `{"owners": 1, "name": null}`
+
+var res Animal
+json.Unmarshal([]byte(raw), &res)
+
+// Accessing regular fields
+
+res.Owners // 1
+res.Name   // ""
+res.Age    // 0
+
+// Optional field checks
+
+res.JSON.Owners.Valid() // true
+res.JSON.Name.Valid()   // false
+res.JSON.Age.Valid()    // false
+
+// Raw JSON values
+
+res.JSON.Owners.Raw()                  // "1"
+res.JSON.Name.Raw() == "null"          // true
+res.JSON.Name.Raw() == respjson.Null   // true
+res.JSON.Age.Raw() == ""               // true
+res.JSON.Age.Raw() == respjson.Omitted // true
+```
+
+These `.JSON` structs also include an `ExtraFields` map containing
+any properties in the json response that were not specified
+in the struct. This can be useful for API features not yet
+present in the SDK.
+
+```go
+body := res.JSON.ExtraFields["my_unexpected_field"].Raw()
+```
+
+### Response Unions
+
+In responses, unions are represented by a flattened struct containing all possible fields from each of the
+object variants.
+To convert it to a variant use the `.AsFooVariant()` method or the `.AsAny()` method if present.
+
+If a response value union contains primitive values, primitive fields will be alongside
+the properties but prefixed with `Of` and feature the tag `json:"...,inline"`.
+
+```go
+type AnimalUnion struct {
+	// From variants [Dog], [Cat]
+	Owner Person `json:"owner"`
+	// From variant [Dog]
+	DogBreed string `json:"dog_breed"`
+	// From variant [Cat]
+	CatBreed string `json:"cat_breed"`
+	// ...
+
+	JSON struct {
+		Owner respjson.Field
+		// ...
+	} `json:"-"`
+}
+
+// If animal variant
+if animal.Owner.Address.ZipCode == "" {
+	panic("missing zip code")
+}
+
+// Switch on the variant
+switch variant := animal.AsAny().(type) {
+case Dog:
+case Cat:
+default:
+	panic("unexpected type")
+}
+```
+
+### RequestOptions
+
+This library uses the functional options pattern. Functions defined in the
+`option` package return a `RequestOption`, which is a closure that mutates a
+`RequestConfig`. These options can be supplied to the client or at individual
+requests. For example:
+
+```go
+client := imagekit.NewClient(
+	// Adds a header to every request made by the client
+	option.WithHeader("X-Some-Header", "custom_header_info"),
+)
+
+client.Files.Upload(context.TODO(), ...,
+	// Override the header
+	option.WithHeader("X-Some-Header", "some_other_custom_header_info"),
+	// Add an undocumented field to the request body, using sjson syntax
+	option.WithJSONSet("some.json.path", map[string]string{"my": "object"}),
+)
+```
+
+The request option `option.WithDebugLog(nil)` may be helpful while debugging.
+
+See the [full list of request options](https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/option).
+
+## URL generation
+
+The ImageKit SDK provides a powerful `Helper.BuildURL()` method for generating optimized image and video URLs with transformations. Here are examples ranging from simple URLs to complex transformations with overlays and signed URLs.
+
+### Basic URL generation
+
+Generate a simple URL without any transformations:
+
+```go
+package main
+
 import (
-    ikurl "github.com/imagekit-developer/imagekit-go/url"
+	"fmt"
+	
+	"github.com/imagekit-developer/imagekit-go/v2"
+	"github.com/imagekit-developer/imagekit-go/v2/option"
+	"github.com/imagekit-developer/imagekit-go/v2/shared"
 )
 
-url, err := ik.Url(ikurl.UrlParam{
-    Src: "https://ik.imagekit.io/your_imagekit_id/endpoint/default-image.jpg",
-    Transformations: []map[string]any{
-        {
-            "width":  400,
-            "height": 300,
-            "rotation": 90,
-        },
-    },
-})
-```
+func main() {
+	client := imagekit.NewClient(
+		option.WithPrivateKey("private_key_xxx"),
+	)
 
-This results in a URL like:
-
-```
-https://ik.imagekit.io/your_imagekit_id/endpoint/default-image.jpg?tr=h-300,w-400:rt-90
-```
-
-
-`UrlParam` has the following options:
-
-| Option           | Description                    |
-| :----------------| :----------------------------- |
-| Path             | Conditional. This is the path at which the image exists. For example, `/path/to/image.jpg`. Either the `Path` or `Src` parameter needs to be specified for URL generation. |
-| Src              | Conditional. This is the complete URL of an image already mapped to ImageKit. For example, `https://ik.imagekit.io/your_imagekit_id/endpoint/path/to/image.jpg`. Either the `Path` or `Src` parameter needs to be specified for URL generation. |
-| UrlEndpoint      | Optional. The base URL to be appended before the path of the image. If not specified, the URL Endpoint specified at the time of SDK initialization is used. For example, https://ik.imagekit.io/your_imagekit_id/endpoint/ |
-| Transformations   | Optional. An array of objects specifying the transformation to be applied in the URL. Different steps of a [chained transformation](https://docs.imagekit.io/features/image-transformations/chained-transformations) can be specified as different objects of the array. The complete list of supported transformations in the SDK and some examples of using them are given later. 
-| TransformationPosition | Optional. The default value is `Path`, which places the transformation string as a path parameter in the URL. It can also be specified as `query`, which adds the transformation string as the URL's query parameter `tr`. If you use the `Src` parameter to create the URL, then the transformation string is always added as a query parameter. |
-| NamedTransformation | Optional. Specifies the name of a pre-defined transformation. |
-| QueryParameters  | Optional. These are the other query parameters that you want to add to the final URL. These can be any query parameters and not necessarily related to ImageKit. Especially useful if you want to add some versioning parameters to your URLs. |
-| Signed           | Optional. Boolean. Default is `false`. If set to `true`, the SDK generates a signed image URL adding the image signature to the image URL. If you create a URL using the `Src` parameter instead of `Path`, then do correct `UrlEndpoint` for this to work. Otherwise returned URL will have the wrong signature |
-| ExpireSeconds    | Optional. Integer. Meant to be used along with the `Signed` parameter to specify the time in seconds from now when the URL should expire. If specified, the URL contains the expiry timestamp in the URL, and the image signature is modified accordingly. |
-
-#### Examples of generating URLs
-**1. Chained Transformations as a query parameter**
-```go
-
-params := ikurl.UrlParam{
-    Path:        "default-image.jpg",
-    UrlEndpoint: "https://ik.imagekit.io/demo-id/",
-    Transformations: []map[string]any{
-        {
-            "height": 300,
-            "width":  400,
-        },
-        {
-            "rotation": 90,
-        },
-    },
-    TransformationPosition: ikurl.QUERY,
-},
-
-url, err := ik.Url(params)
-```
-
-**2. Sharpening and contrast transform and a progressive JPG image**
-
-Some transform like [Sharpening](https://docs.imagekit.io/features/image-transformations/image-enhancement-and-color-manipulation) can be added to the URL with or without any other value. To use such transforms without specifying a value, specify the value as "-" in the transformation object. Otherwise, specify the value that you want to be added to this transformation.
-```go
-params := ikurl.UrlParam{
-    Path:        "default-image.jpg",
-    UrlEndpoint: "https://ik.imagekit.io/demo-id/",
-    Transformations: []map[string]any{
-        {
-            "effectSharpen": "-",
-        },
-    },
+	// Basic URL without transformations
+	url := client.Helper.BuildURL(shared.SrcOptionsParam{
+		URLEndpoint: "https://ik.imagekit.io/your_imagekit_id",
+		Src:         "/path/to/image.jpg",
+	})
+	fmt.Println(url)
+	// Result: https://ik.imagekit.io/your_imagekit_id/path/to/image.jpg
 }
 ```
 
-**3. Adding overlays**
+### URL generation with transformations
 
-ImageKit.io enables you to apply overlays to [images](https://docs.imagekit.io/features/image-transformations/overlay-using-layers) and [videos](https://docs.imagekit.io/features/video-transformation/overlay) using the raw parameter with the concept of [layers](https://docs.imagekit.io/features/image-transformations/overlay-using-layers#layers). The raw parameter facilitates incorporating transformations directly in the URL. A layer is a distinct type of transformation that allows you to define an asset to serve as an overlay, along with its positioning and additional transformations.
-
-**Text as overlays**
-
-You can add any text string over a base video or image using a text layer (l-text).
-
-For example:
+Apply common transformations like resizing, cropping, and format conversion:
 
 ```go
-params := ikurl.UrlParam{
-    Path:        "default-image.jpg",
-    UrlEndpoint: "https://ik.imagekit.io/demo-id/",
-    Transformations: []map[string]any{
-        {
-            "height": 300,
-            "width":  400,
-            "raw": "l-text,i-Imagekit,fs-50,l-end"
-        },
-    },
-}
-```
-**Sample Result URL**
-```
-https://ik.imagekit.io/demo-id/default-image.jpg?tr=h-300,w-400,l-text,i-Imagekit,fs-50,l-end
-```
+package main
 
-**Image as overlays**
-
-You can add an image over a base video or image using an image layer (l-image).
-
-For example:
-
-```go
-params := ikurl.UrlParam{
-    Path:        "default-image.jpg",
-    UrlEndpoint: "https://ik.imagekit.io/demo-id/",
-    Transformations: []map[string]any{
-        {
-            "height": 300,
-            "width":  400,
-            "raw": "l-image,i-default-image.jpg,w-100,b-10_CDDC39,l-end"
-        },
-    },
-}
-```
-**Sample Result URL**
-```
-https://ik.imagekit.io/demo-id/default-image.jpg?tr=h-300,w-400,l-image,i-default-image.jpg,w-100,b-10_CDDC39,l-end
-```
-
-**Solid color blocks as overlays**
-
-You can add solid color blocks over a base video or image using an image layer (l-image).
-
-For example:
-
-```go
-params := ikurl.UrlParam{
-    Path:        "img/sample-video.mp4",
-    UrlEndpoint: "https://ik.imagekit.io/demo-id/",
-    Transformations: []map[string]any{
-        {
-            "height": 300,
-            "width":  400,
-            "raw": "l-image,i-ik_canvas,bg-FF0000,w-300,h-100,l-end"
-        },
-    },
-}
-```
-**Sample Result URL**
-```
-https://ik.imagekit.io/demo-id/img/sample-video.mp4?tr=h-300,w-400,l-image,i-ik_canvas,bg-FF0000,w-300,h-100,l-end
-```
-#### List of supported transformations
-
-See the complete list of transformations supported in ImageKit [here](https://docs.imagekit.io/features/image-transformations). The SDK gives a name to each transformation parameter e.g. `height` for `h` and `width` for `w` parameter. It makes your code more readable. If the property does not match any of the following supported options, it is added as it is.
-
-If you want to generate transformations in your application and add them to the URL as it is, use the raw parameter.
-
-| Supported Transformation Name | Translates to parameter |
-|-------------------------------|-------------------------|
-|height                    |h|
-|width                     |w|
-|aspectRatio               |ar|
-|quality                   |q|
-|crop                      |c|
-|cropMode                  |cm|
-|x                         |x|
-|y                         |y|
-|xc                        |xc|
-|yc                        |yc|
-|focus                     |fo|
-|format                    |f|
-|radius                    |r|
-|background                |bg|
-|border                    |b|
-|rotation                  |rt|
-|blur                      |bl|
-|named                     |n|
-|progressive               |pr|
-|lossless                  |lo|
-|trim                      |t|
-|metadata                  |md|
-|colorProfile              |cp|
-|defaultImage              |di|
-|dpr                       |dpr|
-|effectSharpen             |e-sharpen|
-|effectUSM                 |e-usm|
-|effectContrast            |e-contrast|
-|effectGray                |e-grayscale|
-|original                  |orig|
-|raw                       | `replaced by the parameter value`|
-
-
-## File-Upload
-
-The SDK uploader package provides a simple interface using the `.upload()` method to upload files to the ImageKit Media Library. It accepts all the parameters supported by the [ImageKit Upload API](https://docs.imagekit.io/api-reference/upload-file-api/server-side-file-upload).
-
-The upload() method accept file and UploadParam. File param can be base64 encoded image, absolute HTTP URL, or io.Reader. This method returns the `UploadResponse` object and `err` if any. In addition, you can pass other parameters supported by the ImageKit upload API using the same parameter name as specified in the upload API documentation. For example, to set tags for a file at the upload time, use the tags parameter as defined in the [documentation here](https://docs.imagekit.io/api-reference/upload-file-api/server-side-file-upload).
-
-```
-import "github.com/imagekit-developer/imagekit-go/uploader"
-
-const base64Image = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
-resp, err := ik.Uploader.Upload(ctx, base64Image, uploader.UploadParam{
-    FileName: "myimage.jpg"
-})
-
-```
-
-## File-Management
-
-The SDK provides a simple interface for all the [media APIs mentioned here](https://docs.imagekit.io/api-reference/media-api) to manage your files. 
-
-### 1. List & Search Files
-List files in the media library, optionally filter and sort using `FileParams`.
-
-```
 import (
-    "github.com/imagekit-developer/imagekit-go"
-    "github.com/imagekit-developer/imagekit-go/api/media"
+	"fmt"
+	
+	"github.com/imagekit-developer/imagekit-go/v2"
+	"github.com/imagekit-developer/imagekit-go/v2/option"
+	"github.com/imagekit-developer/imagekit-go/v2/packages/param"
+	"github.com/imagekit-developer/imagekit-go/v2/shared"
 )
 
-resp, err := ik.Media.Files(ctx, media.FilesParam{
-    Skip: 10,
-    Limit: 500,
-    SearchQuery: "createdAt >= \"7d\" AND size > \"2mb\"",
-})
-```
+func main() {
+	client := imagekit.NewClient(
+		option.WithPrivateKey("private_key_xxx"),
+	)
 
-### 2. Get File Details
-Accepts the file ID and fetches the details as per the [API documentation here](https://docs.imagekit.io/api-reference/media-api/get-file-details).
-
-```
-resp, err := ik.Media.FileById(ctx, "file_id")
-```
-
-### 3. Get File Version Details
-Get all the details and attributes of any version of a file as per the [API documentation here](https://docs.imagekit.io/api-reference/media-api/get-file-version-details).
-
-```
-resp, err := ik.Media.FileVersions(ctx, media.FileVersionsParam{
-    FileId: "file_id",
-    VersionId: "version_id",
-})
-
-```
-
-### 4. Get File Versions
-Get all the file version details and attributes of a file as per the [API documentation here](https://docs.imagekit.io/api-reference/media-api/get-file-versions).
-
-```
-resp, err := ik.Media.FileVersions(ctx, media.FileVersionsParam{
-    FileId: "file_id",
-})
-```
-
-### 5. Update File Details
-Update parameters associated with the file as per the [API documentation here](https://docs.imagekit.io/api-reference/media-api/update-file-details).
-
-```
-resp, err := ik.Media.UpdateFile(ctx, fileId, media.UpdateFileParam{
-    Tags: []string{"tag_1", "tag_2"},
-    RemoveAITags: []string{"car", "suv"},
-})
-```
-
-### 6. Add Tags (bulk)
-Set tags to multiple files. Accepts slices of tags and file Ids. Returns slice of file ids. [API documentation here](https://docs.imagekit.io/api-reference/media-api/add-tags-bulk).
-
-```
-resp, err := ik.Media.AddTags(ctx, media.TagsParam{
-    FileIds: []string{"file_id_1", "file_id_2"},
-    Tags: []string{"tag_1", "tag_2"},
-})
-```
-
-### 7. Remove Tags (bulk)
-Removes tags from multiple files. Returns slice of file IDs updated. [API documentation here](https://docs.imagekit.io/api-reference/media-api/remove-tags-bulk).
-
-```
-resp, err := ik.Media.RemoveTags(ctx, media.TagsParam{
-    FileIds: []string{"file_id_1", "file_id_2"},
-    Tags: []string{"tag_1", "tag_2"},
-})
-```
-### 8. Remove AITags (bulk)
-Remove AITags in bulk API. Returns slice of file ids. [API documentation here](https://docs.imagekit.io/api-reference/media-api/remove-aitags-bulk).
-
-```
-resp, err := ik.Media.RemoveAITags(ctx, media.AITagsParam{
-    FileIds: []string{"file_id_1", "file_id_2"},
-    AITags: []string{"tag_1", "tag_2"},
-})
-```
-
-### 9. Delete File
-Delete a file by fileId. [API documentation here](https://docs.imagekit.io/api-reference/media-api/delete-file).
-```
-resp, err := ik.Media.DeleteFile(ctx, "file_id")
-```
-
-### 10. Delete File Version
-Deletes the given version of the file. [API documentation here](https://docs.imagekit.io/api-reference/media-api/delete-file-version).
-```
-resp, err := ik.Media.DeleteFileVersion(ctx, "file_id", "version_1")
-```
-
-### 11. Delete Files (bulk)
-Deletes multiple files. [API documentation here](https://docs.imagekit.io/api-reference/media-api/delete-files-bulk).
-
-```
-resp, err := ik.Media.DeleteBulkFiles(ctx, media.FileIdsParam{
-    FileIds: []string{"file_id1", "file_id2"},
-)
-```
-
-### 12. Copy File
-This will copy a file from one location to another as per [API documentation here](https://docs.imagekit.io/api-reference/media-api/copy-file).
-
-Accepts the source file's path and destination folder path.
-```
-resp, err := ik.Media.CopyFile(ctx, media.CopyFileParam{
-    SourcePath: "/source/a.jpg",
-    DestinationPath: "/target/",
-    IncludeFileVersions: false,
-})
-```
-
-### 13. Move File
-This will move a file from one location to another as per [API documentation here](https://docs.imagekit.io/api-reference/media-api/move-file).
-
-Accepts the source file's path and destination folder path.
-```
-resp, err := ik.Media.MoveFile(ctx, media.MoveFileParam{
-    SourcePath: "/source/a.jpg",
-    DestinationPath: "/target/",
-})
-```
-
-### 14. Rename File
-Renames a file as per [API documentation here](https://docs.imagekit.io/api-reference/media-api/rename-file).
-Accepts file path, new name and purge cache option.
-
-```
-resp, err := ik.Media.RenameFile(ctx, media.RenameFileParam{
-    FilePath: "/path/to/file.jpg",
-    NewFileName: "newname.jpg",
-    PurgeCache: true,
-})
-
-```
-
-### 15. Restore File Version
-Restore the file version as per [API documentation here](https://docs.imagekit.io/api-reference/media-api/restore-file-version).
-Accepts string type file id and version id.
-```
-resp, err := ik.Media.RestoreVersion(ctx, media.FileVersionsParam{
-    FileId: "file_id",
-    VersionId: "version_id",
-})
-```
-
-### 16. Create Folder
-Creates a new folder as per [API documentation here](https://docs.imagekit.io/api-reference/media-api/create-folder). `err` is not nil when the response is not 201.
-
-Accepts string type folder name and parent path.
-
-```
-resp, err := ik.Media.CreateFolder(ctx, media.CreateFolderParam{
-   FolderName: "nature",
-   ParentFolderPath: "/some/pics"
+	// URL with basic transformations
+	url := client.Helper.BuildURL(shared.SrcOptionsParam{
+		URLEndpoint: "https://ik.imagekit.io/your_imagekit_id",
+		Src:         "/path/to/image.jpg",
+		Transformation: []shared.TransformationParam{
+			{
+				Width: shared.TransformationWidthUnionParam{
+					OfFloat: param.Opt[float64]{Value: 400},
+				},
+				Height: shared.TransformationHeightUnionParam{
+					OfFloat: param.Opt[float64]{Value: 300},
+				},
+				Crop:    shared.TransformationCropMaintainRatio,
+				Quality:  param.Opt[float64]{Value: 80},
+				Format:   shared.TransformationFormatWebp,
+			},
+		},
+	})
+	fmt.Println(url)
+	// Result: https://ik.imagekit.io/your_imagekit_id/path/to/image.jpg?tr=w-400,h-300,c-maintain_ratio,q-80,f-webp
 }
 ```
 
-### 17. Delete Folder
-Deletes the specified folder and all nested files, their versions & folders. This action cannot be undone. Accepts string type folder name to delete. [API documentation here](https://docs.imagekit.io/api-reference/media-api/delete-folder).
+### URL generation with image overlay
 
+Add image overlays to your base image:
 
-```
-resp, err := ik.Media.DeleteFolder(ctx, media.DeleteFolderParam{
-    FolderPath: "/some/pics/nature",
-})
-```
+```go
+package main
 
-### 18. Copy Folder
-Copies given folder to new location with or without versions info as per [API documentation here](https://docs.imagekit.io/api-reference/media-api/copy-folder).
-
-```
-resp, err := ik.Media.CopyFolder(ctx, media.CopyFolderParam{
-    SourceFolderPath: "source/path",
-    DestinationPath: "destination/",
-    IncludeFileVersions: false
-})
-```
-
-### 19. Move Folder
-Moves given folder path to new location as per [API documentation here](https://docs.imagekit.io/api-reference/media-api/move-folder).
-
-```
-resp, err := ik.Media.MoveFolder(ctx, media.MoveFolderParam{
-    SourceFolderPath: "source/path",
-    DestinationPath: "destination/path",
-})
-```
-
-### 20. Bulk Job Status
-Get the status of a bulk job operation by job id. Accepts string type job id. [API documentation here](https://docs.imagekit.io/api-reference/media-api/copy-move-folder-status).
-
-```
-resp, err := ik.BulkJobStatus(ctx, "job_id")
-```
-
-### 21. Purge Cache
-This will purge the CDN and ImageKit internal cache for a given URL. [API documentation here](https://docs.imagekit.io/api-reference/media-api/purge-cache).
-
-```
-resp, err := ik.Media.PurgeCache(ctx, media.PurgeCacheParam{
-    Url: "https://ik.imageki.io/your_imagekit_id/rest-of-the-file-path.jpg"
-})
-```
-
-### 22. Purge Cache Status
-Get the status of the submitted purge request. Accepts purge request id. [API documentation here](https://docs.imagekit.io/api-reference/media-api/purge-cache-status).
-
-
-```
-resp, err := ik.Media.PurgeCacheStatus(ctx, "request_id")
-```
-
-## Metadata API
-### 1. Get File Metadata for uploaded media files
-Accepts the file ID or URL and fetches the metadata as per the [API documentation here](https://docs.imagekit.io/api-reference/metadata-api/get-image-metadata-for-uploaded-media-files).
-
-```
-resp, err := ik.Metadata.FromFile(ctx, "file_id")
-```
-
-### 2. Get File Metadata from remote url
-Get image EXIF, pHash, and other metadata from ImageKit.io powered remote URL using this API as per the [API documentation here](https://docs.imagekit.io/api-reference/metadata-api/get-image-metadata-from-remote-url).
-
-```
-resp, err := ik.Metadata.FromUrl(ctx, "http://domian/a.jpg")
-```
-
-## Custom Metadata fields API
-Create, Update, Read and Delete custom metadata rules as per the [API documentation here](https://docs.imagekit.io/api-reference/custom-metadata-fields-api).
-
-### 1. Create custom metadata field
-```
-import "github.com/imagekit-developer/imagekit-go/api/media/metadata"
-
-resp, err := ik.Metadata.CreateCustomField(ctx, metadata.CreateFieldParam{
-    Name: "weight",
-    Label: "Weight",
-    Schema: metadata.Schema{
-        Type: "Number",
-        MinValue: 1,
-        MaxValue: 1000,
-    }
-})
-```
-
-### 2. List custom metadata fields
-Accepts context and boolean flag(true|false) to get deleted fields.
-
-```
-resp, err := ik.Metadata.CustomFields(ctx, true)
-
-```
-
-### 3. Update custom metadata field
-
-```
-resp, err := ik.Metadata.UpdateCustomField(ctx, "field_id", UpdateCustomFieldParam{
-    Label: "Cost",
-})
-```
-
-### 4. Delete custom metadata field
-Accepts context and fieldId to delete the custom metadata field.
-```
-resp, err := ik.Metadata.DeleteCustomField(ctx, "field_id")
-```
-    
-## Utility Functions
-
-We have included the following commonly used utility function in this package.
-
-### 1. Authentication parameter generation
-This method generates a signature for a given token and timestamp using the configured private key. It is useful for client-side file upload to authenticate requests. `Token` is a random string. `Expires` is a unix timestamp by which token should expire. `Token` and `Expires` are both optional parameters. `Token` defaults to an auto-generated UUID string. `Expires` defaults to a current time + 30 minutes value.
-
-```
-// Using auto-generated token and expiration
-resp := ik.SignToken(imagekit.SignTokenParam{})
-
-// Using specific token and expiration
-resp := ik.SignToken(imagekit.SignTokenParam{
-    Token: "token-string",
-    Expires: 1655379249,
-})
-
-```
-
-## Rate Limits
-Except for upload API, all ImageKit APIs are rate limited to avoid excessive request rates. 
-
-Whenever backend API returns 429 status code, error of type `ErrTooManyRequests` is returned, which can be tested with `errors.Is`. The rate limit detail can be retrieved from the response metadata header. Please sleep/pause for the number of milliseconds specified by the value of `resp.ResponseMetaData.Header["X-RateLimit-Reset"]` property before making additional requests to that endpoint.
-
-```
 import (
-    "errors"
-
-    "github.com/imagekit-developer/imagekit-go"
-    "github.com/imagekit-developer/imagekit-go/metadata"
-    "github.com/imagekit-developer/imagekit-go/api"
+	"fmt"
+	
+	"github.com/imagekit-developer/imagekit-go/v2"
+	"github.com/imagekit-developer/imagekit-go/v2/option"
+	"github.com/imagekit-developer/imagekit-go/v2/packages/param"
+	"github.com/imagekit-developer/imagekit-go/v2/shared"
+	"github.com/imagekit-developer/imagekit-go/v2/shared/constant"
 )
-ik, err := ImageKit.New()
 
-resp, err := ik.Metadata.CustomFields(ctx, true)
-if errors.Is(err, api.ErrTooManyRequests) {
-    log.Println("rate limit exceeded", resp.ResponseMetaData.Header["X-RateLimit-Limit"])
+func main() {
+	client := imagekit.NewClient(
+		option.WithPrivateKey("private_key_xxx"),
+	)
+
+	// URL with image overlay
+	url := client.Helper.BuildURL(shared.SrcOptionsParam{
+		URLEndpoint: "https://ik.imagekit.io/your_imagekit_id",
+		Src:         "/path/to/base-image.jpg",
+		Transformation: []shared.TransformationParam{
+			{
+				Width: shared.TransformationWidthUnionParam{
+					OfFloat: param.Opt[float64]{Value: 500},
+				},
+				Height: shared.TransformationHeightUnionParam{
+					OfFloat: param.Opt[float64]{Value: 400},
+				},
+				Overlay: shared.OverlayUnionParam{
+					OfImage: &shared.ImageOverlayParam{
+						Type:  constant.Image("image"),
+						Input: "/path/to/overlay-logo.png",
+						BaseOverlayParam: shared.BaseOverlayParam{
+							Position: shared.OverlayPositionParam{
+								X: shared.OverlayPositionXUnionParam{
+									OfFloat: param.Opt[float64]{Value: 10},
+								},
+								Y: shared.OverlayPositionYUnionParam{
+									OfFloat: param.Opt[float64]{Value: 10},
+								},
+							},
+						},
+						Transformation: []shared.TransformationParam{
+							{
+								Width: shared.TransformationWidthUnionParam{
+									OfFloat: param.Opt[float64]{Value: 100},
+								},
+								Height: shared.TransformationHeightUnionParam{
+									OfFloat: param.Opt[float64]{Value: 50},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	})
+	fmt.Println(url)
+	// Result: URL with image overlay positioned at x:10, y:10
 }
-
 ```
 
-## Support
+### URL generation with text overlay
 
-For any feedback or to report any issues or general implementation support, please reach out to [support@imagekit.io](mailto:support@imagekit.io)
+Add customized text overlays:
 
-## Links
-* [Documentation](https://docs.imagekit.io)
-* [Main website](https://imagekit.io)
+```go
+package main
 
-## License
-Released under the MIT license.
+import (
+	"fmt"
+	
+	"github.com/imagekit-developer/imagekit-go/v2"
+	"github.com/imagekit-developer/imagekit-go/v2/option"
+	"github.com/imagekit-developer/imagekit-go/v2/packages/param"
+	"github.com/imagekit-developer/imagekit-go/v2/shared"
+	"github.com/imagekit-developer/imagekit-go/v2/shared/constant"
+)
+
+func main() {
+	client := imagekit.NewClient(
+		option.WithPrivateKey("private_key_xxx"),
+	)
+
+	// URL with text overlay
+	url := client.Helper.BuildURL(shared.SrcOptionsParam{
+		URLEndpoint: "https://ik.imagekit.io/your_imagekit_id",
+		Src:         "/path/to/base-image.jpg",
+		Transformation: []shared.TransformationParam{
+			{
+				Width: shared.TransformationWidthUnionParam{
+					OfFloat: param.Opt[float64]{Value: 600},
+				},
+				Height: shared.TransformationHeightUnionParam{
+					OfFloat: param.Opt[float64]{Value: 400},
+				},
+				Overlay: shared.OverlayUnionParam{
+					OfText: &shared.TextOverlayParam{
+						Type: constant.Text("text"),
+						Text: "Sample Text Overlay",
+						BaseOverlayParam: shared.BaseOverlayParam{
+							Position: shared.OverlayPositionParam{
+								X: shared.OverlayPositionXUnionParam{
+									OfFloat: param.Opt[float64]{Value: 50},
+								},
+								Y: shared.OverlayPositionYUnionParam{
+									OfFloat: param.Opt[float64]{Value: 50},
+								},
+								Focus: shared.OverlayPositionFocusCenter,
+							},
+						},
+						Transformation: []shared.TextOverlayTransformationParam{
+							{
+								FontSize: shared.TextOverlayTransformationFontSizeUnionParam{
+									OfFloat: param.Opt[float64]{Value: 40},
+								},
+								FontFamily: param.Opt[string]{Value: "Arial"},
+								FontColor:  param.Opt[string]{Value: "FFFFFF"},
+								Typography: param.Opt[string]{Value: "b"}, // bold
+							},
+						},
+					},
+				},
+			},
+		},
+	})
+	fmt.Println(url)
+	// Result: URL with bold white Arial text overlay at center position
+}
+```
+
+### URL generation with multiple overlays
+
+Combine multiple overlays for complex compositions:
+
+```go
+package main
+
+import (
+	"fmt"
+	
+	"github.com/imagekit-developer/imagekit-go/v2"
+	"github.com/imagekit-developer/imagekit-go/v2/option"
+	"github.com/imagekit-developer/imagekit-go/v2/packages/param"
+	"github.com/imagekit-developer/imagekit-go/v2/shared"
+	"github.com/imagekit-developer/imagekit-go/v2/shared/constant"
+)
+
+func main() {
+	client := imagekit.NewClient(
+		option.WithPrivateKey("private_key_xxx"),
+	)
+
+	// URL with multiple overlays (text + image)
+	url := client.Helper.BuildURL(shared.SrcOptionsParam{
+		URLEndpoint: "https://ik.imagekit.io/your_imagekit_id",
+		Src:         "/path/to/base-image.jpg",
+		Transformation: []shared.TransformationParam{
+			{
+				Width: shared.TransformationWidthUnionParam{
+					OfFloat: param.Opt[float64]{Value: 800},
+				},
+				Height: shared.TransformationHeightUnionParam{
+					OfFloat: param.Opt[float64]{Value: 600},
+				},
+				Overlay: shared.OverlayUnionParam{
+					OfText: &shared.TextOverlayParam{
+						Type: constant.Text("text"),
+						Text: "Header Text",
+						BaseOverlayParam: shared.BaseOverlayParam{
+							Position: shared.OverlayPositionParam{
+								X: shared.OverlayPositionXUnionParam{
+									OfFloat: param.Opt[float64]{Value: 20},
+								},
+								Y: shared.OverlayPositionYUnionParam{
+									OfFloat: param.Opt[float64]{Value: 20},
+								},
+							},
+						},
+						Transformation: []shared.TextOverlayTransformationParam{
+							{
+								FontSize: shared.TextOverlayTransformationFontSizeUnionParam{
+									OfFloat: param.Opt[float64]{Value: 30},
+								},
+								FontColor: param.Opt[string]{Value: "000000"},
+							},
+						},
+					},
+				},
+			},
+			{
+				Overlay: shared.OverlayUnionParam{
+					OfImage: &shared.ImageOverlayParam{
+						Type:  constant.Image("image"),
+						Input: "/watermark.png",
+						BaseOverlayParam: shared.BaseOverlayParam{
+							Position: shared.OverlayPositionParam{
+								Focus: shared.OverlayPositionFocusBottomRight,
+							},
+						},
+						Transformation: []shared.TransformationParam{
+							{
+								Width: shared.TransformationWidthUnionParam{
+									OfFloat: param.Opt[float64]{Value: 100},
+								},
+								Opacity: param.Opt[float64]{Value: 70},
+							},
+						},
+					},
+				},
+			},
+		},
+	})
+	fmt.Println(url)
+	// Result: URL with text overlay at top-left and semi-transparent watermark at bottom-right
+}
+```
+
+### Signed URLs for secure delivery
+
+Generate signed URLs that expire after a specified time for secure content delivery:
+
+```go
+package main
+
+import (
+	"fmt"
+	
+	"github.com/imagekit-developer/imagekit-go/v2"
+	"github.com/imagekit-developer/imagekit-go/v2/option"
+	"github.com/imagekit-developer/imagekit-go/v2/packages/param"
+	"github.com/imagekit-developer/imagekit-go/v2/shared"
+)
+
+func main() {
+	client := imagekit.NewClient(
+		option.WithPrivateKey("private_key_xxx"),
+	)
+
+	// Generate a signed URL that expires in 1 hour (3600 seconds)
+	url := client.Helper.BuildURL(shared.SrcOptionsParam{
+		URLEndpoint: "https://ik.imagekit.io/your_imagekit_id",
+		Src:         "/private/secure-image.jpg",
+		Transformation: []shared.TransformationParam{
+			{
+				Width: shared.TransformationWidthUnionParam{
+					OfFloat: param.Opt[float64]{Value: 400},
+				},
+				Height: shared.TransformationHeightUnionParam{
+					OfFloat: param.Opt[float64]{Value: 300},
+				},
+				Quality: param.Opt[float64]{Value: 90},
+			},
+		},
+		Signed:    param.Opt[bool]{Value: true},
+		ExpiresIn: param.Opt[float64]{Value: 3600}, // URL expires in 1 hour
+	})
+	fmt.Println(url)
+	// Result: URL with signature parameters (?ik-t=timestamp&ik-s=signature)
+
+	// Generate a signed URL that doesn't expire
+	permanentSignedUrl := client.Helper.BuildURL(shared.SrcOptionsParam{
+		URLEndpoint: "https://ik.imagekit.io/your_imagekit_id",
+		Src:         "/private/secure-image.jpg",
+		Signed:      param.Opt[bool]{Value: true},
+		// No ExpiresIn means the URL won't expire
+	})
+	fmt.Println(permanentSignedUrl)
+	// Result: URL with signature parameter (?ik-s=signature)
+}
+```
+
+### Using Raw transformations for undocumented features
+
+ImageKit frequently adds new transformation parameters that might not yet be documented in the SDK. You can use the `Raw` parameter to access these features or create custom transformation strings:
+
+```go
+package main
+
+import (
+	"fmt"
+	
+	"github.com/imagekit-developer/imagekit-go/v2"
+	"github.com/imagekit-developer/imagekit-go/v2/option"
+	"github.com/imagekit-developer/imagekit-go/v2/packages/param"
+	"github.com/imagekit-developer/imagekit-go/v2/shared"
+)
+
+func main() {
+	client := imagekit.NewClient(
+		option.WithPrivateKey("private_key_xxx"),
+	)
+
+	// Using Raw transformation for undocumented or new parameters
+	url := client.Helper.BuildURL(shared.SrcOptionsParam{
+		URLEndpoint: "https://ik.imagekit.io/your_imagekit_id",
+		Src:         "/path/to/image.jpg",
+		Transformation: []shared.TransformationParam{
+			{
+				// Combine documented transformations with raw parameters
+				Width: shared.TransformationWidthUnionParam{
+					OfFloat: param.Opt[float64]{Value: 400},
+				},
+				Height: shared.TransformationHeightUnionParam{
+					OfFloat: param.Opt[float64]{Value: 300},
+				},
+			},
+			{
+				// Use Raw for undocumented transformations or complex parameters
+				Raw: param.Opt[string]{Value: "something-new"},
+			},
+		},
+	})
+	fmt.Println(url)
+	// Result: https://ik.imagekit.io/your_imagekit_id/path/to/image.jpg?tr=w-400,h-300:something-new
+}
+```
+
+## Authentication parameters for client-side uploads
+
+Generate authentication parameters for secure client-side file uploads:
+
+```go
+package main
+
+import (
+	"fmt"
+	
+	"github.com/imagekit-developer/imagekit-go/v2"
+	"github.com/imagekit-developer/imagekit-go/v2/option"
+)
+
+func main() {
+	client := imagekit.NewClient(
+		option.WithPrivateKey("private_key_xxx"),
+	)
+
+	// Generate authentication parameters for client-side uploads
+	authParams := client.Helper.GetAuthenticationParameters("", 0)
+	fmt.Printf("%+v\n", authParams)
+	// Result: map[expire:<timestamp> signature:<hmac-signature> token:<uuid-token>]
+
+	// Generate with custom token and expiry
+	customAuthParams := client.Helper.GetAuthenticationParameters("my-custom-token", 1800)
+	fmt.Printf("%+v\n", customAuthParams)
+	// Result: map[expire:1800 signature:<hmac-signature> token:my-custom-token]
+}
+```
+
+These authentication parameters can be used in client-side upload forms to securely upload files without exposing your private API key.
+
+## Webhook verification
+
+The ImageKit SDK provides utilities to verify webhook signatures for secure event handling. This ensures that webhook requests are actually coming from ImageKit and haven't been tampered with.
+
+### Verifying webhook signatures
+
+```go
+package main
+
+import (
+	"fmt"
+	"io"
+	"log"
+	"net/http"
+	"os"
+
+	"github.com/imagekit-developer/imagekit-go/v2"
+	"github.com/imagekit-developer/imagekit-go/v2/option"
+)
+
+func main() {
+	client := imagekit.NewClient(
+		option.WithPrivateKey("your_private_key"),
+		option.WithWebhookSecret("whsec_..."), // Copy from ImageKit dashboard
+	)
+
+	// Webhook handler with proper request body handling
+	http.HandleFunc("/webhook", func(w http.ResponseWriter, req *http.Request) {
+		// Limit request body size to prevent abuse (64KB should be sufficient for most webhooks)
+		const MaxBodyBytes = int64(65536)
+		req.Body = http.MaxBytesReader(w, req.Body, MaxBodyBytes)
+		
+		// Read the raw webhook payload
+		payload, err := io.ReadAll(req.Body)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error reading request body: %v\n", err)
+			w.WriteHeader(http.StatusServiceUnavailable)
+			return
+		}
+
+		// Verify and unwrap webhook payload
+		event, err := client.Webhooks.Unwrap(payload, req.Header)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Invalid webhook signature or malformed payload: %v\n", err)
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+
+		fmt.Printf("Verified webhook event: %s\n", event.Type)
+		
+		// Handle different event types with full type safety
+		switch event.Type {
+		case "video.transformation.accepted":
+			videoEvent := event.AsVideoTransformationAcceptedEvent()
+			fmt.Printf("Video transformation accepted: %s\n", videoEvent.Data.Asset.URL)
+			// Debugging: Track transformation requests
+			// handleVideoTransformationAccepted(videoEvent)
+			
+		case "video.transformation.ready":
+			videoEvent := event.AsVideoTransformationReadyEvent()
+			fmt.Printf("Video transformation ready: %s\n", videoEvent.Data.Transformation.Output.URL)
+			// Update your database/CMS to show the transformed video
+			// handleVideoTransformationReady(videoEvent)
+			
+		case "video.transformation.error":
+			videoEvent := event.AsVideoTransformationErrorEvent()
+			fmt.Printf("Video transformation error: %s\n", videoEvent.Data.Transformation.Error.Reason)
+			// Log error and check your origin/URL endpoint settings
+			// handleVideoTransformationError(videoEvent)
+			
+		case "upload.pre-transform.success":
+			uploadEvent := event.AsUploadPreTransformSuccessEvent()
+			fmt.Printf("Pre-transform success: %s\n", uploadEvent.Data.FileID)
+			// File uploaded and pre-transformation completed
+			// handleUploadPreTransformSuccess(uploadEvent)
+			
+		case "upload.post-transform.success":
+			postEvent := event.AsUploadPostTransformSuccessEvent()
+			fmt.Printf("Post-transform success: %s\n", postEvent.Data.Name)
+			// Additional transformation completed
+			// handleUploadPostTransformSuccess(postEvent)
+			
+		// Handle other event types as needed
+		default:
+			fmt.Printf("Unhandled event type: %s\n", event.Type)
+		}
+
+		w.WriteHeader(http.StatusOK)
+	})
+
+	// Start the server
+	fmt.Println("Webhook server listening on :8080")
+	log.Fatal(http.ListenAndServe(":8080", nil))
+}
+```
+
+For detailed information about webhook setup, signature verification, and handling different webhook events, refer to the [ImageKit webhook documentation](https://imagekit.io/docs/webhooks#verify-webhook-signature).
+
+### Errors
+
+When the API returns a non-success status code, we return an error with type
+`*imagekit.Error`. This contains the `StatusCode`, `*http.Request`, and
+`*http.Response` values of the request, as well as the JSON of the error body
+(much like other response objects in the SDK).
+
+To handle errors, we recommend that you use the `errors.As` pattern:
+
+```go
+file, err := os.Open("/path/to/your/image.jpg")
+if err != nil {
+	panic(err.Error())
+}
+defer file.Close()
+
+_, err = client.Files.Upload(context.TODO(), imagekit.FileUploadParams{
+	File:     file,
+	FileName: "uploaded-image.jpg",
+})
+if err != nil {
+	var apierr *imagekit.Error
+	if errors.As(err, &apierr) {
+		println(string(apierr.DumpRequest(true)))  // Prints the serialized HTTP request
+		println(string(apierr.DumpResponse(true))) // Prints the serialized HTTP response
+	}
+	panic(err.Error()) // GET "/api/v1/files/upload": 400 Bad Request { ... }
+}
+```
+
+When other errors occur, they are returned unwrapped; for example,
+if HTTP transport fails, you might receive `*url.Error` wrapping `*net.OpError`.
+
+### Timeouts
+
+Requests do not time out by default; use context to configure a timeout for a request lifecycle.
+
+Note that if a request is [retried](#retries), the context timeout does not start over.
+To set a per-retry timeout, use `option.WithRequestTimeout()`.
+
+```go
+// This sets the timeout for the request, including all the retries.
+ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
+defer cancel()
+
+file, err := os.Open("/path/to/your/image.jpg")
+if err != nil {
+	panic(err.Error())
+}
+defer file.Close()
+
+client.Files.Upload(
+	ctx,
+	imagekit.FileUploadParams{
+		File:     file,
+		FileName: "uploaded-image.jpg",
+	},
+	// This sets the per-retry timeout
+	option.WithRequestTimeout(20*time.Second),
+)
+```
+
+### File uploads
+
+Request parameters that correspond to file uploads in multipart requests are typed as
+`io.Reader`. The contents of the `io.Reader` will by default be sent as a multipart form
+part with the file name of "anonymous_file" and content-type of "application/octet-stream".
+
+The file name and content-type can be customized by implementing `Name() string` or `ContentType()
+string` on the run-time type of `io.Reader`. Note that `os.File` implements `Name() string`, so a
+file returned by `os.Open` will be sent with the file name on disk.
+
+We also provide a helper `imagekit.NewFile(reader io.Reader, filename string, contentType string)`
+which can be used to wrap any `io.Reader` with the appropriate file name and content type.
+
+Here are common file upload patterns:
+
+```go
+// Upload from local file system
+file, err := os.Open("/path/to/your/image.jpg")
+if err != nil {
+	panic(err.Error())
+}
+defer file.Close()
+
+response, err := client.Files.Upload(context.TODO(), imagekit.FileUploadParams{
+	File:     file,
+	FileName: "uploaded-image.jpg",
+})
+
+// Upload from remote URL
+resp, err := http.Get("https://example.com/remote-image.jpg")
+if err != nil {
+	panic(err.Error())
+}
+defer resp.Body.Close()
+
+if resp.StatusCode != http.StatusOK {
+	panic("Failed to fetch remote image")
+}
+
+response, err := client.Files.Upload(context.TODO(), imagekit.FileUploadParams{
+	File:     resp.Body,
+	FileName: "remote-image.jpg",
+})
+
+// Upload from binary data
+imageData := []byte{/* your binary data */}
+response, err := client.Files.Upload(context.TODO(), imagekit.FileUploadParams{
+	File:     bytes.NewReader(imageData),
+	FileName: "binary-upload.jpg",
+})
+
+// Upload with custom content type
+response, err := client.Files.Upload(context.TODO(), imagekit.FileUploadParams{
+	File:     imagekit.NewFile(bytes.NewReader(imageData), "custom.jpg", "image/jpeg"),
+	FileName: "custom-upload.jpg",
+})
+```
+
+### Retries
+
+Certain errors will be automatically retried 2 times by default, with a short exponential backoff.
+We retry by default all connection errors, 408 Request Timeout, 409 Conflict, 429 Rate Limit,
+and >=500 Internal errors.
+
+You can use the `WithMaxRetries` option to configure or disable this:
+
+```go
+// Configure the default for all requests:
+client := imagekit.NewClient(
+	option.WithMaxRetries(0), // default is 2
+)
+
+// Override per-request:
+file, err := os.Open("/path/to/your/image.jpg")
+if err != nil {
+	panic(err.Error())
+}
+defer file.Close()
+
+client.Files.Upload(
+	context.TODO(),
+	imagekit.FileUploadParams{
+		File:     file,
+		FileName: "uploaded-image.jpg",
+	},
+	option.WithMaxRetries(5),
+)
+```
+
+### Accessing raw response data (e.g. response headers)
+
+You can access the raw HTTP response data by using the `option.WithResponseInto()` request option. This is useful when
+you need to examine response headers, status codes, or other details.
+
+```go
+// Create a variable to store the HTTP response
+var response *http.Response
+
+file, err := os.Open("/path/to/your/image.jpg")
+if err != nil {
+	panic(err.Error())
+}
+defer file.Close()
+
+response, err = client.Files.Upload(
+	context.TODO(),
+	imagekit.FileUploadParams{
+		File:     file,
+		FileName: "uploaded-image.jpg",
+	},
+	option.WithResponseInto(&response),
+)
+if err != nil {
+	// handle error
+}
+fmt.Printf("%+v\n", response)
+
+fmt.Printf("Status Code: %d\n", response.StatusCode)
+fmt.Printf("Headers: %+#v\n", response.Header)
+```
+
+### Making custom/undocumented requests
+
+This library is typed for convenient access to the documented API. If you need to access undocumented
+endpoints, params, or response properties, the library can still be used.
+
+#### Undocumented endpoints
+
+To make requests to undocumented endpoints, you can use `client.Get`, `client.Post`, and other HTTP verbs.
+`RequestOptions` on the client, such as retries, will be respected when making these requests.
+
+```go
+var (
+    // params can be an io.Reader, a []byte, an encoding/json serializable object,
+    // or a "…Params" struct defined in this library.
+    params map[string]any
+
+    // result can be an []byte, *http.Response, a encoding/json deserializable object,
+    // or a model defined in this library.
+    result *http.Response
+)
+err := client.Post(context.Background(), "/unspecified", params, &result)
+if err != nil {
+    …
+}
+```
+
+#### Undocumented request params
+
+To make requests using undocumented parameters, you may use either the `option.WithQuerySet()`
+or the `option.WithJSONSet()` methods.
+
+```go
+params := FooNewParams{
+    ID:   "id_xxxx",
+    Data: FooNewParamsData{
+        FirstName: imagekit.String("John"),
+    },
+}
+client.Foo.New(context.Background(), params, option.WithJSONSet("data.last_name", "Doe"))
+```
+
+#### Undocumented response properties
+
+To access undocumented response properties, you may either access the raw JSON of the response as a string
+with `result.JSON.RawJSON()`, or get the raw JSON of a particular field on the result with
+`result.JSON.Foo.Raw()`.
+
+Any fields that are not present on the response struct will be saved and can be accessed by `result.JSON.ExtraFields()` which returns the extra fields as a `map[string]Field`.
+
+### Middleware
+
+We provide `option.WithMiddleware` which applies the given
+middleware to requests.
+
+```go
+func Logger(req *http.Request, next option.MiddlewareNext) (res *http.Response, err error) {
+	// Before the request
+	start := time.Now()
+	LogReq(req)
+
+	// Forward the request to the next handler
+	res, err = next(req)
+
+	// Handle stuff after the request
+	end := time.Now()
+	LogRes(res, err, start - end)
+
+    return res, err
+}
+
+client := imagekit.NewClient(
+	option.WithMiddleware(Logger),
+)
+```
+
+When multiple middlewares are provided as variadic arguments, the middlewares
+are applied left to right. If `option.WithMiddleware` is given
+multiple times, for example first in the client then the method, the
+middleware in the client will run first and the middleware given in the method
+will run next.
+
+You may also replace the default `http.Client` with
+`option.WithHTTPClient(client)`. Only one http client is
+accepted (this overwrites any previous client) and receives requests after any
+middleware has been applied.
+
+## Semantic versioning
+
+This package generally follows [SemVer](https://semver.org/spec/v2.0.0.html) conventions, though certain backwards-incompatible changes may be released as minor versions:
+
+1. Changes to library internals which are technically public but not intended or documented for external use. _(Please open a GitHub issue to let us know if you are relying on such internals.)_
+2. Changes that we do not expect to impact the vast majority of users in practice.
+
+We take backwards-compatibility seriously and work hard to ensure you can rely on a smooth upgrade experience.
+
+We are keen for your feedback; please open an [issue](https://www.github.com/imagekit-developer/imagekit-go/issues) with questions, bugs, or suggestions.
+
+## Contributing
+
+See [the contributing documentation](./CONTRIBUTING.md).
