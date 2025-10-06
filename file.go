@@ -14,15 +14,15 @@ import (
 	"slices"
 	"time"
 
-	"github.com/imagekit-developer/imagekit-go/internal/apiform"
-	"github.com/imagekit-developer/imagekit-go/internal/apijson"
-	shimjson "github.com/imagekit-developer/imagekit-go/internal/encoding/json"
-	"github.com/imagekit-developer/imagekit-go/internal/requestconfig"
-	"github.com/imagekit-developer/imagekit-go/option"
-	"github.com/imagekit-developer/imagekit-go/packages/param"
-	"github.com/imagekit-developer/imagekit-go/packages/respjson"
-	"github.com/imagekit-developer/imagekit-go/shared"
-	"github.com/imagekit-developer/imagekit-go/shared/constant"
+	"github.com/imagekit-developer/imagekit-go/v2/internal/apiform"
+	"github.com/imagekit-developer/imagekit-go/v2/internal/apijson"
+	shimjson "github.com/imagekit-developer/imagekit-go/v2/internal/encoding/json"
+	"github.com/imagekit-developer/imagekit-go/v2/internal/requestconfig"
+	"github.com/imagekit-developer/imagekit-go/v2/option"
+	"github.com/imagekit-developer/imagekit-go/v2/packages/param"
+	"github.com/imagekit-developer/imagekit-go/v2/packages/respjson"
+	"github.com/imagekit-developer/imagekit-go/v2/shared"
+	"github.com/imagekit-developer/imagekit-go/v2/shared/constant"
 )
 
 // FileService contains methods and other services that help with interacting with

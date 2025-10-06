@@ -3,9 +3,9 @@
 package imagekit
 
 import (
-	"github.com/imagekit-developer/imagekit-go/internal/apierror"
-	"github.com/imagekit-developer/imagekit-go/packages/param"
-	"github.com/imagekit-developer/imagekit-go/shared"
+	"github.com/imagekit-developer/imagekit-go/v2/internal/apierror"
+	"github.com/imagekit-developer/imagekit-go/v2/packages/param"
+	"github.com/imagekit-developer/imagekit-go/v2/shared"
 )
 
 // aliased to make [param.APIUnion] private when embedding

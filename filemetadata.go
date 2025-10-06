@@ -10,9 +10,9 @@ import (
 	"net/url"
 	"slices"
 
-	"github.com/imagekit-developer/imagekit-go/internal/apiquery"
-	"github.com/imagekit-developer/imagekit-go/internal/requestconfig"
-	"github.com/imagekit-developer/imagekit-go/option"
+	"github.com/imagekit-developer/imagekit-go/v2/internal/apiquery"
+	"github.com/imagekit-developer/imagekit-go/v2/internal/requestconfig"
+	"github.com/imagekit-developer/imagekit-go/v2/option"
 )
 
 // FileMetadataService contains methods and other services that help with

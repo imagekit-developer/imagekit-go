@@ -1,7 +1,7 @@
 package apiquery
 
 import (
-	"github.com/imagekit-developer/imagekit-go/packages/param"
+	"github.com/imagekit-developer/imagekit-go/v2/packages/param"
 	"net/url"
 	"testing"
 	"time"

@@ -2,7 +2,7 @@ package apiform
 
 import (
 	"bytes"
-	"github.com/imagekit-developer/imagekit-go/packages/param"
+	"github.com/imagekit-developer/imagekit-go/v2/packages/param"
 	"io"
 	"mime/multipart"
 	"strings"

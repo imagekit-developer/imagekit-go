@@ -3,7 +3,7 @@
 package imagekit
 
 import (
-	"github.com/imagekit-developer/imagekit-go/option"
+	"github.com/imagekit-developer/imagekit-go/v2/option"
 )
 
 // AccountService contains methods and other services that help with interacting

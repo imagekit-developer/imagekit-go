@@ -18,10 +18,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/imagekit-developer/imagekit-go/internal"
-	"github.com/imagekit-developer/imagekit-go/internal/apierror"
-	"github.com/imagekit-developer/imagekit-go/internal/apiform"
-	"github.com/imagekit-developer/imagekit-go/internal/apiquery"
+	"github.com/imagekit-developer/imagekit-go/v2/internal"
+	"github.com/imagekit-developer/imagekit-go/v2/internal/apierror"
+	"github.com/imagekit-developer/imagekit-go/v2/internal/apiform"
+	"github.com/imagekit-developer/imagekit-go/v2/internal/apiquery"
 )
 
 func getDefaultHeaders() map[string]string {

@@ -2,7 +2,7 @@ package param
 
 import (
 	"encoding/json"
-	"github.com/imagekit-developer/imagekit-go/internal/encoding/json/sentinel"
+	"github.com/imagekit-developer/imagekit-go/v2/internal/encoding/json/sentinel"
 	"reflect"
 )
 

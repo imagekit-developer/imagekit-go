@@ -2,7 +2,7 @@
 
 <!-- x-release-please-start-version -->
 
-<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go"><img src="https://pkg.go.dev/badge/github.com/imagekit-developer/imagekit-go.svg" alt="Go Reference"></a>
+<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2"><img src="https://pkg.go.dev/badge/github.com/imagekit-developer/imagekit-go/v2.svg" alt="Go Reference"></a>
 
 <!-- x-release-please-end -->
 
@@ -15,7 +15,7 @@ from applications written in Go.
 
 ```go
 import (
-	"github.com/imagekit-developer/imagekit-go" // imported as imagekit
+	"github.com/imagekit-developer/imagekit-go/v2" // imported as imagekit
 )
 ```
 
@@ -26,7 +26,7 @@ Or to pin the version:
 <!-- x-release-please-start-version -->
 
 ```sh
-go get -u 'github.com/imagekit-developer/imagekit-go@v0.0.1'
+go get -u 'github.com/imagekit-developer/imagekit-go/v2@v2.0.0'
 ```
 
 <!-- x-release-please-end -->
@@ -48,8 +48,8 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/imagekit-developer/imagekit-go"
-	"github.com/imagekit-developer/imagekit-go/option"
+	"github.com/imagekit-developer/imagekit-go/v2"
+	"github.com/imagekit-developer/imagekit-go/v2/option"
 )
 
 func main() {
@@ -280,7 +280,7 @@ client.Files.Upload(context.TODO(), ...,
 
 The request option `option.WithDebugLog(nil)` may be helpful while debugging.
 
-See the [full list of request options](https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/option).
+See the [full list of request options](https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/option).
 
 ### Pagination
 

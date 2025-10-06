@@ -9,11 +9,11 @@ import (
 	"slices"
 	"time"
 
-	"github.com/imagekit-developer/imagekit-go/internal/apijson"
-	"github.com/imagekit-developer/imagekit-go/internal/requestconfig"
-	"github.com/imagekit-developer/imagekit-go/option"
-	"github.com/imagekit-developer/imagekit-go/packages/respjson"
-	"github.com/imagekit-developer/imagekit-go/shared/constant"
+	"github.com/imagekit-developer/imagekit-go/v2/internal/apijson"
+	"github.com/imagekit-developer/imagekit-go/v2/internal/requestconfig"
+	"github.com/imagekit-developer/imagekit-go/v2/option"
+	"github.com/imagekit-developer/imagekit-go/v2/packages/respjson"
+	"github.com/imagekit-developer/imagekit-go/v2/shared/constant"
 	standardwebhooks "github.com/standard-webhooks/standard-webhooks/libraries/go"
 )
 

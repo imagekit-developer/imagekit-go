@@ -3,8 +3,8 @@ package apijson_test
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/imagekit-developer/imagekit-go/internal/apijson"
-	"github.com/imagekit-developer/imagekit-go/packages/param"
+	"github.com/imagekit-developer/imagekit-go/v2/internal/apijson"
+	"github.com/imagekit-developer/imagekit-go/v2/packages/param"
 	"reflect"
 	"testing"
 )
