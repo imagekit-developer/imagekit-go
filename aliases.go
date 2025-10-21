@@ -17,28 +17,7 @@ type paramObj = param.APIObject
 type Error = apierror.Error
 
 // This is an alias to an internal type.
-type BaseOverlay = shared.BaseOverlay
-
-// Array of extensions to be applied to the asset. Each extension can be configured
-// with specific parameters based on the extension type.
-//
-// This is an alias to an internal type.
-type Extensions = shared.Extensions
-
-// This is an alias to an internal type.
-type ExtensionUnion = shared.ExtensionUnion
-
-// This is an alias to an internal type.
-type ExtensionRemoveBg = shared.ExtensionRemoveBg
-
-// This is an alias to an internal type.
-type ExtensionRemoveBgOptions = shared.ExtensionRemoveBgOptions
-
-// This is an alias to an internal type.
-type ExtensionAutoTagging = shared.ExtensionAutoTagging
-
-// This is an alias to an internal type.
-type ExtensionAIAutoDescription = shared.ExtensionAIAutoDescription
+type BaseOverlayParam = shared.BaseOverlayParam
 
 // Array of extensions to be applied to the asset. Each extension can be configured
 // with specific parameters based on the extension type.
@@ -66,10 +45,10 @@ type ExtensionAIAutoDescriptionParam = shared.ExtensionAIAutoDescriptionParam
 // support for responsive image generation with breakpoints.
 //
 // This is an alias to an internal type.
-type GetImageAttributesOptions = shared.GetImageAttributesOptions
+type GetImageAttributesOptionsParam = shared.GetImageAttributesOptionsParam
 
 // This is an alias to an internal type.
-type ImageOverlay = shared.ImageOverlay
+type ImageOverlayParam = shared.ImageOverlayParam
 
 // Specifies an overlay to be applied on the parent image or video. ImageKit
 // supports overlays including images, text, videos, subtitles, and solid colors.
@@ -77,10 +56,10 @@ type ImageOverlay = shared.ImageOverlay
 // [Overlay using layers](https://imagekit.io/docs/transformations#overlay-using-layers).
 //
 // This is an alias to an internal type.
-type OverlayUnion = shared.OverlayUnion
+type OverlayUnionParam = shared.OverlayUnionParam
 
 // This is an alias to an internal type.
-type OverlayPosition = shared.OverlayPosition
+type OverlayPositionParam = shared.OverlayPositionParam
 
 // Specifies the position of the overlay relative to the parent image or video.
 // Maps to `lfo` in the URL.
@@ -122,7 +101,7 @@ const OverlayPositionFocusBottomRight = shared.OverlayPositionFocusBottomRight
 // [Arithmetic expressions](https://imagekit.io/docs/arithmetic-expressions-in-transformations).
 //
 // This is an alias to an internal type.
-type OverlayPositionXUnion = shared.OverlayPositionXUnion
+type OverlayPositionXUnionParam = shared.OverlayPositionXUnionParam
 
 // Specifies the y-coordinate of the top-left corner of the base asset where the
 // overlay's top-left corner will be positioned. It also accepts arithmetic
@@ -131,10 +110,10 @@ type OverlayPositionXUnion = shared.OverlayPositionXUnion
 // [Arithmetic expressions](https://imagekit.io/docs/arithmetic-expressions-in-transformations).
 //
 // This is an alias to an internal type.
-type OverlayPositionYUnion = shared.OverlayPositionYUnion
+type OverlayPositionYUnionParam = shared.OverlayPositionYUnionParam
 
 // This is an alias to an internal type.
-type OverlayTiming = shared.OverlayTiming
+type OverlayTimingParam = shared.OverlayTimingParam
 
 // Specifies the duration (in seconds) during which the overlay should appear on
 // the base video. Accepts a positive number up to two decimal places (e.g., `20`
@@ -142,7 +121,7 @@ type OverlayTiming = shared.OverlayTiming
 // Applies only if the base asset is a video. Maps to `ldu` in the URL.
 //
 // This is an alias to an internal type.
-type OverlayTimingDurationUnion = shared.OverlayTimingDurationUnion
+type OverlayTimingDurationUnionParam = shared.OverlayTimingDurationUnionParam
 
 // Specifies the end time (in seconds) for when the overlay should disappear from
 // the base video. If both end and duration are provided, duration is ignored.
@@ -151,7 +130,7 @@ type OverlayTimingDurationUnion = shared.OverlayTimingDurationUnion
 // the base asset is a video. Maps to `leo` in the URL.
 //
 // This is an alias to an internal type.
-type OverlayTimingEndUnion = shared.OverlayTimingEndUnion
+type OverlayTimingEndUnionParam = shared.OverlayTimingEndUnionParam
 
 // Specifies the start time (in seconds) for when the overlay should appear on the
 // base video. Accepts a positive number up to two decimal places (e.g., `20` or
@@ -159,19 +138,19 @@ type OverlayTimingEndUnion = shared.OverlayTimingEndUnion
 // Applies only if the base asset is a video. Maps to `lso` in the URL.
 //
 // This is an alias to an internal type.
-type OverlayTimingStartUnion = shared.OverlayTimingStartUnion
+type OverlayTimingStartUnionParam = shared.OverlayTimingStartUnionParam
 
 // Resulting set of attributes suitable for an HTML `<img>` element. Useful for
 // enabling responsive image loading with `srcSet` and `sizes`.
 //
 // This is an alias to an internal type.
-type ResponsiveImageAttributes = shared.ResponsiveImageAttributes
+type ResponsiveImageAttributesParam = shared.ResponsiveImageAttributesParam
 
 // This is an alias to an internal type.
-type SolidColorOverlay = shared.SolidColorOverlay
+type SolidColorOverlayParam = shared.SolidColorOverlayParam
 
 // This is an alias to an internal type.
-type SolidColorOverlayTransformation = shared.SolidColorOverlayTransformation
+type SolidColorOverlayTransformationParam = shared.SolidColorOverlayTransformationParam
 
 // Creates a linear gradient with two colors. Pass `true` for a default gradient,
 // or provide a string for a custom gradient. Only works if the base asset is an
@@ -179,7 +158,7 @@ type SolidColorOverlayTransformation = shared.SolidColorOverlayTransformation
 // [gradient](https://imagekit.io/docs/effects-and-enhancements#gradient---e-gradient).
 //
 // This is an alias to an internal type.
-type SolidColorOverlayTransformationGradientUnion = shared.SolidColorOverlayTransformationGradientUnion
+type SolidColorOverlayTransformationGradientUnionParam = shared.SolidColorOverlayTransformationGradientUnionParam
 
 // This is an alias to an internal type.
 type SolidColorOverlayTransformationGradientBoolean = shared.SolidColorOverlayTransformationGradientBoolean
@@ -189,27 +168,27 @@ type SolidColorOverlayTransformationGradientBoolean = shared.SolidColorOverlayTr
 // [arithmetic expressions](https://imagekit.io/docs/arithmetic-expressions-in-transformations).
 //
 // This is an alias to an internal type.
-type SolidColorOverlayTransformationHeightUnion = shared.SolidColorOverlayTransformationHeightUnion
+type SolidColorOverlayTransformationHeightUnionParam = shared.SolidColorOverlayTransformationHeightUnionParam
 
 // Specifies the corner radius of the solid color overlay. Set to `max` for
 // circular or oval shape. See
 // [radius](https://imagekit.io/docs/effects-and-enhancements#radius---r).
 //
 // This is an alias to an internal type.
-type SolidColorOverlayTransformationRadiusUnion = shared.SolidColorOverlayTransformationRadiusUnion
+type SolidColorOverlayTransformationRadiusUnionParam = shared.SolidColorOverlayTransformationRadiusUnionParam
 
 // Controls the width of the solid color overlay. Accepts a numeric value or an
 // arithmetic expression (e.g., `bw_mul_0.2` or `bh_div_2`). Learn about
 // [arithmetic expressions](https://imagekit.io/docs/arithmetic-expressions-in-transformations).
 //
 // This is an alias to an internal type.
-type SolidColorOverlayTransformationWidthUnion = shared.SolidColorOverlayTransformationWidthUnion
+type SolidColorOverlayTransformationWidthUnionParam = shared.SolidColorOverlayTransformationWidthUnionParam
 
 // Options for generating ImageKit URLs with transformations. See the
 // [Transformations guide](https://imagekit.io/docs/transformations).
 //
 // This is an alias to an internal type.
-type SrcOptions = shared.SrcOptions
+type SrcOptionsParam = shared.SrcOptionsParam
 
 // Available streaming resolutions for
 // [adaptive bitrate streaming](https://imagekit.io/docs/adaptive-bitrate-streaming)
@@ -239,14 +218,14 @@ const StreamingResolution1440 = shared.StreamingResolution1440
 const StreamingResolution2160 = shared.StreamingResolution2160
 
 // This is an alias to an internal type.
-type SubtitleOverlay = shared.SubtitleOverlay
+type SubtitleOverlayParam = shared.SubtitleOverlayParam
 
 // Subtitle styling options.
 // [Learn more](https://imagekit.io/docs/add-overlays-on-videos#styling-controls-for-subtitles-layer)
 // from the docs.
 //
 // This is an alias to an internal type.
-type SubtitleOverlayTransformation = shared.SubtitleOverlayTransformation
+type SubtitleOverlayTransformationParam = shared.SubtitleOverlayTransformationParam
 
 // Sets the typography style of the subtitle text. Supports values are `b` for
 // bold, `i` for italics, and `b_i` for bold with italics.
@@ -266,10 +245,10 @@ const SubtitleOverlayTransformationTypographyI = shared.SubtitleOverlayTransform
 const SubtitleOverlayTransformationTypographyBI = shared.SubtitleOverlayTransformationTypographyBI
 
 // This is an alias to an internal type.
-type TextOverlay = shared.TextOverlay
+type TextOverlayParam = shared.TextOverlayParam
 
 // This is an alias to an internal type.
-type TextOverlayTransformation = shared.TextOverlayTransformation
+type TextOverlayTransformationParam = shared.TextOverlayTransformationParam
 
 // Flip the text overlay horizontally, vertically, or both.
 //
@@ -292,7 +271,7 @@ const TextOverlayTransformationFlipVH = shared.TextOverlayTransformationFlipVH
 // arithmetic expression.
 //
 // This is an alias to an internal type.
-type TextOverlayTransformationFontSizeUnion = shared.TextOverlayTransformationFontSizeUnion
+type TextOverlayTransformationFontSizeUnionParam = shared.TextOverlayTransformationFontSizeUnionParam
 
 // Specifies the inner alignment of the text when width is more than the text
 // length.
@@ -315,26 +294,26 @@ const TextOverlayTransformationInnerAlignmentCenter = shared.TextOverlayTransfor
 // such as `bw_mul_0.2`, or `bh_div_20`.
 //
 // This is an alias to an internal type.
-type TextOverlayTransformationLineHeightUnion = shared.TextOverlayTransformationLineHeightUnion
+type TextOverlayTransformationLineHeightUnionParam = shared.TextOverlayTransformationLineHeightUnionParam
 
 // Specifies the padding around the overlaid text. Can be provided as a single
 // positive integer or multiple values separated by underscores (following CSS
 // shorthand order). Arithmetic expressions are also accepted.
 //
 // This is an alias to an internal type.
-type TextOverlayTransformationPaddingUnion = shared.TextOverlayTransformationPaddingUnion
+type TextOverlayTransformationPaddingUnionParam = shared.TextOverlayTransformationPaddingUnionParam
 
 // Specifies the corner radius of the text overlay. Set to `max` to achieve a
 // circular or oval shape.
 //
 // This is an alias to an internal type.
-type TextOverlayTransformationRadiusUnion = shared.TextOverlayTransformationRadiusUnion
+type TextOverlayTransformationRadiusUnionParam = shared.TextOverlayTransformationRadiusUnionParam
 
 // Specifies the rotation angle of the text overlay. Accepts a numeric value for
 // clockwise rotation or a string prefixed with "N" for counter-clockwise rotation.
 //
 // This is an alias to an internal type.
-type TextOverlayTransformationRotationUnion = shared.TextOverlayTransformationRotationUnion
+type TextOverlayTransformationRotationUnionParam = shared.TextOverlayTransformationRotationUnionParam
 
 // Specifies the maximum width (in pixels) of the overlaid text. The text wraps
 // automatically, and arithmetic expressions (e.g., `bw_mul_0.2` or `bh_div_2`) are
@@ -342,7 +321,7 @@ type TextOverlayTransformationRotationUnion = shared.TextOverlayTransformationRo
 // [Arithmetic expressions](https://imagekit.io/docs/arithmetic-expressions-in-transformations).
 //
 // This is an alias to an internal type.
-type TextOverlayTransformationWidthUnion = shared.TextOverlayTransformationWidthUnion
+type TextOverlayTransformationWidthUnionParam = shared.TextOverlayTransformationWidthUnionParam
 
 // The SDK provides easy-to-use names for transformations. These names are
 // converted to the corresponding transformation string before being added to the
@@ -352,7 +331,7 @@ type TextOverlayTransformationWidthUnion = shared.TextOverlayTransformationWidth
 // [Transformations documentation](https://imagekit.io/docs/transformations).
 //
 // This is an alias to an internal type.
-type Transformation = shared.Transformation
+type TransformationParam = shared.TransformationParam
 
 // Adds an AI-based drop shadow around a foreground object on a transparent or
 // removed background. Optionally, control the direction, elevation, and saturation
@@ -362,7 +341,7 @@ type Transformation = shared.Transformation
 // [AI Drop Shadow](https://imagekit.io/docs/ai-transformations#ai-drop-shadow-e-dropshadow).
 //
 // This is an alias to an internal type.
-type TransformationAIDropShadowUnion = shared.TransformationAIDropShadowUnion
+type TransformationAIDropShadowUnionParam = shared.TransformationAIDropShadowUnionParam
 
 // This is an alias to an internal type.
 type TransformationAIDropShadowBoolean = shared.TransformationAIDropShadowBoolean
@@ -373,7 +352,7 @@ type TransformationAIDropShadowBoolean = shared.TransformationAIDropShadowBoolea
 // [Image resize and crop – Aspect ratio](https://imagekit.io/docs/image-resize-and-crop#aspect-ratio---ar).
 //
 // This is an alias to an internal type.
-type TransformationAspectRatioUnion = shared.TransformationAspectRatioUnion
+type TransformationAspectRatioUnionParam = shared.TransformationAspectRatioUnionParam
 
 // Specifies the audio codec, e.g., `aac`, `opus`, or `none`. See
 // [Audio codec](https://imagekit.io/docs/video-optimization#audio-codec---ac).
@@ -432,7 +411,7 @@ const TransformationCropModePadExtract = shared.TransformationCropModePadExtract
 // [Trim videos – Duration](https://imagekit.io/docs/trim-videos#duration---du).
 //
 // This is an alias to an internal type.
-type TransformationDurationUnion = shared.TransformationDurationUnion
+type TransformationDurationUnionParam = shared.TransformationDurationUnionParam
 
 // Specifies the end offset (in seconds) for trimming videos, e.g., `5` or `10.5`.
 // Typically used with startOffset to define a time window. Arithmetic expressions
@@ -440,7 +419,7 @@ type TransformationDurationUnion = shared.TransformationDurationUnion
 // [Trim videos – End offset](https://imagekit.io/docs/trim-videos#end-offset---eo).
 //
 // This is an alias to an internal type.
-type TransformationEndOffsetUnion = shared.TransformationEndOffsetUnion
+type TransformationEndOffsetUnionParam = shared.TransformationEndOffsetUnionParam
 
 // Flips or mirrors an image either horizontally, vertically, or both. Acceptable
 // values: `h` (horizontal), `v` (vertical), `h_v` (horizontal and vertical), or
@@ -510,7 +489,7 @@ const TransformationFormatOrig = shared.TransformationFormatOrig
 // [Gradient](https://imagekit.io/docs/effects-and-enhancements#gradient---e-gradient).
 //
 // This is an alias to an internal type.
-type TransformationGradientUnion = shared.TransformationGradientUnion
+type TransformationGradientUnionParam = shared.TransformationGradientUnionParam
 
 // This is an alias to an internal type.
 type TransformationGradientBoolean = shared.TransformationGradientBoolean
@@ -523,7 +502,7 @@ type TransformationGradientBoolean = shared.TransformationGradientBoolean
 // [Videos](https://imagekit.io/docs/video-resize-and-crop#height---h)
 //
 // This is an alias to an internal type.
-type TransformationHeightUnion = shared.TransformationHeightUnion
+type TransformationHeightUnionParam = shared.TransformationHeightUnionParam
 
 // Extracts a specific page or frame from multi-page or layered files (PDF, PSD,
 // AI). For example, specify by number (e.g., `2`), a range (e.g., `3-4` for the
@@ -531,14 +510,14 @@ type TransformationHeightUnion = shared.TransformationHeightUnion
 // [Thumbnail extraction](https://imagekit.io/docs/vector-and-animated-images#get-thumbnail-from-psd-pdf-ai-eps-and-animated-files).
 //
 // This is an alias to an internal type.
-type TransformationPageUnion = shared.TransformationPageUnion
+type TransformationPageUnionParam = shared.TransformationPageUnionParam
 
 // Specifies the corner radius for rounded corners (e.g., 20) or `max` for circular
 // or oval shape. See
 // [Radius](https://imagekit.io/docs/effects-and-enhancements#radius---r).
 //
 // This is an alias to an internal type.
-type TransformationRadiusUnion = shared.TransformationRadiusUnion
+type TransformationRadiusUnionParam = shared.TransformationRadiusUnionParam
 
 // Specifies the rotation angle in degrees. Positive values rotate the image
 // clockwise; you can also use, for example, `N40` for counterclockwise rotation or
@@ -547,7 +526,7 @@ type TransformationRadiusUnion = shared.TransformationRadiusUnion
 // [Rotate](https://imagekit.io/docs/effects-and-enhancements#rotate---rt).
 //
 // This is an alias to an internal type.
-type TransformationRotationUnion = shared.TransformationRotationUnion
+type TransformationRotationUnionParam = shared.TransformationRotationUnionParam
 
 // Adds a shadow beneath solid objects in an image with a transparent background.
 // For AI-based drop shadows, refer to aiDropShadow. Pass `true` for a default
@@ -555,7 +534,7 @@ type TransformationRotationUnion = shared.TransformationRotationUnion
 // [Shadow](https://imagekit.io/docs/effects-and-enhancements#shadow---e-shadow).
 //
 // This is an alias to an internal type.
-type TransformationShadowUnion = shared.TransformationShadowUnion
+type TransformationShadowUnionParam = shared.TransformationShadowUnionParam
 
 // This is an alias to an internal type.
 type TransformationShadowBoolean = shared.TransformationShadowBoolean
@@ -565,7 +544,7 @@ type TransformationShadowBoolean = shared.TransformationShadowBoolean
 // [Sharpen](https://imagekit.io/docs/effects-and-enhancements#sharpen---e-sharpen).
 //
 // This is an alias to an internal type.
-type TransformationSharpenUnion = shared.TransformationSharpenUnion
+type TransformationSharpenUnionParam = shared.TransformationSharpenUnionParam
 
 // This is an alias to an internal type.
 type TransformationSharpenBoolean = shared.TransformationSharpenBoolean
@@ -575,7 +554,7 @@ type TransformationSharpenBoolean = shared.TransformationSharpenBoolean
 // [Trim videos – Start offset](https://imagekit.io/docs/trim-videos#start-offset---so).
 //
 // This is an alias to an internal type.
-type TransformationStartOffsetUnion = shared.TransformationStartOffsetUnion
+type TransformationStartOffsetUnionParam = shared.TransformationStartOffsetUnionParam
 
 // Useful for images with a solid or nearly solid background and a central object.
 // This parameter trims the background, leaving only the central object in the
@@ -583,7 +562,7 @@ type TransformationStartOffsetUnion = shared.TransformationStartOffsetUnion
 // [Trim edges](https://imagekit.io/docs/effects-and-enhancements#trim-edges---t).
 //
 // This is an alias to an internal type.
-type TransformationTrimUnion = shared.TransformationTrimUnion
+type TransformationTrimUnionParam = shared.TransformationTrimUnionParam
 
 // This is an alias to an internal type.
 type TransformationTrimBoolean = shared.TransformationTrimBoolean
@@ -593,7 +572,7 @@ type TransformationTrimBoolean = shared.TransformationTrimBoolean
 // [Unsharp Mask](https://imagekit.io/docs/effects-and-enhancements#unsharp-mask---e-usm).
 //
 // This is an alias to an internal type.
-type TransformationUnsharpMaskUnion = shared.TransformationUnsharpMaskUnion
+type TransformationUnsharpMaskUnionParam = shared.TransformationUnsharpMaskUnionParam
 
 // This is an alias to an internal type.
 type TransformationUnsharpMaskBoolean = shared.TransformationUnsharpMaskBoolean
@@ -623,31 +602,31 @@ const TransformationVideoCodecNone = shared.TransformationVideoCodecNone
 // [Videos](https://imagekit.io/docs/video-resize-and-crop#width---w)
 //
 // This is an alias to an internal type.
-type TransformationWidthUnion = shared.TransformationWidthUnion
+type TransformationWidthUnionParam = shared.TransformationWidthUnionParam
 
 // Focus using cropped image coordinates - X coordinate. See
 // [Focus using cropped coordinates](https://imagekit.io/docs/image-resize-and-crop#example---focus-using-cropped-image-coordinates).
 //
 // This is an alias to an internal type.
-type TransformationXUnion = shared.TransformationXUnion
+type TransformationXUnionParam = shared.TransformationXUnionParam
 
 // Focus using cropped image coordinates - X center coordinate. See
 // [Focus using cropped coordinates](https://imagekit.io/docs/image-resize-and-crop#example---focus-using-cropped-image-coordinates).
 //
 // This is an alias to an internal type.
-type TransformationXCenterUnion = shared.TransformationXCenterUnion
+type TransformationXCenterUnionParam = shared.TransformationXCenterUnionParam
 
 // Focus using cropped image coordinates - Y coordinate. See
 // [Focus using cropped coordinates](https://imagekit.io/docs/image-resize-and-crop#example---focus-using-cropped-image-coordinates).
 //
 // This is an alias to an internal type.
-type TransformationYUnion = shared.TransformationYUnion
+type TransformationYUnionParam = shared.TransformationYUnionParam
 
 // Focus using cropped image coordinates - Y center coordinate. See
 // [Focus using cropped coordinates](https://imagekit.io/docs/image-resize-and-crop#example---focus-using-cropped-image-coordinates).
 //
 // This is an alias to an internal type.
-type TransformationYCenterUnion = shared.TransformationYCenterUnion
+type TransformationYCenterUnionParam = shared.TransformationYCenterUnionParam
 
 // By default, the transformation string is added as a query parameter in the URL,
 // e.g., `?tr=w-100,h-100`. If you want to add the transformation string in the
@@ -664,4 +643,4 @@ const TransformationPositionPath = shared.TransformationPositionPath
 const TransformationPositionQuery = shared.TransformationPositionQuery
 
 // This is an alias to an internal type.
-type VideoOverlay = shared.VideoOverlay
+type VideoOverlayParam = shared.VideoOverlayParam

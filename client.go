@@ -18,6 +18,7 @@ import (
 // directly, and instead use the [NewClient] method instead.
 type Client struct {
 	Options              []option.RequestOption
+	Dummy                DummyService
 	CustomMetadataFields CustomMetadataFieldService
 	Files                FileService
 	Assets               AssetService
@@ -60,6 +61,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 
 	r = Client{Options: opts}
 
+	r.Dummy = NewDummyService(opts...)
 	r.CustomMetadataFields = NewCustomMetadataFieldService(opts...)
 	r.Files = NewFileService(opts...)
 	r.Assets = NewAssetService(opts...)
