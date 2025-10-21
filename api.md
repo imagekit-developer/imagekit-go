@@ -1,22 +1,28 @@
 # Shared Params Types
 
-- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#BaseOverlayParam">BaseOverlayParam</a>
 - <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#ExtensionsParam">ExtensionsParam</a>
-- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#ImageOverlayParam">ImageOverlayParam</a>
-- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#OverlayUnionParam">OverlayUnionParam</a>
-- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#OverlayPositionParam">OverlayPositionParam</a>
-- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#OverlayTimingParam">OverlayTimingParam</a>
-- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#SolidColorOverlayParam">SolidColorOverlayParam</a>
-- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#SolidColorOverlayTransformationParam">SolidColorOverlayTransformationParam</a>
-- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#SrcOptionsParam">SrcOptionsParam</a>
+
+# Shared Response Types
+
+- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#BaseOverlay">BaseOverlay</a>
+- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#Extensions">Extensions</a>
+- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#GetImageAttributesOptions">GetImageAttributesOptions</a>
+- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#ImageOverlay">ImageOverlay</a>
+- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#OverlayUnion">OverlayUnion</a>
+- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#OverlayPosition">OverlayPosition</a>
+- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#OverlayTiming">OverlayTiming</a>
+- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#ResponsiveImageAttributes">ResponsiveImageAttributes</a>
+- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#SolidColorOverlay">SolidColorOverlay</a>
+- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#SolidColorOverlayTransformation">SolidColorOverlayTransformation</a>
+- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#SrcOptions">SrcOptions</a>
 - <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#StreamingResolution">StreamingResolution</a>
-- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#SubtitleOverlayParam">SubtitleOverlayParam</a>
-- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#SubtitleOverlayTransformationParam">SubtitleOverlayTransformationParam</a>
-- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#TextOverlayParam">TextOverlayParam</a>
-- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#TextOverlayTransformationParam">TextOverlayTransformationParam</a>
-- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#TransformationParam">TransformationParam</a>
+- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#SubtitleOverlay">SubtitleOverlay</a>
+- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#SubtitleOverlayTransformation">SubtitleOverlayTransformation</a>
+- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#TextOverlay">TextOverlay</a>
+- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#TextOverlayTransformation">TextOverlayTransformation</a>
+- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#Transformation">Transformation</a>
 - <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#TransformationPosition">TransformationPosition</a>
-- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#VideoOverlayParam">VideoOverlayParam</a>
+- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#VideoOverlay">VideoOverlay</a>
 
 # CustomMetadataFields
 
