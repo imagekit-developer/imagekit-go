@@ -38,7 +38,7 @@ func NewDummyService(opts ...option.RequestOption) (r DummyService) {
 // and is not intended for public consumption.
 func (r *DummyService) New(ctx context.Context, body DummyNewParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := "v1/dummy/test"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
 	return
