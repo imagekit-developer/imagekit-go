@@ -1550,13 +1550,16 @@ func (r *VideoTransformationReadyEventTimings) UnmarshalJSON(data []byte) error 
 // [UploadPreTransformErrorEvent], [UploadPostTransformSuccessEvent],
 // [UploadPostTransformErrorEvent].
 //
+// Use the [UnsafeUnwrapWebhookEventUnion.AsAny] method to switch on the variant.
+//
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type UnsafeUnwrapWebhookEventUnion struct {
 	// This field is from variant [VideoTransformationAcceptedEvent],
 	// [VideoTransformationReadyEvent], [VideoTransformationErrorEvent],
 	// [UploadPreTransformSuccessEvent], [UploadPreTransformErrorEvent],
 	// [UploadPostTransformSuccessEvent], [UploadPostTransformErrorEvent].
-	ID        string    `json:"id"`
+	ID string `json:"id"`
+	// Any of nil, nil, nil, nil, nil, nil, nil.
 	Type      string    `json:"type"`
 	CreatedAt time.Time `json:"created_at"`
 	// This field is a union of [VideoTransformationAcceptedEventData],
@@ -1888,13 +1891,16 @@ func (r *UnsafeUnwrapWebhookEventUnionRequestTransformation) UnmarshalJSON(data 
 // [UploadPreTransformErrorEvent], [UploadPostTransformSuccessEvent],
 // [UploadPostTransformErrorEvent].
 //
+// Use the [UnwrapWebhookEventUnion.AsAny] method to switch on the variant.
+//
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type UnwrapWebhookEventUnion struct {
 	// This field is from variant [VideoTransformationAcceptedEvent],
 	// [VideoTransformationReadyEvent], [VideoTransformationErrorEvent],
 	// [UploadPreTransformSuccessEvent], [UploadPreTransformErrorEvent],
 	// [UploadPostTransformSuccessEvent], [UploadPostTransformErrorEvent].
-	ID        string    `json:"id"`
+	ID string `json:"id"`
+	// Any of nil, nil, nil, nil, nil, nil, nil.
 	Type      string    `json:"type"`
 	CreatedAt time.Time `json:"created_at"`
 	// This field is a union of [VideoTransformationAcceptedEventData],
