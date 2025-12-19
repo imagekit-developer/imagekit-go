@@ -233,8 +233,11 @@ type GetImageAttributesOptionsParam struct {
 }
 
 func (r GetImageAttributesOptionsParam) MarshalJSON() (data []byte, err error) {
-	type shadow GetImageAttributesOptionsParam
-	return param.MarshalObject(r, (*shadow)(&r))
+	type shadow struct {
+		*GetImageAttributesOptionsParam
+		MarshalJSON bool `json:"-"` // Prevent inheriting [json.Marshaler] from the embedded field
+	}
+	return param.MarshalObject(r, shadow{&r, false})
 }
 
 type ImageOverlayParam struct {
@@ -257,8 +260,11 @@ type ImageOverlayParam struct {
 }
 
 func (r ImageOverlayParam) MarshalJSON() (data []byte, err error) {
-	type shadow ImageOverlayParam
-	return param.MarshalObject(r, (*shadow)(&r))
+	type shadow struct {
+		*ImageOverlayParam
+		MarshalJSON bool `json:"-"` // Prevent inheriting [json.Marshaler] from the embedded field
+	}
+	return param.MarshalObject(r, shadow{&r, false})
 }
 
 func OverlayParamOfText(text string) OverlayUnionParam {
@@ -707,8 +713,11 @@ type SolidColorOverlayParam struct {
 }
 
 func (r SolidColorOverlayParam) MarshalJSON() (data []byte, err error) {
-	type shadow SolidColorOverlayParam
-	return param.MarshalObject(r, (*shadow)(&r))
+	type shadow struct {
+		*SolidColorOverlayParam
+		MarshalJSON bool `json:"-"` // Prevent inheriting [json.Marshaler] from the embedded field
+	}
+	return param.MarshalObject(r, shadow{&r, false})
 }
 
 type SolidColorOverlayTransformationParam struct {
@@ -941,8 +950,11 @@ type SubtitleOverlayParam struct {
 }
 
 func (r SubtitleOverlayParam) MarshalJSON() (data []byte, err error) {
-	type shadow SubtitleOverlayParam
-	return param.MarshalObject(r, (*shadow)(&r))
+	type shadow struct {
+		*SubtitleOverlayParam
+		MarshalJSON bool `json:"-"` // Prevent inheriting [json.Marshaler] from the embedded field
+	}
+	return param.MarshalObject(r, shadow{&r, false})
 }
 
 // Subtitle styling options.
@@ -1031,8 +1043,11 @@ type TextOverlayParam struct {
 }
 
 func (r TextOverlayParam) MarshalJSON() (data []byte, err error) {
-	type shadow TextOverlayParam
-	return param.MarshalObject(r, (*shadow)(&r))
+	type shadow struct {
+		*TextOverlayParam
+		MarshalJSON bool `json:"-"` // Prevent inheriting [json.Marshaler] from the embedded field
+	}
+	return param.MarshalObject(r, shadow{&r, false})
 }
 
 type TextOverlayTransformationParam struct {
@@ -2201,6 +2216,9 @@ type VideoOverlayParam struct {
 }
 
 func (r VideoOverlayParam) MarshalJSON() (data []byte, err error) {
-	type shadow VideoOverlayParam
-	return param.MarshalObject(r, (*shadow)(&r))
+	type shadow struct {
+		*VideoOverlayParam
+		MarshalJSON bool `json:"-"` // Prevent inheriting [json.Marshaler] from the embedded field
+	}
+	return param.MarshalObject(r, shadow{&r, false})
 }
