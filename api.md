@@ -27,11 +27,6 @@
 - <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#ExtensionConfigUnion">ExtensionConfigUnion</a>
 - <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#SavedExtension">SavedExtension</a>
 
-# Dummy
-
-Methods:
-
-- <code title="post /v1/dummy/test">client.Dummy.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#DummyService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2">imagekit</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#DummyNewParams">DummyNewParams</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
 
 # CustomMetadataFields
 
