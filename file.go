@@ -1035,6 +1035,8 @@ type FileUpdateResponseExtensionStatus struct {
 	// Any of "success", "pending", "failed".
 	AIAutoDescription string `json:"ai-auto-description"`
 	// Any of "success", "pending", "failed".
+	AITasks string `json:"ai-tasks"`
+	// Any of "success", "pending", "failed".
 	AwsAutoTagging string `json:"aws-auto-tagging"`
 	// Any of "success", "pending", "failed".
 	GoogleAutoTagging string `json:"google-auto-tagging"`
@@ -1043,6 +1045,7 @@ type FileUpdateResponseExtensionStatus struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AIAutoDescription respjson.Field
+		AITasks           respjson.Field
 		AwsAutoTagging    respjson.Field
 		GoogleAutoTagging respjson.Field
 		RemoveBg          respjson.Field
@@ -1264,6 +1267,8 @@ type FileUploadResponseExtensionStatus struct {
 	// Any of "success", "pending", "failed".
 	AIAutoDescription string `json:"ai-auto-description"`
 	// Any of "success", "pending", "failed".
+	AITasks string `json:"ai-tasks"`
+	// Any of "success", "pending", "failed".
 	AwsAutoTagging string `json:"aws-auto-tagging"`
 	// Any of "success", "pending", "failed".
 	GoogleAutoTagging string `json:"google-auto-tagging"`
@@ -1272,6 +1277,7 @@ type FileUploadResponseExtensionStatus struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AIAutoDescription respjson.Field
+		AITasks           respjson.Field
 		AwsAutoTagging    respjson.Field
 		GoogleAutoTagging respjson.Field
 		RemoveBg          respjson.Field
