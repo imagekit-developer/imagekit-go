@@ -19,6 +19,234 @@ type Error = apierror.Error
 // This is an alias to an internal type.
 type BaseOverlayParam = shared.BaseOverlayParam
 
+// Controls how the layer blends with the base image or underlying content. Maps to
+// `lm` in the URL. By default, layers completely cover the base image beneath
+// them. Layer modes change this behavior:
+//
+//   - `multiply`: Multiplies the pixel values of the layer with the base image. The
+//     result is always darker than the original images. This is ideal for applying
+//     shadows or color tints.
+//   - `displace`: Uses the layer as a displacement map to distort pixels in the base
+//     image. The red channel controls horizontal displacement, and the green channel
+//     controls vertical displacement. Requires `x` or `y` parameter to control
+//     displacement magnitude.
+//   - `cutout`: Acts as an inverse mask where opaque areas of the layer turn the
+//     base image transparent, while transparent areas leave the base image
+//     unchanged. This mode functions like a hole-punch, effectively cutting the
+//     shape of the layer out of the underlying image.
+//   - `cutter`: Acts as a shape mask where only the parts of the base image that
+//     fall inside the opaque area of the layer are preserved. This mode functions
+//     like a cookie-cutter, trimming the base image to match the specific dimensions
+//     and shape of the layer. See
+//     [Layer modes](https://imagekit.io/docs/add-overlays-on-images#layer-modes).
+//
+// This is an alias to an internal type.
+type BaseOverlayLayerMode = shared.BaseOverlayLayerMode
+
+// Equals "multiply"
+const BaseOverlayLayerModeMultiply = shared.BaseOverlayLayerModeMultiply
+
+// Equals "cutter"
+const BaseOverlayLayerModeCutter = shared.BaseOverlayLayerModeCutter
+
+// Equals "cutout"
+const BaseOverlayLayerModeCutout = shared.BaseOverlayLayerModeCutout
+
+// Equals "displace"
+const BaseOverlayLayerModeDisplace = shared.BaseOverlayLayerModeDisplace
+
+// Configuration object for an extension (base extensions only, not saved extension
+// references).
+//
+// This is an alias to an internal type.
+type ExtensionConfigUnion = shared.ExtensionConfigUnion
+
+// This is an alias to an internal type.
+type ExtensionConfigRemoveBg = shared.ExtensionConfigRemoveBg
+
+// This is an alias to an internal type.
+type ExtensionConfigRemoveBgOptions = shared.ExtensionConfigRemoveBgOptions
+
+// This is an alias to an internal type.
+type ExtensionConfigAutoTagging = shared.ExtensionConfigAutoTagging
+
+// This is an alias to an internal type.
+type ExtensionConfigAIAutoDescription = shared.ExtensionConfigAIAutoDescription
+
+// This is an alias to an internal type.
+type ExtensionConfigAITasks = shared.ExtensionConfigAITasks
+
+// This is an alias to an internal type.
+type ExtensionConfigAITasksTaskUnion = shared.ExtensionConfigAITasksTaskUnion
+
+// This is an alias to an internal type.
+type ExtensionConfigAITasksTaskSelectTags = shared.ExtensionConfigAITasksTaskSelectTags
+
+// This is an alias to an internal type.
+type ExtensionConfigAITasksTaskSelectMetadata = shared.ExtensionConfigAITasksTaskSelectMetadata
+
+// This is an alias to an internal type.
+type ExtensionConfigAITasksTaskSelectMetadataVocabularyUnion = shared.ExtensionConfigAITasksTaskSelectMetadataVocabularyUnion
+
+// This is an alias to an internal type.
+type ExtensionConfigAITasksTaskYesNo = shared.ExtensionConfigAITasksTaskYesNo
+
+// Actions to execute if the AI answers no.
+//
+// This is an alias to an internal type.
+type ExtensionConfigAITasksTaskYesNoOnNo = shared.ExtensionConfigAITasksTaskYesNoOnNo
+
+// This is an alias to an internal type.
+type ExtensionConfigAITasksTaskYesNoOnNoSetMetadata = shared.ExtensionConfigAITasksTaskYesNoOnNoSetMetadata
+
+// Value to set for the custom metadata field. The value type should match the
+// custom metadata field type.
+//
+// This is an alias to an internal type.
+type ExtensionConfigAITasksTaskYesNoOnNoSetMetadataValueUnion = shared.ExtensionConfigAITasksTaskYesNoOnNoSetMetadataValueUnion
+
+// This is an alias to an internal type.
+type ExtensionConfigAITasksTaskYesNoOnNoSetMetadataValueMixedItemUnion = shared.ExtensionConfigAITasksTaskYesNoOnNoSetMetadataValueMixedItemUnion
+
+// This is an alias to an internal type.
+type ExtensionConfigAITasksTaskYesNoOnNoUnsetMetadata = shared.ExtensionConfigAITasksTaskYesNoOnNoUnsetMetadata
+
+// Actions to execute if the AI cannot determine the answer.
+//
+// This is an alias to an internal type.
+type ExtensionConfigAITasksTaskYesNoOnUnknown = shared.ExtensionConfigAITasksTaskYesNoOnUnknown
+
+// This is an alias to an internal type.
+type ExtensionConfigAITasksTaskYesNoOnUnknownSetMetadata = shared.ExtensionConfigAITasksTaskYesNoOnUnknownSetMetadata
+
+// Value to set for the custom metadata field. The value type should match the
+// custom metadata field type.
+//
+// This is an alias to an internal type.
+type ExtensionConfigAITasksTaskYesNoOnUnknownSetMetadataValueUnion = shared.ExtensionConfigAITasksTaskYesNoOnUnknownSetMetadataValueUnion
+
+// This is an alias to an internal type.
+type ExtensionConfigAITasksTaskYesNoOnUnknownSetMetadataValueMixedItemUnion = shared.ExtensionConfigAITasksTaskYesNoOnUnknownSetMetadataValueMixedItemUnion
+
+// This is an alias to an internal type.
+type ExtensionConfigAITasksTaskYesNoOnUnknownUnsetMetadata = shared.ExtensionConfigAITasksTaskYesNoOnUnknownUnsetMetadata
+
+// Actions to execute if the AI answers yes.
+//
+// This is an alias to an internal type.
+type ExtensionConfigAITasksTaskYesNoOnYes = shared.ExtensionConfigAITasksTaskYesNoOnYes
+
+// This is an alias to an internal type.
+type ExtensionConfigAITasksTaskYesNoOnYesSetMetadata = shared.ExtensionConfigAITasksTaskYesNoOnYesSetMetadata
+
+// Value to set for the custom metadata field. The value type should match the
+// custom metadata field type.
+//
+// This is an alias to an internal type.
+type ExtensionConfigAITasksTaskYesNoOnYesSetMetadataValueUnion = shared.ExtensionConfigAITasksTaskYesNoOnYesSetMetadataValueUnion
+
+// This is an alias to an internal type.
+type ExtensionConfigAITasksTaskYesNoOnYesSetMetadataValueMixedItemUnion = shared.ExtensionConfigAITasksTaskYesNoOnYesSetMetadataValueMixedItemUnion
+
+// This is an alias to an internal type.
+type ExtensionConfigAITasksTaskYesNoOnYesUnsetMetadata = shared.ExtensionConfigAITasksTaskYesNoOnYesUnsetMetadata
+
+// Configuration object for an extension (base extensions only, not saved extension
+// references).
+//
+// This is an alias to an internal type.
+type ExtensionConfigUnionParam = shared.ExtensionConfigUnionParam
+
+// This is an alias to an internal type.
+type ExtensionConfigRemoveBgParam = shared.ExtensionConfigRemoveBgParam
+
+// This is an alias to an internal type.
+type ExtensionConfigRemoveBgOptionsParam = shared.ExtensionConfigRemoveBgOptionsParam
+
+// This is an alias to an internal type.
+type ExtensionConfigAutoTaggingParam = shared.ExtensionConfigAutoTaggingParam
+
+// This is an alias to an internal type.
+type ExtensionConfigAIAutoDescriptionParam = shared.ExtensionConfigAIAutoDescriptionParam
+
+// This is an alias to an internal type.
+type ExtensionConfigAITasksParam = shared.ExtensionConfigAITasksParam
+
+// This is an alias to an internal type.
+type ExtensionConfigAITasksTaskUnionParam = shared.ExtensionConfigAITasksTaskUnionParam
+
+// This is an alias to an internal type.
+type ExtensionConfigAITasksTaskSelectTagsParam = shared.ExtensionConfigAITasksTaskSelectTagsParam
+
+// This is an alias to an internal type.
+type ExtensionConfigAITasksTaskSelectMetadataParam = shared.ExtensionConfigAITasksTaskSelectMetadataParam
+
+// This is an alias to an internal type.
+type ExtensionConfigAITasksTaskSelectMetadataVocabularyUnionParam = shared.ExtensionConfigAITasksTaskSelectMetadataVocabularyUnionParam
+
+// This is an alias to an internal type.
+type ExtensionConfigAITasksTaskYesNoParam = shared.ExtensionConfigAITasksTaskYesNoParam
+
+// Actions to execute if the AI answers no.
+//
+// This is an alias to an internal type.
+type ExtensionConfigAITasksTaskYesNoOnNoParam = shared.ExtensionConfigAITasksTaskYesNoOnNoParam
+
+// This is an alias to an internal type.
+type ExtensionConfigAITasksTaskYesNoOnNoSetMetadataParam = shared.ExtensionConfigAITasksTaskYesNoOnNoSetMetadataParam
+
+// Value to set for the custom metadata field. The value type should match the
+// custom metadata field type.
+//
+// This is an alias to an internal type.
+type ExtensionConfigAITasksTaskYesNoOnNoSetMetadataValueUnionParam = shared.ExtensionConfigAITasksTaskYesNoOnNoSetMetadataValueUnionParam
+
+// This is an alias to an internal type.
+type ExtensionConfigAITasksTaskYesNoOnNoSetMetadataValueMixedItemUnionParam = shared.ExtensionConfigAITasksTaskYesNoOnNoSetMetadataValueMixedItemUnionParam
+
+// This is an alias to an internal type.
+type ExtensionConfigAITasksTaskYesNoOnNoUnsetMetadataParam = shared.ExtensionConfigAITasksTaskYesNoOnNoUnsetMetadataParam
+
+// Actions to execute if the AI cannot determine the answer.
+//
+// This is an alias to an internal type.
+type ExtensionConfigAITasksTaskYesNoOnUnknownParam = shared.ExtensionConfigAITasksTaskYesNoOnUnknownParam
+
+// This is an alias to an internal type.
+type ExtensionConfigAITasksTaskYesNoOnUnknownSetMetadataParam = shared.ExtensionConfigAITasksTaskYesNoOnUnknownSetMetadataParam
+
+// Value to set for the custom metadata field. The value type should match the
+// custom metadata field type.
+//
+// This is an alias to an internal type.
+type ExtensionConfigAITasksTaskYesNoOnUnknownSetMetadataValueUnionParam = shared.ExtensionConfigAITasksTaskYesNoOnUnknownSetMetadataValueUnionParam
+
+// This is an alias to an internal type.
+type ExtensionConfigAITasksTaskYesNoOnUnknownSetMetadataValueMixedItemUnionParam = shared.ExtensionConfigAITasksTaskYesNoOnUnknownSetMetadataValueMixedItemUnionParam
+
+// This is an alias to an internal type.
+type ExtensionConfigAITasksTaskYesNoOnUnknownUnsetMetadataParam = shared.ExtensionConfigAITasksTaskYesNoOnUnknownUnsetMetadataParam
+
+// Actions to execute if the AI answers yes.
+//
+// This is an alias to an internal type.
+type ExtensionConfigAITasksTaskYesNoOnYesParam = shared.ExtensionConfigAITasksTaskYesNoOnYesParam
+
+// This is an alias to an internal type.
+type ExtensionConfigAITasksTaskYesNoOnYesSetMetadataParam = shared.ExtensionConfigAITasksTaskYesNoOnYesSetMetadataParam
+
+// Value to set for the custom metadata field. The value type should match the
+// custom metadata field type.
+//
+// This is an alias to an internal type.
+type ExtensionConfigAITasksTaskYesNoOnYesSetMetadataValueUnionParam = shared.ExtensionConfigAITasksTaskYesNoOnYesSetMetadataValueUnionParam
+
+// This is an alias to an internal type.
+type ExtensionConfigAITasksTaskYesNoOnYesSetMetadataValueMixedItemUnionParam = shared.ExtensionConfigAITasksTaskYesNoOnYesSetMetadataValueMixedItemUnionParam
+
+// This is an alias to an internal type.
+type ExtensionConfigAITasksTaskYesNoOnYesUnsetMetadataParam = shared.ExtensionConfigAITasksTaskYesNoOnYesUnsetMetadataParam
+
 // Array of extensions to be applied to the asset. Each extension can be configured
 // with specific parameters based on the extension type.
 //
@@ -39,6 +267,87 @@ type ExtensionAutoTaggingParam = shared.ExtensionAutoTaggingParam
 
 // This is an alias to an internal type.
 type ExtensionAIAutoDescriptionParam = shared.ExtensionAIAutoDescriptionParam
+
+// This is an alias to an internal type.
+type ExtensionAITasksParam = shared.ExtensionAITasksParam
+
+// This is an alias to an internal type.
+type ExtensionAITasksTaskUnionParam = shared.ExtensionAITasksTaskUnionParam
+
+// This is an alias to an internal type.
+type ExtensionAITasksTaskSelectTagsParam = shared.ExtensionAITasksTaskSelectTagsParam
+
+// This is an alias to an internal type.
+type ExtensionAITasksTaskSelectMetadataParam = shared.ExtensionAITasksTaskSelectMetadataParam
+
+// This is an alias to an internal type.
+type ExtensionAITasksTaskSelectMetadataVocabularyUnionParam = shared.ExtensionAITasksTaskSelectMetadataVocabularyUnionParam
+
+// This is an alias to an internal type.
+type ExtensionAITasksTaskYesNoParam = shared.ExtensionAITasksTaskYesNoParam
+
+// Actions to execute if the AI answers no.
+//
+// This is an alias to an internal type.
+type ExtensionAITasksTaskYesNoOnNoParam = shared.ExtensionAITasksTaskYesNoOnNoParam
+
+// This is an alias to an internal type.
+type ExtensionAITasksTaskYesNoOnNoSetMetadataParam = shared.ExtensionAITasksTaskYesNoOnNoSetMetadataParam
+
+// Value to set for the custom metadata field. The value type should match the
+// custom metadata field type.
+//
+// This is an alias to an internal type.
+type ExtensionAITasksTaskYesNoOnNoSetMetadataValueUnionParam = shared.ExtensionAITasksTaskYesNoOnNoSetMetadataValueUnionParam
+
+// This is an alias to an internal type.
+type ExtensionAITasksTaskYesNoOnNoSetMetadataValueMixedItemUnionParam = shared.ExtensionAITasksTaskYesNoOnNoSetMetadataValueMixedItemUnionParam
+
+// This is an alias to an internal type.
+type ExtensionAITasksTaskYesNoOnNoUnsetMetadataParam = shared.ExtensionAITasksTaskYesNoOnNoUnsetMetadataParam
+
+// Actions to execute if the AI cannot determine the answer.
+//
+// This is an alias to an internal type.
+type ExtensionAITasksTaskYesNoOnUnknownParam = shared.ExtensionAITasksTaskYesNoOnUnknownParam
+
+// This is an alias to an internal type.
+type ExtensionAITasksTaskYesNoOnUnknownSetMetadataParam = shared.ExtensionAITasksTaskYesNoOnUnknownSetMetadataParam
+
+// Value to set for the custom metadata field. The value type should match the
+// custom metadata field type.
+//
+// This is an alias to an internal type.
+type ExtensionAITasksTaskYesNoOnUnknownSetMetadataValueUnionParam = shared.ExtensionAITasksTaskYesNoOnUnknownSetMetadataValueUnionParam
+
+// This is an alias to an internal type.
+type ExtensionAITasksTaskYesNoOnUnknownSetMetadataValueMixedItemUnionParam = shared.ExtensionAITasksTaskYesNoOnUnknownSetMetadataValueMixedItemUnionParam
+
+// This is an alias to an internal type.
+type ExtensionAITasksTaskYesNoOnUnknownUnsetMetadataParam = shared.ExtensionAITasksTaskYesNoOnUnknownUnsetMetadataParam
+
+// Actions to execute if the AI answers yes.
+//
+// This is an alias to an internal type.
+type ExtensionAITasksTaskYesNoOnYesParam = shared.ExtensionAITasksTaskYesNoOnYesParam
+
+// This is an alias to an internal type.
+type ExtensionAITasksTaskYesNoOnYesSetMetadataParam = shared.ExtensionAITasksTaskYesNoOnYesSetMetadataParam
+
+// Value to set for the custom metadata field. The value type should match the
+// custom metadata field type.
+//
+// This is an alias to an internal type.
+type ExtensionAITasksTaskYesNoOnYesSetMetadataValueUnionParam = shared.ExtensionAITasksTaskYesNoOnYesSetMetadataValueUnionParam
+
+// This is an alias to an internal type.
+type ExtensionAITasksTaskYesNoOnYesSetMetadataValueMixedItemUnionParam = shared.ExtensionAITasksTaskYesNoOnYesSetMetadataValueMixedItemUnionParam
+
+// This is an alias to an internal type.
+type ExtensionAITasksTaskYesNoOnYesUnsetMetadataParam = shared.ExtensionAITasksTaskYesNoOnYesUnsetMetadataParam
+
+// This is an alias to an internal type.
+type ExtensionSavedExtensionParam = shared.ExtensionSavedExtensionParam
 
 // Options for generating responsive image attributes including `src`, `srcSet`,
 // and `sizes` for HTML `<img>` elements. This schema extends `SrcOptions` to add
@@ -146,6 +455,16 @@ type OverlayTimingStartUnionParam = shared.OverlayTimingStartUnionParam
 // This is an alias to an internal type.
 type ResponsiveImageAttributesParam = shared.ResponsiveImageAttributesParam
 
+// Saved extension object containing extension configuration.
+//
+// This is an alias to an internal type.
+type SavedExtension = shared.SavedExtension
+
+// Saved extension object containing extension configuration.
+//
+// This is an alias to an internal type.
+type SavedExtensionParam = shared.SavedExtensionParam
+
 // This is an alias to an internal type.
 type SolidColorOverlayParam = shared.SolidColorOverlayParam
 
@@ -170,9 +489,14 @@ type SolidColorOverlayTransformationGradientBoolean = shared.SolidColorOverlayTr
 // This is an alias to an internal type.
 type SolidColorOverlayTransformationHeightUnionParam = shared.SolidColorOverlayTransformationHeightUnionParam
 
-// Specifies the corner radius of the solid color overlay. Set to `max` for
-// circular or oval shape. See
-// [radius](https://imagekit.io/docs/effects-and-enhancements#radius---r).
+// Specifies the corner radius of the solid color overlay.
+//
+//   - Single value (positive integer): Applied to all corners (e.g., `20`).
+//   - `max`: Creates a circular or oval shape.
+//   - Per-corner array: Provide four underscore-separated values representing
+//     top-left, top-right, bottom-right, and bottom-left corners respectively (e.g.,
+//     `10_20_30_40`). See
+//     [Radius](https://imagekit.io/docs/effects-and-enhancements#radius---r).
 //
 // This is an alias to an internal type.
 type SolidColorOverlayTransformationRadiusUnionParam = shared.SolidColorOverlayTransformationRadiusUnionParam
@@ -250,7 +574,9 @@ type TextOverlayParam = shared.TextOverlayParam
 // This is an alias to an internal type.
 type TextOverlayTransformationParam = shared.TextOverlayTransformationParam
 
-// Flip the text overlay horizontally, vertically, or both.
+// Flip/mirror the text horizontally, vertically, or in both directions. Acceptable
+// values: `h` (horizontal), `v` (vertical), `h_v` (horizontal and vertical), or
+// `v_h`.
 //
 // This is an alias to an internal type.
 type TextOverlayTransformationFlip = shared.TextOverlayTransformationFlip
@@ -288,10 +614,9 @@ const TextOverlayTransformationInnerAlignmentRight = shared.TextOverlayTransform
 // Equals "center"
 const TextOverlayTransformationInnerAlignmentCenter = shared.TextOverlayTransformationInnerAlignmentCenter
 
-// Specifies the line height of the text overlay. Accepts integer values
-// representing line height in points. It can also accept
-// [arithmetic expressions](https://imagekit.io/docs/arithmetic-expressions-in-transformations)
-// such as `bw_mul_0.2`, or `bh_div_20`.
+// Specifies the line height for multi-line text overlays. It will come into effect
+// only if the text wraps over multiple lines. Accepts either an integer value or
+// an arithmetic expression.
 //
 // This is an alias to an internal type.
 type TextOverlayTransformationLineHeightUnionParam = shared.TextOverlayTransformationLineHeightUnionParam
@@ -303,8 +628,14 @@ type TextOverlayTransformationLineHeightUnionParam = shared.TextOverlayTransform
 // This is an alias to an internal type.
 type TextOverlayTransformationPaddingUnionParam = shared.TextOverlayTransformationPaddingUnionParam
 
-// Specifies the corner radius of the text overlay. Set to `max` to achieve a
-// circular or oval shape.
+// Specifies the corner radius:
+//
+//   - Single value (positive integer): Applied to all corners (e.g., `20`).
+//   - `max`: Creates a circular or oval shape.
+//   - Per-corner array: Provide four underscore-separated values representing
+//     top-left, top-right, bottom-right, and bottom-left corners respectively (e.g.,
+//     `10_20_30_40`). See
+//     [Radius](https://imagekit.io/docs/effects-and-enhancements#radius---r).
 //
 // This is an alias to an internal type.
 type TextOverlayTransformationRadiusUnionParam = shared.TextOverlayTransformationRadiusUnionParam
@@ -512,9 +843,14 @@ type TransformationHeightUnionParam = shared.TransformationHeightUnionParam
 // This is an alias to an internal type.
 type TransformationPageUnionParam = shared.TransformationPageUnionParam
 
-// Specifies the corner radius for rounded corners (e.g., 20) or `max` for circular
-// or oval shape. See
-// [Radius](https://imagekit.io/docs/effects-and-enhancements#radius---r).
+// Specifies the corner radius for rounded corners.
+//
+//   - Single value (positive integer): Applied to all corners (e.g., `20`).
+//   - `max`: Creates a circular or oval shape.
+//   - Per-corner array: Provide four underscore-separated values representing
+//     top-left, top-right, bottom-right, and bottom-left corners respectively (e.g.,
+//     `10_20_30_40`). See
+//     [Radius](https://imagekit.io/docs/effects-and-enhancements#radius---r).
 //
 // This is an alias to an internal type.
 type TransformationRadiusUnionParam = shared.TransformationRadiusUnionParam

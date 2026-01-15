@@ -7,6 +7,7 @@ import (
 	"errors"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/imagekit-developer/imagekit-go/v2"
 	"github.com/imagekit-developer/imagekit-go/v2/internal/testutil"
@@ -30,6 +31,7 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 	)
 	err := client.Dummy.New(context.TODO(), imagekit.DummyNewParams{
 		BaseOverlay: shared.BaseOverlayParam{
+			LayerMode: shared.BaseOverlayLayerModeMultiply,
 			Position: shared.OverlayPositionParam{
 				Focus: shared.OverlayPositionFocusCenter,
 				X: shared.OverlayPositionXUnionParam{
@@ -51,6 +53,16 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 				},
 			},
 		},
+		ExtensionConfig: shared.ExtensionConfigUnionParam{
+			OfRemoveBg: &shared.ExtensionConfigRemoveBgParam{
+				Options: shared.ExtensionConfigRemoveBgOptionsParam{
+					AddShadow:        imagekit.Bool(true),
+					BgColor:          imagekit.String("bg_color"),
+					BgImageURL:       imagekit.String("bg_image_url"),
+					Semitransparency: imagekit.Bool(true),
+				},
+			},
+		},
 		Extensions: shared.ExtensionsParam{shared.ExtensionUnionParam{
 			OfRemoveBg: &shared.ExtensionRemoveBgParam{
 				Options: shared.ExtensionRemoveBgOptionsParam{
@@ -68,6 +80,64 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 			},
 		}, shared.ExtensionUnionParam{
 			OfAIAutoDescription: &shared.ExtensionAIAutoDescriptionParam{},
+		}, shared.ExtensionUnionParam{
+			OfAITasks: &shared.ExtensionAITasksParam{
+				Tasks: []shared.ExtensionAITasksTaskUnionParam{{
+					OfSelectTags: &shared.ExtensionAITasksTaskSelectTagsParam{
+						Instruction:   "What types of clothing items are visible in this image?",
+						Vocabulary:    []string{"shirt", "tshirt", "dress", "trousers", "jacket"},
+						MaxSelections: imagekit.Int(1),
+						MinSelections: imagekit.Int(0),
+					},
+				}, {
+					OfYesNo: &shared.ExtensionAITasksTaskYesNoParam{
+						Instruction: "Is this a luxury or high-end fashion item?",
+						OnNo: shared.ExtensionAITasksTaskYesNoOnNoParam{
+							AddTags:    []string{"luxury", "premium"},
+							RemoveTags: []string{"budget", "affordable"},
+							SetMetadata: []shared.ExtensionAITasksTaskYesNoOnNoSetMetadataParam{{
+								Field: "price_range",
+								Value: shared.ExtensionAITasksTaskYesNoOnNoSetMetadataValueUnionParam{
+									OfString: imagekit.String("premium"),
+								},
+							}},
+							UnsetMetadata: []shared.ExtensionAITasksTaskYesNoOnNoUnsetMetadataParam{{
+								Field: "price_range",
+							}},
+						},
+						OnUnknown: shared.ExtensionAITasksTaskYesNoOnUnknownParam{
+							AddTags:    []string{"luxury", "premium"},
+							RemoveTags: []string{"budget", "affordable"},
+							SetMetadata: []shared.ExtensionAITasksTaskYesNoOnUnknownSetMetadataParam{{
+								Field: "price_range",
+								Value: shared.ExtensionAITasksTaskYesNoOnUnknownSetMetadataValueUnionParam{
+									OfString: imagekit.String("premium"),
+								},
+							}},
+							UnsetMetadata: []shared.ExtensionAITasksTaskYesNoOnUnknownUnsetMetadataParam{{
+								Field: "price_range",
+							}},
+						},
+						OnYes: shared.ExtensionAITasksTaskYesNoOnYesParam{
+							AddTags:    []string{"luxury", "premium"},
+							RemoveTags: []string{"budget", "affordable"},
+							SetMetadata: []shared.ExtensionAITasksTaskYesNoOnYesSetMetadataParam{{
+								Field: "price_range",
+								Value: shared.ExtensionAITasksTaskYesNoOnYesSetMetadataValueUnionParam{
+									OfString: imagekit.String("premium"),
+								},
+							}},
+							UnsetMetadata: []shared.ExtensionAITasksTaskYesNoOnYesUnsetMetadataParam{{
+								Field: "price_range",
+							}},
+						},
+					},
+				}},
+			},
+		}, shared.ExtensionUnionParam{
+			OfSavedExtension: &shared.ExtensionSavedExtensionParam{
+				ID: "ext_abc123",
+			},
 		}},
 		GetImageAttributesOptions: shared.GetImageAttributesOptionsParam{
 			SrcOptionsParam: shared.SrcOptionsParam{
@@ -97,10 +167,12 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 					Blur:            imagekit.Float(10),
 					Border:          imagekit.String("5_FF0000"),
 					ColorProfile:    imagekit.Bool(true),
+					ColorReplace:    imagekit.String("colorReplace"),
 					ContrastStretch: true,
 					Crop:            shared.TransformationCropForce,
 					CropMode:        shared.TransformationCropModePadResize,
 					DefaultImage:    imagekit.String("defaultImage"),
+					Distort:         imagekit.String("distort"),
 					Dpr:             imagekit.Float(2),
 					Duration: shared.TransformationDurationUnionParam{
 						OfFloat: imagekit.Float(0),
@@ -126,6 +198,7 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 					Overlay: shared.OverlayUnionParam{
 						OfText: &shared.TextOverlayParam{
 							BaseOverlayParam: shared.BaseOverlayParam{
+								LayerMode: shared.BaseOverlayLayerModeMultiply,
 								Position: shared.OverlayPositionParam{
 									Focus: shared.OverlayPositionFocusCenter,
 									X: shared.OverlayPositionXUnionParam{
@@ -233,6 +306,7 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 		},
 		ImageOverlay: shared.ImageOverlayParam{
 			BaseOverlayParam: shared.BaseOverlayParam{
+				LayerMode: shared.BaseOverlayLayerModeMultiply,
 				Position: shared.OverlayPositionParam{
 					Focus: shared.OverlayPositionFocusCenter,
 					X: shared.OverlayPositionXUnionParam{
@@ -275,10 +349,12 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 				Blur:            imagekit.Float(10),
 				Border:          imagekit.String("5_FF0000"),
 				ColorProfile:    imagekit.Bool(true),
+				ColorReplace:    imagekit.String("colorReplace"),
 				ContrastStretch: true,
 				Crop:            shared.TransformationCropForce,
 				CropMode:        shared.TransformationCropModePadResize,
 				DefaultImage:    imagekit.String("defaultImage"),
+				Distort:         imagekit.String("distort"),
 				Dpr:             imagekit.Float(2),
 				Duration: shared.TransformationDurationUnionParam{
 					OfFloat: imagekit.Float(0),
@@ -304,6 +380,7 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 				Overlay: shared.OverlayUnionParam{
 					OfText: &shared.TextOverlayParam{
 						BaseOverlayParam: shared.BaseOverlayParam{
+							LayerMode: shared.BaseOverlayLayerModeMultiply,
 							Position: shared.OverlayPositionParam{
 								Focus: shared.OverlayPositionFocusCenter,
 								X: shared.OverlayPositionXUnionParam{
@@ -406,6 +483,7 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 		Overlay: shared.OverlayUnionParam{
 			OfText: &shared.TextOverlayParam{
 				BaseOverlayParam: shared.BaseOverlayParam{
+					LayerMode: shared.BaseOverlayLayerModeMultiply,
 					Position: shared.OverlayPositionParam{
 						Focus: shared.OverlayPositionFocusCenter,
 						X: shared.OverlayPositionXUnionParam{
@@ -484,8 +562,26 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 			SrcSet: imagekit.String("https://ik.imagekit.io/demo/image.jpg?tr=w-640 640w, https://ik.imagekit.io/demo/image.jpg?tr=w-1080 1080w, https://ik.imagekit.io/demo/image.jpg?tr=w-1920 1920w"),
 			Width:  imagekit.Float(400),
 		},
+		SavedExtensions: shared.SavedExtensionParam{
+			ID: imagekit.String("ext_abc123"),
+			Config: shared.ExtensionConfigUnionParam{
+				OfRemoveBg: &shared.ExtensionConfigRemoveBgParam{
+					Options: shared.ExtensionConfigRemoveBgOptionsParam{
+						AddShadow:        imagekit.Bool(true),
+						BgColor:          imagekit.String("bg_color"),
+						BgImageURL:       imagekit.String("bg_image_url"),
+						Semitransparency: imagekit.Bool(true),
+					},
+				},
+			},
+			CreatedAt:   imagekit.Time(time.Now()),
+			Description: imagekit.String("Analyzes vehicle images for type, condition, and quality assessment"),
+			Name:        imagekit.String("Car Quality Analysis"),
+			UpdatedAt:   imagekit.Time(time.Now()),
+		},
 		SolidColorOverlay: shared.SolidColorOverlayParam{
 			BaseOverlayParam: shared.BaseOverlayParam{
+				LayerMode: shared.BaseOverlayLayerModeMultiply,
 				Position: shared.OverlayPositionParam{
 					Focus: shared.OverlayPositionFocusCenter,
 					X: shared.OverlayPositionXUnionParam{
@@ -568,10 +664,12 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 				Blur:            imagekit.Float(10),
 				Border:          imagekit.String("5_FF0000"),
 				ColorProfile:    imagekit.Bool(true),
+				ColorReplace:    imagekit.String("colorReplace"),
 				ContrastStretch: true,
 				Crop:            shared.TransformationCropForce,
 				CropMode:        shared.TransformationCropModePadResize,
 				DefaultImage:    imagekit.String("defaultImage"),
+				Distort:         imagekit.String("distort"),
 				Dpr:             imagekit.Float(2),
 				Duration: shared.TransformationDurationUnionParam{
 					OfFloat: imagekit.Float(0),
@@ -597,6 +695,7 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 				Overlay: shared.OverlayUnionParam{
 					OfText: &shared.TextOverlayParam{
 						BaseOverlayParam: shared.BaseOverlayParam{
+							LayerMode: shared.BaseOverlayLayerModeMultiply,
 							Position: shared.OverlayPositionParam{
 								Focus: shared.OverlayPositionFocusCenter,
 								X: shared.OverlayPositionXUnionParam{
@@ -700,6 +799,7 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 		StreamingResolution: shared.StreamingResolution240,
 		SubtitleOverlay: shared.SubtitleOverlayParam{
 			BaseOverlayParam: shared.BaseOverlayParam{
+				LayerMode: shared.BaseOverlayLayerModeMultiply,
 				Position: shared.OverlayPositionParam{
 					Focus: shared.OverlayPositionFocusCenter,
 					X: shared.OverlayPositionXUnionParam{
@@ -744,6 +844,7 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 		},
 		TextOverlay: shared.TextOverlayParam{
 			BaseOverlayParam: shared.BaseOverlayParam{
+				LayerMode: shared.BaseOverlayLayerModeMultiply,
 				Position: shared.OverlayPositionParam{
 					Focus: shared.OverlayPositionFocusCenter,
 					X: shared.OverlayPositionXUnionParam{
@@ -841,10 +942,12 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 			Blur:            imagekit.Float(10),
 			Border:          imagekit.String("5_FF0000"),
 			ColorProfile:    imagekit.Bool(true),
+			ColorReplace:    imagekit.String("colorReplace"),
 			ContrastStretch: true,
 			Crop:            shared.TransformationCropForce,
 			CropMode:        shared.TransformationCropModePadResize,
 			DefaultImage:    imagekit.String("defaultImage"),
+			Distort:         imagekit.String("distort"),
 			Dpr:             imagekit.Float(2),
 			Duration: shared.TransformationDurationUnionParam{
 				OfFloat: imagekit.Float(0),
@@ -870,6 +973,7 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 			Overlay: shared.OverlayUnionParam{
 				OfText: &shared.TextOverlayParam{
 					BaseOverlayParam: shared.BaseOverlayParam{
+						LayerMode: shared.BaseOverlayLayerModeMultiply,
 						Position: shared.OverlayPositionParam{
 							Focus: shared.OverlayPositionFocusCenter,
 							X: shared.OverlayPositionXUnionParam{
@@ -971,6 +1075,7 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 		TransformationPosition: shared.TransformationPositionPath,
 		VideoOverlay: shared.VideoOverlayParam{
 			BaseOverlayParam: shared.BaseOverlayParam{
+				LayerMode: shared.BaseOverlayLayerModeMultiply,
 				Position: shared.OverlayPositionParam{
 					Focus: shared.OverlayPositionFocusCenter,
 					X: shared.OverlayPositionXUnionParam{
@@ -1013,10 +1118,12 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 				Blur:            imagekit.Float(10),
 				Border:          imagekit.String("5_FF0000"),
 				ColorProfile:    imagekit.Bool(true),
+				ColorReplace:    imagekit.String("colorReplace"),
 				ContrastStretch: true,
 				Crop:            shared.TransformationCropForce,
 				CropMode:        shared.TransformationCropModePadResize,
 				DefaultImage:    imagekit.String("defaultImage"),
+				Distort:         imagekit.String("distort"),
 				Dpr:             imagekit.Float(2),
 				Duration: shared.TransformationDurationUnionParam{
 					OfFloat: imagekit.Float(0),
@@ -1042,6 +1149,7 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 				Overlay: shared.OverlayUnionParam{
 					OfText: &shared.TextOverlayParam{
 						BaseOverlayParam: shared.BaseOverlayParam{
+							LayerMode: shared.BaseOverlayLayerModeMultiply,
 							Position: shared.OverlayPositionParam{
 								Focus: shared.OverlayPositionFocusCenter,
 								X: shared.OverlayPositionXUnionParam{

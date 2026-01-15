@@ -21,6 +21,7 @@ type Client struct {
 	Dummy                DummyService
 	CustomMetadataFields CustomMetadataFieldService
 	Files                FileService
+	SavedExtensions      SavedExtensionService
 	Assets               AssetService
 	Cache                CacheService
 	Folders              FolderService
@@ -64,6 +65,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.Dummy = NewDummyService(opts...)
 	r.CustomMetadataFields = NewCustomMetadataFieldService(opts...)
 	r.Files = NewFileService(opts...)
+	r.SavedExtensions = NewSavedExtensionService(opts...)
 	r.Assets = NewAssetService(opts...)
 	r.Cache = NewCacheService(opts...)
 	r.Folders = NewFolderService(opts...)
