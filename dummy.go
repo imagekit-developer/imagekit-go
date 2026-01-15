@@ -46,6 +46,9 @@ func (r *DummyService) New(ctx context.Context, body DummyNewParams, opts ...opt
 
 type DummyNewParams struct {
 	BaseOverlay shared.BaseOverlayParam `json:"baseOverlay,omitzero"`
+	// Configuration object for an extension (base extensions only, not saved extension
+	// references).
+	ExtensionConfig shared.ExtensionConfigUnionParam `json:"extensionConfig,omitzero"`
 	// Array of extensions to be applied to the asset. Each extension can be configured
 	// with specific parameters based on the extension type.
 	Extensions shared.ExtensionsParam `json:"extensions,omitzero"`
@@ -63,7 +66,9 @@ type DummyNewParams struct {
 	OverlayTiming   shared.OverlayTimingParam   `json:"overlayTiming,omitzero"`
 	// Resulting set of attributes suitable for an HTML `<img>` element. Useful for
 	// enabling responsive image loading with `srcSet` and `sizes`.
-	ResponsiveImageAttributes       shared.ResponsiveImageAttributesParam       `json:"responsiveImageAttributes,omitzero"`
+	ResponsiveImageAttributes shared.ResponsiveImageAttributesParam `json:"responsiveImageAttributes,omitzero"`
+	// Saved extension object containing extension configuration.
+	SavedExtensions                 shared.SavedExtensionParam                  `json:"savedExtensions,omitzero"`
 	SolidColorOverlay               shared.SolidColorOverlayParam               `json:"solidColorOverlay,omitzero"`
 	SolidColorOverlayTransformation shared.SolidColorOverlayTransformationParam `json:"solidColorOverlayTransformation,omitzero"`
 	// Options for generating ImageKit URLs with transformations. See the
