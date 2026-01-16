@@ -1,5 +1,48 @@
 # Changelog
 
+## 2.1.0 (2026-01-16)
+
+Full Changelog: [v2.0.0...v2.1.0](https://github.com/imagekit-developer/imagekit-go/compare/v2.0.0...v2.1.0)
+
+### Features
+
+* **api:** add GetImageAttributesOptions and ResponsiveImageAttributes schemas; update resource references in main.yaml; remove dummy endpoint ([41072da](https://github.com/imagekit-developer/imagekit-go/commit/41072da63cd2ba891a911d932af3bc8b70c90588))
+* **api:** Add saved extensions API and enhance transformation options ([1f7e772](https://github.com/imagekit-developer/imagekit-go/commit/1f7e7723cb74828044a489d0b2de58b195b05183))
+* **api:** fix go sdk breaking changes ([6cbddff](https://github.com/imagekit-developer/imagekit-go/commit/6cbddffab95c89b964fc29ce119ceb70d7ebded5))
+* **encoder:** support bracket encoding form-data object members ([cb3e557](https://github.com/imagekit-developer/imagekit-go/commit/cb3e5572b00fe978ee93d595cc4d8775edccbc89))
+* **tests:** add transformations for radius, color replace, and distort; enhance overlay tests with layer modes ([382b9ed](https://github.com/imagekit-developer/imagekit-go/commit/382b9ed5e05f5fb1810481c0fd5a2299bbf5cfde))
+
+
+### Bug Fixes
+
+* add ai-tasks property to response schemas with enum values ([0551693](https://github.com/imagekit-developer/imagekit-go/commit/0551693b9a7eeb35984c198046e80a6a9debdbf8))
+* **client:** correctly specify Accept header with */* instead of empty ([21a30a4](https://github.com/imagekit-developer/imagekit-go/commit/21a30a4d60b4b2da84d2314ddf6bcf76759da64d))
+* **client:** invalid URL ([aea74b3](https://github.com/imagekit-developer/imagekit-go/commit/aea74b387869ce1fa566bf7a1fda3b2432eff9a9))
+* **client:** properly marshal embedded structs ([e55e614](https://github.com/imagekit-developer/imagekit-go/commit/e55e614fab629dfab68d7249e53ef602dd1a36b3))
+* **docs:** update go get command to include version path in README.md ([d7d4c82](https://github.com/imagekit-developer/imagekit-go/commit/d7d4c829ebccafd1242d79a03651f1189c9f24d0))
+* **mcp:** correct code tool API endpoint ([b32395e](https://github.com/imagekit-developer/imagekit-go/commit/b32395e36a3fdd2f8e37313a303a68135f13400f))
+* rename param to avoid collision ([5067fd4](https://github.com/imagekit-developer/imagekit-go/commit/5067fd4adfe3a7108f3799f270c4211ade385882))
+* skip usage tests that don't work with Prism ([429ad75](https://github.com/imagekit-developer/imagekit-go/commit/429ad75eb8c267b44a9c8e4f2c542344189563e3))
+
+
+### Chores
+
+* add float64 to valid types for RegisterFieldValidator ([2dc3cae](https://github.com/imagekit-developer/imagekit-go/commit/2dc3cae63386dc6b8c7743af3fdb0a9c4ed93ef5))
+* bump gjson version ([87ad44d](https://github.com/imagekit-developer/imagekit-go/commit/87ad44d7016dcb641158e26cc4f0d08e89770dc5))
+* elide duplicate aliases ([2f9eee1](https://github.com/imagekit-developer/imagekit-go/commit/2f9eee11c82bd0b6641dec1f0c20042863ad169f))
+* **internal:** codegen related update ([23edba8](https://github.com/imagekit-developer/imagekit-go/commit/23edba82802b3bc322649f9693ff71134db70b5c))
+* **internal:** codegen related update ([2fdd961](https://github.com/imagekit-developer/imagekit-go/commit/2fdd961c6a458140239af2e88cf1b1ecf7dc27f2))
+* **internal:** codegen related update ([8877b4f](https://github.com/imagekit-developer/imagekit-go/commit/8877b4fbdce39a56785613a1172dda44399c6fe7))
+* **internal:** codegen related update ([d83769d](https://github.com/imagekit-developer/imagekit-go/commit/d83769df0486737f479694acc9421415fb11c523))
+* **internal:** codegen related update ([63165ac](https://github.com/imagekit-developer/imagekit-go/commit/63165ac51ec10df842ed8f9496c82294b4f9e61e))
+* **internal:** grammar fix (it's -&gt; its) ([e35e192](https://github.com/imagekit-developer/imagekit-go/commit/e35e1922f7ad2541ed116db557bcedd8c9c088de))
+* remove MCP Server section from README.md ([58749a4](https://github.com/imagekit-developer/imagekit-go/commit/58749a446146fc365b10ced5db1556eb5dbd1de3))
+
+
+### Documentation
+
+* prominently feature MCP server setup in root SDK readmes ([e2a2d90](https://github.com/imagekit-developer/imagekit-go/commit/e2a2d9047c24a8fd32471aaf96315cad0bd9f935))
+
 ## 2.0.0 (2025-10-05)
 
 Full Changelog: [v0.0.1...v2.0.0](https://github.com/imagekit-developer/imagekit-go/compare/v0.0.1...v2.0.0)
