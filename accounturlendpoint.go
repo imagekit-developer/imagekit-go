@@ -75,7 +75,7 @@ func (r *AccountURLEndpointService) List(ctx context.Context, opts ...option.Req
 // URL‑endpoint created by ImageKit during account creation.
 func (r *AccountURLEndpointService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return

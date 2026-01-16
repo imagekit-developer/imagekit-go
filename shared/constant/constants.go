@@ -20,6 +20,7 @@ func ValueOf[T Constant[T]]() T {
 
 type Abs string                         // Always "abs"
 type AIAutoDescription string           // Always "ai-auto-description"
+type AITasks string                     // Always "ai-tasks"
 type Akamai string                      // Always "AKAMAI"
 type AkeneoPim string                   // Always "AKENEO_PIM"
 type All string                         // Always "all"
@@ -34,6 +35,9 @@ type Max string                         // Always "max"
 type RemoveBg string                    // Always "remove-bg"
 type S3 string                          // Always "S3"
 type S3Compatible string                // Always "S3_COMPATIBLE"
+type SavedExtension string              // Always "saved-extension"
+type SelectMetadata string              // Always "select_metadata"
+type SelectTags string                  // Always "select_tags"
 type SolidColor string                  // Always "solidColor"
 type Subtitle string                    // Always "subtitle"
 type Text string                        // Always "text"
@@ -49,9 +53,11 @@ type VideoTransformationError string    // Always "video.transformation.error"
 type VideoTransformationReady string    // Always "video.transformation.ready"
 type WebFolder string                   // Always "WEB_FOLDER"
 type WebProxy string                    // Always "WEB_PROXY"
+type YesNo string                       // Always "yes_no"
 
 func (c Abs) Default() Abs                             { return "abs" }
 func (c AIAutoDescription) Default() AIAutoDescription { return "ai-auto-description" }
+func (c AITasks) Default() AITasks                     { return "ai-tasks" }
 func (c Akamai) Default() Akamai                       { return "AKAMAI" }
 func (c AkeneoPim) Default() AkeneoPim                 { return "AKENEO_PIM" }
 func (c All) Default() All                             { return "all" }
@@ -66,6 +72,9 @@ func (c Max) Default() Max                             { return "max" }
 func (c RemoveBg) Default() RemoveBg                   { return "remove-bg" }
 func (c S3) Default() S3                               { return "S3" }
 func (c S3Compatible) Default() S3Compatible           { return "S3_COMPATIBLE" }
+func (c SavedExtension) Default() SavedExtension       { return "saved-extension" }
+func (c SelectMetadata) Default() SelectMetadata       { return "select_metadata" }
+func (c SelectTags) Default() SelectTags               { return "select_tags" }
 func (c SolidColor) Default() SolidColor               { return "solidColor" }
 func (c Subtitle) Default() Subtitle                   { return "subtitle" }
 func (c Text) Default() Text                           { return "text" }
@@ -95,9 +104,11 @@ func (c VideoTransformationReady) Default() VideoTransformationReady {
 }
 func (c WebFolder) Default() WebFolder { return "WEB_FOLDER" }
 func (c WebProxy) Default() WebProxy   { return "WEB_PROXY" }
+func (c YesNo) Default() YesNo         { return "yes_no" }
 
 func (c Abs) MarshalJSON() ([]byte, error)                         { return marshalString(c) }
 func (c AIAutoDescription) MarshalJSON() ([]byte, error)           { return marshalString(c) }
+func (c AITasks) MarshalJSON() ([]byte, error)                     { return marshalString(c) }
 func (c Akamai) MarshalJSON() ([]byte, error)                      { return marshalString(c) }
 func (c AkeneoPim) MarshalJSON() ([]byte, error)                   { return marshalString(c) }
 func (c All) MarshalJSON() ([]byte, error)                         { return marshalString(c) }
@@ -112,6 +123,9 @@ func (c Max) MarshalJSON() ([]byte, error)                         { return mars
 func (c RemoveBg) MarshalJSON() ([]byte, error)                    { return marshalString(c) }
 func (c S3) MarshalJSON() ([]byte, error)                          { return marshalString(c) }
 func (c S3Compatible) MarshalJSON() ([]byte, error)                { return marshalString(c) }
+func (c SavedExtension) MarshalJSON() ([]byte, error)              { return marshalString(c) }
+func (c SelectMetadata) MarshalJSON() ([]byte, error)              { return marshalString(c) }
+func (c SelectTags) MarshalJSON() ([]byte, error)                  { return marshalString(c) }
 func (c SolidColor) MarshalJSON() ([]byte, error)                  { return marshalString(c) }
 func (c Subtitle) MarshalJSON() ([]byte, error)                    { return marshalString(c) }
 func (c Text) MarshalJSON() ([]byte, error)                        { return marshalString(c) }
@@ -127,6 +141,7 @@ func (c VideoTransformationError) MarshalJSON() ([]byte, error)    { return mars
 func (c VideoTransformationReady) MarshalJSON() ([]byte, error)    { return marshalString(c) }
 func (c WebFolder) MarshalJSON() ([]byte, error)                   { return marshalString(c) }
 func (c WebProxy) MarshalJSON() ([]byte, error)                    { return marshalString(c) }
+func (c YesNo) MarshalJSON() ([]byte, error)                       { return marshalString(c) }
 
 type constant[T any] interface {
 	Constant[T]

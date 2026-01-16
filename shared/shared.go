@@ -3,8 +3,12 @@
 package shared
 
 import (
+	"encoding/json"
+	"time"
+
 	"github.com/imagekit-developer/imagekit-go/v2/internal/apijson"
 	"github.com/imagekit-developer/imagekit-go/v2/packages/param"
+	"github.com/imagekit-developer/imagekit-go/v2/packages/respjson"
 	"github.com/imagekit-developer/imagekit-go/v2/shared/constant"
 )
 
@@ -15,8 +19,36 @@ type paramUnion = param.APIUnion
 type paramObj = param.APIObject
 
 type BaseOverlayParam struct {
+	// Controls how the layer blends with the base image or underlying content. Maps to
+	// `lm` in the URL. By default, layers completely cover the base image beneath
+	// them. Layer modes change this behavior:
+	//
+	//   - `multiply`: Multiplies the pixel values of the layer with the base image. The
+	//     result is always darker than the original images. This is ideal for applying
+	//     shadows or color tints.
+	//   - `displace`: Uses the layer as a displacement map to distort pixels in the base
+	//     image. The red channel controls horizontal displacement, and the green channel
+	//     controls vertical displacement. Requires `x` or `y` parameter to control
+	//     displacement magnitude.
+	//   - `cutout`: Acts as an inverse mask where opaque areas of the layer turn the
+	//     base image transparent, while transparent areas leave the base image
+	//     unchanged. This mode functions like a hole-punch, effectively cutting the
+	//     shape of the layer out of the underlying image.
+	//   - `cutter`: Acts as a shape mask where only the parts of the base image that
+	//     fall inside the opaque area of the layer are preserved. This mode functions
+	//     like a cookie-cutter, trimming the base image to match the specific dimensions
+	//     and shape of the layer. See
+	//     [Layer modes](https://imagekit.io/docs/add-overlays-on-images#layer-modes).
+	//
+	// Any of "multiply", "cutter", "cutout", "displace".
+	LayerMode BaseOverlayLayerMode `json:"layerMode,omitzero"`
+	// Specifies the overlay's position relative to the parent asset. See
+	// [Position of Layer](https://imagekit.io/docs/transformations#position-of-layer).
 	Position OverlayPositionParam `json:"position,omitzero"`
-	Timing   OverlayTimingParam   `json:"timing,omitzero"`
+	// Specifies timing information for the overlay (only applicable if the base asset
+	// is a video). See
+	// [Position of Layer](https://imagekit.io/docs/transformations#position-of-layer).
+	Timing OverlayTimingParam `json:"timing,omitzero"`
 	paramObj
 }
 
@@ -25,6 +57,1769 @@ func (r BaseOverlayParam) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *BaseOverlayParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Controls how the layer blends with the base image or underlying content. Maps to
+// `lm` in the URL. By default, layers completely cover the base image beneath
+// them. Layer modes change this behavior:
+//
+//   - `multiply`: Multiplies the pixel values of the layer with the base image. The
+//     result is always darker than the original images. This is ideal for applying
+//     shadows or color tints.
+//   - `displace`: Uses the layer as a displacement map to distort pixels in the base
+//     image. The red channel controls horizontal displacement, and the green channel
+//     controls vertical displacement. Requires `x` or `y` parameter to control
+//     displacement magnitude.
+//   - `cutout`: Acts as an inverse mask where opaque areas of the layer turn the
+//     base image transparent, while transparent areas leave the base image
+//     unchanged. This mode functions like a hole-punch, effectively cutting the
+//     shape of the layer out of the underlying image.
+//   - `cutter`: Acts as a shape mask where only the parts of the base image that
+//     fall inside the opaque area of the layer are preserved. This mode functions
+//     like a cookie-cutter, trimming the base image to match the specific dimensions
+//     and shape of the layer. See
+//     [Layer modes](https://imagekit.io/docs/add-overlays-on-images#layer-modes).
+type BaseOverlayLayerMode string
+
+const (
+	BaseOverlayLayerModeMultiply BaseOverlayLayerMode = "multiply"
+	BaseOverlayLayerModeCutter   BaseOverlayLayerMode = "cutter"
+	BaseOverlayLayerModeCutout   BaseOverlayLayerMode = "cutout"
+	BaseOverlayLayerModeDisplace BaseOverlayLayerMode = "displace"
+)
+
+// ExtensionConfigUnion contains all possible properties and values from
+// [ExtensionConfigRemoveBg], [ExtensionConfigAutoTagging],
+// [ExtensionConfigAIAutoDescription], [ExtensionConfigAITasks].
+//
+// Use the [ExtensionConfigUnion.AsAny] method to switch on the variant.
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type ExtensionConfigUnion struct {
+	// Any of "remove-bg", nil, "ai-auto-description", "ai-tasks".
+	Name string `json:"name"`
+	// This field is from variant [ExtensionConfigRemoveBg].
+	Options ExtensionConfigRemoveBgOptions `json:"options"`
+	// This field is from variant [ExtensionConfigAutoTagging].
+	MaxTags int64 `json:"maxTags"`
+	// This field is from variant [ExtensionConfigAutoTagging].
+	MinConfidence int64 `json:"minConfidence"`
+	// This field is from variant [ExtensionConfigAITasks].
+	Tasks []ExtensionConfigAITasksTaskUnion `json:"tasks"`
+	JSON  struct {
+		Name          respjson.Field
+		Options       respjson.Field
+		MaxTags       respjson.Field
+		MinConfidence respjson.Field
+		Tasks         respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+func (u ExtensionConfigUnion) AsRemoveBg() (v ExtensionConfigRemoveBg) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u ExtensionConfigUnion) AsAutoTagging() (v ExtensionConfigAutoTagging) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u ExtensionConfigUnion) AsAIAutoDescription() (v ExtensionConfigAIAutoDescription) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u ExtensionConfigUnion) AsAITasks() (v ExtensionConfigAITasks) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u ExtensionConfigUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *ExtensionConfigUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this ExtensionConfigUnion to a ExtensionConfigUnionParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// ExtensionConfigUnionParam.Overrides()
+func (r ExtensionConfigUnion) ToParam() ExtensionConfigUnionParam {
+	return param.Override[ExtensionConfigUnionParam](json.RawMessage(r.RawJSON()))
+}
+
+type ExtensionConfigRemoveBg struct {
+	// Specifies the background removal extension.
+	Name    constant.RemoveBg              `json:"name,required"`
+	Options ExtensionConfigRemoveBgOptions `json:"options"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Name        respjson.Field
+		Options     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExtensionConfigRemoveBg) RawJSON() string { return r.JSON.raw }
+func (r *ExtensionConfigRemoveBg) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ExtensionConfigRemoveBgOptions struct {
+	// Whether to add an artificial shadow to the result. Default is false. Note:
+	// Adding shadows is currently only supported for car photos.
+	AddShadow bool `json:"add_shadow"`
+	// Specifies a solid color background using hex code (e.g., "81d4fa", "fff") or
+	// color name (e.g., "green"). If this parameter is set, `bg_image_url` must be
+	// empty.
+	BgColor string `json:"bg_color"`
+	// Sets a background image from a URL. If this parameter is set, `bg_color` must be
+	// empty.
+	BgImageURL string `json:"bg_image_url"`
+	// Allows semi-transparent regions in the result. Default is true. Note:
+	// Semitransparency is currently only supported for car windows.
+	Semitransparency bool `json:"semitransparency"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AddShadow        respjson.Field
+		BgColor          respjson.Field
+		BgImageURL       respjson.Field
+		Semitransparency respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExtensionConfigRemoveBgOptions) RawJSON() string { return r.JSON.raw }
+func (r *ExtensionConfigRemoveBgOptions) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ExtensionConfigAutoTagging struct {
+	// Maximum number of tags to attach to the asset.
+	MaxTags int64 `json:"maxTags,required"`
+	// Minimum confidence level for tags to be considered valid.
+	MinConfidence int64 `json:"minConfidence,required"`
+	// Specifies the auto-tagging extension used.
+	//
+	// Any of "google-auto-tagging", "aws-auto-tagging".
+	Name string `json:"name,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		MaxTags       respjson.Field
+		MinConfidence respjson.Field
+		Name          respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExtensionConfigAutoTagging) RawJSON() string { return r.JSON.raw }
+func (r *ExtensionConfigAutoTagging) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ExtensionConfigAIAutoDescription struct {
+	// Specifies the auto description extension.
+	Name constant.AIAutoDescription `json:"name,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Name        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExtensionConfigAIAutoDescription) RawJSON() string { return r.JSON.raw }
+func (r *ExtensionConfigAIAutoDescription) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ExtensionConfigAITasks struct {
+	// Specifies the AI tasks extension for automated image analysis using AI models.
+	Name constant.AITasks `json:"name,required"`
+	// Array of task objects defining AI operations to perform on the asset.
+	Tasks []ExtensionConfigAITasksTaskUnion `json:"tasks,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Name        respjson.Field
+		Tasks       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExtensionConfigAITasks) RawJSON() string { return r.JSON.raw }
+func (r *ExtensionConfigAITasks) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ExtensionConfigAITasksTaskUnion contains all possible properties and values from
+// [ExtensionConfigAITasksTaskSelectTags],
+// [ExtensionConfigAITasksTaskSelectMetadata], [ExtensionConfigAITasksTaskYesNo].
+//
+// Use the [ExtensionConfigAITasksTaskUnion.AsAny] method to switch on the variant.
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type ExtensionConfigAITasksTaskUnion struct {
+	Instruction string `json:"instruction"`
+	// Any of "select_tags", "select_metadata", "yes_no".
+	Type string `json:"type"`
+	// This field is a union of [[]string],
+	// [[]ExtensionConfigAITasksTaskSelectMetadataVocabularyUnion]
+	Vocabulary    ExtensionConfigAITasksTaskUnionVocabulary `json:"vocabulary"`
+	MaxSelections int64                                     `json:"max_selections"`
+	MinSelections int64                                     `json:"min_selections"`
+	// This field is from variant [ExtensionConfigAITasksTaskSelectMetadata].
+	Field string `json:"field"`
+	// This field is from variant [ExtensionConfigAITasksTaskYesNo].
+	OnNo ExtensionConfigAITasksTaskYesNoOnNo `json:"on_no"`
+	// This field is from variant [ExtensionConfigAITasksTaskYesNo].
+	OnUnknown ExtensionConfigAITasksTaskYesNoOnUnknown `json:"on_unknown"`
+	// This field is from variant [ExtensionConfigAITasksTaskYesNo].
+	OnYes ExtensionConfigAITasksTaskYesNoOnYes `json:"on_yes"`
+	JSON  struct {
+		Instruction   respjson.Field
+		Type          respjson.Field
+		Vocabulary    respjson.Field
+		MaxSelections respjson.Field
+		MinSelections respjson.Field
+		Field         respjson.Field
+		OnNo          respjson.Field
+		OnUnknown     respjson.Field
+		OnYes         respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// anyExtensionConfigAITasksTask is implemented by each variant of
+// [ExtensionConfigAITasksTaskUnion] to add type safety for the return type of
+// [ExtensionConfigAITasksTaskUnion.AsAny]
+type anyExtensionConfigAITasksTask interface {
+	implExtensionConfigAITasksTaskUnion()
+}
+
+// Use the following switch statement to find the correct variant
+//
+//	switch variant := ExtensionConfigAITasksTaskUnion.AsAny().(type) {
+//	case shared.ExtensionConfigAITasksTaskSelectTags:
+//	case shared.ExtensionConfigAITasksTaskSelectMetadata:
+//	case shared.ExtensionConfigAITasksTaskYesNo:
+//	default:
+//	  fmt.Errorf("no variant present")
+//	}
+func (u ExtensionConfigAITasksTaskUnion) AsAny() anyExtensionConfigAITasksTask {
+	switch u.Type {
+	case "select_tags":
+		return u.AsSelectTags()
+	case "select_metadata":
+		return u.AsSelectMetadata()
+	case "yes_no":
+		return u.AsYesNo()
+	}
+	return nil
+}
+
+func (u ExtensionConfigAITasksTaskUnion) AsSelectTags() (v ExtensionConfigAITasksTaskSelectTags) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u ExtensionConfigAITasksTaskUnion) AsSelectMetadata() (v ExtensionConfigAITasksTaskSelectMetadata) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u ExtensionConfigAITasksTaskUnion) AsYesNo() (v ExtensionConfigAITasksTaskYesNo) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u ExtensionConfigAITasksTaskUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *ExtensionConfigAITasksTaskUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ExtensionConfigAITasksTaskUnionVocabulary is an implicit subunion of
+// [ExtensionConfigAITasksTaskUnion]. ExtensionConfigAITasksTaskUnionVocabulary
+// provides convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [ExtensionConfigAITasksTaskUnion].
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfStringArray
+// OfExtensionConfigAITasksTaskSelectMetadataVocabularyArray]
+type ExtensionConfigAITasksTaskUnionVocabulary struct {
+	// This field will be present if the value is a [[]string] instead of an object.
+	OfStringArray []string `json:",inline"`
+	// This field will be present if the value is a
+	// [[]ExtensionConfigAITasksTaskSelectMetadataVocabularyUnion] instead of an
+	// object.
+	OfExtensionConfigAITasksTaskSelectMetadataVocabularyArray []ExtensionConfigAITasksTaskSelectMetadataVocabularyUnion `json:",inline"`
+	JSON                                                      struct {
+		OfStringArray                                             respjson.Field
+		OfExtensionConfigAITasksTaskSelectMetadataVocabularyArray respjson.Field
+		raw                                                       string
+	} `json:"-"`
+}
+
+func (r *ExtensionConfigAITasksTaskUnionVocabulary) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ExtensionConfigAITasksTaskSelectTags struct {
+	// The question or instruction for the AI to analyze the image.
+	Instruction string `json:"instruction,required"`
+	// Task type that analyzes the image and adds matching tags from a vocabulary.
+	Type constant.SelectTags `json:"type,required"`
+	// Array of possible tag values. Combined length of all strings must not exceed 500
+	// characters. Cannot contain the `%` character.
+	Vocabulary []string `json:"vocabulary,required"`
+	// Maximum number of tags to select from the vocabulary.
+	MaxSelections int64 `json:"max_selections"`
+	// Minimum number of tags to select from the vocabulary.
+	MinSelections int64 `json:"min_selections"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Instruction   respjson.Field
+		Type          respjson.Field
+		Vocabulary    respjson.Field
+		MaxSelections respjson.Field
+		MinSelections respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExtensionConfigAITasksTaskSelectTags) RawJSON() string { return r.JSON.raw }
+func (r *ExtensionConfigAITasksTaskSelectTags) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (ExtensionConfigAITasksTaskSelectTags) implExtensionConfigAITasksTaskUnion() {}
+
+type ExtensionConfigAITasksTaskSelectMetadata struct {
+	// Name of the custom metadata field to set. The field must exist in your account.
+	Field string `json:"field,required"`
+	// The question or instruction for the AI to analyze the image.
+	Instruction string `json:"instruction,required"`
+	// Task type that analyzes the image and sets a custom metadata field value from a
+	// vocabulary.
+	Type constant.SelectMetadata `json:"type,required"`
+	// Maximum number of values to select from the vocabulary.
+	MaxSelections int64 `json:"max_selections"`
+	// Minimum number of values to select from the vocabulary.
+	MinSelections int64 `json:"min_selections"`
+	// Array of possible values matching the custom metadata field type.
+	Vocabulary []ExtensionConfigAITasksTaskSelectMetadataVocabularyUnion `json:"vocabulary"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Field         respjson.Field
+		Instruction   respjson.Field
+		Type          respjson.Field
+		MaxSelections respjson.Field
+		MinSelections respjson.Field
+		Vocabulary    respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExtensionConfigAITasksTaskSelectMetadata) RawJSON() string { return r.JSON.raw }
+func (r *ExtensionConfigAITasksTaskSelectMetadata) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (ExtensionConfigAITasksTaskSelectMetadata) implExtensionConfigAITasksTaskUnion() {}
+
+// ExtensionConfigAITasksTaskSelectMetadataVocabularyUnion contains all possible
+// properties and values from [string], [float64], [bool].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool]
+type ExtensionConfigAITasksTaskSelectMetadataVocabularyUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	JSON   struct {
+		OfString respjson.Field
+		OfFloat  respjson.Field
+		OfBool   respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u ExtensionConfigAITasksTaskSelectMetadataVocabularyUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u ExtensionConfigAITasksTaskSelectMetadataVocabularyUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u ExtensionConfigAITasksTaskSelectMetadataVocabularyUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u ExtensionConfigAITasksTaskSelectMetadataVocabularyUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *ExtensionConfigAITasksTaskSelectMetadataVocabularyUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ExtensionConfigAITasksTaskYesNo struct {
+	// The yes/no question for the AI to answer about the image.
+	Instruction string `json:"instruction,required"`
+	// Task type that asks a yes/no question and executes actions based on the answer.
+	Type constant.YesNo `json:"type,required"`
+	// Actions to execute if the AI answers no.
+	OnNo ExtensionConfigAITasksTaskYesNoOnNo `json:"on_no"`
+	// Actions to execute if the AI cannot determine the answer.
+	OnUnknown ExtensionConfigAITasksTaskYesNoOnUnknown `json:"on_unknown"`
+	// Actions to execute if the AI answers yes.
+	OnYes ExtensionConfigAITasksTaskYesNoOnYes `json:"on_yes"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Instruction respjson.Field
+		Type        respjson.Field
+		OnNo        respjson.Field
+		OnUnknown   respjson.Field
+		OnYes       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExtensionConfigAITasksTaskYesNo) RawJSON() string { return r.JSON.raw }
+func (r *ExtensionConfigAITasksTaskYesNo) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (ExtensionConfigAITasksTaskYesNo) implExtensionConfigAITasksTaskUnion() {}
+
+// Actions to execute if the AI answers no.
+type ExtensionConfigAITasksTaskYesNoOnNo struct {
+	// Array of tag strings to add to the asset.
+	AddTags []string `json:"add_tags"`
+	// Array of tag strings to remove from the asset.
+	RemoveTags []string `json:"remove_tags"`
+	// Array of custom metadata field updates.
+	SetMetadata []ExtensionConfigAITasksTaskYesNoOnNoSetMetadata `json:"set_metadata"`
+	// Array of custom metadata fields to remove.
+	UnsetMetadata []ExtensionConfigAITasksTaskYesNoOnNoUnsetMetadata `json:"unset_metadata"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AddTags       respjson.Field
+		RemoveTags    respjson.Field
+		SetMetadata   respjson.Field
+		UnsetMetadata respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExtensionConfigAITasksTaskYesNoOnNo) RawJSON() string { return r.JSON.raw }
+func (r *ExtensionConfigAITasksTaskYesNoOnNo) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ExtensionConfigAITasksTaskYesNoOnNoSetMetadata struct {
+	// Name of the custom metadata field to set.
+	Field string `json:"field,required"`
+	// Value to set for the custom metadata field. The value type should match the
+	// custom metadata field type.
+	Value ExtensionConfigAITasksTaskYesNoOnNoSetMetadataValueUnion `json:"value,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Field       respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExtensionConfigAITasksTaskYesNoOnNoSetMetadata) RawJSON() string { return r.JSON.raw }
+func (r *ExtensionConfigAITasksTaskYesNoOnNoSetMetadata) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ExtensionConfigAITasksTaskYesNoOnNoSetMetadataValueUnion contains all possible
+// properties and values from [string], [float64], [bool],
+// [[]ExtensionConfigAITasksTaskYesNoOnNoSetMetadataValueMixedItemUnion].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool OfMixed]
+type ExtensionConfigAITasksTaskYesNoOnNoSetMetadataValueUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a
+	// [[]ExtensionConfigAITasksTaskYesNoOnNoSetMetadataValueMixedItemUnion] instead of
+	// an object.
+	OfMixed []ExtensionConfigAITasksTaskYesNoOnNoSetMetadataValueMixedItemUnion `json:",inline"`
+	JSON    struct {
+		OfString respjson.Field
+		OfFloat  respjson.Field
+		OfBool   respjson.Field
+		OfMixed  respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u ExtensionConfigAITasksTaskYesNoOnNoSetMetadataValueUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u ExtensionConfigAITasksTaskYesNoOnNoSetMetadataValueUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u ExtensionConfigAITasksTaskYesNoOnNoSetMetadataValueUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u ExtensionConfigAITasksTaskYesNoOnNoSetMetadataValueUnion) AsMixed() (v []ExtensionConfigAITasksTaskYesNoOnNoSetMetadataValueMixedItemUnion) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u ExtensionConfigAITasksTaskYesNoOnNoSetMetadataValueUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *ExtensionConfigAITasksTaskYesNoOnNoSetMetadataValueUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ExtensionConfigAITasksTaskYesNoOnNoSetMetadataValueMixedItemUnion contains all
+// possible properties and values from [string], [float64], [bool].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool]
+type ExtensionConfigAITasksTaskYesNoOnNoSetMetadataValueMixedItemUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	JSON   struct {
+		OfString respjson.Field
+		OfFloat  respjson.Field
+		OfBool   respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u ExtensionConfigAITasksTaskYesNoOnNoSetMetadataValueMixedItemUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u ExtensionConfigAITasksTaskYesNoOnNoSetMetadataValueMixedItemUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u ExtensionConfigAITasksTaskYesNoOnNoSetMetadataValueMixedItemUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u ExtensionConfigAITasksTaskYesNoOnNoSetMetadataValueMixedItemUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *ExtensionConfigAITasksTaskYesNoOnNoSetMetadataValueMixedItemUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ExtensionConfigAITasksTaskYesNoOnNoUnsetMetadata struct {
+	// Name of the custom metadata field to remove.
+	Field string `json:"field,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Field       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExtensionConfigAITasksTaskYesNoOnNoUnsetMetadata) RawJSON() string { return r.JSON.raw }
+func (r *ExtensionConfigAITasksTaskYesNoOnNoUnsetMetadata) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Actions to execute if the AI cannot determine the answer.
+type ExtensionConfigAITasksTaskYesNoOnUnknown struct {
+	// Array of tag strings to add to the asset.
+	AddTags []string `json:"add_tags"`
+	// Array of tag strings to remove from the asset.
+	RemoveTags []string `json:"remove_tags"`
+	// Array of custom metadata field updates.
+	SetMetadata []ExtensionConfigAITasksTaskYesNoOnUnknownSetMetadata `json:"set_metadata"`
+	// Array of custom metadata fields to remove.
+	UnsetMetadata []ExtensionConfigAITasksTaskYesNoOnUnknownUnsetMetadata `json:"unset_metadata"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AddTags       respjson.Field
+		RemoveTags    respjson.Field
+		SetMetadata   respjson.Field
+		UnsetMetadata respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExtensionConfigAITasksTaskYesNoOnUnknown) RawJSON() string { return r.JSON.raw }
+func (r *ExtensionConfigAITasksTaskYesNoOnUnknown) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ExtensionConfigAITasksTaskYesNoOnUnknownSetMetadata struct {
+	// Name of the custom metadata field to set.
+	Field string `json:"field,required"`
+	// Value to set for the custom metadata field. The value type should match the
+	// custom metadata field type.
+	Value ExtensionConfigAITasksTaskYesNoOnUnknownSetMetadataValueUnion `json:"value,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Field       respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExtensionConfigAITasksTaskYesNoOnUnknownSetMetadata) RawJSON() string { return r.JSON.raw }
+func (r *ExtensionConfigAITasksTaskYesNoOnUnknownSetMetadata) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ExtensionConfigAITasksTaskYesNoOnUnknownSetMetadataValueUnion contains all
+// possible properties and values from [string], [float64], [bool],
+// [[]ExtensionConfigAITasksTaskYesNoOnUnknownSetMetadataValueMixedItemUnion].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool OfMixed]
+type ExtensionConfigAITasksTaskYesNoOnUnknownSetMetadataValueUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a
+	// [[]ExtensionConfigAITasksTaskYesNoOnUnknownSetMetadataValueMixedItemUnion]
+	// instead of an object.
+	OfMixed []ExtensionConfigAITasksTaskYesNoOnUnknownSetMetadataValueMixedItemUnion `json:",inline"`
+	JSON    struct {
+		OfString respjson.Field
+		OfFloat  respjson.Field
+		OfBool   respjson.Field
+		OfMixed  respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u ExtensionConfigAITasksTaskYesNoOnUnknownSetMetadataValueUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u ExtensionConfigAITasksTaskYesNoOnUnknownSetMetadataValueUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u ExtensionConfigAITasksTaskYesNoOnUnknownSetMetadataValueUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u ExtensionConfigAITasksTaskYesNoOnUnknownSetMetadataValueUnion) AsMixed() (v []ExtensionConfigAITasksTaskYesNoOnUnknownSetMetadataValueMixedItemUnion) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u ExtensionConfigAITasksTaskYesNoOnUnknownSetMetadataValueUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *ExtensionConfigAITasksTaskYesNoOnUnknownSetMetadataValueUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ExtensionConfigAITasksTaskYesNoOnUnknownSetMetadataValueMixedItemUnion contains
+// all possible properties and values from [string], [float64], [bool].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool]
+type ExtensionConfigAITasksTaskYesNoOnUnknownSetMetadataValueMixedItemUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	JSON   struct {
+		OfString respjson.Field
+		OfFloat  respjson.Field
+		OfBool   respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u ExtensionConfigAITasksTaskYesNoOnUnknownSetMetadataValueMixedItemUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u ExtensionConfigAITasksTaskYesNoOnUnknownSetMetadataValueMixedItemUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u ExtensionConfigAITasksTaskYesNoOnUnknownSetMetadataValueMixedItemUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u ExtensionConfigAITasksTaskYesNoOnUnknownSetMetadataValueMixedItemUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *ExtensionConfigAITasksTaskYesNoOnUnknownSetMetadataValueMixedItemUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ExtensionConfigAITasksTaskYesNoOnUnknownUnsetMetadata struct {
+	// Name of the custom metadata field to remove.
+	Field string `json:"field,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Field       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExtensionConfigAITasksTaskYesNoOnUnknownUnsetMetadata) RawJSON() string { return r.JSON.raw }
+func (r *ExtensionConfigAITasksTaskYesNoOnUnknownUnsetMetadata) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Actions to execute if the AI answers yes.
+type ExtensionConfigAITasksTaskYesNoOnYes struct {
+	// Array of tag strings to add to the asset.
+	AddTags []string `json:"add_tags"`
+	// Array of tag strings to remove from the asset.
+	RemoveTags []string `json:"remove_tags"`
+	// Array of custom metadata field updates.
+	SetMetadata []ExtensionConfigAITasksTaskYesNoOnYesSetMetadata `json:"set_metadata"`
+	// Array of custom metadata fields to remove.
+	UnsetMetadata []ExtensionConfigAITasksTaskYesNoOnYesUnsetMetadata `json:"unset_metadata"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AddTags       respjson.Field
+		RemoveTags    respjson.Field
+		SetMetadata   respjson.Field
+		UnsetMetadata respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExtensionConfigAITasksTaskYesNoOnYes) RawJSON() string { return r.JSON.raw }
+func (r *ExtensionConfigAITasksTaskYesNoOnYes) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ExtensionConfigAITasksTaskYesNoOnYesSetMetadata struct {
+	// Name of the custom metadata field to set.
+	Field string `json:"field,required"`
+	// Value to set for the custom metadata field. The value type should match the
+	// custom metadata field type.
+	Value ExtensionConfigAITasksTaskYesNoOnYesSetMetadataValueUnion `json:"value,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Field       respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExtensionConfigAITasksTaskYesNoOnYesSetMetadata) RawJSON() string { return r.JSON.raw }
+func (r *ExtensionConfigAITasksTaskYesNoOnYesSetMetadata) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ExtensionConfigAITasksTaskYesNoOnYesSetMetadataValueUnion contains all possible
+// properties and values from [string], [float64], [bool],
+// [[]ExtensionConfigAITasksTaskYesNoOnYesSetMetadataValueMixedItemUnion].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool OfMixed]
+type ExtensionConfigAITasksTaskYesNoOnYesSetMetadataValueUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a
+	// [[]ExtensionConfigAITasksTaskYesNoOnYesSetMetadataValueMixedItemUnion] instead
+	// of an object.
+	OfMixed []ExtensionConfigAITasksTaskYesNoOnYesSetMetadataValueMixedItemUnion `json:",inline"`
+	JSON    struct {
+		OfString respjson.Field
+		OfFloat  respjson.Field
+		OfBool   respjson.Field
+		OfMixed  respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u ExtensionConfigAITasksTaskYesNoOnYesSetMetadataValueUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u ExtensionConfigAITasksTaskYesNoOnYesSetMetadataValueUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u ExtensionConfigAITasksTaskYesNoOnYesSetMetadataValueUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u ExtensionConfigAITasksTaskYesNoOnYesSetMetadataValueUnion) AsMixed() (v []ExtensionConfigAITasksTaskYesNoOnYesSetMetadataValueMixedItemUnion) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u ExtensionConfigAITasksTaskYesNoOnYesSetMetadataValueUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *ExtensionConfigAITasksTaskYesNoOnYesSetMetadataValueUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ExtensionConfigAITasksTaskYesNoOnYesSetMetadataValueMixedItemUnion contains all
+// possible properties and values from [string], [float64], [bool].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool]
+type ExtensionConfigAITasksTaskYesNoOnYesSetMetadataValueMixedItemUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	JSON   struct {
+		OfString respjson.Field
+		OfFloat  respjson.Field
+		OfBool   respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u ExtensionConfigAITasksTaskYesNoOnYesSetMetadataValueMixedItemUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u ExtensionConfigAITasksTaskYesNoOnYesSetMetadataValueMixedItemUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u ExtensionConfigAITasksTaskYesNoOnYesSetMetadataValueMixedItemUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u ExtensionConfigAITasksTaskYesNoOnYesSetMetadataValueMixedItemUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *ExtensionConfigAITasksTaskYesNoOnYesSetMetadataValueMixedItemUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ExtensionConfigAITasksTaskYesNoOnYesUnsetMetadata struct {
+	// Name of the custom metadata field to remove.
+	Field string `json:"field,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Field       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExtensionConfigAITasksTaskYesNoOnYesUnsetMetadata) RawJSON() string { return r.JSON.raw }
+func (r *ExtensionConfigAITasksTaskYesNoOnYesUnsetMetadata) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func ExtensionConfigParamOfAutoTagging(maxTags int64, minConfidence int64, name string) ExtensionConfigUnionParam {
+	var variant ExtensionConfigAutoTaggingParam
+	variant.MaxTags = maxTags
+	variant.MinConfidence = minConfidence
+	variant.Name = name
+	return ExtensionConfigUnionParam{OfAutoTagging: &variant}
+}
+
+func ExtensionConfigParamOfAITasks(tasks []ExtensionConfigAITasksTaskUnionParam) ExtensionConfigUnionParam {
+	var aiTasks ExtensionConfigAITasksParam
+	aiTasks.Tasks = tasks
+	return ExtensionConfigUnionParam{OfAITasks: &aiTasks}
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type ExtensionConfigUnionParam struct {
+	OfRemoveBg          *ExtensionConfigRemoveBgParam          `json:",omitzero,inline"`
+	OfAutoTagging       *ExtensionConfigAutoTaggingParam       `json:",omitzero,inline"`
+	OfAIAutoDescription *ExtensionConfigAIAutoDescriptionParam `json:",omitzero,inline"`
+	OfAITasks           *ExtensionConfigAITasksParam           `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u ExtensionConfigUnionParam) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfRemoveBg, u.OfAutoTagging, u.OfAIAutoDescription, u.OfAITasks)
+}
+func (u *ExtensionConfigUnionParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *ExtensionConfigUnionParam) asAny() any {
+	if !param.IsOmitted(u.OfRemoveBg) {
+		return u.OfRemoveBg
+	} else if !param.IsOmitted(u.OfAutoTagging) {
+		return u.OfAutoTagging
+	} else if !param.IsOmitted(u.OfAIAutoDescription) {
+		return u.OfAIAutoDescription
+	} else if !param.IsOmitted(u.OfAITasks) {
+		return u.OfAITasks
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ExtensionConfigUnionParam) GetOptions() *ExtensionConfigRemoveBgOptionsParam {
+	if vt := u.OfRemoveBg; vt != nil {
+		return &vt.Options
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ExtensionConfigUnionParam) GetMaxTags() *int64 {
+	if vt := u.OfAutoTagging; vt != nil {
+		return &vt.MaxTags
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ExtensionConfigUnionParam) GetMinConfidence() *int64 {
+	if vt := u.OfAutoTagging; vt != nil {
+		return &vt.MinConfidence
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ExtensionConfigUnionParam) GetTasks() []ExtensionConfigAITasksTaskUnionParam {
+	if vt := u.OfAITasks; vt != nil {
+		return vt.Tasks
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ExtensionConfigUnionParam) GetName() *string {
+	if vt := u.OfRemoveBg; vt != nil {
+		return (*string)(&vt.Name)
+	} else if vt := u.OfAutoTagging; vt != nil {
+		return (*string)(&vt.Name)
+	} else if vt := u.OfAIAutoDescription; vt != nil {
+		return (*string)(&vt.Name)
+	} else if vt := u.OfAITasks; vt != nil {
+		return (*string)(&vt.Name)
+	}
+	return nil
+}
+
+func init() {
+	apijson.RegisterUnion[ExtensionConfigUnionParam](
+		"name",
+		apijson.Discriminator[ExtensionConfigRemoveBgParam]("remove-bg"),
+		apijson.Discriminator[ExtensionConfigAutoTaggingParam]("google-auto-tagging"),
+		apijson.Discriminator[ExtensionConfigAutoTaggingParam]("aws-auto-tagging"),
+		apijson.Discriminator[ExtensionConfigAIAutoDescriptionParam]("ai-auto-description"),
+		apijson.Discriminator[ExtensionConfigAITasksParam]("ai-tasks"),
+	)
+}
+
+// The property Name is required.
+type ExtensionConfigRemoveBgParam struct {
+	Options ExtensionConfigRemoveBgOptionsParam `json:"options,omitzero"`
+	// Specifies the background removal extension.
+	//
+	// This field can be elided, and will marshal its zero value as "remove-bg".
+	Name constant.RemoveBg `json:"name,required"`
+	paramObj
+}
+
+func (r ExtensionConfigRemoveBgParam) MarshalJSON() (data []byte, err error) {
+	type shadow ExtensionConfigRemoveBgParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ExtensionConfigRemoveBgParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ExtensionConfigRemoveBgOptionsParam struct {
+	// Whether to add an artificial shadow to the result. Default is false. Note:
+	// Adding shadows is currently only supported for car photos.
+	AddShadow param.Opt[bool] `json:"add_shadow,omitzero"`
+	// Specifies a solid color background using hex code (e.g., "81d4fa", "fff") or
+	// color name (e.g., "green"). If this parameter is set, `bg_image_url` must be
+	// empty.
+	BgColor param.Opt[string] `json:"bg_color,omitzero"`
+	// Sets a background image from a URL. If this parameter is set, `bg_color` must be
+	// empty.
+	BgImageURL param.Opt[string] `json:"bg_image_url,omitzero"`
+	// Allows semi-transparent regions in the result. Default is true. Note:
+	// Semitransparency is currently only supported for car windows.
+	Semitransparency param.Opt[bool] `json:"semitransparency,omitzero"`
+	paramObj
+}
+
+func (r ExtensionConfigRemoveBgOptionsParam) MarshalJSON() (data []byte, err error) {
+	type shadow ExtensionConfigRemoveBgOptionsParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ExtensionConfigRemoveBgOptionsParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties MaxTags, MinConfidence, Name are required.
+type ExtensionConfigAutoTaggingParam struct {
+	// Maximum number of tags to attach to the asset.
+	MaxTags int64 `json:"maxTags,required"`
+	// Minimum confidence level for tags to be considered valid.
+	MinConfidence int64 `json:"minConfidence,required"`
+	// Specifies the auto-tagging extension used.
+	//
+	// Any of "google-auto-tagging", "aws-auto-tagging".
+	Name string `json:"name,omitzero,required"`
+	paramObj
+}
+
+func (r ExtensionConfigAutoTaggingParam) MarshalJSON() (data []byte, err error) {
+	type shadow ExtensionConfigAutoTaggingParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ExtensionConfigAutoTaggingParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[ExtensionConfigAutoTaggingParam](
+		"name", "google-auto-tagging", "aws-auto-tagging",
+	)
+}
+
+func NewExtensionConfigAIAutoDescriptionParam() ExtensionConfigAIAutoDescriptionParam {
+	return ExtensionConfigAIAutoDescriptionParam{
+		Name: "ai-auto-description",
+	}
+}
+
+// This struct has a constant value, construct it with
+// [NewExtensionConfigAIAutoDescriptionParam].
+type ExtensionConfigAIAutoDescriptionParam struct {
+	// Specifies the auto description extension.
+	Name constant.AIAutoDescription `json:"name,required"`
+	paramObj
+}
+
+func (r ExtensionConfigAIAutoDescriptionParam) MarshalJSON() (data []byte, err error) {
+	type shadow ExtensionConfigAIAutoDescriptionParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ExtensionConfigAIAutoDescriptionParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties Name, Tasks are required.
+type ExtensionConfigAITasksParam struct {
+	// Array of task objects defining AI operations to perform on the asset.
+	Tasks []ExtensionConfigAITasksTaskUnionParam `json:"tasks,omitzero,required"`
+	// Specifies the AI tasks extension for automated image analysis using AI models.
+	//
+	// This field can be elided, and will marshal its zero value as "ai-tasks".
+	Name constant.AITasks `json:"name,required"`
+	paramObj
+}
+
+func (r ExtensionConfigAITasksParam) MarshalJSON() (data []byte, err error) {
+	type shadow ExtensionConfigAITasksParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ExtensionConfigAITasksParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type ExtensionConfigAITasksTaskUnionParam struct {
+	OfSelectTags     *ExtensionConfigAITasksTaskSelectTagsParam     `json:",omitzero,inline"`
+	OfSelectMetadata *ExtensionConfigAITasksTaskSelectMetadataParam `json:",omitzero,inline"`
+	OfYesNo          *ExtensionConfigAITasksTaskYesNoParam          `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u ExtensionConfigAITasksTaskUnionParam) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfSelectTags, u.OfSelectMetadata, u.OfYesNo)
+}
+func (u *ExtensionConfigAITasksTaskUnionParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *ExtensionConfigAITasksTaskUnionParam) asAny() any {
+	if !param.IsOmitted(u.OfSelectTags) {
+		return u.OfSelectTags
+	} else if !param.IsOmitted(u.OfSelectMetadata) {
+		return u.OfSelectMetadata
+	} else if !param.IsOmitted(u.OfYesNo) {
+		return u.OfYesNo
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ExtensionConfigAITasksTaskUnionParam) GetField() *string {
+	if vt := u.OfSelectMetadata; vt != nil {
+		return &vt.Field
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ExtensionConfigAITasksTaskUnionParam) GetOnNo() *ExtensionConfigAITasksTaskYesNoOnNoParam {
+	if vt := u.OfYesNo; vt != nil {
+		return &vt.OnNo
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ExtensionConfigAITasksTaskUnionParam) GetOnUnknown() *ExtensionConfigAITasksTaskYesNoOnUnknownParam {
+	if vt := u.OfYesNo; vt != nil {
+		return &vt.OnUnknown
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ExtensionConfigAITasksTaskUnionParam) GetOnYes() *ExtensionConfigAITasksTaskYesNoOnYesParam {
+	if vt := u.OfYesNo; vt != nil {
+		return &vt.OnYes
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ExtensionConfigAITasksTaskUnionParam) GetInstruction() *string {
+	if vt := u.OfSelectTags; vt != nil {
+		return (*string)(&vt.Instruction)
+	} else if vt := u.OfSelectMetadata; vt != nil {
+		return (*string)(&vt.Instruction)
+	} else if vt := u.OfYesNo; vt != nil {
+		return (*string)(&vt.Instruction)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ExtensionConfigAITasksTaskUnionParam) GetType() *string {
+	if vt := u.OfSelectTags; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfSelectMetadata; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfYesNo; vt != nil {
+		return (*string)(&vt.Type)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ExtensionConfigAITasksTaskUnionParam) GetMaxSelections() *int64 {
+	if vt := u.OfSelectTags; vt != nil && vt.MaxSelections.Valid() {
+		return &vt.MaxSelections.Value
+	} else if vt := u.OfSelectMetadata; vt != nil && vt.MaxSelections.Valid() {
+		return &vt.MaxSelections.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ExtensionConfigAITasksTaskUnionParam) GetMinSelections() *int64 {
+	if vt := u.OfSelectTags; vt != nil && vt.MinSelections.Valid() {
+		return &vt.MinSelections.Value
+	} else if vt := u.OfSelectMetadata; vt != nil && vt.MinSelections.Valid() {
+		return &vt.MinSelections.Value
+	}
+	return nil
+}
+
+// Returns a subunion which exports methods to access subproperties
+//
+// Or use AsAny() to get the underlying value
+func (u ExtensionConfigAITasksTaskUnionParam) GetVocabulary() (res extensionConfigAITasksTaskUnionParamVocabulary) {
+	if vt := u.OfSelectTags; vt != nil {
+		res.any = &vt.Vocabulary
+	} else if vt := u.OfSelectMetadata; vt != nil {
+		res.any = &vt.Vocabulary
+	}
+	return
+}
+
+// Can have the runtime types [_[]string],
+// [_[]ExtensionConfigAITasksTaskSelectMetadataVocabularyUnionParam]
+type extensionConfigAITasksTaskUnionParamVocabulary struct{ any }
+
+// Use the following switch statement to get the type of the union:
+//
+//	switch u.AsAny().(type) {
+//	case *[]string:
+//	case *[]shared.ExtensionConfigAITasksTaskSelectMetadataVocabularyUnionParam:
+//	default:
+//	    fmt.Errorf("not present")
+//	}
+func (u extensionConfigAITasksTaskUnionParamVocabulary) AsAny() any { return u.any }
+
+func init() {
+	apijson.RegisterUnion[ExtensionConfigAITasksTaskUnionParam](
+		"type",
+		apijson.Discriminator[ExtensionConfigAITasksTaskSelectTagsParam]("select_tags"),
+		apijson.Discriminator[ExtensionConfigAITasksTaskSelectMetadataParam]("select_metadata"),
+		apijson.Discriminator[ExtensionConfigAITasksTaskYesNoParam]("yes_no"),
+	)
+}
+
+// The properties Instruction, Type, Vocabulary are required.
+type ExtensionConfigAITasksTaskSelectTagsParam struct {
+	// The question or instruction for the AI to analyze the image.
+	Instruction string `json:"instruction,required"`
+	// Array of possible tag values. Combined length of all strings must not exceed 500
+	// characters. Cannot contain the `%` character.
+	Vocabulary []string `json:"vocabulary,omitzero,required"`
+	// Maximum number of tags to select from the vocabulary.
+	MaxSelections param.Opt[int64] `json:"max_selections,omitzero"`
+	// Minimum number of tags to select from the vocabulary.
+	MinSelections param.Opt[int64] `json:"min_selections,omitzero"`
+	// Task type that analyzes the image and adds matching tags from a vocabulary.
+	//
+	// This field can be elided, and will marshal its zero value as "select_tags".
+	Type constant.SelectTags `json:"type,required"`
+	paramObj
+}
+
+func (r ExtensionConfigAITasksTaskSelectTagsParam) MarshalJSON() (data []byte, err error) {
+	type shadow ExtensionConfigAITasksTaskSelectTagsParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ExtensionConfigAITasksTaskSelectTagsParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties Field, Instruction, Type are required.
+type ExtensionConfigAITasksTaskSelectMetadataParam struct {
+	// Name of the custom metadata field to set. The field must exist in your account.
+	Field string `json:"field,required"`
+	// The question or instruction for the AI to analyze the image.
+	Instruction string `json:"instruction,required"`
+	// Maximum number of values to select from the vocabulary.
+	MaxSelections param.Opt[int64] `json:"max_selections,omitzero"`
+	// Minimum number of values to select from the vocabulary.
+	MinSelections param.Opt[int64] `json:"min_selections,omitzero"`
+	// Array of possible values matching the custom metadata field type.
+	Vocabulary []ExtensionConfigAITasksTaskSelectMetadataVocabularyUnionParam `json:"vocabulary,omitzero"`
+	// Task type that analyzes the image and sets a custom metadata field value from a
+	// vocabulary.
+	//
+	// This field can be elided, and will marshal its zero value as "select_metadata".
+	Type constant.SelectMetadata `json:"type,required"`
+	paramObj
+}
+
+func (r ExtensionConfigAITasksTaskSelectMetadataParam) MarshalJSON() (data []byte, err error) {
+	type shadow ExtensionConfigAITasksTaskSelectMetadataParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ExtensionConfigAITasksTaskSelectMetadataParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type ExtensionConfigAITasksTaskSelectMetadataVocabularyUnionParam struct {
+	OfString param.Opt[string]  `json:",omitzero,inline"`
+	OfFloat  param.Opt[float64] `json:",omitzero,inline"`
+	OfBool   param.Opt[bool]    `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u ExtensionConfigAITasksTaskSelectMetadataVocabularyUnionParam) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfString, u.OfFloat, u.OfBool)
+}
+func (u *ExtensionConfigAITasksTaskSelectMetadataVocabularyUnionParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *ExtensionConfigAITasksTaskSelectMetadataVocabularyUnionParam) asAny() any {
+	if !param.IsOmitted(u.OfString) {
+		return &u.OfString.Value
+	} else if !param.IsOmitted(u.OfFloat) {
+		return &u.OfFloat.Value
+	} else if !param.IsOmitted(u.OfBool) {
+		return &u.OfBool.Value
+	}
+	return nil
+}
+
+// The properties Instruction, Type are required.
+type ExtensionConfigAITasksTaskYesNoParam struct {
+	// The yes/no question for the AI to answer about the image.
+	Instruction string `json:"instruction,required"`
+	// Actions to execute if the AI answers no.
+	OnNo ExtensionConfigAITasksTaskYesNoOnNoParam `json:"on_no,omitzero"`
+	// Actions to execute if the AI cannot determine the answer.
+	OnUnknown ExtensionConfigAITasksTaskYesNoOnUnknownParam `json:"on_unknown,omitzero"`
+	// Actions to execute if the AI answers yes.
+	OnYes ExtensionConfigAITasksTaskYesNoOnYesParam `json:"on_yes,omitzero"`
+	// Task type that asks a yes/no question and executes actions based on the answer.
+	//
+	// This field can be elided, and will marshal its zero value as "yes_no".
+	Type constant.YesNo `json:"type,required"`
+	paramObj
+}
+
+func (r ExtensionConfigAITasksTaskYesNoParam) MarshalJSON() (data []byte, err error) {
+	type shadow ExtensionConfigAITasksTaskYesNoParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ExtensionConfigAITasksTaskYesNoParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Actions to execute if the AI answers no.
+type ExtensionConfigAITasksTaskYesNoOnNoParam struct {
+	// Array of tag strings to add to the asset.
+	AddTags []string `json:"add_tags,omitzero"`
+	// Array of tag strings to remove from the asset.
+	RemoveTags []string `json:"remove_tags,omitzero"`
+	// Array of custom metadata field updates.
+	SetMetadata []ExtensionConfigAITasksTaskYesNoOnNoSetMetadataParam `json:"set_metadata,omitzero"`
+	// Array of custom metadata fields to remove.
+	UnsetMetadata []ExtensionConfigAITasksTaskYesNoOnNoUnsetMetadataParam `json:"unset_metadata,omitzero"`
+	paramObj
+}
+
+func (r ExtensionConfigAITasksTaskYesNoOnNoParam) MarshalJSON() (data []byte, err error) {
+	type shadow ExtensionConfigAITasksTaskYesNoOnNoParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ExtensionConfigAITasksTaskYesNoOnNoParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties Field, Value are required.
+type ExtensionConfigAITasksTaskYesNoOnNoSetMetadataParam struct {
+	// Name of the custom metadata field to set.
+	Field string `json:"field,required"`
+	// Value to set for the custom metadata field. The value type should match the
+	// custom metadata field type.
+	Value ExtensionConfigAITasksTaskYesNoOnNoSetMetadataValueUnionParam `json:"value,omitzero,required"`
+	paramObj
+}
+
+func (r ExtensionConfigAITasksTaskYesNoOnNoSetMetadataParam) MarshalJSON() (data []byte, err error) {
+	type shadow ExtensionConfigAITasksTaskYesNoOnNoSetMetadataParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ExtensionConfigAITasksTaskYesNoOnNoSetMetadataParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type ExtensionConfigAITasksTaskYesNoOnNoSetMetadataValueUnionParam struct {
+	OfString param.Opt[string]                                                        `json:",omitzero,inline"`
+	OfFloat  param.Opt[float64]                                                       `json:",omitzero,inline"`
+	OfBool   param.Opt[bool]                                                          `json:",omitzero,inline"`
+	OfMixed  []ExtensionConfigAITasksTaskYesNoOnNoSetMetadataValueMixedItemUnionParam `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u ExtensionConfigAITasksTaskYesNoOnNoSetMetadataValueUnionParam) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfString, u.OfFloat, u.OfBool, u.OfMixed)
+}
+func (u *ExtensionConfigAITasksTaskYesNoOnNoSetMetadataValueUnionParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *ExtensionConfigAITasksTaskYesNoOnNoSetMetadataValueUnionParam) asAny() any {
+	if !param.IsOmitted(u.OfString) {
+		return &u.OfString.Value
+	} else if !param.IsOmitted(u.OfFloat) {
+		return &u.OfFloat.Value
+	} else if !param.IsOmitted(u.OfBool) {
+		return &u.OfBool.Value
+	} else if !param.IsOmitted(u.OfMixed) {
+		return &u.OfMixed
+	}
+	return nil
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type ExtensionConfigAITasksTaskYesNoOnNoSetMetadataValueMixedItemUnionParam struct {
+	OfString param.Opt[string]  `json:",omitzero,inline"`
+	OfFloat  param.Opt[float64] `json:",omitzero,inline"`
+	OfBool   param.Opt[bool]    `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u ExtensionConfigAITasksTaskYesNoOnNoSetMetadataValueMixedItemUnionParam) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfString, u.OfFloat, u.OfBool)
+}
+func (u *ExtensionConfigAITasksTaskYesNoOnNoSetMetadataValueMixedItemUnionParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *ExtensionConfigAITasksTaskYesNoOnNoSetMetadataValueMixedItemUnionParam) asAny() any {
+	if !param.IsOmitted(u.OfString) {
+		return &u.OfString.Value
+	} else if !param.IsOmitted(u.OfFloat) {
+		return &u.OfFloat.Value
+	} else if !param.IsOmitted(u.OfBool) {
+		return &u.OfBool.Value
+	}
+	return nil
+}
+
+// The property Field is required.
+type ExtensionConfigAITasksTaskYesNoOnNoUnsetMetadataParam struct {
+	// Name of the custom metadata field to remove.
+	Field string `json:"field,required"`
+	paramObj
+}
+
+func (r ExtensionConfigAITasksTaskYesNoOnNoUnsetMetadataParam) MarshalJSON() (data []byte, err error) {
+	type shadow ExtensionConfigAITasksTaskYesNoOnNoUnsetMetadataParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ExtensionConfigAITasksTaskYesNoOnNoUnsetMetadataParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Actions to execute if the AI cannot determine the answer.
+type ExtensionConfigAITasksTaskYesNoOnUnknownParam struct {
+	// Array of tag strings to add to the asset.
+	AddTags []string `json:"add_tags,omitzero"`
+	// Array of tag strings to remove from the asset.
+	RemoveTags []string `json:"remove_tags,omitzero"`
+	// Array of custom metadata field updates.
+	SetMetadata []ExtensionConfigAITasksTaskYesNoOnUnknownSetMetadataParam `json:"set_metadata,omitzero"`
+	// Array of custom metadata fields to remove.
+	UnsetMetadata []ExtensionConfigAITasksTaskYesNoOnUnknownUnsetMetadataParam `json:"unset_metadata,omitzero"`
+	paramObj
+}
+
+func (r ExtensionConfigAITasksTaskYesNoOnUnknownParam) MarshalJSON() (data []byte, err error) {
+	type shadow ExtensionConfigAITasksTaskYesNoOnUnknownParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ExtensionConfigAITasksTaskYesNoOnUnknownParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties Field, Value are required.
+type ExtensionConfigAITasksTaskYesNoOnUnknownSetMetadataParam struct {
+	// Name of the custom metadata field to set.
+	Field string `json:"field,required"`
+	// Value to set for the custom metadata field. The value type should match the
+	// custom metadata field type.
+	Value ExtensionConfigAITasksTaskYesNoOnUnknownSetMetadataValueUnionParam `json:"value,omitzero,required"`
+	paramObj
+}
+
+func (r ExtensionConfigAITasksTaskYesNoOnUnknownSetMetadataParam) MarshalJSON() (data []byte, err error) {
+	type shadow ExtensionConfigAITasksTaskYesNoOnUnknownSetMetadataParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ExtensionConfigAITasksTaskYesNoOnUnknownSetMetadataParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type ExtensionConfigAITasksTaskYesNoOnUnknownSetMetadataValueUnionParam struct {
+	OfString param.Opt[string]                                                             `json:",omitzero,inline"`
+	OfFloat  param.Opt[float64]                                                            `json:",omitzero,inline"`
+	OfBool   param.Opt[bool]                                                               `json:",omitzero,inline"`
+	OfMixed  []ExtensionConfigAITasksTaskYesNoOnUnknownSetMetadataValueMixedItemUnionParam `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u ExtensionConfigAITasksTaskYesNoOnUnknownSetMetadataValueUnionParam) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfString, u.OfFloat, u.OfBool, u.OfMixed)
+}
+func (u *ExtensionConfigAITasksTaskYesNoOnUnknownSetMetadataValueUnionParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *ExtensionConfigAITasksTaskYesNoOnUnknownSetMetadataValueUnionParam) asAny() any {
+	if !param.IsOmitted(u.OfString) {
+		return &u.OfString.Value
+	} else if !param.IsOmitted(u.OfFloat) {
+		return &u.OfFloat.Value
+	} else if !param.IsOmitted(u.OfBool) {
+		return &u.OfBool.Value
+	} else if !param.IsOmitted(u.OfMixed) {
+		return &u.OfMixed
+	}
+	return nil
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type ExtensionConfigAITasksTaskYesNoOnUnknownSetMetadataValueMixedItemUnionParam struct {
+	OfString param.Opt[string]  `json:",omitzero,inline"`
+	OfFloat  param.Opt[float64] `json:",omitzero,inline"`
+	OfBool   param.Opt[bool]    `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u ExtensionConfigAITasksTaskYesNoOnUnknownSetMetadataValueMixedItemUnionParam) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfString, u.OfFloat, u.OfBool)
+}
+func (u *ExtensionConfigAITasksTaskYesNoOnUnknownSetMetadataValueMixedItemUnionParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *ExtensionConfigAITasksTaskYesNoOnUnknownSetMetadataValueMixedItemUnionParam) asAny() any {
+	if !param.IsOmitted(u.OfString) {
+		return &u.OfString.Value
+	} else if !param.IsOmitted(u.OfFloat) {
+		return &u.OfFloat.Value
+	} else if !param.IsOmitted(u.OfBool) {
+		return &u.OfBool.Value
+	}
+	return nil
+}
+
+// The property Field is required.
+type ExtensionConfigAITasksTaskYesNoOnUnknownUnsetMetadataParam struct {
+	// Name of the custom metadata field to remove.
+	Field string `json:"field,required"`
+	paramObj
+}
+
+func (r ExtensionConfigAITasksTaskYesNoOnUnknownUnsetMetadataParam) MarshalJSON() (data []byte, err error) {
+	type shadow ExtensionConfigAITasksTaskYesNoOnUnknownUnsetMetadataParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ExtensionConfigAITasksTaskYesNoOnUnknownUnsetMetadataParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Actions to execute if the AI answers yes.
+type ExtensionConfigAITasksTaskYesNoOnYesParam struct {
+	// Array of tag strings to add to the asset.
+	AddTags []string `json:"add_tags,omitzero"`
+	// Array of tag strings to remove from the asset.
+	RemoveTags []string `json:"remove_tags,omitzero"`
+	// Array of custom metadata field updates.
+	SetMetadata []ExtensionConfigAITasksTaskYesNoOnYesSetMetadataParam `json:"set_metadata,omitzero"`
+	// Array of custom metadata fields to remove.
+	UnsetMetadata []ExtensionConfigAITasksTaskYesNoOnYesUnsetMetadataParam `json:"unset_metadata,omitzero"`
+	paramObj
+}
+
+func (r ExtensionConfigAITasksTaskYesNoOnYesParam) MarshalJSON() (data []byte, err error) {
+	type shadow ExtensionConfigAITasksTaskYesNoOnYesParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ExtensionConfigAITasksTaskYesNoOnYesParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties Field, Value are required.
+type ExtensionConfigAITasksTaskYesNoOnYesSetMetadataParam struct {
+	// Name of the custom metadata field to set.
+	Field string `json:"field,required"`
+	// Value to set for the custom metadata field. The value type should match the
+	// custom metadata field type.
+	Value ExtensionConfigAITasksTaskYesNoOnYesSetMetadataValueUnionParam `json:"value,omitzero,required"`
+	paramObj
+}
+
+func (r ExtensionConfigAITasksTaskYesNoOnYesSetMetadataParam) MarshalJSON() (data []byte, err error) {
+	type shadow ExtensionConfigAITasksTaskYesNoOnYesSetMetadataParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ExtensionConfigAITasksTaskYesNoOnYesSetMetadataParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type ExtensionConfigAITasksTaskYesNoOnYesSetMetadataValueUnionParam struct {
+	OfString param.Opt[string]                                                         `json:",omitzero,inline"`
+	OfFloat  param.Opt[float64]                                                        `json:",omitzero,inline"`
+	OfBool   param.Opt[bool]                                                           `json:",omitzero,inline"`
+	OfMixed  []ExtensionConfigAITasksTaskYesNoOnYesSetMetadataValueMixedItemUnionParam `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u ExtensionConfigAITasksTaskYesNoOnYesSetMetadataValueUnionParam) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfString, u.OfFloat, u.OfBool, u.OfMixed)
+}
+func (u *ExtensionConfigAITasksTaskYesNoOnYesSetMetadataValueUnionParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *ExtensionConfigAITasksTaskYesNoOnYesSetMetadataValueUnionParam) asAny() any {
+	if !param.IsOmitted(u.OfString) {
+		return &u.OfString.Value
+	} else if !param.IsOmitted(u.OfFloat) {
+		return &u.OfFloat.Value
+	} else if !param.IsOmitted(u.OfBool) {
+		return &u.OfBool.Value
+	} else if !param.IsOmitted(u.OfMixed) {
+		return &u.OfMixed
+	}
+	return nil
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type ExtensionConfigAITasksTaskYesNoOnYesSetMetadataValueMixedItemUnionParam struct {
+	OfString param.Opt[string]  `json:",omitzero,inline"`
+	OfFloat  param.Opt[float64] `json:",omitzero,inline"`
+	OfBool   param.Opt[bool]    `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u ExtensionConfigAITasksTaskYesNoOnYesSetMetadataValueMixedItemUnionParam) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfString, u.OfFloat, u.OfBool)
+}
+func (u *ExtensionConfigAITasksTaskYesNoOnYesSetMetadataValueMixedItemUnionParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *ExtensionConfigAITasksTaskYesNoOnYesSetMetadataValueMixedItemUnionParam) asAny() any {
+	if !param.IsOmitted(u.OfString) {
+		return &u.OfString.Value
+	} else if !param.IsOmitted(u.OfFloat) {
+		return &u.OfFloat.Value
+	} else if !param.IsOmitted(u.OfBool) {
+		return &u.OfBool.Value
+	}
+	return nil
+}
+
+// The property Field is required.
+type ExtensionConfigAITasksTaskYesNoOnYesUnsetMetadataParam struct {
+	// Name of the custom metadata field to remove.
+	Field string `json:"field,required"`
+	paramObj
+}
+
+func (r ExtensionConfigAITasksTaskYesNoOnYesUnsetMetadataParam) MarshalJSON() (data []byte, err error) {
+	type shadow ExtensionConfigAITasksTaskYesNoOnYesUnsetMetadataParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ExtensionConfigAITasksTaskYesNoOnYesUnsetMetadataParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -37,11 +1832,17 @@ type ExtensionUnionParam struct {
 	OfRemoveBg          *ExtensionRemoveBgParam          `json:",omitzero,inline"`
 	OfAutoTagging       *ExtensionAutoTaggingParam       `json:",omitzero,inline"`
 	OfAIAutoDescription *ExtensionAIAutoDescriptionParam `json:",omitzero,inline"`
+	OfAITasks           *ExtensionAITasksParam           `json:",omitzero,inline"`
+	OfSavedExtension    *ExtensionSavedExtensionParam    `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u ExtensionUnionParam) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfRemoveBg, u.OfAutoTagging, u.OfAIAutoDescription)
+	return param.MarshalUnion(u, u.OfRemoveBg,
+		u.OfAutoTagging,
+		u.OfAIAutoDescription,
+		u.OfAITasks,
+		u.OfSavedExtension)
 }
 func (u *ExtensionUnionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -54,6 +1855,10 @@ func (u *ExtensionUnionParam) asAny() any {
 		return u.OfAutoTagging
 	} else if !param.IsOmitted(u.OfAIAutoDescription) {
 		return u.OfAIAutoDescription
+	} else if !param.IsOmitted(u.OfAITasks) {
+		return u.OfAITasks
+	} else if !param.IsOmitted(u.OfSavedExtension) {
+		return u.OfSavedExtension
 	}
 	return nil
 }
@@ -83,12 +1888,32 @@ func (u ExtensionUnionParam) GetMinConfidence() *int64 {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
+func (u ExtensionUnionParam) GetTasks() []ExtensionAITasksTaskUnionParam {
+	if vt := u.OfAITasks; vt != nil {
+		return vt.Tasks
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ExtensionUnionParam) GetID() *string {
+	if vt := u.OfSavedExtension; vt != nil {
+		return &vt.ID
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
 func (u ExtensionUnionParam) GetName() *string {
 	if vt := u.OfRemoveBg; vt != nil {
 		return (*string)(&vt.Name)
 	} else if vt := u.OfAutoTagging; vt != nil {
 		return (*string)(&vt.Name)
 	} else if vt := u.OfAIAutoDescription; vt != nil {
+		return (*string)(&vt.Name)
+	} else if vt := u.OfAITasks; vt != nil {
+		return (*string)(&vt.Name)
+	} else if vt := u.OfSavedExtension; vt != nil {
 		return (*string)(&vt.Name)
 	}
 	return nil
@@ -101,6 +1926,8 @@ func init() {
 		apijson.Discriminator[ExtensionAutoTaggingParam]("google-auto-tagging"),
 		apijson.Discriminator[ExtensionAutoTaggingParam]("aws-auto-tagging"),
 		apijson.Discriminator[ExtensionAIAutoDescriptionParam]("ai-auto-description"),
+		apijson.Discriminator[ExtensionAITasksParam]("ai-tasks"),
+		apijson.Discriminator[ExtensionSavedExtensionParam]("saved-extension"),
 	)
 }
 
@@ -196,6 +2023,673 @@ func (r *ExtensionAIAutoDescriptionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// The properties Name, Tasks are required.
+type ExtensionAITasksParam struct {
+	// Array of task objects defining AI operations to perform on the asset.
+	Tasks []ExtensionAITasksTaskUnionParam `json:"tasks,omitzero,required"`
+	// Specifies the AI tasks extension for automated image analysis using AI models.
+	//
+	// This field can be elided, and will marshal its zero value as "ai-tasks".
+	Name constant.AITasks `json:"name,required"`
+	paramObj
+}
+
+func (r ExtensionAITasksParam) MarshalJSON() (data []byte, err error) {
+	type shadow ExtensionAITasksParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ExtensionAITasksParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type ExtensionAITasksTaskUnionParam struct {
+	OfSelectTags     *ExtensionAITasksTaskSelectTagsParam     `json:",omitzero,inline"`
+	OfSelectMetadata *ExtensionAITasksTaskSelectMetadataParam `json:",omitzero,inline"`
+	OfYesNo          *ExtensionAITasksTaskYesNoParam          `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u ExtensionAITasksTaskUnionParam) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfSelectTags, u.OfSelectMetadata, u.OfYesNo)
+}
+func (u *ExtensionAITasksTaskUnionParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *ExtensionAITasksTaskUnionParam) asAny() any {
+	if !param.IsOmitted(u.OfSelectTags) {
+		return u.OfSelectTags
+	} else if !param.IsOmitted(u.OfSelectMetadata) {
+		return u.OfSelectMetadata
+	} else if !param.IsOmitted(u.OfYesNo) {
+		return u.OfYesNo
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ExtensionAITasksTaskUnionParam) GetField() *string {
+	if vt := u.OfSelectMetadata; vt != nil {
+		return &vt.Field
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ExtensionAITasksTaskUnionParam) GetOnNo() *ExtensionAITasksTaskYesNoOnNoParam {
+	if vt := u.OfYesNo; vt != nil {
+		return &vt.OnNo
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ExtensionAITasksTaskUnionParam) GetOnUnknown() *ExtensionAITasksTaskYesNoOnUnknownParam {
+	if vt := u.OfYesNo; vt != nil {
+		return &vt.OnUnknown
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ExtensionAITasksTaskUnionParam) GetOnYes() *ExtensionAITasksTaskYesNoOnYesParam {
+	if vt := u.OfYesNo; vt != nil {
+		return &vt.OnYes
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ExtensionAITasksTaskUnionParam) GetInstruction() *string {
+	if vt := u.OfSelectTags; vt != nil {
+		return (*string)(&vt.Instruction)
+	} else if vt := u.OfSelectMetadata; vt != nil {
+		return (*string)(&vt.Instruction)
+	} else if vt := u.OfYesNo; vt != nil {
+		return (*string)(&vt.Instruction)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ExtensionAITasksTaskUnionParam) GetType() *string {
+	if vt := u.OfSelectTags; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfSelectMetadata; vt != nil {
+		return (*string)(&vt.Type)
+	} else if vt := u.OfYesNo; vt != nil {
+		return (*string)(&vt.Type)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ExtensionAITasksTaskUnionParam) GetMaxSelections() *int64 {
+	if vt := u.OfSelectTags; vt != nil && vt.MaxSelections.Valid() {
+		return &vt.MaxSelections.Value
+	} else if vt := u.OfSelectMetadata; vt != nil && vt.MaxSelections.Valid() {
+		return &vt.MaxSelections.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u ExtensionAITasksTaskUnionParam) GetMinSelections() *int64 {
+	if vt := u.OfSelectTags; vt != nil && vt.MinSelections.Valid() {
+		return &vt.MinSelections.Value
+	} else if vt := u.OfSelectMetadata; vt != nil && vt.MinSelections.Valid() {
+		return &vt.MinSelections.Value
+	}
+	return nil
+}
+
+// Returns a subunion which exports methods to access subproperties
+//
+// Or use AsAny() to get the underlying value
+func (u ExtensionAITasksTaskUnionParam) GetVocabulary() (res extensionAITasksTaskUnionParamVocabulary) {
+	if vt := u.OfSelectTags; vt != nil {
+		res.any = &vt.Vocabulary
+	} else if vt := u.OfSelectMetadata; vt != nil {
+		res.any = &vt.Vocabulary
+	}
+	return
+}
+
+// Can have the runtime types [_[]string],
+// [_[]ExtensionAITasksTaskSelectMetadataVocabularyUnionParam]
+type extensionAITasksTaskUnionParamVocabulary struct{ any }
+
+// Use the following switch statement to get the type of the union:
+//
+//	switch u.AsAny().(type) {
+//	case *[]string:
+//	case *[]shared.ExtensionAITasksTaskSelectMetadataVocabularyUnionParam:
+//	default:
+//	    fmt.Errorf("not present")
+//	}
+func (u extensionAITasksTaskUnionParamVocabulary) AsAny() any { return u.any }
+
+func init() {
+	apijson.RegisterUnion[ExtensionAITasksTaskUnionParam](
+		"type",
+		apijson.Discriminator[ExtensionAITasksTaskSelectTagsParam]("select_tags"),
+		apijson.Discriminator[ExtensionAITasksTaskSelectMetadataParam]("select_metadata"),
+		apijson.Discriminator[ExtensionAITasksTaskYesNoParam]("yes_no"),
+	)
+}
+
+// The properties Instruction, Type, Vocabulary are required.
+type ExtensionAITasksTaskSelectTagsParam struct {
+	// The question or instruction for the AI to analyze the image.
+	Instruction string `json:"instruction,required"`
+	// Array of possible tag values. Combined length of all strings must not exceed 500
+	// characters. Cannot contain the `%` character.
+	Vocabulary []string `json:"vocabulary,omitzero,required"`
+	// Maximum number of tags to select from the vocabulary.
+	MaxSelections param.Opt[int64] `json:"max_selections,omitzero"`
+	// Minimum number of tags to select from the vocabulary.
+	MinSelections param.Opt[int64] `json:"min_selections,omitzero"`
+	// Task type that analyzes the image and adds matching tags from a vocabulary.
+	//
+	// This field can be elided, and will marshal its zero value as "select_tags".
+	Type constant.SelectTags `json:"type,required"`
+	paramObj
+}
+
+func (r ExtensionAITasksTaskSelectTagsParam) MarshalJSON() (data []byte, err error) {
+	type shadow ExtensionAITasksTaskSelectTagsParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ExtensionAITasksTaskSelectTagsParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties Field, Instruction, Type are required.
+type ExtensionAITasksTaskSelectMetadataParam struct {
+	// Name of the custom metadata field to set. The field must exist in your account.
+	Field string `json:"field,required"`
+	// The question or instruction for the AI to analyze the image.
+	Instruction string `json:"instruction,required"`
+	// Maximum number of values to select from the vocabulary.
+	MaxSelections param.Opt[int64] `json:"max_selections,omitzero"`
+	// Minimum number of values to select from the vocabulary.
+	MinSelections param.Opt[int64] `json:"min_selections,omitzero"`
+	// Array of possible values matching the custom metadata field type.
+	Vocabulary []ExtensionAITasksTaskSelectMetadataVocabularyUnionParam `json:"vocabulary,omitzero"`
+	// Task type that analyzes the image and sets a custom metadata field value from a
+	// vocabulary.
+	//
+	// This field can be elided, and will marshal its zero value as "select_metadata".
+	Type constant.SelectMetadata `json:"type,required"`
+	paramObj
+}
+
+func (r ExtensionAITasksTaskSelectMetadataParam) MarshalJSON() (data []byte, err error) {
+	type shadow ExtensionAITasksTaskSelectMetadataParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ExtensionAITasksTaskSelectMetadataParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type ExtensionAITasksTaskSelectMetadataVocabularyUnionParam struct {
+	OfString param.Opt[string]  `json:",omitzero,inline"`
+	OfFloat  param.Opt[float64] `json:",omitzero,inline"`
+	OfBool   param.Opt[bool]    `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u ExtensionAITasksTaskSelectMetadataVocabularyUnionParam) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfString, u.OfFloat, u.OfBool)
+}
+func (u *ExtensionAITasksTaskSelectMetadataVocabularyUnionParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *ExtensionAITasksTaskSelectMetadataVocabularyUnionParam) asAny() any {
+	if !param.IsOmitted(u.OfString) {
+		return &u.OfString.Value
+	} else if !param.IsOmitted(u.OfFloat) {
+		return &u.OfFloat.Value
+	} else if !param.IsOmitted(u.OfBool) {
+		return &u.OfBool.Value
+	}
+	return nil
+}
+
+// The properties Instruction, Type are required.
+type ExtensionAITasksTaskYesNoParam struct {
+	// The yes/no question for the AI to answer about the image.
+	Instruction string `json:"instruction,required"`
+	// Actions to execute if the AI answers no.
+	OnNo ExtensionAITasksTaskYesNoOnNoParam `json:"on_no,omitzero"`
+	// Actions to execute if the AI cannot determine the answer.
+	OnUnknown ExtensionAITasksTaskYesNoOnUnknownParam `json:"on_unknown,omitzero"`
+	// Actions to execute if the AI answers yes.
+	OnYes ExtensionAITasksTaskYesNoOnYesParam `json:"on_yes,omitzero"`
+	// Task type that asks a yes/no question and executes actions based on the answer.
+	//
+	// This field can be elided, and will marshal its zero value as "yes_no".
+	Type constant.YesNo `json:"type,required"`
+	paramObj
+}
+
+func (r ExtensionAITasksTaskYesNoParam) MarshalJSON() (data []byte, err error) {
+	type shadow ExtensionAITasksTaskYesNoParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ExtensionAITasksTaskYesNoParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Actions to execute if the AI answers no.
+type ExtensionAITasksTaskYesNoOnNoParam struct {
+	// Array of tag strings to add to the asset.
+	AddTags []string `json:"add_tags,omitzero"`
+	// Array of tag strings to remove from the asset.
+	RemoveTags []string `json:"remove_tags,omitzero"`
+	// Array of custom metadata field updates.
+	SetMetadata []ExtensionAITasksTaskYesNoOnNoSetMetadataParam `json:"set_metadata,omitzero"`
+	// Array of custom metadata fields to remove.
+	UnsetMetadata []ExtensionAITasksTaskYesNoOnNoUnsetMetadataParam `json:"unset_metadata,omitzero"`
+	paramObj
+}
+
+func (r ExtensionAITasksTaskYesNoOnNoParam) MarshalJSON() (data []byte, err error) {
+	type shadow ExtensionAITasksTaskYesNoOnNoParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ExtensionAITasksTaskYesNoOnNoParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties Field, Value are required.
+type ExtensionAITasksTaskYesNoOnNoSetMetadataParam struct {
+	// Name of the custom metadata field to set.
+	Field string `json:"field,required"`
+	// Value to set for the custom metadata field. The value type should match the
+	// custom metadata field type.
+	Value ExtensionAITasksTaskYesNoOnNoSetMetadataValueUnionParam `json:"value,omitzero,required"`
+	paramObj
+}
+
+func (r ExtensionAITasksTaskYesNoOnNoSetMetadataParam) MarshalJSON() (data []byte, err error) {
+	type shadow ExtensionAITasksTaskYesNoOnNoSetMetadataParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ExtensionAITasksTaskYesNoOnNoSetMetadataParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type ExtensionAITasksTaskYesNoOnNoSetMetadataValueUnionParam struct {
+	OfString param.Opt[string]                                                  `json:",omitzero,inline"`
+	OfFloat  param.Opt[float64]                                                 `json:",omitzero,inline"`
+	OfBool   param.Opt[bool]                                                    `json:",omitzero,inline"`
+	OfMixed  []ExtensionAITasksTaskYesNoOnNoSetMetadataValueMixedItemUnionParam `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u ExtensionAITasksTaskYesNoOnNoSetMetadataValueUnionParam) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfString, u.OfFloat, u.OfBool, u.OfMixed)
+}
+func (u *ExtensionAITasksTaskYesNoOnNoSetMetadataValueUnionParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *ExtensionAITasksTaskYesNoOnNoSetMetadataValueUnionParam) asAny() any {
+	if !param.IsOmitted(u.OfString) {
+		return &u.OfString.Value
+	} else if !param.IsOmitted(u.OfFloat) {
+		return &u.OfFloat.Value
+	} else if !param.IsOmitted(u.OfBool) {
+		return &u.OfBool.Value
+	} else if !param.IsOmitted(u.OfMixed) {
+		return &u.OfMixed
+	}
+	return nil
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type ExtensionAITasksTaskYesNoOnNoSetMetadataValueMixedItemUnionParam struct {
+	OfString param.Opt[string]  `json:",omitzero,inline"`
+	OfFloat  param.Opt[float64] `json:",omitzero,inline"`
+	OfBool   param.Opt[bool]    `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u ExtensionAITasksTaskYesNoOnNoSetMetadataValueMixedItemUnionParam) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfString, u.OfFloat, u.OfBool)
+}
+func (u *ExtensionAITasksTaskYesNoOnNoSetMetadataValueMixedItemUnionParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *ExtensionAITasksTaskYesNoOnNoSetMetadataValueMixedItemUnionParam) asAny() any {
+	if !param.IsOmitted(u.OfString) {
+		return &u.OfString.Value
+	} else if !param.IsOmitted(u.OfFloat) {
+		return &u.OfFloat.Value
+	} else if !param.IsOmitted(u.OfBool) {
+		return &u.OfBool.Value
+	}
+	return nil
+}
+
+// The property Field is required.
+type ExtensionAITasksTaskYesNoOnNoUnsetMetadataParam struct {
+	// Name of the custom metadata field to remove.
+	Field string `json:"field,required"`
+	paramObj
+}
+
+func (r ExtensionAITasksTaskYesNoOnNoUnsetMetadataParam) MarshalJSON() (data []byte, err error) {
+	type shadow ExtensionAITasksTaskYesNoOnNoUnsetMetadataParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ExtensionAITasksTaskYesNoOnNoUnsetMetadataParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Actions to execute if the AI cannot determine the answer.
+type ExtensionAITasksTaskYesNoOnUnknownParam struct {
+	// Array of tag strings to add to the asset.
+	AddTags []string `json:"add_tags,omitzero"`
+	// Array of tag strings to remove from the asset.
+	RemoveTags []string `json:"remove_tags,omitzero"`
+	// Array of custom metadata field updates.
+	SetMetadata []ExtensionAITasksTaskYesNoOnUnknownSetMetadataParam `json:"set_metadata,omitzero"`
+	// Array of custom metadata fields to remove.
+	UnsetMetadata []ExtensionAITasksTaskYesNoOnUnknownUnsetMetadataParam `json:"unset_metadata,omitzero"`
+	paramObj
+}
+
+func (r ExtensionAITasksTaskYesNoOnUnknownParam) MarshalJSON() (data []byte, err error) {
+	type shadow ExtensionAITasksTaskYesNoOnUnknownParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ExtensionAITasksTaskYesNoOnUnknownParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties Field, Value are required.
+type ExtensionAITasksTaskYesNoOnUnknownSetMetadataParam struct {
+	// Name of the custom metadata field to set.
+	Field string `json:"field,required"`
+	// Value to set for the custom metadata field. The value type should match the
+	// custom metadata field type.
+	Value ExtensionAITasksTaskYesNoOnUnknownSetMetadataValueUnionParam `json:"value,omitzero,required"`
+	paramObj
+}
+
+func (r ExtensionAITasksTaskYesNoOnUnknownSetMetadataParam) MarshalJSON() (data []byte, err error) {
+	type shadow ExtensionAITasksTaskYesNoOnUnknownSetMetadataParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ExtensionAITasksTaskYesNoOnUnknownSetMetadataParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type ExtensionAITasksTaskYesNoOnUnknownSetMetadataValueUnionParam struct {
+	OfString param.Opt[string]                                                       `json:",omitzero,inline"`
+	OfFloat  param.Opt[float64]                                                      `json:",omitzero,inline"`
+	OfBool   param.Opt[bool]                                                         `json:",omitzero,inline"`
+	OfMixed  []ExtensionAITasksTaskYesNoOnUnknownSetMetadataValueMixedItemUnionParam `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u ExtensionAITasksTaskYesNoOnUnknownSetMetadataValueUnionParam) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfString, u.OfFloat, u.OfBool, u.OfMixed)
+}
+func (u *ExtensionAITasksTaskYesNoOnUnknownSetMetadataValueUnionParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *ExtensionAITasksTaskYesNoOnUnknownSetMetadataValueUnionParam) asAny() any {
+	if !param.IsOmitted(u.OfString) {
+		return &u.OfString.Value
+	} else if !param.IsOmitted(u.OfFloat) {
+		return &u.OfFloat.Value
+	} else if !param.IsOmitted(u.OfBool) {
+		return &u.OfBool.Value
+	} else if !param.IsOmitted(u.OfMixed) {
+		return &u.OfMixed
+	}
+	return nil
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type ExtensionAITasksTaskYesNoOnUnknownSetMetadataValueMixedItemUnionParam struct {
+	OfString param.Opt[string]  `json:",omitzero,inline"`
+	OfFloat  param.Opt[float64] `json:",omitzero,inline"`
+	OfBool   param.Opt[bool]    `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u ExtensionAITasksTaskYesNoOnUnknownSetMetadataValueMixedItemUnionParam) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfString, u.OfFloat, u.OfBool)
+}
+func (u *ExtensionAITasksTaskYesNoOnUnknownSetMetadataValueMixedItemUnionParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *ExtensionAITasksTaskYesNoOnUnknownSetMetadataValueMixedItemUnionParam) asAny() any {
+	if !param.IsOmitted(u.OfString) {
+		return &u.OfString.Value
+	} else if !param.IsOmitted(u.OfFloat) {
+		return &u.OfFloat.Value
+	} else if !param.IsOmitted(u.OfBool) {
+		return &u.OfBool.Value
+	}
+	return nil
+}
+
+// The property Field is required.
+type ExtensionAITasksTaskYesNoOnUnknownUnsetMetadataParam struct {
+	// Name of the custom metadata field to remove.
+	Field string `json:"field,required"`
+	paramObj
+}
+
+func (r ExtensionAITasksTaskYesNoOnUnknownUnsetMetadataParam) MarshalJSON() (data []byte, err error) {
+	type shadow ExtensionAITasksTaskYesNoOnUnknownUnsetMetadataParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ExtensionAITasksTaskYesNoOnUnknownUnsetMetadataParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Actions to execute if the AI answers yes.
+type ExtensionAITasksTaskYesNoOnYesParam struct {
+	// Array of tag strings to add to the asset.
+	AddTags []string `json:"add_tags,omitzero"`
+	// Array of tag strings to remove from the asset.
+	RemoveTags []string `json:"remove_tags,omitzero"`
+	// Array of custom metadata field updates.
+	SetMetadata []ExtensionAITasksTaskYesNoOnYesSetMetadataParam `json:"set_metadata,omitzero"`
+	// Array of custom metadata fields to remove.
+	UnsetMetadata []ExtensionAITasksTaskYesNoOnYesUnsetMetadataParam `json:"unset_metadata,omitzero"`
+	paramObj
+}
+
+func (r ExtensionAITasksTaskYesNoOnYesParam) MarshalJSON() (data []byte, err error) {
+	type shadow ExtensionAITasksTaskYesNoOnYesParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ExtensionAITasksTaskYesNoOnYesParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties Field, Value are required.
+type ExtensionAITasksTaskYesNoOnYesSetMetadataParam struct {
+	// Name of the custom metadata field to set.
+	Field string `json:"field,required"`
+	// Value to set for the custom metadata field. The value type should match the
+	// custom metadata field type.
+	Value ExtensionAITasksTaskYesNoOnYesSetMetadataValueUnionParam `json:"value,omitzero,required"`
+	paramObj
+}
+
+func (r ExtensionAITasksTaskYesNoOnYesSetMetadataParam) MarshalJSON() (data []byte, err error) {
+	type shadow ExtensionAITasksTaskYesNoOnYesSetMetadataParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ExtensionAITasksTaskYesNoOnYesSetMetadataParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type ExtensionAITasksTaskYesNoOnYesSetMetadataValueUnionParam struct {
+	OfString param.Opt[string]                                                   `json:",omitzero,inline"`
+	OfFloat  param.Opt[float64]                                                  `json:",omitzero,inline"`
+	OfBool   param.Opt[bool]                                                     `json:",omitzero,inline"`
+	OfMixed  []ExtensionAITasksTaskYesNoOnYesSetMetadataValueMixedItemUnionParam `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u ExtensionAITasksTaskYesNoOnYesSetMetadataValueUnionParam) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfString, u.OfFloat, u.OfBool, u.OfMixed)
+}
+func (u *ExtensionAITasksTaskYesNoOnYesSetMetadataValueUnionParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *ExtensionAITasksTaskYesNoOnYesSetMetadataValueUnionParam) asAny() any {
+	if !param.IsOmitted(u.OfString) {
+		return &u.OfString.Value
+	} else if !param.IsOmitted(u.OfFloat) {
+		return &u.OfFloat.Value
+	} else if !param.IsOmitted(u.OfBool) {
+		return &u.OfBool.Value
+	} else if !param.IsOmitted(u.OfMixed) {
+		return &u.OfMixed
+	}
+	return nil
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type ExtensionAITasksTaskYesNoOnYesSetMetadataValueMixedItemUnionParam struct {
+	OfString param.Opt[string]  `json:",omitzero,inline"`
+	OfFloat  param.Opt[float64] `json:",omitzero,inline"`
+	OfBool   param.Opt[bool]    `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u ExtensionAITasksTaskYesNoOnYesSetMetadataValueMixedItemUnionParam) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfString, u.OfFloat, u.OfBool)
+}
+func (u *ExtensionAITasksTaskYesNoOnYesSetMetadataValueMixedItemUnionParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *ExtensionAITasksTaskYesNoOnYesSetMetadataValueMixedItemUnionParam) asAny() any {
+	if !param.IsOmitted(u.OfString) {
+		return &u.OfString.Value
+	} else if !param.IsOmitted(u.OfFloat) {
+		return &u.OfFloat.Value
+	} else if !param.IsOmitted(u.OfBool) {
+		return &u.OfBool.Value
+	}
+	return nil
+}
+
+// The property Field is required.
+type ExtensionAITasksTaskYesNoOnYesUnsetMetadataParam struct {
+	// Name of the custom metadata field to remove.
+	Field string `json:"field,required"`
+	paramObj
+}
+
+func (r ExtensionAITasksTaskYesNoOnYesUnsetMetadataParam) MarshalJSON() (data []byte, err error) {
+	type shadow ExtensionAITasksTaskYesNoOnYesUnsetMetadataParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ExtensionAITasksTaskYesNoOnYesUnsetMetadataParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties ID, Name are required.
+type ExtensionSavedExtensionParam struct {
+	// The unique ID of the saved extension to apply.
+	ID string `json:"id,required"`
+	// Indicates this is a reference to a saved extension.
+	//
+	// This field can be elided, and will marshal its zero value as "saved-extension".
+	Name constant.SavedExtension `json:"name,required"`
+	paramObj
+}
+
+func (r ExtensionSavedExtensionParam) MarshalJSON() (data []byte, err error) {
+	type shadow ExtensionSavedExtensionParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ExtensionSavedExtensionParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Options for generating responsive image attributes including `src`, `srcSet`,
+// and `sizes` for HTML `<img>` elements. This schema extends `SrcOptions` to add
+// support for responsive image generation with breakpoints.
+type GetImageAttributesOptionsParam struct {
+	// Custom list of **device-width breakpoints** in pixels. These define common
+	// screen widths for responsive image generation.
+	//
+	// Defaults to `[640, 750, 828, 1080, 1200, 1920, 2048, 3840]`. Sorted
+	// automatically.
+	DeviceBreakpoints []float64 `json:"deviceBreakpoints,omitzero"`
+	// Custom list of **image-specific breakpoints** in pixels. Useful for generating
+	// small variants (e.g., placeholders or thumbnails).
+	//
+	// Merged with `deviceBreakpoints` before calculating `srcSet`. Defaults to
+	// `[16, 32, 48, 64, 96, 128, 256, 384]`. Sorted automatically.
+	ImageBreakpoints []float64 `json:"imageBreakpoints,omitzero"`
+	// The value for the HTML `sizes` attribute (e.g., `"100vw"` or
+	// `"(min-width:768px) 50vw, 100vw"`).
+	//
+	//   - If it includes one or more `vw` units, breakpoints smaller than the
+	//     corresponding percentage of the smallest device width are excluded.
+	//   - If it contains no `vw` units, the full breakpoint list is used.
+	//
+	// Enables a width-based strategy and generates `w` descriptors in `srcSet`.
+	Sizes param.Opt[string] `json:"sizes,omitzero"`
+	// The intended display width of the image in pixels, used **only when the `sizes`
+	// attribute is not provided**.
+	//
+	// Triggers a DPR-based strategy (1x and 2x variants) and generates `x` descriptors
+	// in `srcSet`.
+	//
+	// Ignored if `sizes` is present.
+	Width param.Opt[float64] `json:"width,omitzero"`
+	SrcOptionsParam
+}
+
+func (r GetImageAttributesOptionsParam) MarshalJSON() (data []byte, err error) {
+	type shadow struct {
+		*GetImageAttributesOptionsParam
+		MarshalJSON bool `json:"-"` // Prevent inheriting [json.Marshaler] from the embedded field
+	}
+	return param.MarshalObject(r, shadow{&r, false})
+}
+
 type ImageOverlayParam struct {
 	// Specifies the relative path to the image used as an overlay.
 	Input string         `json:"input,required"`
@@ -205,6 +2699,12 @@ type ImageOverlayParam struct {
 	// format automatically. To always use base64 encoding (`ie-{base64}`), set this
 	// parameter to `base64`. To always use plain text (`i-{input}`), set it to
 	// `plain`.
+	//
+	// Regardless of the encoding method:
+	//
+	//   - Leading and trailing slashes are removed.
+	//   - Remaining slashes within the path are replaced with `@@` when using plain
+	//     text.
 	Encoding string `json:"encoding,omitzero"`
 	// Array of transformations to be applied to the overlay image. Supported
 	// transformations depends on the base/parent asset. See overlays on
@@ -216,8 +2716,11 @@ type ImageOverlayParam struct {
 }
 
 func (r ImageOverlayParam) MarshalJSON() (data []byte, err error) {
-	type shadow ImageOverlayParam
-	return param.MarshalObject(r, (*shadow)(&r))
+	type shadow struct {
+		*ImageOverlayParam
+		MarshalJSON bool `json:"-"` // Prevent inheriting [json.Marshaler] from the embedded field
+	}
+	return param.MarshalObject(r, shadow{&r, false})
 }
 
 func OverlayParamOfText(text string) OverlayUnionParam {
@@ -300,6 +2803,22 @@ func (u OverlayUnionParam) GetText() *string {
 func (u OverlayUnionParam) GetColor() *string {
 	if vt := u.OfSolidColor; vt != nil {
 		return &vt.Color
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u OverlayUnionParam) GetLayerMode() *string {
+	if vt := u.OfText; vt != nil {
+		return (*string)(&vt.LayerMode)
+	} else if vt := u.OfImage; vt != nil {
+		return (*string)(&vt.LayerMode)
+	} else if vt := u.OfVideo; vt != nil {
+		return (*string)(&vt.LayerMode)
+	} else if vt := u.OfSubtitle; vt != nil {
+		return (*string)(&vt.LayerMode)
+	} else if vt := u.OfSolidColor; vt != nil {
+		return (*string)(&vt.LayerMode)
 	}
 	return nil
 }
@@ -623,6 +3142,101 @@ func (u *OverlayTimingStartUnionParam) asAny() any {
 	return nil
 }
 
+// Resulting set of attributes suitable for an HTML `<img>` element. Useful for
+// enabling responsive image loading with `srcSet` and `sizes`.
+//
+// The property Src is required.
+type ResponsiveImageAttributesParam struct {
+	// URL for the _largest_ candidate (assigned to plain `src`).
+	Src string `json:"src,required" format:"uri"`
+	// `sizes` returned (or synthesised as `100vw`). The value for the HTML `sizes`
+	// attribute.
+	Sizes param.Opt[string] `json:"sizes,omitzero"`
+	// Candidate set with `w` or `x` descriptors. Multiple image URLs separated by
+	// commas, each with a descriptor.
+	SrcSet param.Opt[string] `json:"srcSet,omitzero"`
+	// Width as a number (if `width` was provided in the input options).
+	Width param.Opt[float64] `json:"width,omitzero"`
+	paramObj
+}
+
+func (r ResponsiveImageAttributesParam) MarshalJSON() (data []byte, err error) {
+	type shadow ResponsiveImageAttributesParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ResponsiveImageAttributesParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Saved extension object containing extension configuration.
+type SavedExtension struct {
+	// Unique identifier of the saved extension.
+	ID string `json:"id"`
+	// Configuration object for an extension (base extensions only, not saved extension
+	// references).
+	Config ExtensionConfigUnion `json:"config"`
+	// Timestamp when the saved extension was created.
+	CreatedAt time.Time `json:"createdAt" format:"date-time"`
+	// Description of the saved extension.
+	Description string `json:"description"`
+	// Name of the saved extension.
+	Name string `json:"name"`
+	// Timestamp when the saved extension was last updated.
+	UpdatedAt time.Time `json:"updatedAt" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Config      respjson.Field
+		CreatedAt   respjson.Field
+		Description respjson.Field
+		Name        respjson.Field
+		UpdatedAt   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SavedExtension) RawJSON() string { return r.JSON.raw }
+func (r *SavedExtension) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this SavedExtension to a SavedExtensionParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// SavedExtensionParam.Overrides()
+func (r SavedExtension) ToParam() SavedExtensionParam {
+	return param.Override[SavedExtensionParam](json.RawMessage(r.RawJSON()))
+}
+
+// Saved extension object containing extension configuration.
+type SavedExtensionParam struct {
+	// Unique identifier of the saved extension.
+	ID param.Opt[string] `json:"id,omitzero"`
+	// Timestamp when the saved extension was created.
+	CreatedAt param.Opt[time.Time] `json:"createdAt,omitzero" format:"date-time"`
+	// Description of the saved extension.
+	Description param.Opt[string] `json:"description,omitzero"`
+	// Name of the saved extension.
+	Name param.Opt[string] `json:"name,omitzero"`
+	// Timestamp when the saved extension was last updated.
+	UpdatedAt param.Opt[time.Time] `json:"updatedAt,omitzero" format:"date-time"`
+	// Configuration object for an extension (base extensions only, not saved extension
+	// references).
+	Config ExtensionConfigUnionParam `json:"config,omitzero"`
+	paramObj
+}
+
+func (r SavedExtensionParam) MarshalJSON() (data []byte, err error) {
+	type shadow SavedExtensionParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *SavedExtensionParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type SolidColorOverlayParam struct {
 	// Specifies the color of the block using an RGB hex code (e.g., `FF0000`), an RGBA
 	// code (e.g., `FFAABB50`), or a color name (e.g., `red`). If an 8-character value
@@ -640,13 +3254,16 @@ type SolidColorOverlayParam struct {
 }
 
 func (r SolidColorOverlayParam) MarshalJSON() (data []byte, err error) {
-	type shadow SolidColorOverlayParam
-	return param.MarshalObject(r, (*shadow)(&r))
+	type shadow struct {
+		*SolidColorOverlayParam
+		MarshalJSON bool `json:"-"` // Prevent inheriting [json.Marshaler] from the embedded field
+	}
+	return param.MarshalObject(r, shadow{&r, false})
 }
 
 type SolidColorOverlayTransformationParam struct {
-	// Specifies the transparency level of the solid color overlay. Accepts integers
-	// from `1` to `9`.
+	// Specifies the transparency level of the overlaid solid color layer. Supports
+	// integers from `1` to `9`.
 	Alpha param.Opt[float64] `json:"alpha,omitzero"`
 	// Specifies the background color of the solid color overlay. Accepts an RGB hex
 	// code (e.g., `FF0000`), an RGBA code (e.g., `FFAABB50`), or a color name.
@@ -660,9 +3277,14 @@ type SolidColorOverlayTransformationParam struct {
 	// arithmetic expression. Learn about
 	// [arithmetic expressions](https://imagekit.io/docs/arithmetic-expressions-in-transformations).
 	Height SolidColorOverlayTransformationHeightUnionParam `json:"height,omitzero"`
-	// Specifies the corner radius of the solid color overlay. Set to `max` for
-	// circular or oval shape. See
-	// [radius](https://imagekit.io/docs/effects-and-enhancements#radius---r).
+	// Specifies the corner radius of the solid color overlay.
+	//
+	//   - Single value (positive integer): Applied to all corners (e.g., `20`).
+	//   - `max`: Creates a circular or oval shape.
+	//   - Per-corner array: Provide four underscore-separated values representing
+	//     top-left, top-right, bottom-right, and bottom-left corners respectively (e.g.,
+	//     `10_20_30_40`). See
+	//     [Radius](https://imagekit.io/docs/effects-and-enhancements#radius---r).
 	Radius SolidColorOverlayTransformationRadiusUnionParam `json:"radius,omitzero"`
 	// Controls the width of the solid color overlay. Accepts a numeric value or an
 	// arithmetic expression (e.g., `bw_mul_0.2` or `bh_div_2`). Learn about
@@ -742,12 +3364,13 @@ func (u *SolidColorOverlayTransformationHeightUnionParam) asAny() any {
 type SolidColorOverlayTransformationRadiusUnionParam struct {
 	OfFloat param.Opt[float64] `json:",omitzero,inline"`
 	// Construct this variant with constant.ValueOf[constant.Max]()
-	OfMax constant.Max `json:",omitzero,inline"`
+	OfMax    constant.Max      `json:",omitzero,inline"`
+	OfString param.Opt[string] `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u SolidColorOverlayTransformationRadiusUnionParam) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfFloat, u.OfMax)
+	return param.MarshalUnion(u, u.OfFloat, u.OfMax, u.OfString)
 }
 func (u *SolidColorOverlayTransformationRadiusUnionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -758,6 +3381,8 @@ func (u *SolidColorOverlayTransformationRadiusUnionParam) asAny() any {
 		return &u.OfFloat.Value
 	} else if !param.IsOmitted(u.OfMax) {
 		return &u.OfMax
+	} else if !param.IsOmitted(u.OfString) {
+		return &u.OfString.Value
 	}
 	return nil
 }
@@ -866,6 +3491,12 @@ type SubtitleOverlayParam struct {
 	// format automatically. To always use base64 encoding (`ie-{base64}`), set this
 	// parameter to `base64`. To always use plain text (`i-{input}`), set it to
 	// `plain`.
+	//
+	// Regardless of the encoding method:
+	//
+	//   - Leading and trailing slashes are removed.
+	//   - Remaining slashes within the path are replaced with `@@` when using plain
+	//     text.
 	Encoding string `json:"encoding,omitzero"`
 	// Control styling of the subtitle. See
 	// [Styling subtitles](https://imagekit.io/docs/add-overlays-on-videos#styling-controls-for-subtitles-layer).
@@ -874,8 +3505,11 @@ type SubtitleOverlayParam struct {
 }
 
 func (r SubtitleOverlayParam) MarshalJSON() (data []byte, err error) {
-	type shadow SubtitleOverlayParam
-	return param.MarshalObject(r, (*shadow)(&r))
+	type shadow struct {
+		*SubtitleOverlayParam
+		MarshalJSON bool `json:"-"` // Prevent inheriting [json.Marshaler] from the embedded field
+	}
+	return param.MarshalObject(r, shadow{&r, false})
 }
 
 // Subtitle styling options.
@@ -892,8 +3526,9 @@ type SubtitleOverlayTransformationParam struct {
 	//
 	// [Subtitle styling options](https://imagekit.io/docs/add-overlays-on-videos#styling-controls-for-subtitles-layer)
 	Color param.Opt[string] `json:"color,omitzero"`
-	// Font family for subtitles. Refer to the
-	// [supported fonts](https://imagekit.io/docs/add-overlays-on-images#supported-text-font-list).
+	// Sets the font family of subtitle text. Refer to the
+	// [supported fonts documented](https://imagekit.io/docs/add-overlays-on-images#supported-text-font-list)
+	// in the ImageKit transformations guide.
 	FontFamily param.Opt[string] `json:"fontFamily,omitzero"`
 	// Sets the font outline of the subtitle text. Requires the outline width (an
 	// integer) and the outline color (as an RGB color code, RGBA color code, or
@@ -956,6 +3591,9 @@ type TextOverlayParam struct {
 	// appropriate format based on the input text. To always use base64
 	// (`ie-{base64}`), set this parameter to `base64`. To always use plain text
 	// (`i-{input}`), set it to `plain`.
+	//
+	// Regardless of the encoding method, the input text is always percent-encoded to
+	// ensure it is URL-safe.
 	Encoding string `json:"encoding,omitzero"`
 	// Control styling of the text overlay. See
 	// [Text overlays](https://imagekit.io/docs/add-overlays-on-images#text-overlay).
@@ -964,8 +3602,11 @@ type TextOverlayParam struct {
 }
 
 func (r TextOverlayParam) MarshalJSON() (data []byte, err error) {
-	type shadow TextOverlayParam
-	return param.MarshalObject(r, (*shadow)(&r))
+	type shadow struct {
+		*TextOverlayParam
+		MarshalJSON bool `json:"-"` // Prevent inheriting [json.Marshaler] from the embedded field
+	}
+	return param.MarshalObject(r, shadow{&r, false})
 }
 
 type TextOverlayTransformationParam struct {
@@ -990,7 +3631,9 @@ type TextOverlayTransformationParam struct {
 	//   - Combinations: Any combination separated by underscores, e.g., `b_i`,
 	//     `b_i_strikethrough`.
 	Typography param.Opt[string] `json:"typography,omitzero"`
-	// Flip the text overlay horizontally, vertically, or both.
+	// Flip/mirror the text horizontally, vertically, or in both directions. Acceptable
+	// values: `h` (horizontal), `v` (vertical), `h_v` (horizontal and vertical), or
+	// `v_h`.
 	//
 	// Any of "h", "v", "h_v", "v_h".
 	Flip TextOverlayTransformationFlip `json:"flip,omitzero"`
@@ -1002,17 +3645,22 @@ type TextOverlayTransformationParam struct {
 	//
 	// Any of "left", "right", "center".
 	InnerAlignment TextOverlayTransformationInnerAlignment `json:"innerAlignment,omitzero"`
-	// Specifies the line height of the text overlay. Accepts integer values
-	// representing line height in points. It can also accept
-	// [arithmetic expressions](https://imagekit.io/docs/arithmetic-expressions-in-transformations)
-	// such as `bw_mul_0.2`, or `bh_div_20`.
+	// Specifies the line height for multi-line text overlays. It will come into effect
+	// only if the text wraps over multiple lines. Accepts either an integer value or
+	// an arithmetic expression.
 	LineHeight TextOverlayTransformationLineHeightUnionParam `json:"lineHeight,omitzero"`
 	// Specifies the padding around the overlaid text. Can be provided as a single
 	// positive integer or multiple values separated by underscores (following CSS
 	// shorthand order). Arithmetic expressions are also accepted.
 	Padding TextOverlayTransformationPaddingUnionParam `json:"padding,omitzero"`
-	// Specifies the corner radius of the text overlay. Set to `max` to achieve a
-	// circular or oval shape.
+	// Specifies the corner radius:
+	//
+	//   - Single value (positive integer): Applied to all corners (e.g., `20`).
+	//   - `max`: Creates a circular or oval shape.
+	//   - Per-corner array: Provide four underscore-separated values representing
+	//     top-left, top-right, bottom-right, and bottom-left corners respectively (e.g.,
+	//     `10_20_30_40`). See
+	//     [Radius](https://imagekit.io/docs/effects-and-enhancements#radius---r).
 	Radius TextOverlayTransformationRadiusUnionParam `json:"radius,omitzero"`
 	// Specifies the rotation angle of the text overlay. Accepts a numeric value for
 	// clockwise rotation or a string prefixed with "N" for counter-clockwise rotation.
@@ -1033,7 +3681,9 @@ func (r *TextOverlayTransformationParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Flip the text overlay horizontally, vertically, or both.
+// Flip/mirror the text horizontally, vertically, or in both directions. Acceptable
+// values: `h` (horizontal), `v` (vertical), `h_v` (horizontal and vertical), or
+// `v_h`.
 type TextOverlayTransformationFlip string
 
 const (
@@ -1134,12 +3784,13 @@ func (u *TextOverlayTransformationPaddingUnionParam) asAny() any {
 type TextOverlayTransformationRadiusUnionParam struct {
 	OfFloat param.Opt[float64] `json:",omitzero,inline"`
 	// Construct this variant with constant.ValueOf[constant.Max]()
-	OfMax constant.Max `json:",omitzero,inline"`
+	OfMax    constant.Max      `json:",omitzero,inline"`
+	OfString param.Opt[string] `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u TextOverlayTransformationRadiusUnionParam) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfFloat, u.OfMax)
+	return param.MarshalUnion(u, u.OfFloat, u.OfMax, u.OfString)
 }
 func (u *TextOverlayTransformationRadiusUnionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -1150,6 +3801,8 @@ func (u *TextOverlayTransformationRadiusUnionParam) asAny() any {
 		return &u.OfFloat.Value
 	} else if !param.IsOmitted(u.OfMax) {
 		return &u.OfMax
+	} else if !param.IsOmitted(u.OfString) {
+		return &u.OfString.Value
 	}
 	return nil
 }
@@ -1226,6 +3879,12 @@ type TransformationParam struct {
 	//
 	//   - A solid color: e.g., `red`, `F3F3F3`, `AAFF0010`. See
 	//     [Solid color background](https://imagekit.io/docs/effects-and-enhancements#solid-color-background).
+	//   - Dominant color: `dominant` extracts the dominant color from the image. See
+	//     [Dominant color background](https://imagekit.io/docs/effects-and-enhancements#dominant-color-background).
+	//   - Gradient: `gradient_dominant` or `gradient_dominant_2` creates a gradient
+	//     using the dominant colors. Optionally specify palette size (2 or 4), e.g.,
+	//     `gradient_dominant_4`. See
+	//     [Gradient background](https://imagekit.io/docs/effects-and-enhancements#gradient-background).
 	//   - A blurred background: e.g., `blurred`, `blurred_25_N15`, etc. See
 	//     [Blurred background](https://imagekit.io/docs/effects-and-enhancements#blurred-background).
 	//   - Expand the image boundaries using generative fill: `genfill`. Not supported
@@ -1246,13 +3905,33 @@ type TransformationParam struct {
 	// Indicates whether the output image should retain the original color profile. See
 	// [Color profile](https://imagekit.io/docs/image-optimization#color-profile---cp).
 	ColorProfile param.Opt[bool] `json:"colorProfile,omitzero"`
+	// Replaces colors in the image. Supports three formats:
+	//
+	//   - `toColor` - Replace dominant color with the specified color.
+	//   - `toColor_tolerance` - Replace dominant color with specified tolerance (0-100).
+	//   - `toColor_tolerance_fromColor` - Replace a specific color with another within
+	//     tolerance range. Colors can be hex codes (e.g., `FF0022`) or names (e.g.,
+	//     `red`, `blue`). See
+	//     [Color replacement](https://imagekit.io/docs/effects-and-enhancements#color-replace---cr).
+	ColorReplace param.Opt[string] `json:"colorReplace,omitzero"`
 	// Specifies a fallback image if the resource is not found, e.g., a URL or file
 	// path. See
 	// [Default image](https://imagekit.io/docs/image-transformation#default-image---di).
 	DefaultImage param.Opt[string] `json:"defaultImage,omitzero"`
+	// Distorts the shape of an image. Supports two modes:
+	//
+	//   - Perspective distortion: `p-x1_y1_x2_y2_x3_y3_x4_y4` changes the position of
+	//     the four corners starting clockwise from top-left.
+	//   - Arc distortion: `a-degrees` curves the image upwards (positive values) or
+	//     downwards (negative values). See
+	//     [Distort effect](https://imagekit.io/docs/effects-and-enhancements#distort---e-distort).
+	Distort param.Opt[string] `json:"distort,omitzero"`
 	// Accepts values between 0.1 and 5, or `auto` for automatic device pixel ratio
-	// (DPR) calculation. See
-	// [DPR](https://imagekit.io/docs/image-resize-and-crop#dpr---dpr).
+	// (DPR) calculation. Also accepts arithmetic expressions.
+	//
+	//   - Learn about
+	//     [Arithmetic expressions](https://imagekit.io/docs/arithmetic-expressions-in-transformations).
+	//   - See [DPR](https://imagekit.io/docs/image-resize-and-crop#dpr---dpr).
 	Dpr param.Opt[float64] `json:"dpr,omitzero"`
 	// Refines padding and cropping behavior for pad resize, maintain ratio, and
 	// extract crop modes. Supports manual positions and coordinate-based focus. With
@@ -1415,9 +4094,14 @@ type TransformationParam struct {
 	// 2nd and 3rd layers), or by name (e.g., `name-layer-4` for a PSD layer). See
 	// [Thumbnail extraction](https://imagekit.io/docs/vector-and-animated-images#get-thumbnail-from-psd-pdf-ai-eps-and-animated-files).
 	Page TransformationPageUnionParam `json:"page,omitzero"`
-	// Specifies the corner radius for rounded corners (e.g., 20) or `max` for circular
-	// or oval shape. See
-	// [Radius](https://imagekit.io/docs/effects-and-enhancements#radius---r).
+	// Specifies the corner radius for rounded corners.
+	//
+	//   - Single value (positive integer): Applied to all corners (e.g., `20`).
+	//   - `max`: Creates a circular or oval shape.
+	//   - Per-corner array: Provide four underscore-separated values representing
+	//     top-left, top-right, bottom-right, and bottom-left corners respectively (e.g.,
+	//     `10_20_30_40`). See
+	//     [Radius](https://imagekit.io/docs/effects-and-enhancements#radius---r).
 	Radius TransformationRadiusUnionParam `json:"radius,omitzero"`
 	// Specifies the rotation angle in degrees. Positive values rotate the image
 	// clockwise; you can also use, for example, `N40` for counterclockwise rotation or
@@ -1771,12 +4455,13 @@ func (u *TransformationPageUnionParam) asAny() any {
 type TransformationRadiusUnionParam struct {
 	OfFloat param.Opt[float64] `json:",omitzero,inline"`
 	// Construct this variant with constant.ValueOf[constant.Max]()
-	OfMax constant.Max `json:",omitzero,inline"`
+	OfMax    constant.Max      `json:",omitzero,inline"`
+	OfString param.Opt[string] `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u TransformationRadiusUnionParam) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfFloat, u.OfMax)
+	return param.MarshalUnion(u, u.OfFloat, u.OfMax, u.OfString)
 }
 func (u *TransformationRadiusUnionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -1787,6 +4472,8 @@ func (u *TransformationRadiusUnionParam) asAny() any {
 		return &u.OfFloat.Value
 	} else if !param.IsOmitted(u.OfMax) {
 		return &u.OfMax
+	} else if !param.IsOmitted(u.OfString) {
+		return &u.OfString.Value
 	}
 	return nil
 }
@@ -2125,6 +4812,12 @@ type VideoOverlayParam struct {
 	// format automatically. To always use base64 encoding (`ie-{base64}`), set this
 	// parameter to `base64`. To always use plain text (`i-{input}`), set it to
 	// `plain`.
+	//
+	// Regardless of the encoding method:
+	//
+	//   - Leading and trailing slashes are removed.
+	//   - Remaining slashes within the path are replaced with `@@` when using plain
+	//     text.
 	Encoding string `json:"encoding,omitzero"`
 	// Array of transformation to be applied to the overlay video. Except
 	// `streamingResolutions`, all other video transformations are supported. See
@@ -2134,6 +4827,9 @@ type VideoOverlayParam struct {
 }
 
 func (r VideoOverlayParam) MarshalJSON() (data []byte, err error) {
-	type shadow VideoOverlayParam
-	return param.MarshalObject(r, (*shadow)(&r))
+	type shadow struct {
+		*VideoOverlayParam
+		MarshalJSON bool `json:"-"` // Prevent inheriting [json.Marshaler] from the embedded field
+	}
+	return param.MarshalObject(r, shadow{&r, false})
 }

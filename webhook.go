@@ -612,6 +612,8 @@ type UploadPreTransformSuccessEventDataExtensionStatus struct {
 	// Any of "success", "pending", "failed".
 	AIAutoDescription string `json:"ai-auto-description"`
 	// Any of "success", "pending", "failed".
+	AITasks string `json:"ai-tasks"`
+	// Any of "success", "pending", "failed".
 	AwsAutoTagging string `json:"aws-auto-tagging"`
 	// Any of "success", "pending", "failed".
 	GoogleAutoTagging string `json:"google-auto-tagging"`
@@ -620,6 +622,7 @@ type UploadPreTransformSuccessEventDataExtensionStatus struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AIAutoDescription respjson.Field
+		AITasks           respjson.Field
 		AwsAutoTagging    respjson.Field
 		GoogleAutoTagging respjson.Field
 		RemoveBg          respjson.Field
@@ -1552,13 +1555,16 @@ func (r *VideoTransformationReadyEventTimings) UnmarshalJSON(data []byte) error 
 // [UploadPreTransformErrorEvent], [UploadPostTransformSuccessEvent],
 // [UploadPostTransformErrorEvent].
 //
+// Use the [UnsafeUnwrapWebhookEventUnion.AsAny] method to switch on the variant.
+//
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type UnsafeUnwrapWebhookEventUnion struct {
 	// This field is from variant [VideoTransformationAcceptedEvent],
 	// [VideoTransformationReadyEvent], [VideoTransformationErrorEvent],
 	// [UploadPreTransformSuccessEvent], [UploadPreTransformErrorEvent],
 	// [UploadPostTransformSuccessEvent], [UploadPostTransformErrorEvent].
-	ID        string    `json:"id"`
+	ID string `json:"id"`
+	// Any of nil, nil, nil, nil, nil, nil, nil.
 	Type      string    `json:"type"`
 	CreatedAt time.Time `json:"created_at"`
 	// This field is a union of [VideoTransformationAcceptedEventData],
@@ -1890,13 +1896,16 @@ func (r *UnsafeUnwrapWebhookEventUnionRequestTransformation) UnmarshalJSON(data 
 // [UploadPreTransformErrorEvent], [UploadPostTransformSuccessEvent],
 // [UploadPostTransformErrorEvent].
 //
+// Use the [UnwrapWebhookEventUnion.AsAny] method to switch on the variant.
+//
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type UnwrapWebhookEventUnion struct {
 	// This field is from variant [VideoTransformationAcceptedEvent],
 	// [VideoTransformationReadyEvent], [VideoTransformationErrorEvent],
 	// [UploadPreTransformSuccessEvent], [UploadPreTransformErrorEvent],
 	// [UploadPostTransformSuccessEvent], [UploadPostTransformErrorEvent].
-	ID        string    `json:"id"`
+	ID string `json:"id"`
+	// Any of nil, nil, nil, nil, nil, nil, nil.
 	Type      string    `json:"type"`
 	CreatedAt time.Time `json:"created_at"`
 	// This field is a union of [VideoTransformationAcceptedEventData],

@@ -54,7 +54,7 @@ func (r *FileMetadataService) Get(ctx context.Context, fileID string, opts ...op
 // using this API.
 func (r *FileMetadataService) GetFromURL(ctx context.Context, query FileMetadataGetFromURLParams, opts ...option.RequestOption) (res *Metadata, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := "v1/files/metadata"
+	path := "v1/metadata"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return
 }

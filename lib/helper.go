@@ -254,10 +254,14 @@ func (r *HelperService) buildTransformationStringInternal(transformation []share
 				if !param.IsOmitted(currentTransform.Radius.OfMax) {
 					return "max"
 				}
+				if value := r.getOptParamValue(currentTransform.Radius.OfString); value != "" {
+					return value
+				}
 				return r.getOptParamValue(currentTransform.Radius.OfFloat)
 			}},
 			{"bg", func() string { return r.getOptParamValue(currentTransform.Background) }},
 			{"b", func() string { return r.getOptParamValue(currentTransform.Border) }},
+			{"cr", func() string { return r.getOptParamValue(currentTransform.ColorReplace) }},
 			{"di", func() string {
 				if !param.IsOmitted(currentTransform.DefaultImage) && currentTransform.DefaultImage.Value != "" {
 					value := currentTransform.DefaultImage.Value
@@ -395,6 +399,12 @@ func (r *HelperService) buildTransformationStringInternal(transformation []share
 					return "", true
 				}
 				if value := r.getOptParamValue(currentTransform.Gradient.OfString); value != "" {
+					return value, false
+				}
+				return "", false
+			}},
+			{"e-distort", func() (string, bool) {
+				if value := r.getOptParamValue(currentTransform.Distort); value != "" {
 					return value, false
 				}
 				return "", false
@@ -589,6 +599,11 @@ func (r *HelperService) processOverlay(overlay shared.OverlayUnionParam) string 
 
 	// Process position and timing if baseOverlay is set
 	if baseOverlay != nil {
+		// LayerMode
+		if baseOverlay.LayerMode != "" {
+			entries = append(entries, fmt.Sprintf("lm-%s", baseOverlay.LayerMode))
+		}
+
 		// Position
 		position := baseOverlay.Position
 		if !param.IsOmitted(position.X.OfFloat) {

@@ -1,11 +1,15 @@
 # Shared Params Types
 
 - <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#BaseOverlayParam">BaseOverlayParam</a>
+- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#ExtensionConfigUnionParam">ExtensionConfigUnionParam</a>
 - <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#ExtensionsParam">ExtensionsParam</a>
+- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#GetImageAttributesOptionsParam">GetImageAttributesOptionsParam</a>
 - <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#ImageOverlayParam">ImageOverlayParam</a>
 - <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#OverlayUnionParam">OverlayUnionParam</a>
 - <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#OverlayPositionParam">OverlayPositionParam</a>
 - <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#OverlayTimingParam">OverlayTimingParam</a>
+- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#ResponsiveImageAttributesParam">ResponsiveImageAttributesParam</a>
+- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#SavedExtensionParam">SavedExtensionParam</a>
 - <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#SolidColorOverlayParam">SolidColorOverlayParam</a>
 - <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#SolidColorOverlayTransformationParam">SolidColorOverlayTransformationParam</a>
 - <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#SrcOptionsParam">SrcOptionsParam</a>
@@ -17,6 +21,12 @@
 - <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#TransformationParam">TransformationParam</a>
 - <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#TransformationPosition">TransformationPosition</a>
 - <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#VideoOverlayParam">VideoOverlayParam</a>
+
+# Shared Response Types
+
+- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#ExtensionConfigUnion">ExtensionConfigUnion</a>
+- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#SavedExtension">SavedExtension</a>
+
 
 # CustomMetadataFields
 
@@ -93,7 +103,17 @@ Methods:
 Methods:
 
 - <code title="get /v1/files/{fileId}/metadata">client.Files.Metadata.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#FileMetadataService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, fileID <a href="https://pkg.go.dev/builtin#string">string</a>) (<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2">imagekit</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#Metadata">Metadata</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
-- <code title="get /v1/files/metadata">client.Files.Metadata.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#FileMetadataService.GetFromURL">GetFromURL</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2">imagekit</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#FileMetadataGetFromURLParams">FileMetadataGetFromURLParams</a>) (<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2">imagekit</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#Metadata">Metadata</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /v1/metadata">client.Files.Metadata.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#FileMetadataService.GetFromURL">GetFromURL</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2">imagekit</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#FileMetadataGetFromURLParams">FileMetadataGetFromURLParams</a>) (<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2">imagekit</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#Metadata">Metadata</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
+# SavedExtensions
+
+Methods:
+
+- <code title="post /v1/saved-extensions">client.SavedExtensions.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#SavedExtensionService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2">imagekit</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#SavedExtensionNewParams">SavedExtensionNewParams</a>) (<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#SavedExtension">SavedExtension</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="patch /v1/saved-extensions/{id}">client.SavedExtensions.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#SavedExtensionService.Update">Update</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2">imagekit</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#SavedExtensionUpdateParams">SavedExtensionUpdateParams</a>) (<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#SavedExtension">SavedExtension</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /v1/saved-extensions">client.SavedExtensions.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#SavedExtensionService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>) ([]<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#SavedExtension">SavedExtension</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="delete /v1/saved-extensions/{id}">client.SavedExtensions.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#SavedExtensionService.Delete">Delete</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
+- <code title="get /v1/saved-extensions/{id}">client.SavedExtensions.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#SavedExtensionService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>) (<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#SavedExtension">SavedExtension</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 # Assets
 

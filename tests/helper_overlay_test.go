@@ -833,4 +833,116 @@ func TestOverlayEncoding(t *testing.T) {
 			t.Errorf("Expected %s, got %s", expected, url)
 		}
 	})
+
+	t.Run("should generate URL with image overlay using layerMode multiply", func(t *testing.T) {
+		transformation := []shared.TransformationParam{
+			{
+				Overlay: shared.OverlayUnionParam{
+					OfImage: &shared.ImageOverlayParam{
+						Input: "logo.png",
+						Type:  constant.Image("image"),
+						BaseOverlayParam: shared.BaseOverlayParam{
+							LayerMode: shared.BaseOverlayLayerModeMultiply,
+						},
+					},
+				},
+			},
+		}
+
+		url := client.Helper.BuildURL(shared.SrcOptionsParam{
+			URLEndpoint:            "https://ik.imagekit.io/test_url_endpoint",
+			TransformationPosition: shared.TransformationPositionPath,
+			Src:                    "/base-image.jpg",
+			Transformation:         transformation,
+		})
+
+		expected := "https://ik.imagekit.io/test_url_endpoint/tr:l-image,i-logo.png,lm-multiply,l-end/base-image.jpg"
+		if url != expected {
+			t.Errorf("Expected %s, got %s", expected, url)
+		}
+	})
+
+	t.Run("should generate URL with image overlay using layerMode cutter", func(t *testing.T) {
+		transformation := []shared.TransformationParam{
+			{
+				Overlay: shared.OverlayUnionParam{
+					OfImage: &shared.ImageOverlayParam{
+						Input: "mask.png",
+						Type:  constant.Image("image"),
+						BaseOverlayParam: shared.BaseOverlayParam{
+							LayerMode: shared.BaseOverlayLayerModeCutter,
+						},
+					},
+				},
+			},
+		}
+
+		url := client.Helper.BuildURL(shared.SrcOptionsParam{
+			URLEndpoint:            "https://ik.imagekit.io/test_url_endpoint",
+			TransformationPosition: shared.TransformationPositionPath,
+			Src:                    "/base-image.jpg",
+			Transformation:         transformation,
+		})
+
+		expected := "https://ik.imagekit.io/test_url_endpoint/tr:l-image,i-mask.png,lm-cutter,l-end/base-image.jpg"
+		if url != expected {
+			t.Errorf("Expected %s, got %s", expected, url)
+		}
+	})
+
+	t.Run("should generate URL with image overlay using layerMode cutout", func(t *testing.T) {
+		transformation := []shared.TransformationParam{
+			{
+				Overlay: shared.OverlayUnionParam{
+					OfImage: &shared.ImageOverlayParam{
+						Input: "shape.png",
+						Type:  constant.Image("image"),
+						BaseOverlayParam: shared.BaseOverlayParam{
+							LayerMode: shared.BaseOverlayLayerModeCutout,
+						},
+					},
+				},
+			},
+		}
+
+		url := client.Helper.BuildURL(shared.SrcOptionsParam{
+			URLEndpoint:            "https://ik.imagekit.io/test_url_endpoint",
+			TransformationPosition: shared.TransformationPositionPath,
+			Src:                    "/base-image.jpg",
+			Transformation:         transformation,
+		})
+
+		expected := "https://ik.imagekit.io/test_url_endpoint/tr:l-image,i-shape.png,lm-cutout,l-end/base-image.jpg"
+		if url != expected {
+			t.Errorf("Expected %s, got %s", expected, url)
+		}
+	})
+
+	t.Run("should generate URL with image overlay using layerMode displace", func(t *testing.T) {
+		transformation := []shared.TransformationParam{
+			{
+				Overlay: shared.OverlayUnionParam{
+					OfImage: &shared.ImageOverlayParam{
+						Input: "displacement.png",
+						Type:  constant.Image("image"),
+						BaseOverlayParam: shared.BaseOverlayParam{
+							LayerMode: shared.BaseOverlayLayerModeDisplace,
+						},
+					},
+				},
+			},
+		}
+
+		url := client.Helper.BuildURL(shared.SrcOptionsParam{
+			URLEndpoint:            "https://ik.imagekit.io/test_url_endpoint",
+			TransformationPosition: shared.TransformationPositionPath,
+			Src:                    "/base-image.jpg",
+			Transformation:         transformation,
+		})
+
+		expected := "https://ik.imagekit.io/test_url_endpoint/tr:l-image,i-displacement.png,lm-displace,l-end/base-image.jpg"
+		if url != expected {
+			t.Errorf("Expected %s, got %s", expected, url)
+		}
+	})
 }

@@ -58,6 +58,64 @@ func TestBetaV2FileUploadWithOptionalParams(t *testing.T) {
 			},
 		}, shared.ExtensionUnionParam{
 			OfAIAutoDescription: &shared.ExtensionAIAutoDescriptionParam{},
+		}, shared.ExtensionUnionParam{
+			OfAITasks: &shared.ExtensionAITasksParam{
+				Tasks: []shared.ExtensionAITasksTaskUnionParam{{
+					OfSelectTags: &shared.ExtensionAITasksTaskSelectTagsParam{
+						Instruction:   "What types of clothing items are visible in this image?",
+						Vocabulary:    []string{"shirt", "tshirt", "dress", "trousers", "jacket"},
+						MaxSelections: imagekit.Int(1),
+						MinSelections: imagekit.Int(0),
+					},
+				}, {
+					OfYesNo: &shared.ExtensionAITasksTaskYesNoParam{
+						Instruction: "Is this a luxury or high-end fashion item?",
+						OnNo: shared.ExtensionAITasksTaskYesNoOnNoParam{
+							AddTags:    []string{"luxury", "premium"},
+							RemoveTags: []string{"budget", "affordable"},
+							SetMetadata: []shared.ExtensionAITasksTaskYesNoOnNoSetMetadataParam{{
+								Field: "price_range",
+								Value: shared.ExtensionAITasksTaskYesNoOnNoSetMetadataValueUnionParam{
+									OfString: imagekit.String("premium"),
+								},
+							}},
+							UnsetMetadata: []shared.ExtensionAITasksTaskYesNoOnNoUnsetMetadataParam{{
+								Field: "price_range",
+							}},
+						},
+						OnUnknown: shared.ExtensionAITasksTaskYesNoOnUnknownParam{
+							AddTags:    []string{"luxury", "premium"},
+							RemoveTags: []string{"budget", "affordable"},
+							SetMetadata: []shared.ExtensionAITasksTaskYesNoOnUnknownSetMetadataParam{{
+								Field: "price_range",
+								Value: shared.ExtensionAITasksTaskYesNoOnUnknownSetMetadataValueUnionParam{
+									OfString: imagekit.String("premium"),
+								},
+							}},
+							UnsetMetadata: []shared.ExtensionAITasksTaskYesNoOnUnknownUnsetMetadataParam{{
+								Field: "price_range",
+							}},
+						},
+						OnYes: shared.ExtensionAITasksTaskYesNoOnYesParam{
+							AddTags:    []string{"luxury", "premium"},
+							RemoveTags: []string{"budget", "affordable"},
+							SetMetadata: []shared.ExtensionAITasksTaskYesNoOnYesSetMetadataParam{{
+								Field: "price_range",
+								Value: shared.ExtensionAITasksTaskYesNoOnYesSetMetadataValueUnionParam{
+									OfString: imagekit.String("premium"),
+								},
+							}},
+							UnsetMetadata: []shared.ExtensionAITasksTaskYesNoOnYesUnsetMetadataParam{{
+								Field: "price_range",
+							}},
+						},
+					},
+				}},
+			},
+		}, shared.ExtensionUnionParam{
+			OfSavedExtension: &shared.ExtensionSavedExtensionParam{
+				ID: "ext_abc123",
+			},
 		}},
 		Folder:                  imagekit.String("folder"),
 		IsPrivateFile:           imagekit.Bool(true),

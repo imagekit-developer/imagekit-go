@@ -38,7 +38,7 @@ func NewDummyService(opts ...option.RequestOption) (r DummyService) {
 // and is not intended for public consumption.
 func (r *DummyService) New(ctx context.Context, body DummyNewParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := "v1/dummy/test"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
 	return
@@ -46,17 +46,29 @@ func (r *DummyService) New(ctx context.Context, body DummyNewParams, opts ...opt
 
 type DummyNewParams struct {
 	BaseOverlay shared.BaseOverlayParam `json:"baseOverlay,omitzero"`
+	// Configuration object for an extension (base extensions only, not saved extension
+	// references).
+	ExtensionConfig shared.ExtensionConfigUnionParam `json:"extensionConfig,omitzero"`
 	// Array of extensions to be applied to the asset. Each extension can be configured
 	// with specific parameters based on the extension type.
-	Extensions   shared.ExtensionsParam   `json:"extensions,omitzero"`
-	ImageOverlay shared.ImageOverlayParam `json:"imageOverlay,omitzero"`
+	Extensions shared.ExtensionsParam `json:"extensions,omitzero"`
+	// Options for generating responsive image attributes including `src`, `srcSet`,
+	// and `sizes` for HTML `<img>` elements. This schema extends `SrcOptions` to add
+	// support for responsive image generation with breakpoints.
+	GetImageAttributesOptions shared.GetImageAttributesOptionsParam `json:"getImageAttributesOptions,omitzero"`
+	ImageOverlay              shared.ImageOverlayParam              `json:"imageOverlay,omitzero"`
 	// Specifies an overlay to be applied on the parent image or video. ImageKit
 	// supports overlays including images, text, videos, subtitles, and solid colors.
 	// See
 	// [Overlay using layers](https://imagekit.io/docs/transformations#overlay-using-layers).
-	Overlay                         shared.OverlayUnionParam                    `json:"overlay,omitzero"`
-	OverlayPosition                 shared.OverlayPositionParam                 `json:"overlayPosition,omitzero"`
-	OverlayTiming                   shared.OverlayTimingParam                   `json:"overlayTiming,omitzero"`
+	Overlay         shared.OverlayUnionParam    `json:"overlay,omitzero"`
+	OverlayPosition shared.OverlayPositionParam `json:"overlayPosition,omitzero"`
+	OverlayTiming   shared.OverlayTimingParam   `json:"overlayTiming,omitzero"`
+	// Resulting set of attributes suitable for an HTML `<img>` element. Useful for
+	// enabling responsive image loading with `srcSet` and `sizes`.
+	ResponsiveImageAttributes shared.ResponsiveImageAttributesParam `json:"responsiveImageAttributes,omitzero"`
+	// Saved extension object containing extension configuration.
+	SavedExtensions                 shared.SavedExtensionParam                  `json:"savedExtensions,omitzero"`
 	SolidColorOverlay               shared.SolidColorOverlayParam               `json:"solidColorOverlay,omitzero"`
 	SolidColorOverlayTransformation shared.SolidColorOverlayTransformationParam `json:"solidColorOverlayTransformation,omitzero"`
 	// Options for generating ImageKit URLs with transformations. See the
