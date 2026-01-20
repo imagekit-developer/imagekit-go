@@ -70,9 +70,9 @@ func TestFileUpdateWithOptionalParams(t *testing.T) {
 							Tasks: []shared.ExtensionAITasksTaskUnionParam{{
 								OfSelectTags: &shared.ExtensionAITasksTaskSelectTagsParam{
 									Instruction:   "What types of clothing items are visible?",
-									Vocabulary:    []string{"shirt", "dress", "jacket"},
 									MaxSelections: imagekit.Int(1),
 									MinSelections: imagekit.Int(0),
+									Vocabulary:    []string{"shirt", "dress", "jacket"},
 								},
 							}},
 						},
@@ -278,9 +278,9 @@ func TestFileUploadWithOptionalParams(t *testing.T) {
 				Tasks: []shared.ExtensionAITasksTaskUnionParam{{
 					OfSelectTags: &shared.ExtensionAITasksTaskSelectTagsParam{
 						Instruction:   "What types of clothing items are visible in this image?",
-						Vocabulary:    []string{"shirt", "tshirt", "dress", "trousers", "jacket"},
 						MaxSelections: imagekit.Int(1),
 						MinSelections: imagekit.Int(0),
+						Vocabulary:    []string{"shirt", "tshirt", "dress", "trousers", "jacket"},
 					},
 				}, {
 					OfYesNo: &shared.ExtensionAITasksTaskYesNoParam{

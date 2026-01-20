@@ -275,12 +275,12 @@ func (r *ExtensionConfigAITasks) UnmarshalJSON(data []byte) error {
 type ExtensionConfigAITasksTaskUnion struct {
 	Instruction string `json:"instruction"`
 	// Any of "select_tags", "select_metadata", "yes_no".
-	Type string `json:"type"`
+	Type          string `json:"type"`
+	MaxSelections int64  `json:"max_selections"`
+	MinSelections int64  `json:"min_selections"`
 	// This field is a union of [[]string],
 	// [[]ExtensionConfigAITasksTaskSelectMetadataVocabularyUnion]
-	Vocabulary    ExtensionConfigAITasksTaskUnionVocabulary `json:"vocabulary"`
-	MaxSelections int64                                     `json:"max_selections"`
-	MinSelections int64                                     `json:"min_selections"`
+	Vocabulary ExtensionConfigAITasksTaskUnionVocabulary `json:"vocabulary"`
 	// This field is from variant [ExtensionConfigAITasksTaskSelectMetadata].
 	Field string `json:"field"`
 	// This field is from variant [ExtensionConfigAITasksTaskYesNo].
@@ -292,9 +292,9 @@ type ExtensionConfigAITasksTaskUnion struct {
 	JSON  struct {
 		Instruction   respjson.Field
 		Type          respjson.Field
-		Vocabulary    respjson.Field
 		MaxSelections respjson.Field
 		MinSelections respjson.Field
+		Vocabulary    respjson.Field
 		Field         respjson.Field
 		OnNo          respjson.Field
 		OnUnknown     respjson.Field
@@ -386,20 +386,20 @@ type ExtensionConfigAITasksTaskSelectTags struct {
 	Instruction string `json:"instruction,required"`
 	// Task type that analyzes the image and adds matching tags from a vocabulary.
 	Type constant.SelectTags `json:"type,required"`
-	// Array of possible tag values. Combined length of all strings must not exceed 500
-	// characters. Cannot contain the `%` character.
-	Vocabulary []string `json:"vocabulary,required"`
 	// Maximum number of tags to select from the vocabulary.
 	MaxSelections int64 `json:"max_selections"`
 	// Minimum number of tags to select from the vocabulary.
 	MinSelections int64 `json:"min_selections"`
+	// Array of possible tag values. Combined length of all strings must not exceed 500
+	// characters. Cannot contain the `%` character.
+	Vocabulary []string `json:"vocabulary"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Instruction   respjson.Field
 		Type          respjson.Field
-		Vocabulary    respjson.Field
 		MaxSelections respjson.Field
 		MinSelections respjson.Field
+		Vocabulary    respjson.Field
 		ExtraFields   map[string]respjson.Field
 		raw           string
 	} `json:"-"`
@@ -1377,17 +1377,17 @@ func init() {
 	)
 }
 
-// The properties Instruction, Type, Vocabulary are required.
+// The properties Instruction, Type are required.
 type ExtensionConfigAITasksTaskSelectTagsParam struct {
 	// The question or instruction for the AI to analyze the image.
 	Instruction string `json:"instruction,required"`
-	// Array of possible tag values. Combined length of all strings must not exceed 500
-	// characters. Cannot contain the `%` character.
-	Vocabulary []string `json:"vocabulary,omitzero,required"`
 	// Maximum number of tags to select from the vocabulary.
 	MaxSelections param.Opt[int64] `json:"max_selections,omitzero"`
 	// Minimum number of tags to select from the vocabulary.
 	MinSelections param.Opt[int64] `json:"min_selections,omitzero"`
+	// Array of possible tag values. Combined length of all strings must not exceed 500
+	// characters. Cannot contain the `%` character.
+	Vocabulary []string `json:"vocabulary,omitzero"`
 	// Task type that analyzes the image and adds matching tags from a vocabulary.
 	//
 	// This field can be elided, and will marshal its zero value as "select_tags".
@@ -2181,17 +2181,17 @@ func init() {
 	)
 }
 
-// The properties Instruction, Type, Vocabulary are required.
+// The properties Instruction, Type are required.
 type ExtensionAITasksTaskSelectTagsParam struct {
 	// The question or instruction for the AI to analyze the image.
 	Instruction string `json:"instruction,required"`
-	// Array of possible tag values. Combined length of all strings must not exceed 500
-	// characters. Cannot contain the `%` character.
-	Vocabulary []string `json:"vocabulary,omitzero,required"`
 	// Maximum number of tags to select from the vocabulary.
 	MaxSelections param.Opt[int64] `json:"max_selections,omitzero"`
 	// Minimum number of tags to select from the vocabulary.
 	MinSelections param.Opt[int64] `json:"min_selections,omitzero"`
+	// Array of possible tag values. Combined length of all strings must not exceed 500
+	// characters. Cannot contain the `%` character.
+	Vocabulary []string `json:"vocabulary,omitzero"`
 	// Task type that analyzes the image and adds matching tags from a vocabulary.
 	//
 	// This field can be elided, and will marshal its zero value as "select_tags".

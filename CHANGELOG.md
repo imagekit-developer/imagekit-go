@@ -1,5 +1,19 @@
 # Changelog
 
+## 2.1.1 (2026-01-20)
+
+Full Changelog: [v2.1.0...v2.1.1](https://github.com/imagekit-developer/imagekit-go/compare/v2.1.0...v2.1.1)
+
+### Bug Fixes
+
+* **docs:** add missing pointer prefix to api.md return types ([f3a6f9f](https://github.com/imagekit-developer/imagekit-go/commit/f3a6f9fa69c8d6c41a018fcdd5534f0dbd00b7a9))
+* vocab field is required ([b18d890](https://github.com/imagekit-developer/imagekit-go/commit/b18d89015fc6f7eb213c89071fb43582ee98ca17))
+
+
+### Chores
+
+* **internal:** update `actions/checkout` version ([f0a9fc0](https://github.com/imagekit-developer/imagekit-go/commit/f0a9fc0d1c3e84934e78815169f763b468c22de6))
+
 ## 2.1.0 (2026-01-16)
 
 Full Changelog: [v2.0.0...v2.1.0](https://github.com/imagekit-developer/imagekit-go/compare/v2.0.0...v2.1.0)
