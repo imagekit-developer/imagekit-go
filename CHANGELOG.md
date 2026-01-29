@@ -1,5 +1,18 @@
 # Changelog
 
+## 2.2.0 (2026-01-29)
+
+Full Changelog: [v2.1.1...v2.2.0](https://github.com/imagekit-developer/imagekit-go/compare/v2.1.1...v2.2.0)
+
+### Features
+
+* **client:** add a convenient param.SetJSON helper ([7db0b48](https://github.com/imagekit-developer/imagekit-go/commit/7db0b4829c864151bda74f002c122f8a018118a0))
+
+
+### Bug Fixes
+
+* **docs:** fix mcp installation instructions for remote servers ([f3875dd](https://github.com/imagekit-developer/imagekit-go/commit/f3875dddc1017d0db1ac2f3a86bd905bb941353d))
+
 ## 2.1.1 (2026-01-20)
 
 Full Changelog: [v2.1.0...v2.1.1](https://github.com/imagekit-developer/imagekit-go/compare/v2.1.0...v2.1.1)
