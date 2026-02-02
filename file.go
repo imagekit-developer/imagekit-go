@@ -169,6 +169,10 @@ func (r *FileService) Upload(ctx context.Context, body FileUploadParams, opts ..
 type File struct {
 	// An array of tags assigned to the file by auto tagging.
 	AITags []FileAITag `json:"AITags,nullable"`
+	// The audio codec used in the video (only for video/audio).
+	AudioCodec string `json:"audioCodec"`
+	// The bit rate of the video in kbps (only for video).
+	BitRate int64 `json:"bitRate"`
 	// Date and time when the file was uploaded. The date and time is in ISO8601
 	// format.
 	CreatedAt time.Time `json:"createdAt" format:"date-time"`
@@ -179,6 +183,11 @@ type File struct {
 	// Optional text to describe the contents of the file. Can be set by the user or
 	// the ai-auto-description extension.
 	Description string `json:"description"`
+	// The duration of the video in seconds (only for video).
+	Duration int64 `json:"duration"`
+	// Consolidated embedded metadata associated with the file. It includes exif, iptc,
+	// and xmp data.
+	EmbeddedMetadata map[string]any `json:"embeddedMetadata"`
 	// Unique identifier of the asset.
 	FileID string `json:"fileId"`
 	// Path of the file. This is the path you would use in the URL to access the file.
@@ -227,15 +236,21 @@ type File struct {
 	URL string `json:"url" format:"uri"`
 	// An object with details of the file version.
 	VersionInfo FileVersionInfo `json:"versionInfo"`
+	// The video codec used in the video (only for video).
+	VideoCodec string `json:"videoCodec"`
 	// Width of the file.
 	Width float64 `json:"width"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AITags               respjson.Field
+		AudioCodec           respjson.Field
+		BitRate              respjson.Field
 		CreatedAt            respjson.Field
 		CustomCoordinates    respjson.Field
 		CustomMetadata       respjson.Field
 		Description          respjson.Field
+		Duration             respjson.Field
+		EmbeddedMetadata     respjson.Field
 		FileID               respjson.Field
 		FilePath             respjson.Field
 		FileType             respjson.Field
@@ -253,6 +268,7 @@ type File struct {
 		UpdatedAt            respjson.Field
 		URL                  respjson.Field
 		VersionInfo          respjson.Field
+		VideoCodec           respjson.Field
 		Width                respjson.Field
 		ExtraFields          map[string]respjson.Field
 		raw                  string
