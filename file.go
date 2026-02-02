@@ -607,6 +607,9 @@ type Folder struct {
 	// Date and time when the folder was created. The date and time is in ISO8601
 	// format.
 	CreatedAt time.Time `json:"createdAt" format:"date-time"`
+	// An object with custom metadata for the folder. Returns empty object if no custom
+	// metadata is set.
+	CustomMetadata map[string]any `json:"customMetadata"`
 	// Unique identifier of the asset.
 	FolderID string `json:"folderId"`
 	// Path of the folder. This is the path you would use in the URL to access the
@@ -625,14 +628,15 @@ type Folder struct {
 	UpdatedAt time.Time `json:"updatedAt" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		CreatedAt   respjson.Field
-		FolderID    respjson.Field
-		FolderPath  respjson.Field
-		Name        respjson.Field
-		Type        respjson.Field
-		UpdatedAt   respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		CreatedAt      respjson.Field
+		CustomMetadata respjson.Field
+		FolderID       respjson.Field
+		FolderPath     respjson.Field
+		Name           respjson.Field
+		Type           respjson.Field
+		UpdatedAt      respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
 	} `json:"-"`
 }
 
