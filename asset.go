@@ -56,14 +56,21 @@ func (r *AssetService) List(ctx context.Context, query AssetListParams, opts ...
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type AssetListResponseUnion struct {
 	// This field is from variant [File].
-	AITags    []FileAITag `json:"AITags"`
-	CreatedAt time.Time   `json:"createdAt"`
+	AITags []FileAITag `json:"AITags"`
+	// This field is from variant [File].
+	AudioCodec string `json:"audioCodec"`
+	// This field is from variant [File].
+	BitRate   int64     `json:"bitRate"`
+	CreatedAt time.Time `json:"createdAt"`
 	// This field is from variant [File].
 	CustomCoordinates string `json:"customCoordinates"`
-	// This field is from variant [File].
-	CustomMetadata map[string]any `json:"customMetadata"`
+	CustomMetadata    any    `json:"customMetadata"`
 	// This field is from variant [File].
 	Description string `json:"description"`
+	// This field is from variant [File].
+	Duration int64 `json:"duration"`
+	// This field is from variant [File].
+	EmbeddedMetadata map[string]any `json:"embeddedMetadata"`
 	// This field is from variant [File].
 	FileID string `json:"fileId"`
 	// This field is from variant [File].
@@ -97,6 +104,8 @@ type AssetListResponseUnion struct {
 	// This field is from variant [File].
 	VersionInfo FileVersionInfo `json:"versionInfo"`
 	// This field is from variant [File].
+	VideoCodec string `json:"videoCodec"`
+	// This field is from variant [File].
 	Width float64 `json:"width"`
 	// This field is from variant [Folder].
 	FolderID string `json:"folderId"`
@@ -104,10 +113,14 @@ type AssetListResponseUnion struct {
 	FolderPath string `json:"folderPath"`
 	JSON       struct {
 		AITags               respjson.Field
+		AudioCodec           respjson.Field
+		BitRate              respjson.Field
 		CreatedAt            respjson.Field
 		CustomCoordinates    respjson.Field
 		CustomMetadata       respjson.Field
 		Description          respjson.Field
+		Duration             respjson.Field
+		EmbeddedMetadata     respjson.Field
 		FileID               respjson.Field
 		FilePath             respjson.Field
 		FileType             respjson.Field
@@ -125,6 +138,7 @@ type AssetListResponseUnion struct {
 		UpdatedAt            respjson.Field
 		URL                  respjson.Field
 		VersionInfo          respjson.Field
+		VideoCodec           respjson.Field
 		Width                respjson.Field
 		FolderID             respjson.Field
 		FolderPath           respjson.Field

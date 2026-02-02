@@ -569,7 +569,7 @@ func (r *HelperService) processOverlay(overlay shared.OverlayUnionParam) string 
 			encoding = "auto"
 		}
 
-		entries = append(entries, "l-subtitle")
+		entries = append(entries, "l-subtitles")
 		entries = append(entries, processInputPath(subtitleOverlay.Input, encoding))
 		baseOverlay = &subtitleOverlay.BaseOverlayParam
 
