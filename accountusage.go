@@ -78,10 +78,10 @@ func (r *AccountUsageGetResponse) UnmarshalJSON(data []byte) error {
 type AccountUsageGetParams struct {
 	// Specify a `endDate` in `YYYY-MM-DD` format. It should be after the `startDate`.
 	// The difference between `startDate` and `endDate` should be less than 90 days.
-	EndDate time.Time `query:"endDate,required" format:"date" json:"-"`
+	EndDate time.Time `query:"endDate" api:"required" format:"date" json:"-"`
 	// Specify a `startDate` in `YYYY-MM-DD` format. It should be before the `endDate`.
 	// The difference between `startDate` and `endDate` should be less than 90 days.
-	StartDate time.Time `query:"startDate,required" format:"date" json:"-"`
+	StartDate time.Time `query:"startDate" api:"required" format:"date" json:"-"`
 	paramObj
 }
 

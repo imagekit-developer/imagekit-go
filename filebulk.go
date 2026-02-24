@@ -144,7 +144,7 @@ func (r *FileBulkRemoveTagsResponse) UnmarshalJSON(data []byte) error {
 
 type FileBulkDeleteParams struct {
 	// An array of fileIds which you want to delete.
-	FileIDs []string `json:"fileIds,omitzero,required"`
+	FileIDs []string `json:"fileIds,omitzero" api:"required"`
 	paramObj
 }
 
@@ -158,9 +158,9 @@ func (r *FileBulkDeleteParams) UnmarshalJSON(data []byte) error {
 
 type FileBulkAddTagsParams struct {
 	// An array of fileIds to which you want to add tags.
-	FileIDs []string `json:"fileIds,omitzero,required"`
+	FileIDs []string `json:"fileIds,omitzero" api:"required"`
 	// An array of tags that you want to add to the files.
-	Tags []string `json:"tags,omitzero,required"`
+	Tags []string `json:"tags,omitzero" api:"required"`
 	paramObj
 }
 
@@ -174,9 +174,9 @@ func (r *FileBulkAddTagsParams) UnmarshalJSON(data []byte) error {
 
 type FileBulkRemoveAITagsParams struct {
 	// An array of AITags that you want to remove from the files.
-	AITags []string `json:"AITags,omitzero,required"`
+	AITags []string `json:"AITags,omitzero" api:"required"`
 	// An array of fileIds from which you want to remove AITags.
-	FileIDs []string `json:"fileIds,omitzero,required"`
+	FileIDs []string `json:"fileIds,omitzero" api:"required"`
 	paramObj
 }
 
@@ -190,9 +190,9 @@ func (r *FileBulkRemoveAITagsParams) UnmarshalJSON(data []byte) error {
 
 type FileBulkRemoveTagsParams struct {
 	// An array of fileIds from which you want to remove tags.
-	FileIDs []string `json:"fileIds,omitzero,required"`
+	FileIDs []string `json:"fileIds,omitzero" api:"required"`
 	// An array of tags that you want to remove from the files.
-	Tags []string `json:"tags,omitzero,required"`
+	Tags []string `json:"tags,omitzero" api:"required"`
 	paramObj
 }
 

@@ -167,7 +167,7 @@ func (r *FileService) Upload(ctx context.Context, body FileUploadParams, opts ..
 // Object containing details of a file or file version.
 type File struct {
 	// An array of tags assigned to the file by auto tagging.
-	AITags []FileAITag `json:"AITags,nullable"`
+	AITags []FileAITag `json:"AITags" api:"nullable"`
 	// The audio codec used in the video (only for video/audio).
 	AudioCodec string `json:"audioCodec"`
 	// The bit rate of the video in kbps (only for video).
@@ -176,7 +176,7 @@ type File struct {
 	// format.
 	CreatedAt time.Time `json:"createdAt" format:"date-time"`
 	// An string with custom coordinates of the file.
-	CustomCoordinates string `json:"customCoordinates,nullable"`
+	CustomCoordinates string `json:"customCoordinates" api:"nullable"`
 	// An object with custom metadata for the file.
 	CustomMetadata map[string]any `json:"customMetadata"`
 	// Optional text to describe the contents of the file. Can be set by the user or
@@ -220,7 +220,7 @@ type File struct {
 	Size float64 `json:"size"`
 	// An array of tags assigned to the file. Tags are used to search files in the
 	// media library.
-	Tags []string `json:"tags,nullable"`
+	Tags []string `json:"tags" api:"nullable"`
 	// URL of the thumbnail image. This URL is used to access the thumbnail image of
 	// the file in the media library.
 	Thumbnail string `json:"thumbnail" format:"uri"`
@@ -309,7 +309,7 @@ type FileSelectedFieldsSchema struct {
 	//
 	// Any of "Text", "Textarea", "Number", "Date", "Boolean", "SingleSelect",
 	// "MultiSelect".
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// The default value for this custom metadata field. The value should match the
 	// `type` of custom metadata field.
 	DefaultValue FileSelectedFieldsSchemaDefaultValueUnion `json:"defaultValue"`
@@ -1017,7 +1017,7 @@ func (r *UpdateFileRequestChangePublicationStatusParam) UnmarshalJSON(data []byt
 // The property IsPublished is required.
 type UpdateFileRequestChangePublicationStatusPublishParam struct {
 	// Set to `true` to publish the file. Set to `false` to unpublish the file.
-	IsPublished bool `json:"isPublished,required"`
+	IsPublished bool `json:"isPublished" api:"required"`
 	// Set to `true` to publish/unpublish all versions of the file. Set to `false` to
 	// publish/unpublish only the current version of the file.
 	IncludeFileVersions param.Opt[bool] `json:"includeFileVersions,omitzero"`
@@ -1128,7 +1128,7 @@ func (r *FileRenameResponse) UnmarshalJSON(data []byte) error {
 // Object containing details of a successful upload.
 type FileUploadResponse struct {
 	// An array of tags assigned to the uploaded file by auto tagging.
-	AITags []FileUploadResponseAITag `json:"AITags,nullable"`
+	AITags []FileUploadResponseAITag `json:"AITags" api:"nullable"`
 	// The audio codec used in the video (only for video).
 	AudioCodec string `json:"audioCodec"`
 	// The bit rate of the video in kbps (only for video).
@@ -1137,7 +1137,7 @@ type FileUploadResponse struct {
 	// `x,y,width,height`. If `customCoordinates` are not defined, then it is `null`.
 	// Send `customCoordinates` in `responseFields` in API request to get the value of
 	// this field.
-	CustomCoordinates string `json:"customCoordinates,nullable"`
+	CustomCoordinates string `json:"customCoordinates" api:"nullable"`
 	// A key-value data associated with the asset. Use `responseField` in API request
 	// to get `customMetadata` in the upload API response. Before setting any custom
 	// metadata on an asset, you have to create the field using custom metadata fields
@@ -1199,7 +1199,7 @@ type FileUploadResponse struct {
 	// The array of tags associated with the asset. If no tags are set, it will be
 	// `null`. Send `tags` in `responseFields` in API request to get the value of this
 	// field.
-	Tags []string `json:"tags,nullable"`
+	Tags []string `json:"tags" api:"nullable"`
 	// In the case of an image, a small thumbnail URL.
 	ThumbnailURL string `json:"thumbnailUrl"`
 	// A publicly accessible URL of the file.
@@ -1316,7 +1316,7 @@ type FileUploadResponseSelectedFieldsSchema struct {
 	//
 	// Any of "Text", "Textarea", "Number", "Date", "Boolean", "SingleSelect",
 	// "MultiSelect".
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// The default value for this custom metadata field. The value should match the
 	// `type` of custom metadata field.
 	DefaultValue FileUploadResponseSelectedFieldsSchemaDefaultValueUnion `json:"defaultValue"`
@@ -1619,9 +1619,9 @@ func (r *FileUpdateParams) UnmarshalJSON(data []byte) error {
 
 type FileCopyParams struct {
 	// Full path to the folder you want to copy the above file into.
-	DestinationPath string `json:"destinationPath,required"`
+	DestinationPath string `json:"destinationPath" api:"required"`
 	// The full path of the file you want to copy.
-	SourceFilePath string `json:"sourceFilePath,required"`
+	SourceFilePath string `json:"sourceFilePath" api:"required"`
 	// Option to copy all versions of a file. By default, only the current version of
 	// the file is copied. When set to true, all versions of the file will be copied.
 	// Default value - `false`.
@@ -1639,9 +1639,9 @@ func (r *FileCopyParams) UnmarshalJSON(data []byte) error {
 
 type FileMoveParams struct {
 	// Full path to the folder you want to move the above file into.
-	DestinationPath string `json:"destinationPath,required"`
+	DestinationPath string `json:"destinationPath" api:"required"`
 	// The full path of the file you want to move.
-	SourceFilePath string `json:"sourceFilePath,required"`
+	SourceFilePath string `json:"sourceFilePath" api:"required"`
 	paramObj
 }
 
@@ -1655,14 +1655,14 @@ func (r *FileMoveParams) UnmarshalJSON(data []byte) error {
 
 type FileRenameParams struct {
 	// The full path of the file you want to rename.
-	FilePath string `json:"filePath,required"`
+	FilePath string `json:"filePath" api:"required"`
 	// The new name of the file. A filename can contain:
 	//
 	// Alphanumeric Characters: `a-z`, `A-Z`, `0-9` (including Unicode letters, marks,
 	// and numerals in other languages). Special Characters: `.`, `_`, and `-`.
 	//
 	// Any other character, including space, will be replaced by `_`.
-	NewFileName string `json:"newFileName,required"`
+	NewFileName string `json:"newFileName" api:"required"`
 	// Option to purge cache for the old file and its versions' URLs.
 	//
 	// When set to true, it will internally issue a purge cache request on CDN to
@@ -1701,14 +1701,14 @@ type FileUploadParams struct {
 	//
 	// When supplying a URL, the server must receive the response headers within 8
 	// seconds; otherwise the request fails with 400 Bad Request.
-	File io.Reader `json:"file,omitzero,required" format:"binary"`
+	File io.Reader `json:"file,omitzero" api:"required" format:"binary"`
 	// The name with which the file has to be uploaded. The file name can contain:
 	//
 	// - Alphanumeric Characters: `a-z`, `A-Z`, `0-9`.
 	// - Special Characters: `.`, `-`
 	//
 	// Any other character including space will be replaced by `_`
-	FileName string `json:"fileName,required"`
+	FileName string `json:"fileName" api:"required"`
 	// A unique value that the ImageKit.io server will use to recognize and prevent
 	// subsequent retries for the same request. We suggest using V4 UUIDs, or another
 	// random string with enough entropy to avoid collisions. This field is only
@@ -1957,11 +1957,11 @@ func init() {
 type FileUploadParamsTransformationPostTransformation struct {
 	// Transformation string (e.g. `w-200,h-200`).
 	// Same syntax as ImageKit URL-based transformations.
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	// Transformation type.
 	//
 	// This field can be elided, and will marshal its zero value as "transformation".
-	Type constant.Transformation `json:"type,required"`
+	Type constant.Transformation `json:"type" api:"required"`
 	paramObj
 }
 
@@ -1981,7 +1981,7 @@ type FileUploadParamsTransformationPostGifToVideo struct {
 	// Converts an animated GIF into an MP4.
 	//
 	// This field can be elided, and will marshal its zero value as "gif-to-video".
-	Type constant.GifToVideo `json:"type,required"`
+	Type constant.GifToVideo `json:"type" api:"required"`
 	paramObj
 }
 
@@ -2001,7 +2001,7 @@ type FileUploadParamsTransformationPostThumbnail struct {
 	// Generates a thumbnail image.
 	//
 	// This field can be elided, and will marshal its zero value as "thumbnail".
-	Type constant.Thumbnail `json:"type,required"`
+	Type constant.Thumbnail `json:"type" api:"required"`
 	paramObj
 }
 
@@ -2018,13 +2018,13 @@ type FileUploadParamsTransformationPostAbs struct {
 	// Streaming protocol to use (`hls` or `dash`).
 	//
 	// Any of "hls", "dash".
-	Protocol string `json:"protocol,omitzero,required"`
+	Protocol string `json:"protocol,omitzero" api:"required"`
 	// List of different representations you want to create separated by an underscore.
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	// Adaptive Bitrate Streaming (ABS) setup.
 	//
 	// This field can be elided, and will marshal its zero value as "abs".
-	Type constant.Abs `json:"type,required"`
+	Type constant.Abs `json:"type" api:"required"`
 	paramObj
 }
 

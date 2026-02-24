@@ -78,7 +78,7 @@ func (r *BetaV2FileService) Upload(ctx context.Context, body BetaV2FileUploadPar
 // Object containing details of a successful upload.
 type BetaV2FileUploadResponse struct {
 	// An array of tags assigned to the uploaded file by auto tagging.
-	AITags []BetaV2FileUploadResponseAITag `json:"AITags,nullable"`
+	AITags []BetaV2FileUploadResponseAITag `json:"AITags" api:"nullable"`
 	// The audio codec used in the video (only for video).
 	AudioCodec string `json:"audioCodec"`
 	// The bit rate of the video in kbps (only for video).
@@ -87,7 +87,7 @@ type BetaV2FileUploadResponse struct {
 	// `x,y,width,height`. If `customCoordinates` are not defined, then it is `null`.
 	// Send `customCoordinates` in `responseFields` in API request to get the value of
 	// this field.
-	CustomCoordinates string `json:"customCoordinates,nullable"`
+	CustomCoordinates string `json:"customCoordinates" api:"nullable"`
 	// A key-value data associated with the asset. Use `responseField` in API request
 	// to get `customMetadata` in the upload API response. Before setting any custom
 	// metadata on an asset, you have to create the field using custom metadata fields
@@ -149,7 +149,7 @@ type BetaV2FileUploadResponse struct {
 	// The array of tags associated with the asset. If no tags are set, it will be
 	// `null`. Send `tags` in `responseFields` in API request to get the value of this
 	// field.
-	Tags []string `json:"tags,nullable"`
+	Tags []string `json:"tags" api:"nullable"`
 	// In the case of an image, a small thumbnail URL.
 	ThumbnailURL string `json:"thumbnailUrl"`
 	// A publicly accessible URL of the file.
@@ -266,7 +266,7 @@ type BetaV2FileUploadResponseSelectedFieldsSchema struct {
 	//
 	// Any of "Text", "Textarea", "Number", "Date", "Boolean", "SingleSelect",
 	// "MultiSelect".
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// The default value for this custom metadata field. The value should match the
 	// `type` of custom metadata field.
 	DefaultValue BetaV2FileUploadResponseSelectedFieldsSchemaDefaultValueUnion `json:"defaultValue"`
@@ -572,9 +572,9 @@ type BetaV2FileUploadParams struct {
 	//
 	// When supplying a URL, the server must receive the response headers within 8
 	// seconds; otherwise the request fails with 400 Bad Request.
-	File io.Reader `json:"file,omitzero,required" format:"binary"`
+	File io.Reader `json:"file,omitzero" api:"required" format:"binary"`
 	// The name with which the file has to be uploaded.
-	FileName string `json:"fileName,required"`
+	FileName string `json:"fileName" api:"required"`
 	// This is the client-generated JSON Web Token (JWT). The ImageKit.io server uses
 	// it to authenticate and check that the upload request parameters have not been
 	// tampered with after the token has been generated. Learn how to create the token
@@ -807,11 +807,11 @@ func init() {
 type BetaV2FileUploadParamsTransformationPostTransformation struct {
 	// Transformation string (e.g. `w-200,h-200`).
 	// Same syntax as ImageKit URL-based transformations.
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	// Transformation type.
 	//
 	// This field can be elided, and will marshal its zero value as "transformation".
-	Type constant.Transformation `json:"type,required"`
+	Type constant.Transformation `json:"type" api:"required"`
 	paramObj
 }
 
@@ -831,7 +831,7 @@ type BetaV2FileUploadParamsTransformationPostGifToVideo struct {
 	// Converts an animated GIF into an MP4.
 	//
 	// This field can be elided, and will marshal its zero value as "gif-to-video".
-	Type constant.GifToVideo `json:"type,required"`
+	Type constant.GifToVideo `json:"type" api:"required"`
 	paramObj
 }
 
@@ -851,7 +851,7 @@ type BetaV2FileUploadParamsTransformationPostThumbnail struct {
 	// Generates a thumbnail image.
 	//
 	// This field can be elided, and will marshal its zero value as "thumbnail".
-	Type constant.Thumbnail `json:"type,required"`
+	Type constant.Thumbnail `json:"type" api:"required"`
 	paramObj
 }
 
@@ -868,13 +868,13 @@ type BetaV2FileUploadParamsTransformationPostAbs struct {
 	// Streaming protocol to use (`hls` or `dash`).
 	//
 	// Any of "hls", "dash".
-	Protocol string `json:"protocol,omitzero,required"`
+	Protocol string `json:"protocol,omitzero" api:"required"`
 	// List of different representations you want to create separated by an underscore.
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	// Adaptive Bitrate Streaming (ABS) setup.
 	//
 	// This field can be elided, and will marshal its zero value as "abs".
-	Type constant.Abs `json:"type,required"`
+	Type constant.Abs `json:"type" api:"required"`
 	paramObj
 }
 

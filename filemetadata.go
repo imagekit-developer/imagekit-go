@@ -62,7 +62,7 @@ func (r *FileMetadataService) GetFromURL(ctx context.Context, query FileMetadata
 type FileMetadataGetFromURLParams struct {
 	// Should be a valid file URL. It should be accessible using your ImageKit.io
 	// account.
-	URL string `query:"url,required" format:"uri" json:"-"`
+	URL string `query:"url" api:"required" format:"uri" json:"-"`
 	paramObj
 }
 

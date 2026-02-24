@@ -99,11 +99,11 @@ func (r *SavedExtensionService) Get(ctx context.Context, id string, opts ...opti
 type SavedExtensionNewParams struct {
 	// Configuration object for an extension (base extensions only, not saved extension
 	// references).
-	Config shared.ExtensionConfigUnionParam `json:"config,omitzero,required"`
+	Config shared.ExtensionConfigUnionParam `json:"config,omitzero" api:"required"`
 	// Description of what the saved extension does.
-	Description string `json:"description,required"`
+	Description string `json:"description" api:"required"`
 	// Name of the saved extension.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	paramObj
 }
 

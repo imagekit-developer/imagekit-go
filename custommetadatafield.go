@@ -92,16 +92,16 @@ func (r *CustomMetadataFieldService) Delete(ctx context.Context, id string, opts
 // Object containing details of a custom metadata field.
 type CustomMetadataField struct {
 	// Unique identifier for the custom metadata field. Use this to update the field.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Human readable name of the custom metadata field. This name is displayed as form
 	// field label to the users while setting field value on the asset in the media
 	// library UI.
-	Label string `json:"label,required"`
+	Label string `json:"label" api:"required"`
 	// API name of the custom metadata field. This becomes the key while setting
 	// `customMetadata` (key-value object) for an asset using upload or update API.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// An object that describes the rules for the custom metadata field value.
-	Schema CustomMetadataFieldSchema `json:"schema,required"`
+	Schema CustomMetadataFieldSchema `json:"schema" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -125,7 +125,7 @@ type CustomMetadataFieldSchema struct {
 	//
 	// Any of "Text", "Textarea", "Number", "Date", "Boolean", "SingleSelect",
 	// "MultiSelect".
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// The default value for this custom metadata field. Data type of default value
 	// depends on the field type.
 	DefaultValue CustomMetadataFieldSchemaDefaultValueUnion `json:"defaultValue"`
@@ -399,11 +399,11 @@ type CustomMetadataFieldNewParams struct {
 	// all non deleted custom metadata fields. This name is displayed as form field
 	// label to the users while setting field value on an asset in the media library
 	// UI.
-	Label string `json:"label,required"`
+	Label string `json:"label" api:"required"`
 	// API name of the custom metadata field. This should be unique across all
 	// (including deleted) custom metadata fields.
-	Name   string                             `json:"name,required"`
-	Schema CustomMetadataFieldNewParamsSchema `json:"schema,omitzero,required"`
+	Name   string                             `json:"name" api:"required"`
+	Schema CustomMetadataFieldNewParamsSchema `json:"schema,omitzero" api:"required"`
 	paramObj
 }
 
@@ -421,7 +421,7 @@ type CustomMetadataFieldNewParamsSchema struct {
 	//
 	// Any of "Text", "Textarea", "Number", "Date", "Boolean", "SingleSelect",
 	// "MultiSelect".
-	Type string `json:"type,omitzero,required"`
+	Type string `json:"type,omitzero" api:"required"`
 	// Sets this custom metadata field as required. Setting custom metadata fields on
 	// an asset will throw error if the value for all required fields are not present
 	// in upload or update asset API request body.
