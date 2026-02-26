@@ -112,16 +112,16 @@ func (r *FileVersionDeleteResponse) UnmarshalJSON(data []byte) error {
 }
 
 type FileVersionDeleteParams struct {
-	FileID string `path:"fileId,required" json:"-"`
+	FileID string `path:"fileId" api:"required" json:"-"`
 	paramObj
 }
 
 type FileVersionGetParams struct {
-	FileID string `path:"fileId,required" json:"-"`
+	FileID string `path:"fileId" api:"required" json:"-"`
 	paramObj
 }
 
 type FileVersionRestoreParams struct {
-	FileID string `path:"fileId,required" json:"-"`
+	FileID string `path:"fileId" api:"required" json:"-"`
 	paramObj
 }

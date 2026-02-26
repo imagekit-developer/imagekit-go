@@ -104,7 +104,7 @@ const (
 
 type CacheInvalidationNewParams struct {
 	// The full URL of the file to be purged.
-	URL string `json:"url,required" format:"uri"`
+	URL string `json:"url" api:"required" format:"uri"`
 	paramObj
 }
 

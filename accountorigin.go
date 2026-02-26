@@ -425,13 +425,13 @@ func init() {
 // The properties AccessKey, Bucket, Name, SecretKey, Type are required.
 type OriginRequestS3Param struct {
 	// Access key for the bucket.
-	AccessKey string `json:"accessKey,required"`
+	AccessKey string `json:"accessKey" api:"required"`
 	// S3 bucket name.
-	Bucket string `json:"bucket,required"`
+	Bucket string `json:"bucket" api:"required"`
 	// Display name of the origin.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Secret key for the bucket.
-	SecretKey string `json:"secretKey,required"`
+	SecretKey string `json:"secretKey" api:"required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader param.Opt[string] `json:"baseUrlForCanonicalHeader,omitzero" format:"uri"`
 	// Whether to send a Canonical header.
@@ -439,7 +439,7 @@ type OriginRequestS3Param struct {
 	// Path prefix inside the bucket.
 	Prefix param.Opt[string] `json:"prefix,omitzero"`
 	// This field can be elided, and will marshal its zero value as "S3".
-	Type constant.S3 `json:"type,required"`
+	Type constant.S3 `json:"type" api:"required"`
 	paramObj
 }
 
@@ -454,15 +454,15 @@ func (r *OriginRequestS3Param) UnmarshalJSON(data []byte) error {
 // The properties AccessKey, Bucket, Endpoint, Name, SecretKey, Type are required.
 type OriginRequestS3CompatibleParam struct {
 	// Access key for the bucket.
-	AccessKey string `json:"accessKey,required"`
+	AccessKey string `json:"accessKey" api:"required"`
 	// S3 bucket name.
-	Bucket string `json:"bucket,required"`
+	Bucket string `json:"bucket" api:"required"`
 	// Custom S3-compatible endpoint.
-	Endpoint string `json:"endpoint,required" format:"uri"`
+	Endpoint string `json:"endpoint" api:"required" format:"uri"`
 	// Display name of the origin.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Secret key for the bucket.
-	SecretKey string `json:"secretKey,required"`
+	SecretKey string `json:"secretKey" api:"required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader param.Opt[string] `json:"baseUrlForCanonicalHeader,omitzero" format:"uri"`
 	// Whether to send a Canonical header.
@@ -472,7 +472,7 @@ type OriginRequestS3CompatibleParam struct {
 	// Use path-style S3 URLs?
 	S3ForcePathStyle param.Opt[bool] `json:"s3ForcePathStyle,omitzero"`
 	// This field can be elided, and will marshal its zero value as "S3_COMPATIBLE".
-	Type constant.S3Compatible `json:"type,required"`
+	Type constant.S3Compatible `json:"type" api:"required"`
 	paramObj
 }
 
@@ -487,13 +487,13 @@ func (r *OriginRequestS3CompatibleParam) UnmarshalJSON(data []byte) error {
 // The properties AccessKey, Bucket, Name, SecretKey, Type are required.
 type OriginRequestCloudinaryBackupParam struct {
 	// Access key for the bucket.
-	AccessKey string `json:"accessKey,required"`
+	AccessKey string `json:"accessKey" api:"required"`
 	// S3 bucket name.
-	Bucket string `json:"bucket,required"`
+	Bucket string `json:"bucket" api:"required"`
 	// Display name of the origin.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Secret key for the bucket.
-	SecretKey string `json:"secretKey,required"`
+	SecretKey string `json:"secretKey" api:"required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader param.Opt[string] `json:"baseUrlForCanonicalHeader,omitzero" format:"uri"`
 	// Whether to send a Canonical header.
@@ -502,7 +502,7 @@ type OriginRequestCloudinaryBackupParam struct {
 	Prefix param.Opt[string] `json:"prefix,omitzero"`
 	// This field can be elided, and will marshal its zero value as
 	// "CLOUDINARY_BACKUP".
-	Type constant.CloudinaryBackup `json:"type,required"`
+	Type constant.CloudinaryBackup `json:"type" api:"required"`
 	paramObj
 }
 
@@ -517,9 +517,9 @@ func (r *OriginRequestCloudinaryBackupParam) UnmarshalJSON(data []byte) error {
 // The properties BaseURL, Name, Type are required.
 type OriginRequestWebFolderParam struct {
 	// Root URL for the web folder origin.
-	BaseURL string `json:"baseUrl,required" format:"uri"`
+	BaseURL string `json:"baseUrl" api:"required" format:"uri"`
 	// Display name of the origin.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader param.Opt[string] `json:"baseUrlForCanonicalHeader,omitzero" format:"uri"`
 	// Forward the Host header to origin?
@@ -527,7 +527,7 @@ type OriginRequestWebFolderParam struct {
 	// Whether to send a Canonical header.
 	IncludeCanonicalHeader param.Opt[bool] `json:"includeCanonicalHeader,omitzero"`
 	// This field can be elided, and will marshal its zero value as "WEB_FOLDER".
-	Type constant.WebFolder `json:"type,required"`
+	Type constant.WebFolder `json:"type" api:"required"`
 	paramObj
 }
 
@@ -542,13 +542,13 @@ func (r *OriginRequestWebFolderParam) UnmarshalJSON(data []byte) error {
 // The properties Name, Type are required.
 type OriginRequestWebProxyParam struct {
 	// Display name of the origin.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader param.Opt[string] `json:"baseUrlForCanonicalHeader,omitzero" format:"uri"`
 	// Whether to send a Canonical header.
 	IncludeCanonicalHeader param.Opt[bool] `json:"includeCanonicalHeader,omitzero"`
 	// This field can be elided, and will marshal its zero value as "WEB_PROXY".
-	Type constant.WebProxy `json:"type,required"`
+	Type constant.WebProxy `json:"type" api:"required"`
 	paramObj
 }
 
@@ -562,18 +562,18 @@ func (r *OriginRequestWebProxyParam) UnmarshalJSON(data []byte) error {
 
 // The properties Bucket, ClientEmail, Name, PrivateKey, Type are required.
 type OriginRequestGcsParam struct {
-	Bucket      string `json:"bucket,required"`
-	ClientEmail string `json:"clientEmail,required" format:"email"`
+	Bucket      string `json:"bucket" api:"required"`
+	ClientEmail string `json:"clientEmail" api:"required" format:"email"`
 	// Display name of the origin.
-	Name       string `json:"name,required"`
-	PrivateKey string `json:"privateKey,required"`
+	Name       string `json:"name" api:"required"`
+	PrivateKey string `json:"privateKey" api:"required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader param.Opt[string] `json:"baseUrlForCanonicalHeader,omitzero" format:"uri"`
 	// Whether to send a Canonical header.
 	IncludeCanonicalHeader param.Opt[bool]   `json:"includeCanonicalHeader,omitzero"`
 	Prefix                 param.Opt[string] `json:"prefix,omitzero"`
 	// This field can be elided, and will marshal its zero value as "GCS".
-	Type constant.Gcs `json:"type,required"`
+	Type constant.Gcs `json:"type" api:"required"`
 	paramObj
 }
 
@@ -587,18 +587,18 @@ func (r *OriginRequestGcsParam) UnmarshalJSON(data []byte) error {
 
 // The properties AccountName, Container, Name, SasToken, Type are required.
 type OriginRequestAzureBlobParam struct {
-	AccountName string `json:"accountName,required"`
-	Container   string `json:"container,required"`
+	AccountName string `json:"accountName" api:"required"`
+	Container   string `json:"container" api:"required"`
 	// Display name of the origin.
-	Name     string `json:"name,required"`
-	SasToken string `json:"sasToken,required"`
+	Name     string `json:"name" api:"required"`
+	SasToken string `json:"sasToken" api:"required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader param.Opt[string] `json:"baseUrlForCanonicalHeader,omitzero" format:"uri"`
 	// Whether to send a Canonical header.
 	IncludeCanonicalHeader param.Opt[bool]   `json:"includeCanonicalHeader,omitzero"`
 	Prefix                 param.Opt[string] `json:"prefix,omitzero"`
 	// This field can be elided, and will marshal its zero value as "AZURE_BLOB".
-	Type constant.AzureBlob `json:"type,required"`
+	Type constant.AzureBlob `json:"type" api:"required"`
 	paramObj
 }
 
@@ -614,23 +614,23 @@ func (r *OriginRequestAzureBlobParam) UnmarshalJSON(data []byte) error {
 // are required.
 type OriginRequestAkeneoPimParam struct {
 	// Akeneo instance base URL.
-	BaseURL string `json:"baseUrl,required" format:"uri"`
+	BaseURL string `json:"baseUrl" api:"required" format:"uri"`
 	// Akeneo API client ID.
-	ClientID string `json:"clientId,required"`
+	ClientID string `json:"clientId" api:"required"`
 	// Akeneo API client secret.
-	ClientSecret string `json:"clientSecret,required"`
+	ClientSecret string `json:"clientSecret" api:"required"`
 	// Display name of the origin.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Akeneo API password.
-	Password string `json:"password,required"`
+	Password string `json:"password" api:"required"`
 	// Akeneo API username.
-	Username string `json:"username,required"`
+	Username string `json:"username" api:"required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader param.Opt[string] `json:"baseUrlForCanonicalHeader,omitzero" format:"uri"`
 	// Whether to send a Canonical header.
 	IncludeCanonicalHeader param.Opt[bool] `json:"includeCanonicalHeader,omitzero"`
 	// This field can be elided, and will marshal its zero value as "AKENEO_PIM".
-	Type constant.AkeneoPim `json:"type,required"`
+	Type constant.AkeneoPim `json:"type" api:"required"`
 	paramObj
 }
 
@@ -794,16 +794,16 @@ func (r *OriginResponseUnion) UnmarshalJSON(data []byte) error {
 type OriginResponseS3 struct {
 	// Unique identifier for the origin. This is generated by ImageKit when you create
 	// a new origin.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// S3 bucket name.
-	Bucket string `json:"bucket,required"`
+	Bucket string `json:"bucket" api:"required"`
 	// Whether to send a Canonical header.
-	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
+	IncludeCanonicalHeader bool `json:"includeCanonicalHeader" api:"required"`
 	// Display name of the origin.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Path prefix inside the bucket.
-	Prefix string      `json:"prefix,required"`
-	Type   constant.S3 `json:"type,required"`
+	Prefix string      `json:"prefix" api:"required"`
+	Type   constant.S3 `json:"type" api:"required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -829,20 +829,20 @@ func (r *OriginResponseS3) UnmarshalJSON(data []byte) error {
 type OriginResponseS3Compatible struct {
 	// Unique identifier for the origin. This is generated by ImageKit when you create
 	// a new origin.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// S3 bucket name.
-	Bucket string `json:"bucket,required"`
+	Bucket string `json:"bucket" api:"required"`
 	// Custom S3-compatible endpoint.
-	Endpoint string `json:"endpoint,required" format:"uri"`
+	Endpoint string `json:"endpoint" api:"required" format:"uri"`
 	// Whether to send a Canonical header.
-	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
+	IncludeCanonicalHeader bool `json:"includeCanonicalHeader" api:"required"`
 	// Display name of the origin.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Path prefix inside the bucket.
-	Prefix string `json:"prefix,required"`
+	Prefix string `json:"prefix" api:"required"`
 	// Use path-style S3 URLs?
-	S3ForcePathStyle bool                  `json:"s3ForcePathStyle,required"`
-	Type             constant.S3Compatible `json:"type,required"`
+	S3ForcePathStyle bool                  `json:"s3ForcePathStyle" api:"required"`
+	Type             constant.S3Compatible `json:"type" api:"required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -870,16 +870,16 @@ func (r *OriginResponseS3Compatible) UnmarshalJSON(data []byte) error {
 type OriginResponseCloudinaryBackup struct {
 	// Unique identifier for the origin. This is generated by ImageKit when you create
 	// a new origin.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// S3 bucket name.
-	Bucket string `json:"bucket,required"`
+	Bucket string `json:"bucket" api:"required"`
 	// Whether to send a Canonical header.
-	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
+	IncludeCanonicalHeader bool `json:"includeCanonicalHeader" api:"required"`
 	// Display name of the origin.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Path prefix inside the bucket.
-	Prefix string                    `json:"prefix,required"`
-	Type   constant.CloudinaryBackup `json:"type,required"`
+	Prefix string                    `json:"prefix" api:"required"`
+	Type   constant.CloudinaryBackup `json:"type" api:"required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -905,16 +905,16 @@ func (r *OriginResponseCloudinaryBackup) UnmarshalJSON(data []byte) error {
 type OriginResponseWebFolder struct {
 	// Unique identifier for the origin. This is generated by ImageKit when you create
 	// a new origin.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Root URL for the web folder origin.
-	BaseURL string `json:"baseUrl,required" format:"uri"`
+	BaseURL string `json:"baseUrl" api:"required" format:"uri"`
 	// Forward the Host header to origin?
-	ForwardHostHeaderToOrigin bool `json:"forwardHostHeaderToOrigin,required"`
+	ForwardHostHeaderToOrigin bool `json:"forwardHostHeaderToOrigin" api:"required"`
 	// Whether to send a Canonical header.
-	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
+	IncludeCanonicalHeader bool `json:"includeCanonicalHeader" api:"required"`
 	// Display name of the origin.
-	Name string             `json:"name,required"`
-	Type constant.WebFolder `json:"type,required"`
+	Name string             `json:"name" api:"required"`
+	Type constant.WebFolder `json:"type" api:"required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -940,12 +940,12 @@ func (r *OriginResponseWebFolder) UnmarshalJSON(data []byte) error {
 type OriginResponseWebProxy struct {
 	// Unique identifier for the origin. This is generated by ImageKit when you create
 	// a new origin.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Whether to send a Canonical header.
-	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
+	IncludeCanonicalHeader bool `json:"includeCanonicalHeader" api:"required"`
 	// Display name of the origin.
-	Name string            `json:"name,required"`
-	Type constant.WebProxy `json:"type,required"`
+	Name string            `json:"name" api:"required"`
+	Type constant.WebProxy `json:"type" api:"required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -969,15 +969,15 @@ func (r *OriginResponseWebProxy) UnmarshalJSON(data []byte) error {
 type OriginResponseGcs struct {
 	// Unique identifier for the origin. This is generated by ImageKit when you create
 	// a new origin.
-	ID          string `json:"id,required"`
-	Bucket      string `json:"bucket,required"`
-	ClientEmail string `json:"clientEmail,required" format:"email"`
+	ID          string `json:"id" api:"required"`
+	Bucket      string `json:"bucket" api:"required"`
+	ClientEmail string `json:"clientEmail" api:"required" format:"email"`
 	// Whether to send a Canonical header.
-	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
+	IncludeCanonicalHeader bool `json:"includeCanonicalHeader" api:"required"`
 	// Display name of the origin.
-	Name   string       `json:"name,required"`
-	Prefix string       `json:"prefix,required"`
-	Type   constant.Gcs `json:"type,required"`
+	Name   string       `json:"name" api:"required"`
+	Prefix string       `json:"prefix" api:"required"`
+	Type   constant.Gcs `json:"type" api:"required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1004,15 +1004,15 @@ func (r *OriginResponseGcs) UnmarshalJSON(data []byte) error {
 type OriginResponseAzureBlob struct {
 	// Unique identifier for the origin. This is generated by ImageKit when you create
 	// a new origin.
-	ID          string `json:"id,required"`
-	AccountName string `json:"accountName,required"`
-	Container   string `json:"container,required"`
+	ID          string `json:"id" api:"required"`
+	AccountName string `json:"accountName" api:"required"`
+	Container   string `json:"container" api:"required"`
 	// Whether to send a Canonical header.
-	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
+	IncludeCanonicalHeader bool `json:"includeCanonicalHeader" api:"required"`
 	// Display name of the origin.
-	Name   string             `json:"name,required"`
-	Prefix string             `json:"prefix,required"`
-	Type   constant.AzureBlob `json:"type,required"`
+	Name   string             `json:"name" api:"required"`
+	Prefix string             `json:"prefix" api:"required"`
+	Type   constant.AzureBlob `json:"type" api:"required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1039,14 +1039,14 @@ func (r *OriginResponseAzureBlob) UnmarshalJSON(data []byte) error {
 type OriginResponseAkeneoPim struct {
 	// Unique identifier for the origin. This is generated by ImageKit when you create
 	// a new origin.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Akeneo instance base URL.
-	BaseURL string `json:"baseUrl,required" format:"uri"`
+	BaseURL string `json:"baseUrl" api:"required" format:"uri"`
 	// Whether to send a Canonical header.
-	IncludeCanonicalHeader bool `json:"includeCanonicalHeader,required"`
+	IncludeCanonicalHeader bool `json:"includeCanonicalHeader" api:"required"`
 	// Display name of the origin.
-	Name string             `json:"name,required"`
-	Type constant.AkeneoPim `json:"type,required"`
+	Name string             `json:"name" api:"required"`
+	Type constant.AkeneoPim `json:"type" api:"required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].

@@ -75,9 +75,9 @@ func (r *WebhookService) Unwrap(payload []byte, headers http.Header, opts ...opt
 
 type BaseWebhookEvent struct {
 	// Unique identifier for the event.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The type of webhook event.
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -97,10 +97,10 @@ func (r *BaseWebhookEvent) UnmarshalJSON(data []byte) error {
 // but the requested transformation could not be generated.
 type UploadPostTransformErrorEvent struct {
 	// Timestamp of when the event occurred in ISO8601 format.
-	CreatedAt time.Time                            `json:"created_at,required" format:"date-time"`
-	Data      UploadPostTransformErrorEventData    `json:"data,required"`
-	Request   UploadPostTransformErrorEventRequest `json:"request,required"`
-	Type      constant.UploadPostTransformError    `json:"type,required"`
+	CreatedAt time.Time                            `json:"created_at" api:"required" format:"date-time"`
+	Data      UploadPostTransformErrorEventData    `json:"data" api:"required"`
+	Request   UploadPostTransformErrorEventRequest `json:"request" api:"required"`
+	Type      constant.UploadPostTransformError    `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CreatedAt   respjson.Field
@@ -121,14 +121,14 @@ func (r *UploadPostTransformErrorEvent) UnmarshalJSON(data []byte) error {
 
 type UploadPostTransformErrorEventData struct {
 	// Unique identifier of the originally uploaded file.
-	FileID string `json:"fileId,required"`
+	FileID string `json:"fileId" api:"required"`
 	// Name of the file.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Path of the file.
-	Path           string                                          `json:"path,required"`
-	Transformation UploadPostTransformErrorEventDataTransformation `json:"transformation,required"`
+	Path           string                                          `json:"path" api:"required"`
+	Transformation UploadPostTransformErrorEventDataTransformation `json:"transformation" api:"required"`
 	// URL of the attempted post-transformation.
-	URL string `json:"url,required" format:"uri"`
+	URL string `json:"url" api:"required" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		FileID         respjson.Field
@@ -148,7 +148,7 @@ func (r *UploadPostTransformErrorEventData) UnmarshalJSON(data []byte) error {
 }
 
 type UploadPostTransformErrorEventDataTransformation struct {
-	Error UploadPostTransformErrorEventDataTransformationError `json:"error,required"`
+	Error UploadPostTransformErrorEventDataTransformationError `json:"error" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Error       respjson.Field
@@ -165,7 +165,7 @@ func (r *UploadPostTransformErrorEventDataTransformation) UnmarshalJSON(data []b
 
 type UploadPostTransformErrorEventDataTransformationError struct {
 	// Reason for the post-transformation failure.
-	Reason string `json:"reason,required"`
+	Reason string `json:"reason" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Reason      respjson.Field
@@ -181,9 +181,9 @@ func (r *UploadPostTransformErrorEventDataTransformationError) UnmarshalJSON(dat
 }
 
 type UploadPostTransformErrorEventRequest struct {
-	Transformation UploadPostTransformErrorEventRequestTransformation `json:"transformation,required"`
+	Transformation UploadPostTransformErrorEventRequestTransformation `json:"transformation" api:"required"`
 	// Unique identifier for the originating request.
-	XRequestID string `json:"x_request_id,required"`
+	XRequestID string `json:"x_request_id" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Transformation respjson.Field
@@ -203,7 +203,7 @@ type UploadPostTransformErrorEventRequestTransformation struct {
 	// Type of the requested post-transformation.
 	//
 	// Any of "transformation", "abs", "gif-to-video", "thumbnail".
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// Only applicable if transformation type is 'abs'. Streaming protocol used.
 	//
 	// Any of "hls", "dash".
@@ -231,10 +231,10 @@ func (r *UploadPostTransformErrorEventRequestTransformation) UnmarshalJSON(data 
 // that each post-transformation generates a separate webhook event.
 type UploadPostTransformSuccessEvent struct {
 	// Timestamp of when the event occurred in ISO8601 format.
-	CreatedAt time.Time                              `json:"created_at,required" format:"date-time"`
-	Data      UploadPostTransformSuccessEventData    `json:"data,required"`
-	Request   UploadPostTransformSuccessEventRequest `json:"request,required"`
-	Type      constant.UploadPostTransformSuccess    `json:"type,required"`
+	CreatedAt time.Time                              `json:"created_at" api:"required" format:"date-time"`
+	Data      UploadPostTransformSuccessEventData    `json:"data" api:"required"`
+	Request   UploadPostTransformSuccessEventRequest `json:"request" api:"required"`
+	Type      constant.UploadPostTransformSuccess    `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CreatedAt   respjson.Field
@@ -255,11 +255,11 @@ func (r *UploadPostTransformSuccessEvent) UnmarshalJSON(data []byte) error {
 
 type UploadPostTransformSuccessEventData struct {
 	// Unique identifier of the originally uploaded file.
-	FileID string `json:"fileId,required"`
+	FileID string `json:"fileId" api:"required"`
 	// Name of the file.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// URL of the generated post-transformation.
-	URL string `json:"url,required" format:"uri"`
+	URL string `json:"url" api:"required" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		FileID      respjson.Field
@@ -277,9 +277,9 @@ func (r *UploadPostTransformSuccessEventData) UnmarshalJSON(data []byte) error {
 }
 
 type UploadPostTransformSuccessEventRequest struct {
-	Transformation UploadPostTransformSuccessEventRequestTransformation `json:"transformation,required"`
+	Transformation UploadPostTransformSuccessEventRequestTransformation `json:"transformation" api:"required"`
 	// Unique identifier for the originating request.
-	XRequestID string `json:"x_request_id,required"`
+	XRequestID string `json:"x_request_id" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Transformation respjson.Field
@@ -299,7 +299,7 @@ type UploadPostTransformSuccessEventRequestTransformation struct {
 	// Type of the requested post-transformation.
 	//
 	// Any of "transformation", "abs", "gif-to-video", "thumbnail".
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// Only applicable if transformation type is 'abs'. Streaming protocol used.
 	//
 	// Any of "hls", "dash".
@@ -326,10 +326,10 @@ func (r *UploadPostTransformSuccessEventRequestTransformation) UnmarshalJSON(dat
 // accepted, but the requested transformation could not be applied.
 type UploadPreTransformErrorEvent struct {
 	// Timestamp of when the event occurred in ISO8601 format.
-	CreatedAt time.Time                           `json:"created_at,required" format:"date-time"`
-	Data      UploadPreTransformErrorEventData    `json:"data,required"`
-	Request   UploadPreTransformErrorEventRequest `json:"request,required"`
-	Type      constant.UploadPreTransformError    `json:"type,required"`
+	CreatedAt time.Time                           `json:"created_at" api:"required" format:"date-time"`
+	Data      UploadPreTransformErrorEventData    `json:"data" api:"required"`
+	Request   UploadPreTransformErrorEventRequest `json:"request" api:"required"`
+	Type      constant.UploadPreTransformError    `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CreatedAt   respjson.Field
@@ -350,10 +350,10 @@ func (r *UploadPreTransformErrorEvent) UnmarshalJSON(data []byte) error {
 
 type UploadPreTransformErrorEventData struct {
 	// Name of the file.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Path of the file.
-	Path           string                                         `json:"path,required"`
-	Transformation UploadPreTransformErrorEventDataTransformation `json:"transformation,required"`
+	Path           string                                         `json:"path" api:"required"`
+	Transformation UploadPreTransformErrorEventDataTransformation `json:"transformation" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Name           respjson.Field
@@ -371,7 +371,7 @@ func (r *UploadPreTransformErrorEventData) UnmarshalJSON(data []byte) error {
 }
 
 type UploadPreTransformErrorEventDataTransformation struct {
-	Error UploadPreTransformErrorEventDataTransformationError `json:"error,required"`
+	Error UploadPreTransformErrorEventDataTransformationError `json:"error" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Error       respjson.Field
@@ -388,7 +388,7 @@ func (r *UploadPreTransformErrorEventDataTransformation) UnmarshalJSON(data []by
 
 type UploadPreTransformErrorEventDataTransformationError struct {
 	// Reason for the pre-transformation failure.
-	Reason string `json:"reason,required"`
+	Reason string `json:"reason" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Reason      respjson.Field
@@ -405,9 +405,9 @@ func (r *UploadPreTransformErrorEventDataTransformationError) UnmarshalJSON(data
 
 type UploadPreTransformErrorEventRequest struct {
 	// The requested pre-transformation string.
-	Transformation string `json:"transformation,required"`
+	Transformation string `json:"transformation" api:"required"`
 	// Unique identifier for the originating request.
-	XRequestID string `json:"x_request_id,required"`
+	XRequestID string `json:"x_request_id" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Transformation respjson.Field
@@ -428,11 +428,11 @@ func (r *UploadPreTransformErrorEventRequest) UnmarshalJSON(data []byte) error {
 // Library.
 type UploadPreTransformSuccessEvent struct {
 	// Timestamp of when the event occurred in ISO8601 format.
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Object containing details of a successful upload.
-	Data    UploadPreTransformSuccessEventData    `json:"data,required"`
-	Request UploadPreTransformSuccessEventRequest `json:"request,required"`
-	Type    constant.UploadPreTransformSuccess    `json:"type,required"`
+	Data    UploadPreTransformSuccessEventData    `json:"data" api:"required"`
+	Request UploadPreTransformSuccessEventRequest `json:"request" api:"required"`
+	Type    constant.UploadPreTransformSuccess    `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CreatedAt   respjson.Field
@@ -454,7 +454,7 @@ func (r *UploadPreTransformSuccessEvent) UnmarshalJSON(data []byte) error {
 // Object containing details of a successful upload.
 type UploadPreTransformSuccessEventData struct {
 	// An array of tags assigned to the uploaded file by auto tagging.
-	AITags []UploadPreTransformSuccessEventDataAITag `json:"AITags,nullable"`
+	AITags []UploadPreTransformSuccessEventDataAITag `json:"AITags" api:"nullable"`
 	// The audio codec used in the video (only for video).
 	AudioCodec string `json:"audioCodec"`
 	// The bit rate of the video in kbps (only for video).
@@ -463,7 +463,7 @@ type UploadPreTransformSuccessEventData struct {
 	// `x,y,width,height`. If `customCoordinates` are not defined, then it is `null`.
 	// Send `customCoordinates` in `responseFields` in API request to get the value of
 	// this field.
-	CustomCoordinates string `json:"customCoordinates,nullable"`
+	CustomCoordinates string `json:"customCoordinates" api:"nullable"`
 	// A key-value data associated with the asset. Use `responseField` in API request
 	// to get `customMetadata` in the upload API response. Before setting any custom
 	// metadata on an asset, you have to create the field using custom metadata fields
@@ -525,7 +525,7 @@ type UploadPreTransformSuccessEventData struct {
 	// The array of tags associated with the asset. If no tags are set, it will be
 	// `null`. Send `tags` in `responseFields` in API request to get the value of this
 	// field.
-	Tags []string `json:"tags,nullable"`
+	Tags []string `json:"tags" api:"nullable"`
 	// In the case of an image, a small thumbnail URL.
 	ThumbnailURL string `json:"thumbnailUrl"`
 	// A publicly accessible URL of the file.
@@ -642,7 +642,7 @@ type UploadPreTransformSuccessEventDataSelectedFieldsSchema struct {
 	//
 	// Any of "Text", "Textarea", "Number", "Date", "Boolean", "SingleSelect",
 	// "MultiSelect".
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// The default value for this custom metadata field. The value should match the
 	// `type` of custom metadata field.
 	DefaultValue UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueUnion `json:"defaultValue"`
@@ -940,9 +940,9 @@ func (r *UploadPreTransformSuccessEventDataVersionInfo) UnmarshalJSON(data []byt
 
 type UploadPreTransformSuccessEventRequest struct {
 	// The requested pre-transformation string.
-	Transformation string `json:"transformation,required"`
+	Transformation string `json:"transformation" api:"required"`
 	// Unique identifier for the originating request.
-	XRequestID string `json:"x_request_id,required"`
+	XRequestID string `json:"x_request_id" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Transformation respjson.Field
@@ -963,11 +963,11 @@ func (r *UploadPreTransformSuccessEventRequest) UnmarshalJSON(data []byte) error
 // request. Use this for debugging and tracking transformation lifecycle.
 type VideoTransformationAcceptedEvent struct {
 	// Timestamp when the event was created in ISO8601 format.
-	CreatedAt time.Time                            `json:"created_at,required" format:"date-time"`
-	Data      VideoTransformationAcceptedEventData `json:"data,required"`
+	CreatedAt time.Time                            `json:"created_at" api:"required" format:"date-time"`
+	Data      VideoTransformationAcceptedEventData `json:"data" api:"required"`
 	// Information about the original request that triggered the video transformation.
-	Request VideoTransformationAcceptedEventRequest `json:"request,required"`
-	Type    constant.VideoTransformationAccepted    `json:"type,required"`
+	Request VideoTransformationAcceptedEventRequest `json:"request" api:"required"`
+	Type    constant.VideoTransformationAccepted    `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CreatedAt   respjson.Field
@@ -988,9 +988,9 @@ func (r *VideoTransformationAcceptedEvent) UnmarshalJSON(data []byte) error {
 
 type VideoTransformationAcceptedEventData struct {
 	// Information about the source video asset being transformed.
-	Asset VideoTransformationAcceptedEventDataAsset `json:"asset,required"`
+	Asset VideoTransformationAcceptedEventDataAsset `json:"asset" api:"required"`
 	// Base information about a video transformation request.
-	Transformation VideoTransformationAcceptedEventDataTransformation `json:"transformation,required"`
+	Transformation VideoTransformationAcceptedEventDataTransformation `json:"transformation" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Asset          respjson.Field
@@ -1009,7 +1009,7 @@ func (r *VideoTransformationAcceptedEventData) UnmarshalJSON(data []byte) error 
 // Information about the source video asset being transformed.
 type VideoTransformationAcceptedEventDataAsset struct {
 	// URL to download or access the source video file.
-	URL string `json:"url,required" format:"uri"`
+	URL string `json:"url" api:"required" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		URL         respjson.Field
@@ -1034,7 +1034,7 @@ type VideoTransformationAcceptedEventDataTransformation struct {
 	//   - `video-thumbnail`: Generate thumbnail image from video
 	//
 	// Any of "video-transformation", "gif-to-video", "video-thumbnail".
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// Configuration options for video transformations.
 	Options VideoTransformationAcceptedEventDataTransformationOptions `json:"options"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1101,9 +1101,9 @@ func (r *VideoTransformationAcceptedEventDataTransformationOptions) UnmarshalJSO
 // Information about the original request that triggered the video transformation.
 type VideoTransformationAcceptedEventRequest struct {
 	// Full URL of the transformation request that was submitted.
-	URL string `json:"url,required" format:"uri"`
+	URL string `json:"url" api:"required" format:"uri"`
 	// Unique identifier for the originating transformation request.
-	XRequestID string `json:"x_request_id,required"`
+	XRequestID string `json:"x_request_id" api:"required"`
 	// User-Agent header from the original request that triggered the transformation.
 	UserAgent string `json:"user_agent"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1128,11 +1128,11 @@ func (r *VideoTransformationAcceptedEventRequest) UnmarshalJSON(data []byte) err
 // support.
 type VideoTransformationErrorEvent struct {
 	// Timestamp when the event was created in ISO8601 format.
-	CreatedAt time.Time                         `json:"created_at,required" format:"date-time"`
-	Data      VideoTransformationErrorEventData `json:"data,required"`
+	CreatedAt time.Time                         `json:"created_at" api:"required" format:"date-time"`
+	Data      VideoTransformationErrorEventData `json:"data" api:"required"`
 	// Information about the original request that triggered the video transformation.
-	Request VideoTransformationErrorEventRequest `json:"request,required"`
-	Type    constant.VideoTransformationError    `json:"type,required"`
+	Request VideoTransformationErrorEventRequest `json:"request" api:"required"`
+	Type    constant.VideoTransformationError    `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CreatedAt   respjson.Field
@@ -1153,8 +1153,8 @@ func (r *VideoTransformationErrorEvent) UnmarshalJSON(data []byte) error {
 
 type VideoTransformationErrorEventData struct {
 	// Information about the source video asset being transformed.
-	Asset          VideoTransformationErrorEventDataAsset          `json:"asset,required"`
-	Transformation VideoTransformationErrorEventDataTransformation `json:"transformation,required"`
+	Asset          VideoTransformationErrorEventDataAsset          `json:"asset" api:"required"`
+	Transformation VideoTransformationErrorEventDataTransformation `json:"transformation" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Asset          respjson.Field
@@ -1173,7 +1173,7 @@ func (r *VideoTransformationErrorEventData) UnmarshalJSON(data []byte) error {
 // Information about the source video asset being transformed.
 type VideoTransformationErrorEventDataAsset struct {
 	// URL to download or access the source video file.
-	URL string `json:"url,required" format:"uri"`
+	URL string `json:"url" api:"required" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		URL         respjson.Field
@@ -1197,7 +1197,7 @@ type VideoTransformationErrorEventDataTransformation struct {
 	//   - `video-thumbnail`: Generate thumbnail image from video
 	//
 	// Any of "video-transformation", "gif-to-video", "video-thumbnail".
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// Details about the transformation error.
 	Error VideoTransformationErrorEventDataTransformationError `json:"error"`
 	// Configuration options for video transformations.
@@ -1227,7 +1227,7 @@ type VideoTransformationErrorEventDataTransformationError struct {
 	// - `internal_server_error`: Unexpected server error
 	//
 	// Any of "encoding_failed", "download_failed", "internal_server_error".
-	Reason string `json:"reason,required"`
+	Reason string `json:"reason" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Reason      respjson.Field
@@ -1289,9 +1289,9 @@ func (r *VideoTransformationErrorEventDataTransformationOptions) UnmarshalJSON(d
 // Information about the original request that triggered the video transformation.
 type VideoTransformationErrorEventRequest struct {
 	// Full URL of the transformation request that was submitted.
-	URL string `json:"url,required" format:"uri"`
+	URL string `json:"url" api:"required" format:"uri"`
 	// Unique identifier for the originating transformation request.
-	XRequestID string `json:"x_request_id,required"`
+	XRequestID string `json:"x_request_id" api:"required"`
 	// User-Agent header from the original request that triggered the transformation.
 	UserAgent string `json:"user_agent"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1316,11 +1316,11 @@ func (r *VideoTransformationErrorEventRequest) UnmarshalJSON(data []byte) error 
 // transformed video to users.
 type VideoTransformationReadyEvent struct {
 	// Timestamp when the event was created in ISO8601 format.
-	CreatedAt time.Time                         `json:"created_at,required" format:"date-time"`
-	Data      VideoTransformationReadyEventData `json:"data,required"`
+	CreatedAt time.Time                         `json:"created_at" api:"required" format:"date-time"`
+	Data      VideoTransformationReadyEventData `json:"data" api:"required"`
 	// Information about the original request that triggered the video transformation.
-	Request VideoTransformationReadyEventRequest `json:"request,required"`
-	Type    constant.VideoTransformationReady    `json:"type,required"`
+	Request VideoTransformationReadyEventRequest `json:"request" api:"required"`
+	Type    constant.VideoTransformationReady    `json:"type" api:"required"`
 	// Performance metrics for the transformation process.
 	Timings VideoTransformationReadyEventTimings `json:"timings"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1344,8 +1344,8 @@ func (r *VideoTransformationReadyEvent) UnmarshalJSON(data []byte) error {
 
 type VideoTransformationReadyEventData struct {
 	// Information about the source video asset being transformed.
-	Asset          VideoTransformationReadyEventDataAsset          `json:"asset,required"`
-	Transformation VideoTransformationReadyEventDataTransformation `json:"transformation,required"`
+	Asset          VideoTransformationReadyEventDataAsset          `json:"asset" api:"required"`
+	Transformation VideoTransformationReadyEventDataTransformation `json:"transformation" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Asset          respjson.Field
@@ -1364,7 +1364,7 @@ func (r *VideoTransformationReadyEventData) UnmarshalJSON(data []byte) error {
 // Information about the source video asset being transformed.
 type VideoTransformationReadyEventDataAsset struct {
 	// URL to download or access the source video file.
-	URL string `json:"url,required" format:"uri"`
+	URL string `json:"url" api:"required" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		URL         respjson.Field
@@ -1388,7 +1388,7 @@ type VideoTransformationReadyEventDataTransformation struct {
 	//   - `video-thumbnail`: Generate thumbnail image from video
 	//
 	// Any of "video-transformation", "gif-to-video", "video-thumbnail".
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// Configuration options for video transformations.
 	Options VideoTransformationReadyEventDataTransformationOptions `json:"options"`
 	// Information about the transformed output video.
@@ -1456,7 +1456,7 @@ func (r *VideoTransformationReadyEventDataTransformationOptions) UnmarshalJSON(d
 // Information about the transformed output video.
 type VideoTransformationReadyEventDataTransformationOutput struct {
 	// URL to access the transformed video.
-	URL string `json:"url,required" format:"uri"`
+	URL string `json:"url" api:"required" format:"uri"`
 	// Metadata of the output video file.
 	VideoMetadata VideoTransformationReadyEventDataTransformationOutputVideoMetadata `json:"video_metadata"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1477,13 +1477,13 @@ func (r *VideoTransformationReadyEventDataTransformationOutput) UnmarshalJSON(da
 // Metadata of the output video file.
 type VideoTransformationReadyEventDataTransformationOutputVideoMetadata struct {
 	// Bitrate of the output video in bits per second.
-	Bitrate int64 `json:"bitrate,required"`
+	Bitrate int64 `json:"bitrate" api:"required"`
 	// Duration of the output video in seconds.
-	Duration float64 `json:"duration,required"`
+	Duration float64 `json:"duration" api:"required"`
 	// Height of the output video in pixels.
-	Height int64 `json:"height,required"`
+	Height int64 `json:"height" api:"required"`
 	// Width of the output video in pixels.
-	Width int64 `json:"width,required"`
+	Width int64 `json:"width" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Bitrate     respjson.Field
@@ -1506,9 +1506,9 @@ func (r *VideoTransformationReadyEventDataTransformationOutputVideoMetadata) Unm
 // Information about the original request that triggered the video transformation.
 type VideoTransformationReadyEventRequest struct {
 	// Full URL of the transformation request that was submitted.
-	URL string `json:"url,required" format:"uri"`
+	URL string `json:"url" api:"required" format:"uri"`
 	// Unique identifier for the originating transformation request.
-	XRequestID string `json:"x_request_id,required"`
+	XRequestID string `json:"x_request_id" api:"required"`
 	// User-Agent header from the original request that triggered the transformation.
 	UserAgent string `json:"user_agent"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
