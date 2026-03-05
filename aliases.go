@@ -736,16 +736,6 @@ const TransformationCropModeExtract = shared.TransformationCropModeExtract
 // Equals "pad_extract"
 const TransformationCropModePadExtract = shared.TransformationCropModePadExtract
 
-// Accepts values between 0.1 and 5, or `auto` for automatic device pixel ratio
-// (DPR) calculation. Also accepts arithmetic expressions.
-//
-//   - Learn about
-//     [Arithmetic expressions](https://imagekit.io/docs/arithmetic-expressions-in-transformations).
-//   - See [DPR](https://imagekit.io/docs/image-resize-and-crop#dpr---dpr).
-//
-// This is an alias to an internal type.
-type TransformationDprUnionParam = shared.TransformationDprUnionParam
-
 // Specifies the duration (in seconds) for trimming videos, e.g., `5` or `10.5`.
 // Typically used with startOffset to indicate the length from the start offset.
 // Arithmetic expressions are supported. See

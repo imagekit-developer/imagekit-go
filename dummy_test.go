@@ -173,9 +173,7 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 					CropMode:        shared.TransformationCropModePadResize,
 					DefaultImage:    imagekit.String("defaultImage"),
 					Distort:         imagekit.String("distort"),
-					Dpr: shared.TransformationDprUnionParam{
-						OfFloat: imagekit.Float(2),
-					},
+					Dpr:             imagekit.Float(2),
 					Duration: shared.TransformationDurationUnionParam{
 						OfFloat: imagekit.Float(0),
 					},
@@ -357,9 +355,7 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 				CropMode:        shared.TransformationCropModePadResize,
 				DefaultImage:    imagekit.String("defaultImage"),
 				Distort:         imagekit.String("distort"),
-				Dpr: shared.TransformationDprUnionParam{
-					OfFloat: imagekit.Float(2),
-				},
+				Dpr:             imagekit.Float(2),
 				Duration: shared.TransformationDurationUnionParam{
 					OfFloat: imagekit.Float(0),
 				},
@@ -674,9 +670,7 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 				CropMode:        shared.TransformationCropModePadResize,
 				DefaultImage:    imagekit.String("defaultImage"),
 				Distort:         imagekit.String("distort"),
-				Dpr: shared.TransformationDprUnionParam{
-					OfFloat: imagekit.Float(2),
-				},
+				Dpr:             imagekit.Float(2),
 				Duration: shared.TransformationDurationUnionParam{
 					OfFloat: imagekit.Float(0),
 				},
@@ -954,9 +948,7 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 			CropMode:        shared.TransformationCropModePadResize,
 			DefaultImage:    imagekit.String("defaultImage"),
 			Distort:         imagekit.String("distort"),
-			Dpr: shared.TransformationDprUnionParam{
-				OfFloat: imagekit.Float(2),
-			},
+			Dpr:             imagekit.Float(2),
 			Duration: shared.TransformationDurationUnionParam{
 				OfFloat: imagekit.Float(0),
 			},
@@ -1132,9 +1124,7 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 				CropMode:        shared.TransformationCropModePadResize,
 				DefaultImage:    imagekit.String("defaultImage"),
 				Distort:         imagekit.String("distort"),
-				Dpr: shared.TransformationDprUnionParam{
-					OfFloat: imagekit.Float(2),
-				},
+				Dpr:             imagekit.Float(2),
 				Duration: shared.TransformationDurationUnionParam{
 					OfFloat: imagekit.Float(0),
 				},

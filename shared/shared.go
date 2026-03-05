@@ -3926,6 +3926,13 @@ type TransformationParam struct {
 	//     downwards (negative values). See
 	//     [Distort effect](https://imagekit.io/docs/effects-and-enhancements#distort---e-distort).
 	Distort param.Opt[string] `json:"distort,omitzero"`
+	// Accepts values between 0.1 and 5, or `auto` for automatic device pixel ratio
+	// (DPR) calculation. Also accepts arithmetic expressions.
+	//
+	//   - Learn about
+	//     [Arithmetic expressions](https://imagekit.io/docs/arithmetic-expressions-in-transformations).
+	//   - See [DPR](https://imagekit.io/docs/image-resize-and-crop#dpr---dpr).
+	Dpr param.Opt[float64] `json:"dpr,omitzero"`
 	// Refines padding and cropping behavior for pad resize, maintain ratio, and
 	// extract crop modes. Supports manual positions and coordinate-based focus. With
 	// AI-based cropping, you can automatically keep key subjects in frame—such as
@@ -4034,13 +4041,6 @@ type TransformationParam struct {
 	//
 	// Any of "pad_resize", "extract", "pad_extract".
 	CropMode TransformationCropMode `json:"cropMode,omitzero"`
-	// Accepts values between 0.1 and 5, or `auto` for automatic device pixel ratio
-	// (DPR) calculation. Also accepts arithmetic expressions.
-	//
-	//   - Learn about
-	//     [Arithmetic expressions](https://imagekit.io/docs/arithmetic-expressions-in-transformations).
-	//   - See [DPR](https://imagekit.io/docs/image-resize-and-crop#dpr---dpr).
-	Dpr TransformationDprUnionParam `json:"dpr,omitzero"`
 	// Specifies the duration (in seconds) for trimming videos, e.g., `5` or `10.5`.
 	// Typically used with startOffset to indicate the length from the start offset.
 	// Arithmetic expressions are supported. See
@@ -4281,31 +4281,6 @@ const (
 	TransformationCropModeExtract    TransformationCropMode = "extract"
 	TransformationCropModePadExtract TransformationCropMode = "pad_extract"
 )
-
-// Only one field can be non-zero.
-//
-// Use [param.IsOmitted] to confirm if a field is set.
-type TransformationDprUnionParam struct {
-	OfFloat  param.Opt[float64] `json:",omitzero,inline"`
-	OfString param.Opt[string]  `json:",omitzero,inline"`
-	paramUnion
-}
-
-func (u TransformationDprUnionParam) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfFloat, u.OfString)
-}
-func (u *TransformationDprUnionParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
-}
-
-func (u *TransformationDprUnionParam) asAny() any {
-	if !param.IsOmitted(u.OfFloat) {
-		return &u.OfFloat.Value
-	} else if !param.IsOmitted(u.OfString) {
-		return &u.OfString.Value
-	}
-	return nil
-}
 
 // Only one field can be non-zero.
 //
