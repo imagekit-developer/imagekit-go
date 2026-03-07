@@ -245,7 +245,7 @@ func TestFileUploadWithOptionalParams(t *testing.T) {
 		option.WithPassword("My Password"),
 	)
 	_, err := client.Files.Upload(context.TODO(), imagekit.FileUploadParams{
-		File:              io.Reader(bytes.NewBuffer([]byte("some file contents"))),
+		File:              io.Reader(bytes.NewBuffer([]byte("Example data"))),
 		FileName:          "fileName",
 		Token:             imagekit.String("token"),
 		Checks:            imagekit.String("\"request.folder\" : \"marketing/\"\n"),
