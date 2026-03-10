@@ -41,7 +41,7 @@ func TestUserAgentHeader(t *testing.T) {
 			},
 		}),
 	)
-	client.Files.Upload(context.Background(), imagekit.FileUploadParams{
+	_, _ = client.Files.Upload(context.Background(), imagekit.FileUploadParams{
 		File:     io.Reader(bytes.NewBuffer([]byte("https://www.example.com/public-url.jpg"))),
 		FileName: "file-name.jpg",
 	})
