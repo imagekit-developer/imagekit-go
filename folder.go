@@ -41,7 +41,7 @@ func (r *FolderService) New(ctx context.Context, body FolderNewParams, opts ...o
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/folder"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // This will delete a folder and all its contents permanently. The API returns an
@@ -50,7 +50,7 @@ func (r *FolderService) Delete(ctx context.Context, body FolderDeleteParams, opt
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/folder"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // This will copy one folder into another. The selected folder, its nested folders,
@@ -62,7 +62,7 @@ func (r *FolderService) Copy(ctx context.Context, body FolderCopyParams, opts ..
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/bulkJobs/copyFolder"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // This will move one folder into another. The selected folder, its nested folders,
@@ -73,7 +73,7 @@ func (r *FolderService) Move(ctx context.Context, body FolderMoveParams, opts ..
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/bulkJobs/moveFolder"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // This API allows you to rename an existing folder. The folder and all its nested
@@ -83,7 +83,7 @@ func (r *FolderService) Rename(ctx context.Context, body FolderRenameParams, opt
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/bulkJobs/renameFolder"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type FolderNewResponse struct {

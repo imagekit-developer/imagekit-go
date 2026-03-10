@@ -44,7 +44,7 @@ func (r *FileBulkService) Delete(ctx context.Context, body FileBulkDeleteParams,
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/files/batch/deleteByFileIds"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // This API adds tags to multiple files in bulk. A maximum of 50 files can be
@@ -53,7 +53,7 @@ func (r *FileBulkService) AddTags(ctx context.Context, body FileBulkAddTagsParam
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/files/addTags"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // This API removes AITags from multiple files in bulk. A maximum of 50 files can
@@ -62,7 +62,7 @@ func (r *FileBulkService) RemoveAITags(ctx context.Context, body FileBulkRemoveA
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/files/removeAITags"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // This API removes tags from multiple files in bulk. A maximum of 50 files can be
@@ -71,7 +71,7 @@ func (r *FileBulkService) RemoveTags(ctx context.Context, body FileBulkRemoveTag
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/files/removeTags"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type FileBulkDeleteResponse struct {

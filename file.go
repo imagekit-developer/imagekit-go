@@ -57,11 +57,11 @@ func (r *FileService) Update(ctx context.Context, fileID string, body FileUpdate
 	opts = slices.Concat(r.Options, opts)
 	if fileID == "" {
 		err = errors.New("missing required fileId parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v1/files/%s/details", fileID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // This API deletes the file and all its file versions permanently.
@@ -74,11 +74,11 @@ func (r *FileService) Delete(ctx context.Context, fileID string, opts ...option.
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if fileID == "" {
 		err = errors.New("missing required fileId parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("v1/files/%s", fileID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // This will copy a file from one folder to another.
@@ -90,7 +90,7 @@ func (r *FileService) Copy(ctx context.Context, body FileCopyParams, opts ...opt
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/files/copy"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // This API returns an object with details or attributes about the current version
@@ -99,11 +99,11 @@ func (r *FileService) Get(ctx context.Context, fileID string, opts ...option.Req
 	opts = slices.Concat(r.Options, opts)
 	if fileID == "" {
 		err = errors.New("missing required fileId parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v1/files/%s/details", fileID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // This will move a file and all its versions from one folder to another.
@@ -114,7 +114,7 @@ func (r *FileService) Move(ctx context.Context, body FileMoveParams, opts ...opt
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/files/move"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // You can rename an already existing file in the media library using rename file
@@ -126,7 +126,7 @@ func (r *FileService) Rename(ctx context.Context, body FileRenameParams, opts ..
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/files/rename"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // ImageKit.io allows you to upload files directly from both the server and client
@@ -162,7 +162,7 @@ func (r *FileService) Upload(ctx context.Context, body FileUploadParams, opts ..
 	opts = append([]option.RequestOption{option.WithBaseURL("https://upload.imagekit.io/")}, opts...)
 	path := "api/v1/files/upload"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Object containing details of a file or file version.

@@ -45,7 +45,7 @@ func (r *SavedExtensionService) New(ctx context.Context, body SavedExtensionNewP
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/saved-extensions"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // This API updates an existing saved extension. You can update the name,
@@ -54,11 +54,11 @@ func (r *SavedExtensionService) Update(ctx context.Context, id string, body Save
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v1/saved-extensions/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // This API returns an array of all saved extensions for your account. Saved
@@ -68,7 +68,7 @@ func (r *SavedExtensionService) List(ctx context.Context, opts ...option.Request
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/saved-extensions"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // This API deletes a saved extension permanently.
@@ -77,11 +77,11 @@ func (r *SavedExtensionService) Delete(ctx context.Context, id string, opts ...o
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("v1/saved-extensions/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // This API returns details of a specific saved extension by ID.
@@ -89,11 +89,11 @@ func (r *SavedExtensionService) Get(ctx context.Context, id string, opts ...opti
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v1/saved-extensions/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type SavedExtensionNewParams struct {

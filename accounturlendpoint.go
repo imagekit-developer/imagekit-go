@@ -44,7 +44,7 @@ func (r *AccountURLEndpointService) New(ctx context.Context, body AccountURLEndp
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/accounts/url-endpoints"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // **Note:** This API is currently in beta.
@@ -53,11 +53,11 @@ func (r *AccountURLEndpointService) Update(ctx context.Context, id string, body 
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v1/accounts/url-endpoints/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // **Note:** This API is currently in beta.
@@ -67,7 +67,7 @@ func (r *AccountURLEndpointService) List(ctx context.Context, opts ...option.Req
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/accounts/url-endpoints"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // **Note:** This API is currently in beta.
@@ -78,11 +78,11 @@ func (r *AccountURLEndpointService) Delete(ctx context.Context, id string, opts 
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("v1/accounts/url-endpoints/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // **Note:** This API is currently in beta.
@@ -91,11 +91,11 @@ func (r *AccountURLEndpointService) Get(ctx context.Context, id string, opts ...
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v1/accounts/url-endpoints/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Schema for URL endpoint resource.

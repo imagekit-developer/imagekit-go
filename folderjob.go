@@ -39,11 +39,11 @@ func (r *FolderJobService) Get(ctx context.Context, jobID string, opts ...option
 	opts = slices.Concat(r.Options, opts)
 	if jobID == "" {
 		err = errors.New("missing required jobId parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v1/bulkJobs/%s", jobID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type FolderJobGetResponse struct {

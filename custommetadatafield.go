@@ -46,7 +46,7 @@ func (r *CustomMetadataFieldService) New(ctx context.Context, body CustomMetadat
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/customMetadataFields"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // This API updates the label or schema of an existing custom metadata field.
@@ -54,11 +54,11 @@ func (r *CustomMetadataFieldService) Update(ctx context.Context, id string, body
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v1/customMetadataFields/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // This API returns the array of created custom metadata field objects. By default
@@ -73,7 +73,7 @@ func (r *CustomMetadataFieldService) List(ctx context.Context, query CustomMetad
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/customMetadataFields"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // This API deletes a custom metadata field. Even after deleting a custom metadata
@@ -82,11 +82,11 @@ func (r *CustomMetadataFieldService) Delete(ctx context.Context, id string, opts
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v1/customMetadataFields/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Object containing details of a custom metadata field.

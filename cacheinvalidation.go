@@ -42,7 +42,7 @@ func (r *CacheInvalidationService) New(ctx context.Context, body CacheInvalidati
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/files/purge"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // This API returns the status of a purge cache request.
@@ -50,11 +50,11 @@ func (r *CacheInvalidationService) Get(ctx context.Context, requestID string, op
 	opts = slices.Concat(r.Options, opts)
 	if requestID == "" {
 		err = errors.New("missing required requestId parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v1/files/purge/%s", requestID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type CacheInvalidationNewResponse struct {

@@ -45,7 +45,7 @@ func (r *AssetService) List(ctx context.Context, query AssetListParams, opts ...
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/files"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // AssetListResponseUnion contains all possible properties and values from [File],
