@@ -43,7 +43,7 @@ func (r *AccountUsageService) Get(ctx context.Context, query AccountUsageGetPara
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/accounts/usage"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type AccountUsageGetResponse struct {

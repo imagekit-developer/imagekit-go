@@ -44,7 +44,7 @@ func (r *AccountOriginService) New(ctx context.Context, body AccountOriginNewPar
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/accounts/origins"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // **Note:** This API is currently in beta.
@@ -53,11 +53,11 @@ func (r *AccountOriginService) Update(ctx context.Context, id string, body Accou
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v1/accounts/origins/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // **Note:** This API is currently in beta.
@@ -66,7 +66,7 @@ func (r *AccountOriginService) List(ctx context.Context, opts ...option.RequestO
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/accounts/origins"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // **Note:** This API is currently in beta.
@@ -77,11 +77,11 @@ func (r *AccountOriginService) Delete(ctx context.Context, id string, opts ...op
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("v1/accounts/origins/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // **Note:** This API is currently in beta.
@@ -90,11 +90,11 @@ func (r *AccountOriginService) Get(ctx context.Context, id string, opts ...optio
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v1/accounts/origins/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 func OriginRequestParamOfWebFolder(baseURL string, name string) OriginRequestUnionParam {

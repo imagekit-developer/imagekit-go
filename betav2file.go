@@ -75,7 +75,7 @@ func (r *BetaV2FileService) Upload(ctx context.Context, body BetaV2FileUploadPar
 	opts = append([]option.RequestOption{option.WithBaseURL("https://upload.imagekit.io/")}, opts...)
 	path := "api/v2/files/upload"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Object containing details of a successful upload.
