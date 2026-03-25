@@ -98,7 +98,7 @@ type UploadPostTransformErrorEvent struct {
 	CreatedAt time.Time                            `json:"created_at" api:"required" format:"date-time"`
 	Data      UploadPostTransformErrorEventData    `json:"data" api:"required"`
 	Request   UploadPostTransformErrorEventRequest `json:"request" api:"required"`
-	Type      constant.UploadPostTransformError    `json:"type" api:"required"`
+	Type      constant.UploadPostTransformError    `json:"type" default:"upload.post-transform.error"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CreatedAt   respjson.Field
@@ -232,7 +232,7 @@ type UploadPostTransformSuccessEvent struct {
 	CreatedAt time.Time                              `json:"created_at" api:"required" format:"date-time"`
 	Data      UploadPostTransformSuccessEventData    `json:"data" api:"required"`
 	Request   UploadPostTransformSuccessEventRequest `json:"request" api:"required"`
-	Type      constant.UploadPostTransformSuccess    `json:"type" api:"required"`
+	Type      constant.UploadPostTransformSuccess    `json:"type" default:"upload.post-transform.success"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CreatedAt   respjson.Field
@@ -327,7 +327,7 @@ type UploadPreTransformErrorEvent struct {
 	CreatedAt time.Time                           `json:"created_at" api:"required" format:"date-time"`
 	Data      UploadPreTransformErrorEventData    `json:"data" api:"required"`
 	Request   UploadPreTransformErrorEventRequest `json:"request" api:"required"`
-	Type      constant.UploadPreTransformError    `json:"type" api:"required"`
+	Type      constant.UploadPreTransformError    `json:"type" default:"upload.pre-transform.error"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CreatedAt   respjson.Field
@@ -430,7 +430,7 @@ type UploadPreTransformSuccessEvent struct {
 	// Object containing details of a successful upload.
 	Data    UploadPreTransformSuccessEventData    `json:"data" api:"required"`
 	Request UploadPreTransformSuccessEventRequest `json:"request" api:"required"`
-	Type    constant.UploadPreTransformSuccess    `json:"type" api:"required"`
+	Type    constant.UploadPreTransformSuccess    `json:"type" default:"upload.pre-transform.success"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CreatedAt   respjson.Field
@@ -965,7 +965,7 @@ type VideoTransformationAcceptedEvent struct {
 	Data      VideoTransformationAcceptedEventData `json:"data" api:"required"`
 	// Information about the original request that triggered the video transformation.
 	Request VideoTransformationAcceptedEventRequest `json:"request" api:"required"`
-	Type    constant.VideoTransformationAccepted    `json:"type" api:"required"`
+	Type    constant.VideoTransformationAccepted    `json:"type" default:"video.transformation.accepted"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CreatedAt   respjson.Field
@@ -1130,7 +1130,7 @@ type VideoTransformationErrorEvent struct {
 	Data      VideoTransformationErrorEventData `json:"data" api:"required"`
 	// Information about the original request that triggered the video transformation.
 	Request VideoTransformationErrorEventRequest `json:"request" api:"required"`
-	Type    constant.VideoTransformationError    `json:"type" api:"required"`
+	Type    constant.VideoTransformationError    `json:"type" default:"video.transformation.error"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CreatedAt   respjson.Field
@@ -1318,7 +1318,7 @@ type VideoTransformationReadyEvent struct {
 	Data      VideoTransformationReadyEventData `json:"data" api:"required"`
 	// Information about the original request that triggered the video transformation.
 	Request VideoTransformationReadyEventRequest `json:"request" api:"required"`
-	Type    constant.VideoTransformationReady    `json:"type" api:"required"`
+	Type    constant.VideoTransformationReady    `json:"type" default:"video.transformation.ready"`
 	// Performance metrics for the transformation process.
 	Timings VideoTransformationReadyEventTimings `json:"timings"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].

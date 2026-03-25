@@ -812,7 +812,7 @@ type BetaV2FileUploadParamsTransformationPostTransformation struct {
 	// Transformation type.
 	//
 	// This field can be elided, and will marshal its zero value as "transformation".
-	Type constant.Transformation `json:"type" api:"required"`
+	Type constant.Transformation `json:"type" default:"transformation"`
 	paramObj
 }
 
@@ -832,7 +832,7 @@ type BetaV2FileUploadParamsTransformationPostGifToVideo struct {
 	// Converts an animated GIF into an MP4.
 	//
 	// This field can be elided, and will marshal its zero value as "gif-to-video".
-	Type constant.GifToVideo `json:"type" api:"required"`
+	Type constant.GifToVideo `json:"type" default:"gif-to-video"`
 	paramObj
 }
 
@@ -852,7 +852,7 @@ type BetaV2FileUploadParamsTransformationPostThumbnail struct {
 	// Generates a thumbnail image.
 	//
 	// This field can be elided, and will marshal its zero value as "thumbnail".
-	Type constant.Thumbnail `json:"type" api:"required"`
+	Type constant.Thumbnail `json:"type" default:"thumbnail"`
 	paramObj
 }
 
@@ -875,7 +875,7 @@ type BetaV2FileUploadParamsTransformationPostAbs struct {
 	// Adaptive Bitrate Streaming (ABS) setup.
 	//
 	// This field can be elided, and will marshal its zero value as "abs".
-	Type constant.Abs `json:"type" api:"required"`
+	Type constant.Abs `json:"type" default:"abs"`
 	paramObj
 }
 
