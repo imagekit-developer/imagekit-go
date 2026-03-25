@@ -186,7 +186,7 @@ type URLEndpointRequestURLRewriterCloudinaryParam struct {
 	// Whether to preserve `<asset_type>/<delivery_type>` in the rewritten URL.
 	PreserveAssetDeliveryTypes param.Opt[bool] `json:"preserveAssetDeliveryTypes,omitzero"`
 	// This field can be elided, and will marshal its zero value as "CLOUDINARY".
-	Type constant.Cloudinary `json:"type" api:"required"`
+	Type constant.Cloudinary `json:"type" default:"CLOUDINARY"`
 	paramObj
 }
 
@@ -207,7 +207,7 @@ func NewURLEndpointRequestURLRewriterImgixParam() URLEndpointRequestURLRewriterI
 // This struct has a constant value, construct it with
 // [NewURLEndpointRequestURLRewriterImgixParam].
 type URLEndpointRequestURLRewriterImgixParam struct {
-	Type constant.Imgix `json:"type" api:"required"`
+	Type constant.Imgix `json:"type" default:"IMGIX"`
 	paramObj
 }
 
@@ -228,7 +228,7 @@ func NewURLEndpointRequestURLRewriterAkamaiParam() URLEndpointRequestURLRewriter
 // This struct has a constant value, construct it with
 // [NewURLEndpointRequestURLRewriterAkamaiParam].
 type URLEndpointRequestURLRewriterAkamaiParam struct {
-	Type constant.Akamai `json:"type" api:"required"`
+	Type constant.Akamai `json:"type" default:"AKAMAI"`
 	paramObj
 }
 
@@ -352,7 +352,7 @@ func (r *URLEndpointResponseURLRewriterUnion) UnmarshalJSON(data []byte) error {
 type URLEndpointResponseURLRewriterCloudinary struct {
 	// Whether to preserve `<asset_type>/<delivery_type>` in the rewritten URL.
 	PreserveAssetDeliveryTypes bool                `json:"preserveAssetDeliveryTypes" api:"required"`
-	Type                       constant.Cloudinary `json:"type" api:"required"`
+	Type                       constant.Cloudinary `json:"type" default:"CLOUDINARY"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		PreserveAssetDeliveryTypes respjson.Field
@@ -369,7 +369,7 @@ func (r *URLEndpointResponseURLRewriterCloudinary) UnmarshalJSON(data []byte) er
 }
 
 type URLEndpointResponseURLRewriterImgix struct {
-	Type constant.Imgix `json:"type" api:"required"`
+	Type constant.Imgix `json:"type" default:"IMGIX"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Type        respjson.Field
@@ -385,7 +385,7 @@ func (r *URLEndpointResponseURLRewriterImgix) UnmarshalJSON(data []byte) error {
 }
 
 type URLEndpointResponseURLRewriterAkamai struct {
-	Type constant.Akamai `json:"type" api:"required"`
+	Type constant.Akamai `json:"type" default:"AKAMAI"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Type        respjson.Field

@@ -155,7 +155,7 @@ func (r ExtensionConfigUnion) ToParam() ExtensionConfigUnionParam {
 
 type ExtensionConfigRemoveBg struct {
 	// Specifies the background removal extension.
-	Name    constant.RemoveBg              `json:"name" api:"required"`
+	Name    constant.RemoveBg              `json:"name" default:"remove-bg"`
 	Options ExtensionConfigRemoveBgOptions `json:"options"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -230,7 +230,7 @@ func (r *ExtensionConfigAutoTagging) UnmarshalJSON(data []byte) error {
 
 type ExtensionConfigAIAutoDescription struct {
 	// Specifies the auto description extension.
-	Name constant.AIAutoDescription `json:"name" api:"required"`
+	Name constant.AIAutoDescription `json:"name" default:"ai-auto-description"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Name        respjson.Field
@@ -247,7 +247,7 @@ func (r *ExtensionConfigAIAutoDescription) UnmarshalJSON(data []byte) error {
 
 type ExtensionConfigAITasks struct {
 	// Specifies the AI tasks extension for automated image analysis using AI models.
-	Name constant.AITasks `json:"name" api:"required"`
+	Name constant.AITasks `json:"name" default:"ai-tasks"`
 	// Array of task objects defining AI operations to perform on the asset.
 	Tasks []ExtensionConfigAITasksTaskUnion `json:"tasks" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -385,7 +385,7 @@ type ExtensionConfigAITasksTaskSelectTags struct {
 	// The question or instruction for the AI to analyze the image.
 	Instruction string `json:"instruction" api:"required"`
 	// Task type that analyzes the image and adds matching tags from a vocabulary.
-	Type constant.SelectTags `json:"type" api:"required"`
+	Type constant.SelectTags `json:"type" default:"select_tags"`
 	// Maximum number of tags to select from the vocabulary.
 	MaxSelections int64 `json:"max_selections"`
 	// Minimum number of tags to select from the vocabulary.
@@ -420,7 +420,7 @@ type ExtensionConfigAITasksTaskSelectMetadata struct {
 	Instruction string `json:"instruction" api:"required"`
 	// Task type that analyzes the image and sets a custom metadata field value from a
 	// vocabulary.
-	Type constant.SelectMetadata `json:"type" api:"required"`
+	Type constant.SelectMetadata `json:"type" default:"select_metadata"`
 	// Maximum number of values to select from the vocabulary.
 	MaxSelections int64 `json:"max_selections"`
 	// Minimum number of values to select from the vocabulary.
@@ -496,7 +496,7 @@ type ExtensionConfigAITasksTaskYesNo struct {
 	// The yes/no question for the AI to answer about the image.
 	Instruction string `json:"instruction" api:"required"`
 	// Task type that asks a yes/no question and executes actions based on the answer.
-	Type constant.YesNo `json:"type" api:"required"`
+	Type constant.YesNo `json:"type" default:"yes_no"`
 	// Actions to execute if the AI answers no.
 	OnNo ExtensionConfigAITasksTaskYesNoOnNo `json:"on_no"`
 	// Actions to execute if the AI cannot determine the answer.
@@ -1133,7 +1133,7 @@ type ExtensionConfigRemoveBgParam struct {
 	// Specifies the background removal extension.
 	//
 	// This field can be elided, and will marshal its zero value as "remove-bg".
-	Name constant.RemoveBg `json:"name" api:"required"`
+	Name constant.RemoveBg `json:"name" default:"remove-bg"`
 	paramObj
 }
 
@@ -1207,7 +1207,7 @@ func NewExtensionConfigAIAutoDescriptionParam() ExtensionConfigAIAutoDescription
 // [NewExtensionConfigAIAutoDescriptionParam].
 type ExtensionConfigAIAutoDescriptionParam struct {
 	// Specifies the auto description extension.
-	Name constant.AIAutoDescription `json:"name" api:"required"`
+	Name constant.AIAutoDescription `json:"name" default:"ai-auto-description"`
 	paramObj
 }
 
@@ -1226,7 +1226,7 @@ type ExtensionConfigAITasksParam struct {
 	// Specifies the AI tasks extension for automated image analysis using AI models.
 	//
 	// This field can be elided, and will marshal its zero value as "ai-tasks".
-	Name constant.AITasks `json:"name" api:"required"`
+	Name constant.AITasks `json:"name" default:"ai-tasks"`
 	paramObj
 }
 
@@ -1391,7 +1391,7 @@ type ExtensionConfigAITasksTaskSelectTagsParam struct {
 	// Task type that analyzes the image and adds matching tags from a vocabulary.
 	//
 	// This field can be elided, and will marshal its zero value as "select_tags".
-	Type constant.SelectTags `json:"type" api:"required"`
+	Type constant.SelectTags `json:"type" default:"select_tags"`
 	paramObj
 }
 
@@ -1419,7 +1419,7 @@ type ExtensionConfigAITasksTaskSelectMetadataParam struct {
 	// vocabulary.
 	//
 	// This field can be elided, and will marshal its zero value as "select_metadata".
-	Type constant.SelectMetadata `json:"type" api:"required"`
+	Type constant.SelectMetadata `json:"type" default:"select_metadata"`
 	paramObj
 }
 
@@ -1472,7 +1472,7 @@ type ExtensionConfigAITasksTaskYesNoParam struct {
 	// Task type that asks a yes/no question and executes actions based on the answer.
 	//
 	// This field can be elided, and will marshal its zero value as "yes_no".
-	Type constant.YesNo `json:"type" api:"required"`
+	Type constant.YesNo `json:"type" default:"yes_no"`
 	paramObj
 }
 
@@ -1937,7 +1937,7 @@ type ExtensionRemoveBgParam struct {
 	// Specifies the background removal extension.
 	//
 	// This field can be elided, and will marshal its zero value as "remove-bg".
-	Name constant.RemoveBg `json:"name" api:"required"`
+	Name constant.RemoveBg `json:"name" default:"remove-bg"`
 	paramObj
 }
 
@@ -2011,7 +2011,7 @@ func NewExtensionAIAutoDescriptionParam() ExtensionAIAutoDescriptionParam {
 // [NewExtensionAIAutoDescriptionParam].
 type ExtensionAIAutoDescriptionParam struct {
 	// Specifies the auto description extension.
-	Name constant.AIAutoDescription `json:"name" api:"required"`
+	Name constant.AIAutoDescription `json:"name" default:"ai-auto-description"`
 	paramObj
 }
 
@@ -2030,7 +2030,7 @@ type ExtensionAITasksParam struct {
 	// Specifies the AI tasks extension for automated image analysis using AI models.
 	//
 	// This field can be elided, and will marshal its zero value as "ai-tasks".
-	Name constant.AITasks `json:"name" api:"required"`
+	Name constant.AITasks `json:"name" default:"ai-tasks"`
 	paramObj
 }
 
@@ -2195,7 +2195,7 @@ type ExtensionAITasksTaskSelectTagsParam struct {
 	// Task type that analyzes the image and adds matching tags from a vocabulary.
 	//
 	// This field can be elided, and will marshal its zero value as "select_tags".
-	Type constant.SelectTags `json:"type" api:"required"`
+	Type constant.SelectTags `json:"type" default:"select_tags"`
 	paramObj
 }
 
@@ -2223,7 +2223,7 @@ type ExtensionAITasksTaskSelectMetadataParam struct {
 	// vocabulary.
 	//
 	// This field can be elided, and will marshal its zero value as "select_metadata".
-	Type constant.SelectMetadata `json:"type" api:"required"`
+	Type constant.SelectMetadata `json:"type" default:"select_metadata"`
 	paramObj
 }
 
@@ -2276,7 +2276,7 @@ type ExtensionAITasksTaskYesNoParam struct {
 	// Task type that asks a yes/no question and executes actions based on the answer.
 	//
 	// This field can be elided, and will marshal its zero value as "yes_no".
-	Type constant.YesNo `json:"type" api:"required"`
+	Type constant.YesNo `json:"type" default:"yes_no"`
 	paramObj
 }
 
@@ -2634,7 +2634,7 @@ type ExtensionSavedExtensionParam struct {
 	// Indicates this is a reference to a saved extension.
 	//
 	// This field can be elided, and will marshal its zero value as "saved-extension".
-	Name constant.SavedExtension `json:"name" api:"required"`
+	Name constant.SavedExtension `json:"name" default:"saved-extension"`
 	paramObj
 }
 
@@ -2693,7 +2693,7 @@ func (r GetImageAttributesOptionsParam) MarshalJSON() (data []byte, err error) {
 type ImageOverlayParam struct {
 	// Specifies the relative path to the image used as an overlay.
 	Input string         `json:"input" api:"required"`
-	Type  constant.Image `json:"type" api:"required"`
+	Type  constant.Image `json:"type" default:"image"`
 	// The input path can be included in the layer as either `i-{input}` or
 	// `ie-{base64_encoded_input}`. By default, the SDK determines the appropriate
 	// format automatically. To always use base64 encoding (`ie-{base64}`), set this
@@ -3243,7 +3243,7 @@ type SolidColorOverlayParam struct {
 	// is provided, the last two characters represent the opacity level (from `00` for
 	// 0.00 to `99` for 0.99).
 	Color string              `json:"color" api:"required"`
-	Type  constant.SolidColor `json:"type" api:"required"`
+	Type  constant.SolidColor `json:"type" default:"solidColor"`
 	// Control width and height of the solid color overlay. Supported transformations
 	// depend on the base/parent asset. See overlays on
 	// [Images](https://imagekit.io/docs/add-overlays-on-images#apply-transformation-on-solid-color-overlay)
@@ -3485,7 +3485,7 @@ const (
 type SubtitleOverlayParam struct {
 	// Specifies the relative path to the subtitle file used as an overlay.
 	Input string            `json:"input" api:"required"`
-	Type  constant.Subtitle `json:"type" api:"required"`
+	Type  constant.Subtitle `json:"type" default:"subtitle"`
 	// The input path can be included in the layer as either `i-{input}` or
 	// `ie-{base64_encoded_input}`. By default, the SDK determines the appropriate
 	// format automatically. To always use base64 encoding (`ie-{base64}`), set this
@@ -3585,7 +3585,7 @@ type TextOverlayParam struct {
 	// Specifies the text to be displayed in the overlay. The SDK automatically handles
 	// special characters and encoding.
 	Text string        `json:"text" api:"required"`
-	Type constant.Text `json:"type" api:"required"`
+	Type constant.Text `json:"type" default:"text"`
 	// Text can be included in the layer as either `i-{input}` (plain text) or
 	// `ie-{base64_encoded_input}` (base64). By default, the SDK selects the
 	// appropriate format based on the input text. To always use base64
@@ -4806,7 +4806,7 @@ const (
 type VideoOverlayParam struct {
 	// Specifies the relative path to the video used as an overlay.
 	Input string         `json:"input" api:"required"`
-	Type  constant.Video `json:"type" api:"required"`
+	Type  constant.Video `json:"type" default:"video"`
 	// The input path can be included in the layer as either `i-{input}` or
 	// `ie-{base64_encoded_input}`. By default, the SDK determines the appropriate
 	// format automatically. To always use base64 encoding (`ie-{base64}`), set this

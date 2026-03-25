@@ -439,7 +439,7 @@ type OriginRequestS3Param struct {
 	// Path prefix inside the bucket.
 	Prefix param.Opt[string] `json:"prefix,omitzero"`
 	// This field can be elided, and will marshal its zero value as "S3".
-	Type constant.S3 `json:"type" api:"required"`
+	Type constant.S3 `json:"type" default:"S3"`
 	paramObj
 }
 
@@ -472,7 +472,7 @@ type OriginRequestS3CompatibleParam struct {
 	// Use path-style S3 URLs?
 	S3ForcePathStyle param.Opt[bool] `json:"s3ForcePathStyle,omitzero"`
 	// This field can be elided, and will marshal its zero value as "S3_COMPATIBLE".
-	Type constant.S3Compatible `json:"type" api:"required"`
+	Type constant.S3Compatible `json:"type" default:"S3_COMPATIBLE"`
 	paramObj
 }
 
@@ -502,7 +502,7 @@ type OriginRequestCloudinaryBackupParam struct {
 	Prefix param.Opt[string] `json:"prefix,omitzero"`
 	// This field can be elided, and will marshal its zero value as
 	// "CLOUDINARY_BACKUP".
-	Type constant.CloudinaryBackup `json:"type" api:"required"`
+	Type constant.CloudinaryBackup `json:"type" default:"CLOUDINARY_BACKUP"`
 	paramObj
 }
 
@@ -527,7 +527,7 @@ type OriginRequestWebFolderParam struct {
 	// Whether to send a Canonical header.
 	IncludeCanonicalHeader param.Opt[bool] `json:"includeCanonicalHeader,omitzero"`
 	// This field can be elided, and will marshal its zero value as "WEB_FOLDER".
-	Type constant.WebFolder `json:"type" api:"required"`
+	Type constant.WebFolder `json:"type" default:"WEB_FOLDER"`
 	paramObj
 }
 
@@ -548,7 +548,7 @@ type OriginRequestWebProxyParam struct {
 	// Whether to send a Canonical header.
 	IncludeCanonicalHeader param.Opt[bool] `json:"includeCanonicalHeader,omitzero"`
 	// This field can be elided, and will marshal its zero value as "WEB_PROXY".
-	Type constant.WebProxy `json:"type" api:"required"`
+	Type constant.WebProxy `json:"type" default:"WEB_PROXY"`
 	paramObj
 }
 
@@ -573,7 +573,7 @@ type OriginRequestGcsParam struct {
 	IncludeCanonicalHeader param.Opt[bool]   `json:"includeCanonicalHeader,omitzero"`
 	Prefix                 param.Opt[string] `json:"prefix,omitzero"`
 	// This field can be elided, and will marshal its zero value as "GCS".
-	Type constant.Gcs `json:"type" api:"required"`
+	Type constant.Gcs `json:"type" default:"GCS"`
 	paramObj
 }
 
@@ -598,7 +598,7 @@ type OriginRequestAzureBlobParam struct {
 	IncludeCanonicalHeader param.Opt[bool]   `json:"includeCanonicalHeader,omitzero"`
 	Prefix                 param.Opt[string] `json:"prefix,omitzero"`
 	// This field can be elided, and will marshal its zero value as "AZURE_BLOB".
-	Type constant.AzureBlob `json:"type" api:"required"`
+	Type constant.AzureBlob `json:"type" default:"AZURE_BLOB"`
 	paramObj
 }
 
@@ -630,7 +630,7 @@ type OriginRequestAkeneoPimParam struct {
 	// Whether to send a Canonical header.
 	IncludeCanonicalHeader param.Opt[bool] `json:"includeCanonicalHeader,omitzero"`
 	// This field can be elided, and will marshal its zero value as "AKENEO_PIM".
-	Type constant.AkeneoPim `json:"type" api:"required"`
+	Type constant.AkeneoPim `json:"type" default:"AKENEO_PIM"`
 	paramObj
 }
 
@@ -803,7 +803,7 @@ type OriginResponseS3 struct {
 	Name string `json:"name" api:"required"`
 	// Path prefix inside the bucket.
 	Prefix string      `json:"prefix" api:"required"`
-	Type   constant.S3 `json:"type" api:"required"`
+	Type   constant.S3 `json:"type" default:"S3"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -842,7 +842,7 @@ type OriginResponseS3Compatible struct {
 	Prefix string `json:"prefix" api:"required"`
 	// Use path-style S3 URLs?
 	S3ForcePathStyle bool                  `json:"s3ForcePathStyle" api:"required"`
-	Type             constant.S3Compatible `json:"type" api:"required"`
+	Type             constant.S3Compatible `json:"type" default:"S3_COMPATIBLE"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -879,7 +879,7 @@ type OriginResponseCloudinaryBackup struct {
 	Name string `json:"name" api:"required"`
 	// Path prefix inside the bucket.
 	Prefix string                    `json:"prefix" api:"required"`
-	Type   constant.CloudinaryBackup `json:"type" api:"required"`
+	Type   constant.CloudinaryBackup `json:"type" default:"CLOUDINARY_BACKUP"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -914,7 +914,7 @@ type OriginResponseWebFolder struct {
 	IncludeCanonicalHeader bool `json:"includeCanonicalHeader" api:"required"`
 	// Display name of the origin.
 	Name string             `json:"name" api:"required"`
-	Type constant.WebFolder `json:"type" api:"required"`
+	Type constant.WebFolder `json:"type" default:"WEB_FOLDER"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -945,7 +945,7 @@ type OriginResponseWebProxy struct {
 	IncludeCanonicalHeader bool `json:"includeCanonicalHeader" api:"required"`
 	// Display name of the origin.
 	Name string            `json:"name" api:"required"`
-	Type constant.WebProxy `json:"type" api:"required"`
+	Type constant.WebProxy `json:"type" default:"WEB_PROXY"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -977,7 +977,7 @@ type OriginResponseGcs struct {
 	// Display name of the origin.
 	Name   string       `json:"name" api:"required"`
 	Prefix string       `json:"prefix" api:"required"`
-	Type   constant.Gcs `json:"type" api:"required"`
+	Type   constant.Gcs `json:"type" default:"GCS"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1012,7 +1012,7 @@ type OriginResponseAzureBlob struct {
 	// Display name of the origin.
 	Name   string             `json:"name" api:"required"`
 	Prefix string             `json:"prefix" api:"required"`
-	Type   constant.AzureBlob `json:"type" api:"required"`
+	Type   constant.AzureBlob `json:"type" default:"AZURE_BLOB"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1046,7 +1046,7 @@ type OriginResponseAkeneoPim struct {
 	IncludeCanonicalHeader bool `json:"includeCanonicalHeader" api:"required"`
 	// Display name of the origin.
 	Name string             `json:"name" api:"required"`
-	Type constant.AkeneoPim `json:"type" api:"required"`
+	Type constant.AkeneoPim `json:"type" default:"AKENEO_PIM"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
