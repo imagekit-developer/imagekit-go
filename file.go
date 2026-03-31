@@ -1616,7 +1616,7 @@ func (r FileUpdateParams) MarshalJSON() (data []byte, err error) {
 	return shimjson.Marshal(r.UpdateFileRequest)
 }
 func (r *FileUpdateParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.UpdateFileRequest)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type FileCopyParams struct {

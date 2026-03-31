@@ -410,7 +410,7 @@ func (r AccountURLEndpointNewParams) MarshalJSON() (data []byte, err error) {
 	return shimjson.Marshal(r.URLEndpointRequest)
 }
 func (r *AccountURLEndpointNewParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.URLEndpointRequest)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type AccountURLEndpointUpdateParams struct {
@@ -423,5 +423,5 @@ func (r AccountURLEndpointUpdateParams) MarshalJSON() (data []byte, err error) {
 	return shimjson.Marshal(r.URLEndpointRequest)
 }
 func (r *AccountURLEndpointUpdateParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.URLEndpointRequest)
+	return apijson.UnmarshalRoot(data, r)
 }

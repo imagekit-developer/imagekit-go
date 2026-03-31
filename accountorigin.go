@@ -1078,7 +1078,7 @@ func (r AccountOriginNewParams) MarshalJSON() (data []byte, err error) {
 	return shimjson.Marshal(r.OriginRequest)
 }
 func (r *AccountOriginNewParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.OriginRequest)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type AccountOriginUpdateParams struct {
@@ -1091,5 +1091,5 @@ func (r AccountOriginUpdateParams) MarshalJSON() (data []byte, err error) {
 	return shimjson.Marshal(r.OriginRequest)
 }
 func (r *AccountOriginUpdateParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.OriginRequest)
+	return apijson.UnmarshalRoot(data, r)
 }
