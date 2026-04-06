@@ -17,7 +17,7 @@ import (
 )
 
 func TestBetaV2FileUploadWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -31,7 +31,7 @@ func TestBetaV2FileUploadWithOptionalParams(t *testing.T) {
 		option.WithPassword("My Password"),
 	)
 	_, err := client.Beta.V2.Files.Upload(context.TODO(), imagekit.BetaV2FileUploadParams{
-		File:              io.Reader(bytes.NewBuffer([]byte("some file contents"))),
+		File:              io.Reader(bytes.NewBuffer([]byte("Example data"))),
 		FileName:          "fileName",
 		Token:             imagekit.String("token"),
 		Checks:            imagekit.String("\"request.folder\" : \"marketing/\"\n"),

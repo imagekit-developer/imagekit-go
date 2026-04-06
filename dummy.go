@@ -41,7 +41,7 @@ func (r *DummyService) New(ctx context.Context, body DummyNewParams, opts ...opt
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := "v1/dummy/test"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
-	return
+	return err
 }
 
 type DummyNewParams struct {

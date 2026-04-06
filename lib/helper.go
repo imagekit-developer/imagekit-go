@@ -618,6 +618,22 @@ func (r *HelperService) processOverlay(overlay shared.OverlayUnionParam) string 
 			entries = append(entries, fmt.Sprintf("ly-%s", position.Y.OfString.Value))
 		}
 
+		if !param.IsOmitted(position.XCenter.OfFloat) {
+			entries = append(entries, fmt.Sprintf("lxc-%g", position.XCenter.OfFloat.Value))
+		} else if !param.IsOmitted(position.XCenter.OfString) {
+			entries = append(entries, fmt.Sprintf("lxc-%s", position.XCenter.OfString.Value))
+		}
+
+		if !param.IsOmitted(position.YCenter.OfFloat) {
+			entries = append(entries, fmt.Sprintf("lyc-%g", position.YCenter.OfFloat.Value))
+		} else if !param.IsOmitted(position.YCenter.OfString) {
+			entries = append(entries, fmt.Sprintf("lyc-%s", position.YCenter.OfString.Value))
+		}
+
+		if position.AnchorPoint != "" {
+			entries = append(entries, fmt.Sprintf("lap-%s", position.AnchorPoint))
+		}
+
 		if position.Focus != "" {
 			entries = append(entries, fmt.Sprintf("lfo-%s", position.Focus))
 		}

@@ -15,6 +15,7 @@ import (
 )
 
 func TestUsage(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -27,7 +28,6 @@ func TestUsage(t *testing.T) {
 		option.WithPrivateKey("My Private Key"),
 		option.WithPassword("My Password"),
 	)
-	t.Skip("Prism tests are disabled")
 	response, err := client.Files.Upload(context.TODO(), imagekit.FileUploadParams{
 		File:     io.Reader(bytes.NewBuffer([]byte("https://www.example.com/public-url.jpg"))),
 		FileName: "file-name.jpg",

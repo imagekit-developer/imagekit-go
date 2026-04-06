@@ -41,7 +41,7 @@ func (r *FolderService) New(ctx context.Context, body FolderNewParams, opts ...o
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/folder"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // This will delete a folder and all its contents permanently. The API returns an
@@ -50,7 +50,7 @@ func (r *FolderService) Delete(ctx context.Context, body FolderDeleteParams, opt
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/folder"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // This will copy one folder into another. The selected folder, its nested folders,
@@ -62,7 +62,7 @@ func (r *FolderService) Copy(ctx context.Context, body FolderCopyParams, opts ..
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/bulkJobs/copyFolder"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // This will move one folder into another. The selected folder, its nested folders,
@@ -73,7 +73,7 @@ func (r *FolderService) Move(ctx context.Context, body FolderMoveParams, opts ..
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/bulkJobs/moveFolder"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // This API allows you to rename an existing folder. The folder and all its nested
@@ -83,7 +83,7 @@ func (r *FolderService) Rename(ctx context.Context, body FolderRenameParams, opt
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/bulkJobs/renameFolder"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type FolderNewResponse struct {
@@ -118,7 +118,7 @@ func (r *FolderDeleteResponse) UnmarshalJSON(data []byte) error {
 type FolderCopyResponse struct {
 	// Unique identifier of the bulk job. This can be used to check the status of the
 	// bulk job.
-	JobID string `json:"jobId,required"`
+	JobID string `json:"jobId" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		JobID       respjson.Field
@@ -137,7 +137,7 @@ func (r *FolderCopyResponse) UnmarshalJSON(data []byte) error {
 type FolderMoveResponse struct {
 	// Unique identifier of the bulk job. This can be used to check the status of the
 	// bulk job.
-	JobID string `json:"jobId,required"`
+	JobID string `json:"jobId" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		JobID       respjson.Field
@@ -156,7 +156,7 @@ func (r *FolderMoveResponse) UnmarshalJSON(data []byte) error {
 type FolderRenameResponse struct {
 	// Unique identifier of the bulk job. This can be used to check the status of the
 	// bulk job.
-	JobID string `json:"jobId,required"`
+	JobID string `json:"jobId" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		JobID       respjson.Field
@@ -177,7 +177,7 @@ type FolderNewParams struct {
 	// All characters except alphabets and numbers (inclusive of unicode letters,
 	// marks, and numerals in other languages) will be replaced by an underscore i.e.
 	// `_`.
-	FolderName string `json:"folderName,required"`
+	FolderName string `json:"folderName" api:"required"`
 	// The folder where the new folder should be created, for root use `/` else the
 	// path e.g. `containing/folder/`.
 	//
@@ -185,7 +185,7 @@ type FolderNewParams struct {
 	// be automatically created. For example, if you pass `/product/images/summer`,
 	// then `product`, `images`, and `summer` folders will be created if they don't
 	// already exist.
-	ParentFolderPath string `json:"parentFolderPath,required"`
+	ParentFolderPath string `json:"parentFolderPath" api:"required"`
 	paramObj
 }
 
@@ -199,7 +199,7 @@ func (r *FolderNewParams) UnmarshalJSON(data []byte) error {
 
 type FolderDeleteParams struct {
 	// Full path to the folder you want to delete. For example `/folder/to/delete/`.
-	FolderPath string `json:"folderPath,required"`
+	FolderPath string `json:"folderPath" api:"required"`
 	paramObj
 }
 
@@ -214,9 +214,9 @@ func (r *FolderDeleteParams) UnmarshalJSON(data []byte) error {
 type FolderCopyParams struct {
 	// Full path to the destination folder where you want to copy the source folder
 	// into.
-	DestinationPath string `json:"destinationPath,required"`
+	DestinationPath string `json:"destinationPath" api:"required"`
 	// The full path to the source folder you want to copy.
-	SourceFolderPath string `json:"sourceFolderPath,required"`
+	SourceFolderPath string `json:"sourceFolderPath" api:"required"`
 	// Option to copy all versions of files that are nested inside the selected folder.
 	// By default, only the current version of each file will be copied. When set to
 	// true, all versions of each file will be copied. Default value - `false`.
@@ -235,9 +235,9 @@ func (r *FolderCopyParams) UnmarshalJSON(data []byte) error {
 type FolderMoveParams struct {
 	// Full path to the destination folder where you want to move the source folder
 	// into.
-	DestinationPath string `json:"destinationPath,required"`
+	DestinationPath string `json:"destinationPath" api:"required"`
 	// The full path to the source folder you want to move.
-	SourceFolderPath string `json:"sourceFolderPath,required"`
+	SourceFolderPath string `json:"sourceFolderPath" api:"required"`
 	paramObj
 }
 
@@ -251,13 +251,13 @@ func (r *FolderMoveParams) UnmarshalJSON(data []byte) error {
 
 type FolderRenameParams struct {
 	// The full path to the folder you want to rename.
-	FolderPath string `json:"folderPath,required"`
+	FolderPath string `json:"folderPath" api:"required"`
 	// The new name for the folder.
 	//
 	// All characters except alphabets and numbers (inclusive of unicode letters,
 	// marks, and numerals in other languages) and `-` will be replaced by an
 	// underscore i.e. `_`.
-	NewFolderName string `json:"newFolderName,required"`
+	NewFolderName string `json:"newFolderName" api:"required"`
 	// Option to purge cache for the old nested files and their versions' URLs.
 	//
 	// When set to true, it will internally issue a purge cache request on CDN to

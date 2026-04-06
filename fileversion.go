@@ -39,11 +39,11 @@ func (r *FileVersionService) List(ctx context.Context, fileID string, opts ...op
 	opts = slices.Concat(r.Options, opts)
 	if fileID == "" {
 		err = errors.New("missing required fileId parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v1/files/%s/versions", fileID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // This API deletes a non-current file version permanently. The API returns an
@@ -54,15 +54,15 @@ func (r *FileVersionService) Delete(ctx context.Context, versionID string, body 
 	opts = slices.Concat(r.Options, opts)
 	if body.FileID == "" {
 		err = errors.New("missing required fileId parameter")
-		return
+		return nil, err
 	}
 	if versionID == "" {
 		err = errors.New("missing required versionId parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v1/files/%s/versions/%s", body.FileID, versionID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // This API returns an object with details or attributes of a file version.
@@ -70,15 +70,15 @@ func (r *FileVersionService) Get(ctx context.Context, versionID string, query Fi
 	opts = slices.Concat(r.Options, opts)
 	if query.FileID == "" {
 		err = errors.New("missing required fileId parameter")
-		return
+		return nil, err
 	}
 	if versionID == "" {
 		err = errors.New("missing required versionId parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v1/files/%s/versions/%s", query.FileID, versionID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // This API restores a file version as the current file version.
@@ -86,15 +86,15 @@ func (r *FileVersionService) Restore(ctx context.Context, versionID string, body
 	opts = slices.Concat(r.Options, opts)
 	if body.FileID == "" {
 		err = errors.New("missing required fileId parameter")
-		return
+		return nil, err
 	}
 	if versionID == "" {
 		err = errors.New("missing required versionId parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v1/files/%s/versions/%s/restore", body.FileID, versionID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type FileVersionDeleteResponse struct {
@@ -112,16 +112,16 @@ func (r *FileVersionDeleteResponse) UnmarshalJSON(data []byte) error {
 }
 
 type FileVersionDeleteParams struct {
-	FileID string `path:"fileId,required" json:"-"`
+	FileID string `path:"fileId" api:"required" json:"-"`
 	paramObj
 }
 
 type FileVersionGetParams struct {
-	FileID string `path:"fileId,required" json:"-"`
+	FileID string `path:"fileId" api:"required" json:"-"`
 	paramObj
 }
 
 type FileVersionRestoreParams struct {
-	FileID string `path:"fileId,required" json:"-"`
+	FileID string `path:"fileId" api:"required" json:"-"`
 	paramObj
 }

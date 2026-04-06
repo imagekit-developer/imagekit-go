@@ -945,4 +945,36 @@ func TestOverlayEncoding(t *testing.T) {
 			t.Errorf("Expected %s, got %s", expected, url)
 		}
 	})
+
+	t.Run("should generate URL with image overlay using xCenter yCenter and anchorPoint", func(t *testing.T) {
+		transformation := []shared.TransformationParam{
+			{
+				Overlay: shared.OverlayUnionParam{
+					OfImage: &shared.ImageOverlayParam{
+						Input: "logo.png",
+						Type:  constant.Image("image"),
+						BaseOverlayParam: shared.BaseOverlayParam{
+							Position: shared.OverlayPositionParam{
+								XCenter:     shared.OverlayPositionXCenterUnionParam{OfFloat: param.Opt[float64]{Value: 50}},
+								YCenter:     shared.OverlayPositionYCenterUnionParam{OfString: param.Opt[string]{Value: "bh_mul_0.5"}},
+								AnchorPoint: shared.OverlayPositionAnchorPointTopLeft,
+							},
+						},
+					},
+				},
+			},
+		}
+
+		url := client.Helper.BuildURL(shared.SrcOptionsParam{
+			URLEndpoint:            "https://ik.imagekit.io/test_url_endpoint",
+			TransformationPosition: shared.TransformationPositionPath,
+			Src:                    "/base-image.jpg",
+			Transformation:         transformation,
+		})
+
+		expected := "https://ik.imagekit.io/test_url_endpoint/tr:l-image,i-logo.png,lxc-50,lyc-bh_mul_0.5,lap-top_left,l-end/base-image.jpg"
+		if url != expected {
+			t.Errorf("Expected %s, got %s", expected, url)
+		}
+	})
 }

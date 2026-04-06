@@ -1,5 +1,53 @@
 # Changelog
 
+## 2.3.0 (2026-04-06)
+
+Full Changelog: [v2.2.0...v2.3.0](https://github.com/imagekit-developer/imagekit-go/compare/v2.2.0...v2.3.0)
+
+### Features
+
+* **api:** add support for xCenter, yCenter, and anchorPoint in overlay URL generation ([50ef82e](https://github.com/imagekit-developer/imagekit-go/commit/50ef82eb5eb19302a7c9933166e2643c4b60b6ec))
+* **api:** dpr type update ([7b5ed76](https://github.com/imagekit-developer/imagekit-go/commit/7b5ed7649a30f369e05741ad26e87866ab369341))
+* **api:** Introduce lxc, lyc, lap parameters in overlays. ([1d33db8](https://github.com/imagekit-developer/imagekit-go/commit/1d33db8dbb8860ca132781e558ce3dab880860b2))
+* **api:** revert dpr breaking change ([4f76b02](https://github.com/imagekit-developer/imagekit-go/commit/4f76b02da01cce562522509abc4aeb9f43632227))
+* **internal:** support comma format in multipart form encoding ([e0ecf81](https://github.com/imagekit-developer/imagekit-go/commit/e0ecf8124b1c7a1f02cef55883fb139e0bbf2363))
+
+
+### Bug Fixes
+
+* allow canceling a request while it is waiting to retry ([c772a06](https://github.com/imagekit-developer/imagekit-go/commit/c772a06aa381125614083d572ce99b73b4eb3ce5))
+* **encoder:** correctly serialize NullStruct ([c8a223a](https://github.com/imagekit-developer/imagekit-go/commit/c8a223a358428b56cd5f13843928252c58acff90))
+* fix issue with unmarshaling in some cases ([c05145e](https://github.com/imagekit-developer/imagekit-go/commit/c05145eb2eced30cb2398810796c0b6a2fa81e00))
+* fix request delays for retrying to be more respectful of high requested delays ([065df63](https://github.com/imagekit-developer/imagekit-go/commit/065df633342605e2d5f69d707170c8b92e5f59fb))
+* prevent duplicate ? in query params ([1c53d0d](https://github.com/imagekit-developer/imagekit-go/commit/1c53d0da2b0a2eaa26b29b3fa6b69dc84d78a8be))
+* **types:** generate shared enum types that are not referenced by other schemas ([420472d](https://github.com/imagekit-developer/imagekit-go/commit/420472d6e58c1626a7a15fa0c81cfbe02539c2d0))
+
+
+### Chores
+
+* **ci:** add build step ([950faa7](https://github.com/imagekit-developer/imagekit-go/commit/950faa70ba325a3af7e2149618d1690d681888a1))
+* **ci:** skip lint on metadata-only changes ([cb58aa5](https://github.com/imagekit-developer/imagekit-go/commit/cb58aa516481e088ef0924c1d2e8979df33800aa))
+* **ci:** skip uploading artifacts on stainless-internal branches ([1fedd9f](https://github.com/imagekit-developer/imagekit-go/commit/1fedd9f85df8d3c231fb7eb7e342ef98a2fe3acc))
+* **ci:** support opting out of skipping builds on metadata-only commits ([9781c64](https://github.com/imagekit-developer/imagekit-go/commit/9781c64025356760a3b067d0f13c897282747997))
+* **client:** fix multipart serialisation of Default() fields ([facb97a](https://github.com/imagekit-developer/imagekit-go/commit/facb97a34c051ca7f0b5ce1c18fca7eddf94b68e))
+* **internal:** codegen related update ([a4bb374](https://github.com/imagekit-developer/imagekit-go/commit/a4bb374e09dc89d66cc143dc3b6bb1f315e0e4cb))
+* **internal:** codegen related update ([255a031](https://github.com/imagekit-developer/imagekit-go/commit/255a0313de39110cdedc4002d451bdc39e3bc308))
+* **internal:** codegen related update ([e1e4755](https://github.com/imagekit-developer/imagekit-go/commit/e1e47559733779920f899cb665b244e431702668))
+* **internal:** codegen related update ([5071176](https://github.com/imagekit-developer/imagekit-go/commit/50711763c0f3bee01b36ab00500db61aa371415b))
+* **internal:** minor cleanup ([bba2f4a](https://github.com/imagekit-developer/imagekit-go/commit/bba2f4a012b76ed18936d5659db28505d88cf694))
+* **internal:** move custom custom `json` tags to `api` ([4609e1f](https://github.com/imagekit-developer/imagekit-go/commit/4609e1fd02735cc92d442ab6c6360429b5a8318d))
+* **internal:** remove mock server code ([ab007f7](https://github.com/imagekit-developer/imagekit-go/commit/ab007f7fa428ff639b7c1177976d76b4c66eb5f5))
+* **internal:** support default value struct tag ([86a3f7c](https://github.com/imagekit-developer/imagekit-go/commit/86a3f7cc8bce7c25b59720b35dfe590b974933eb))
+* **internal:** tweak CI branches ([28a816d](https://github.com/imagekit-developer/imagekit-go/commit/28a816d34c0bb30be0a550ade3fc7e3a848c98bf))
+* **internal:** update gitignore ([bbc7450](https://github.com/imagekit-developer/imagekit-go/commit/bbc745035b8765ad93a60ab91114135d1343e1d0))
+* **internal:** use explicit returns ([3d59762](https://github.com/imagekit-developer/imagekit-go/commit/3d59762abc0b08d20e1d3aa2f10e1e46b8e605b0))
+* **internal:** use explicit returns in more places ([93dfb11](https://github.com/imagekit-developer/imagekit-go/commit/93dfb117b673e0fbb123d47862bd48f7e685bfdd))
+* remove unnecessary error check for url parsing ([7517de5](https://github.com/imagekit-developer/imagekit-go/commit/7517de5c74a9c6cc7bab2ed0fa6c48278558d1b5))
+* **tests:** update webhook tests ([f3ef31e](https://github.com/imagekit-developer/imagekit-go/commit/f3ef31e396305fb69fa7905821fd2e94258f3b18))
+* update docs for api:"required" ([d5de86f](https://github.com/imagekit-developer/imagekit-go/commit/d5de86f78052cefc4c28da6049f66980d7f79112))
+* update mock server docs ([1ba9e87](https://github.com/imagekit-developer/imagekit-go/commit/1ba9e87f6b30e3992999808434dd39298de4d0a0))
+* update placeholder string ([a783267](https://github.com/imagekit-developer/imagekit-go/commit/a7832673f2d1d19e5c1d87b2ab3ad3b152288f73))
+
 ## 2.2.0 (2026-02-02)
 
 Full Changelog: [v2.1.1...v2.2.0](https://github.com/imagekit-developer/imagekit-go/compare/v2.1.1...v2.2.0)

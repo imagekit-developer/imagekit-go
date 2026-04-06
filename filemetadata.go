@@ -43,11 +43,11 @@ func (r *FileMetadataService) Get(ctx context.Context, fileID string, opts ...op
 	opts = slices.Concat(r.Options, opts)
 	if fileID == "" {
 		err = errors.New("missing required fileId parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v1/files/%s/metadata", fileID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Get image EXIF, pHash, and other metadata from ImageKit.io powered remote URL
@@ -56,13 +56,13 @@ func (r *FileMetadataService) GetFromURL(ctx context.Context, query FileMetadata
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/metadata"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type FileMetadataGetFromURLParams struct {
 	// Should be a valid file URL. It should be accessible using your ImageKit.io
 	// account.
-	URL string `query:"url,required" format:"uri" json:"-"`
+	URL string `query:"url" api:"required" format:"uri" json:"-"`
 	paramObj
 }
 

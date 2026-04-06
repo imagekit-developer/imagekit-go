@@ -155,7 +155,7 @@ func (r ExtensionConfigUnion) ToParam() ExtensionConfigUnionParam {
 
 type ExtensionConfigRemoveBg struct {
 	// Specifies the background removal extension.
-	Name    constant.RemoveBg              `json:"name,required"`
+	Name    constant.RemoveBg              `json:"name" default:"remove-bg"`
 	Options ExtensionConfigRemoveBgOptions `json:"options"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -205,13 +205,13 @@ func (r *ExtensionConfigRemoveBgOptions) UnmarshalJSON(data []byte) error {
 
 type ExtensionConfigAutoTagging struct {
 	// Maximum number of tags to attach to the asset.
-	MaxTags int64 `json:"maxTags,required"`
+	MaxTags int64 `json:"maxTags" api:"required"`
 	// Minimum confidence level for tags to be considered valid.
-	MinConfidence int64 `json:"minConfidence,required"`
+	MinConfidence int64 `json:"minConfidence" api:"required"`
 	// Specifies the auto-tagging extension used.
 	//
 	// Any of "google-auto-tagging", "aws-auto-tagging".
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		MaxTags       respjson.Field
@@ -230,7 +230,7 @@ func (r *ExtensionConfigAutoTagging) UnmarshalJSON(data []byte) error {
 
 type ExtensionConfigAIAutoDescription struct {
 	// Specifies the auto description extension.
-	Name constant.AIAutoDescription `json:"name,required"`
+	Name constant.AIAutoDescription `json:"name" default:"ai-auto-description"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Name        respjson.Field
@@ -247,9 +247,9 @@ func (r *ExtensionConfigAIAutoDescription) UnmarshalJSON(data []byte) error {
 
 type ExtensionConfigAITasks struct {
 	// Specifies the AI tasks extension for automated image analysis using AI models.
-	Name constant.AITasks `json:"name,required"`
+	Name constant.AITasks `json:"name" default:"ai-tasks"`
 	// Array of task objects defining AI operations to perform on the asset.
-	Tasks []ExtensionConfigAITasksTaskUnion `json:"tasks,required"`
+	Tasks []ExtensionConfigAITasksTaskUnion `json:"tasks" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Name        respjson.Field
@@ -383,15 +383,17 @@ func (r *ExtensionConfigAITasksTaskUnionVocabulary) UnmarshalJSON(data []byte) e
 
 type ExtensionConfigAITasksTaskSelectTags struct {
 	// The question or instruction for the AI to analyze the image.
-	Instruction string `json:"instruction,required"`
+	Instruction string `json:"instruction" api:"required"`
 	// Task type that analyzes the image and adds matching tags from a vocabulary.
-	Type constant.SelectTags `json:"type,required"`
+	Type constant.SelectTags `json:"type" default:"select_tags"`
 	// Maximum number of tags to select from the vocabulary.
 	MaxSelections int64 `json:"max_selections"`
 	// Minimum number of tags to select from the vocabulary.
 	MinSelections int64 `json:"min_selections"`
-	// Array of possible tag values. Combined length of all strings must not exceed 500
-	// characters. Cannot contain the `%` character.
+	// Array of possible tag values. The combined length of all strings must not exceed
+	// 500 characters, and values cannot include the `%` character. When providing
+	// large vocabularies (more than 30 items), the AI may not follow the list
+	// strictly.
 	Vocabulary []string `json:"vocabulary"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -415,17 +417,20 @@ func (ExtensionConfigAITasksTaskSelectTags) implExtensionConfigAITasksTaskUnion(
 
 type ExtensionConfigAITasksTaskSelectMetadata struct {
 	// Name of the custom metadata field to set. The field must exist in your account.
-	Field string `json:"field,required"`
+	Field string `json:"field" api:"required"`
 	// The question or instruction for the AI to analyze the image.
-	Instruction string `json:"instruction,required"`
+	Instruction string `json:"instruction" api:"required"`
 	// Task type that analyzes the image and sets a custom metadata field value from a
 	// vocabulary.
-	Type constant.SelectMetadata `json:"type,required"`
+	Type constant.SelectMetadata `json:"type" default:"select_metadata"`
 	// Maximum number of values to select from the vocabulary.
 	MaxSelections int64 `json:"max_selections"`
 	// Minimum number of values to select from the vocabulary.
 	MinSelections int64 `json:"min_selections"`
-	// Array of possible values matching the custom metadata field type.
+	// An array of possible values matching the custom metadata field type. If not
+	// provided for SingleSelect or MultiSelect field types, all values from the custom
+	// metadata field definition will be used. When providing large vocabularies (above
+	// 30 items), the AI may not strictly adhere to the list.
 	Vocabulary []ExtensionConfigAITasksTaskSelectMetadataVocabularyUnion `json:"vocabulary"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -494,9 +499,9 @@ func (r *ExtensionConfigAITasksTaskSelectMetadataVocabularyUnion) UnmarshalJSON(
 
 type ExtensionConfigAITasksTaskYesNo struct {
 	// The yes/no question for the AI to answer about the image.
-	Instruction string `json:"instruction,required"`
+	Instruction string `json:"instruction" api:"required"`
 	// Task type that asks a yes/no question and executes actions based on the answer.
-	Type constant.YesNo `json:"type,required"`
+	Type constant.YesNo `json:"type" default:"yes_no"`
 	// Actions to execute if the AI answers no.
 	OnNo ExtensionConfigAITasksTaskYesNoOnNo `json:"on_no"`
 	// Actions to execute if the AI cannot determine the answer.
@@ -552,10 +557,10 @@ func (r *ExtensionConfigAITasksTaskYesNoOnNo) UnmarshalJSON(data []byte) error {
 
 type ExtensionConfigAITasksTaskYesNoOnNoSetMetadata struct {
 	// Name of the custom metadata field to set.
-	Field string `json:"field,required"`
+	Field string `json:"field" api:"required"`
 	// Value to set for the custom metadata field. The value type should match the
 	// custom metadata field type.
-	Value ExtensionConfigAITasksTaskYesNoOnNoSetMetadataValueUnion `json:"value,required"`
+	Value ExtensionConfigAITasksTaskYesNoOnNoSetMetadataValueUnion `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Field       respjson.Field
@@ -674,7 +679,7 @@ func (r *ExtensionConfigAITasksTaskYesNoOnNoSetMetadataValueMixedItemUnion) Unma
 
 type ExtensionConfigAITasksTaskYesNoOnNoUnsetMetadata struct {
 	// Name of the custom metadata field to remove.
-	Field string `json:"field,required"`
+	Field string `json:"field" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Field       respjson.Field
@@ -718,10 +723,10 @@ func (r *ExtensionConfigAITasksTaskYesNoOnUnknown) UnmarshalJSON(data []byte) er
 
 type ExtensionConfigAITasksTaskYesNoOnUnknownSetMetadata struct {
 	// Name of the custom metadata field to set.
-	Field string `json:"field,required"`
+	Field string `json:"field" api:"required"`
 	// Value to set for the custom metadata field. The value type should match the
 	// custom metadata field type.
-	Value ExtensionConfigAITasksTaskYesNoOnUnknownSetMetadataValueUnion `json:"value,required"`
+	Value ExtensionConfigAITasksTaskYesNoOnUnknownSetMetadataValueUnion `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Field       respjson.Field
@@ -842,7 +847,7 @@ func (r *ExtensionConfigAITasksTaskYesNoOnUnknownSetMetadataValueMixedItemUnion)
 
 type ExtensionConfigAITasksTaskYesNoOnUnknownUnsetMetadata struct {
 	// Name of the custom metadata field to remove.
-	Field string `json:"field,required"`
+	Field string `json:"field" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Field       respjson.Field
@@ -886,10 +891,10 @@ func (r *ExtensionConfigAITasksTaskYesNoOnYes) UnmarshalJSON(data []byte) error 
 
 type ExtensionConfigAITasksTaskYesNoOnYesSetMetadata struct {
 	// Name of the custom metadata field to set.
-	Field string `json:"field,required"`
+	Field string `json:"field" api:"required"`
 	// Value to set for the custom metadata field. The value type should match the
 	// custom metadata field type.
-	Value ExtensionConfigAITasksTaskYesNoOnYesSetMetadataValueUnion `json:"value,required"`
+	Value ExtensionConfigAITasksTaskYesNoOnYesSetMetadataValueUnion `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Field       respjson.Field
@@ -1010,7 +1015,7 @@ func (r *ExtensionConfigAITasksTaskYesNoOnYesSetMetadataValueMixedItemUnion) Unm
 
 type ExtensionConfigAITasksTaskYesNoOnYesUnsetMetadata struct {
 	// Name of the custom metadata field to remove.
-	Field string `json:"field,required"`
+	Field string `json:"field" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Field       respjson.Field
@@ -1133,7 +1138,7 @@ type ExtensionConfigRemoveBgParam struct {
 	// Specifies the background removal extension.
 	//
 	// This field can be elided, and will marshal its zero value as "remove-bg".
-	Name constant.RemoveBg `json:"name,required"`
+	Name constant.RemoveBg `json:"name" default:"remove-bg"`
 	paramObj
 }
 
@@ -1173,13 +1178,13 @@ func (r *ExtensionConfigRemoveBgOptionsParam) UnmarshalJSON(data []byte) error {
 // The properties MaxTags, MinConfidence, Name are required.
 type ExtensionConfigAutoTaggingParam struct {
 	// Maximum number of tags to attach to the asset.
-	MaxTags int64 `json:"maxTags,required"`
+	MaxTags int64 `json:"maxTags" api:"required"`
 	// Minimum confidence level for tags to be considered valid.
-	MinConfidence int64 `json:"minConfidence,required"`
+	MinConfidence int64 `json:"minConfidence" api:"required"`
 	// Specifies the auto-tagging extension used.
 	//
 	// Any of "google-auto-tagging", "aws-auto-tagging".
-	Name string `json:"name,omitzero,required"`
+	Name string `json:"name,omitzero" api:"required"`
 	paramObj
 }
 
@@ -1207,7 +1212,7 @@ func NewExtensionConfigAIAutoDescriptionParam() ExtensionConfigAIAutoDescription
 // [NewExtensionConfigAIAutoDescriptionParam].
 type ExtensionConfigAIAutoDescriptionParam struct {
 	// Specifies the auto description extension.
-	Name constant.AIAutoDescription `json:"name,required"`
+	Name constant.AIAutoDescription `json:"name" default:"ai-auto-description"`
 	paramObj
 }
 
@@ -1222,11 +1227,11 @@ func (r *ExtensionConfigAIAutoDescriptionParam) UnmarshalJSON(data []byte) error
 // The properties Name, Tasks are required.
 type ExtensionConfigAITasksParam struct {
 	// Array of task objects defining AI operations to perform on the asset.
-	Tasks []ExtensionConfigAITasksTaskUnionParam `json:"tasks,omitzero,required"`
+	Tasks []ExtensionConfigAITasksTaskUnionParam `json:"tasks,omitzero" api:"required"`
 	// Specifies the AI tasks extension for automated image analysis using AI models.
 	//
 	// This field can be elided, and will marshal its zero value as "ai-tasks".
-	Name constant.AITasks `json:"name,required"`
+	Name constant.AITasks `json:"name" default:"ai-tasks"`
 	paramObj
 }
 
@@ -1380,18 +1385,20 @@ func init() {
 // The properties Instruction, Type are required.
 type ExtensionConfigAITasksTaskSelectTagsParam struct {
 	// The question or instruction for the AI to analyze the image.
-	Instruction string `json:"instruction,required"`
+	Instruction string `json:"instruction" api:"required"`
 	// Maximum number of tags to select from the vocabulary.
 	MaxSelections param.Opt[int64] `json:"max_selections,omitzero"`
 	// Minimum number of tags to select from the vocabulary.
 	MinSelections param.Opt[int64] `json:"min_selections,omitzero"`
-	// Array of possible tag values. Combined length of all strings must not exceed 500
-	// characters. Cannot contain the `%` character.
+	// Array of possible tag values. The combined length of all strings must not exceed
+	// 500 characters, and values cannot include the `%` character. When providing
+	// large vocabularies (more than 30 items), the AI may not follow the list
+	// strictly.
 	Vocabulary []string `json:"vocabulary,omitzero"`
 	// Task type that analyzes the image and adds matching tags from a vocabulary.
 	//
 	// This field can be elided, and will marshal its zero value as "select_tags".
-	Type constant.SelectTags `json:"type,required"`
+	Type constant.SelectTags `json:"type" default:"select_tags"`
 	paramObj
 }
 
@@ -1406,20 +1413,23 @@ func (r *ExtensionConfigAITasksTaskSelectTagsParam) UnmarshalJSON(data []byte) e
 // The properties Field, Instruction, Type are required.
 type ExtensionConfigAITasksTaskSelectMetadataParam struct {
 	// Name of the custom metadata field to set. The field must exist in your account.
-	Field string `json:"field,required"`
+	Field string `json:"field" api:"required"`
 	// The question or instruction for the AI to analyze the image.
-	Instruction string `json:"instruction,required"`
+	Instruction string `json:"instruction" api:"required"`
 	// Maximum number of values to select from the vocabulary.
 	MaxSelections param.Opt[int64] `json:"max_selections,omitzero"`
 	// Minimum number of values to select from the vocabulary.
 	MinSelections param.Opt[int64] `json:"min_selections,omitzero"`
-	// Array of possible values matching the custom metadata field type.
+	// An array of possible values matching the custom metadata field type. If not
+	// provided for SingleSelect or MultiSelect field types, all values from the custom
+	// metadata field definition will be used. When providing large vocabularies (above
+	// 30 items), the AI may not strictly adhere to the list.
 	Vocabulary []ExtensionConfigAITasksTaskSelectMetadataVocabularyUnionParam `json:"vocabulary,omitzero"`
 	// Task type that analyzes the image and sets a custom metadata field value from a
 	// vocabulary.
 	//
 	// This field can be elided, and will marshal its zero value as "select_metadata".
-	Type constant.SelectMetadata `json:"type,required"`
+	Type constant.SelectMetadata `json:"type" default:"select_metadata"`
 	paramObj
 }
 
@@ -1462,7 +1472,7 @@ func (u *ExtensionConfigAITasksTaskSelectMetadataVocabularyUnionParam) asAny() a
 // The properties Instruction, Type are required.
 type ExtensionConfigAITasksTaskYesNoParam struct {
 	// The yes/no question for the AI to answer about the image.
-	Instruction string `json:"instruction,required"`
+	Instruction string `json:"instruction" api:"required"`
 	// Actions to execute if the AI answers no.
 	OnNo ExtensionConfigAITasksTaskYesNoOnNoParam `json:"on_no,omitzero"`
 	// Actions to execute if the AI cannot determine the answer.
@@ -1472,7 +1482,7 @@ type ExtensionConfigAITasksTaskYesNoParam struct {
 	// Task type that asks a yes/no question and executes actions based on the answer.
 	//
 	// This field can be elided, and will marshal its zero value as "yes_no".
-	Type constant.YesNo `json:"type,required"`
+	Type constant.YesNo `json:"type" default:"yes_no"`
 	paramObj
 }
 
@@ -1508,10 +1518,10 @@ func (r *ExtensionConfigAITasksTaskYesNoOnNoParam) UnmarshalJSON(data []byte) er
 // The properties Field, Value are required.
 type ExtensionConfigAITasksTaskYesNoOnNoSetMetadataParam struct {
 	// Name of the custom metadata field to set.
-	Field string `json:"field,required"`
+	Field string `json:"field" api:"required"`
 	// Value to set for the custom metadata field. The value type should match the
 	// custom metadata field type.
-	Value ExtensionConfigAITasksTaskYesNoOnNoSetMetadataValueUnionParam `json:"value,omitzero,required"`
+	Value ExtensionConfigAITasksTaskYesNoOnNoSetMetadataValueUnionParam `json:"value,omitzero" api:"required"`
 	paramObj
 }
 
@@ -1585,7 +1595,7 @@ func (u *ExtensionConfigAITasksTaskYesNoOnNoSetMetadataValueMixedItemUnionParam)
 // The property Field is required.
 type ExtensionConfigAITasksTaskYesNoOnNoUnsetMetadataParam struct {
 	// Name of the custom metadata field to remove.
-	Field string `json:"field,required"`
+	Field string `json:"field" api:"required"`
 	paramObj
 }
 
@@ -1621,10 +1631,10 @@ func (r *ExtensionConfigAITasksTaskYesNoOnUnknownParam) UnmarshalJSON(data []byt
 // The properties Field, Value are required.
 type ExtensionConfigAITasksTaskYesNoOnUnknownSetMetadataParam struct {
 	// Name of the custom metadata field to set.
-	Field string `json:"field,required"`
+	Field string `json:"field" api:"required"`
 	// Value to set for the custom metadata field. The value type should match the
 	// custom metadata field type.
-	Value ExtensionConfigAITasksTaskYesNoOnUnknownSetMetadataValueUnionParam `json:"value,omitzero,required"`
+	Value ExtensionConfigAITasksTaskYesNoOnUnknownSetMetadataValueUnionParam `json:"value,omitzero" api:"required"`
 	paramObj
 }
 
@@ -1698,7 +1708,7 @@ func (u *ExtensionConfigAITasksTaskYesNoOnUnknownSetMetadataValueMixedItemUnionP
 // The property Field is required.
 type ExtensionConfigAITasksTaskYesNoOnUnknownUnsetMetadataParam struct {
 	// Name of the custom metadata field to remove.
-	Field string `json:"field,required"`
+	Field string `json:"field" api:"required"`
 	paramObj
 }
 
@@ -1734,10 +1744,10 @@ func (r *ExtensionConfigAITasksTaskYesNoOnYesParam) UnmarshalJSON(data []byte) e
 // The properties Field, Value are required.
 type ExtensionConfigAITasksTaskYesNoOnYesSetMetadataParam struct {
 	// Name of the custom metadata field to set.
-	Field string `json:"field,required"`
+	Field string `json:"field" api:"required"`
 	// Value to set for the custom metadata field. The value type should match the
 	// custom metadata field type.
-	Value ExtensionConfigAITasksTaskYesNoOnYesSetMetadataValueUnionParam `json:"value,omitzero,required"`
+	Value ExtensionConfigAITasksTaskYesNoOnYesSetMetadataValueUnionParam `json:"value,omitzero" api:"required"`
 	paramObj
 }
 
@@ -1811,7 +1821,7 @@ func (u *ExtensionConfigAITasksTaskYesNoOnYesSetMetadataValueMixedItemUnionParam
 // The property Field is required.
 type ExtensionConfigAITasksTaskYesNoOnYesUnsetMetadataParam struct {
 	// Name of the custom metadata field to remove.
-	Field string `json:"field,required"`
+	Field string `json:"field" api:"required"`
 	paramObj
 }
 
@@ -1937,7 +1947,7 @@ type ExtensionRemoveBgParam struct {
 	// Specifies the background removal extension.
 	//
 	// This field can be elided, and will marshal its zero value as "remove-bg".
-	Name constant.RemoveBg `json:"name,required"`
+	Name constant.RemoveBg `json:"name" default:"remove-bg"`
 	paramObj
 }
 
@@ -1977,13 +1987,13 @@ func (r *ExtensionRemoveBgOptionsParam) UnmarshalJSON(data []byte) error {
 // The properties MaxTags, MinConfidence, Name are required.
 type ExtensionAutoTaggingParam struct {
 	// Maximum number of tags to attach to the asset.
-	MaxTags int64 `json:"maxTags,required"`
+	MaxTags int64 `json:"maxTags" api:"required"`
 	// Minimum confidence level for tags to be considered valid.
-	MinConfidence int64 `json:"minConfidence,required"`
+	MinConfidence int64 `json:"minConfidence" api:"required"`
 	// Specifies the auto-tagging extension used.
 	//
 	// Any of "google-auto-tagging", "aws-auto-tagging".
-	Name string `json:"name,omitzero,required"`
+	Name string `json:"name,omitzero" api:"required"`
 	paramObj
 }
 
@@ -2011,7 +2021,7 @@ func NewExtensionAIAutoDescriptionParam() ExtensionAIAutoDescriptionParam {
 // [NewExtensionAIAutoDescriptionParam].
 type ExtensionAIAutoDescriptionParam struct {
 	// Specifies the auto description extension.
-	Name constant.AIAutoDescription `json:"name,required"`
+	Name constant.AIAutoDescription `json:"name" default:"ai-auto-description"`
 	paramObj
 }
 
@@ -2026,11 +2036,11 @@ func (r *ExtensionAIAutoDescriptionParam) UnmarshalJSON(data []byte) error {
 // The properties Name, Tasks are required.
 type ExtensionAITasksParam struct {
 	// Array of task objects defining AI operations to perform on the asset.
-	Tasks []ExtensionAITasksTaskUnionParam `json:"tasks,omitzero,required"`
+	Tasks []ExtensionAITasksTaskUnionParam `json:"tasks,omitzero" api:"required"`
 	// Specifies the AI tasks extension for automated image analysis using AI models.
 	//
 	// This field can be elided, and will marshal its zero value as "ai-tasks".
-	Name constant.AITasks `json:"name,required"`
+	Name constant.AITasks `json:"name" default:"ai-tasks"`
 	paramObj
 }
 
@@ -2184,18 +2194,20 @@ func init() {
 // The properties Instruction, Type are required.
 type ExtensionAITasksTaskSelectTagsParam struct {
 	// The question or instruction for the AI to analyze the image.
-	Instruction string `json:"instruction,required"`
+	Instruction string `json:"instruction" api:"required"`
 	// Maximum number of tags to select from the vocabulary.
 	MaxSelections param.Opt[int64] `json:"max_selections,omitzero"`
 	// Minimum number of tags to select from the vocabulary.
 	MinSelections param.Opt[int64] `json:"min_selections,omitzero"`
-	// Array of possible tag values. Combined length of all strings must not exceed 500
-	// characters. Cannot contain the `%` character.
+	// Array of possible tag values. The combined length of all strings must not exceed
+	// 500 characters, and values cannot include the `%` character. When providing
+	// large vocabularies (more than 30 items), the AI may not follow the list
+	// strictly.
 	Vocabulary []string `json:"vocabulary,omitzero"`
 	// Task type that analyzes the image and adds matching tags from a vocabulary.
 	//
 	// This field can be elided, and will marshal its zero value as "select_tags".
-	Type constant.SelectTags `json:"type,required"`
+	Type constant.SelectTags `json:"type" default:"select_tags"`
 	paramObj
 }
 
@@ -2210,20 +2222,23 @@ func (r *ExtensionAITasksTaskSelectTagsParam) UnmarshalJSON(data []byte) error {
 // The properties Field, Instruction, Type are required.
 type ExtensionAITasksTaskSelectMetadataParam struct {
 	// Name of the custom metadata field to set. The field must exist in your account.
-	Field string `json:"field,required"`
+	Field string `json:"field" api:"required"`
 	// The question or instruction for the AI to analyze the image.
-	Instruction string `json:"instruction,required"`
+	Instruction string `json:"instruction" api:"required"`
 	// Maximum number of values to select from the vocabulary.
 	MaxSelections param.Opt[int64] `json:"max_selections,omitzero"`
 	// Minimum number of values to select from the vocabulary.
 	MinSelections param.Opt[int64] `json:"min_selections,omitzero"`
-	// Array of possible values matching the custom metadata field type.
+	// An array of possible values matching the custom metadata field type. If not
+	// provided for SingleSelect or MultiSelect field types, all values from the custom
+	// metadata field definition will be used. When providing large vocabularies (above
+	// 30 items), the AI may not strictly adhere to the list.
 	Vocabulary []ExtensionAITasksTaskSelectMetadataVocabularyUnionParam `json:"vocabulary,omitzero"`
 	// Task type that analyzes the image and sets a custom metadata field value from a
 	// vocabulary.
 	//
 	// This field can be elided, and will marshal its zero value as "select_metadata".
-	Type constant.SelectMetadata `json:"type,required"`
+	Type constant.SelectMetadata `json:"type" default:"select_metadata"`
 	paramObj
 }
 
@@ -2266,7 +2281,7 @@ func (u *ExtensionAITasksTaskSelectMetadataVocabularyUnionParam) asAny() any {
 // The properties Instruction, Type are required.
 type ExtensionAITasksTaskYesNoParam struct {
 	// The yes/no question for the AI to answer about the image.
-	Instruction string `json:"instruction,required"`
+	Instruction string `json:"instruction" api:"required"`
 	// Actions to execute if the AI answers no.
 	OnNo ExtensionAITasksTaskYesNoOnNoParam `json:"on_no,omitzero"`
 	// Actions to execute if the AI cannot determine the answer.
@@ -2276,7 +2291,7 @@ type ExtensionAITasksTaskYesNoParam struct {
 	// Task type that asks a yes/no question and executes actions based on the answer.
 	//
 	// This field can be elided, and will marshal its zero value as "yes_no".
-	Type constant.YesNo `json:"type,required"`
+	Type constant.YesNo `json:"type" default:"yes_no"`
 	paramObj
 }
 
@@ -2312,10 +2327,10 @@ func (r *ExtensionAITasksTaskYesNoOnNoParam) UnmarshalJSON(data []byte) error {
 // The properties Field, Value are required.
 type ExtensionAITasksTaskYesNoOnNoSetMetadataParam struct {
 	// Name of the custom metadata field to set.
-	Field string `json:"field,required"`
+	Field string `json:"field" api:"required"`
 	// Value to set for the custom metadata field. The value type should match the
 	// custom metadata field type.
-	Value ExtensionAITasksTaskYesNoOnNoSetMetadataValueUnionParam `json:"value,omitzero,required"`
+	Value ExtensionAITasksTaskYesNoOnNoSetMetadataValueUnionParam `json:"value,omitzero" api:"required"`
 	paramObj
 }
 
@@ -2389,7 +2404,7 @@ func (u *ExtensionAITasksTaskYesNoOnNoSetMetadataValueMixedItemUnionParam) asAny
 // The property Field is required.
 type ExtensionAITasksTaskYesNoOnNoUnsetMetadataParam struct {
 	// Name of the custom metadata field to remove.
-	Field string `json:"field,required"`
+	Field string `json:"field" api:"required"`
 	paramObj
 }
 
@@ -2425,10 +2440,10 @@ func (r *ExtensionAITasksTaskYesNoOnUnknownParam) UnmarshalJSON(data []byte) err
 // The properties Field, Value are required.
 type ExtensionAITasksTaskYesNoOnUnknownSetMetadataParam struct {
 	// Name of the custom metadata field to set.
-	Field string `json:"field,required"`
+	Field string `json:"field" api:"required"`
 	// Value to set for the custom metadata field. The value type should match the
 	// custom metadata field type.
-	Value ExtensionAITasksTaskYesNoOnUnknownSetMetadataValueUnionParam `json:"value,omitzero,required"`
+	Value ExtensionAITasksTaskYesNoOnUnknownSetMetadataValueUnionParam `json:"value,omitzero" api:"required"`
 	paramObj
 }
 
@@ -2502,7 +2517,7 @@ func (u *ExtensionAITasksTaskYesNoOnUnknownSetMetadataValueMixedItemUnionParam) 
 // The property Field is required.
 type ExtensionAITasksTaskYesNoOnUnknownUnsetMetadataParam struct {
 	// Name of the custom metadata field to remove.
-	Field string `json:"field,required"`
+	Field string `json:"field" api:"required"`
 	paramObj
 }
 
@@ -2538,10 +2553,10 @@ func (r *ExtensionAITasksTaskYesNoOnYesParam) UnmarshalJSON(data []byte) error {
 // The properties Field, Value are required.
 type ExtensionAITasksTaskYesNoOnYesSetMetadataParam struct {
 	// Name of the custom metadata field to set.
-	Field string `json:"field,required"`
+	Field string `json:"field" api:"required"`
 	// Value to set for the custom metadata field. The value type should match the
 	// custom metadata field type.
-	Value ExtensionAITasksTaskYesNoOnYesSetMetadataValueUnionParam `json:"value,omitzero,required"`
+	Value ExtensionAITasksTaskYesNoOnYesSetMetadataValueUnionParam `json:"value,omitzero" api:"required"`
 	paramObj
 }
 
@@ -2615,7 +2630,7 @@ func (u *ExtensionAITasksTaskYesNoOnYesSetMetadataValueMixedItemUnionParam) asAn
 // The property Field is required.
 type ExtensionAITasksTaskYesNoOnYesUnsetMetadataParam struct {
 	// Name of the custom metadata field to remove.
-	Field string `json:"field,required"`
+	Field string `json:"field" api:"required"`
 	paramObj
 }
 
@@ -2630,11 +2645,11 @@ func (r *ExtensionAITasksTaskYesNoOnYesUnsetMetadataParam) UnmarshalJSON(data []
 // The properties ID, Name are required.
 type ExtensionSavedExtensionParam struct {
 	// The unique ID of the saved extension to apply.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Indicates this is a reference to a saved extension.
 	//
 	// This field can be elided, and will marshal its zero value as "saved-extension".
-	Name constant.SavedExtension `json:"name,required"`
+	Name constant.SavedExtension `json:"name" default:"saved-extension"`
 	paramObj
 }
 
@@ -2692,8 +2707,8 @@ func (r GetImageAttributesOptionsParam) MarshalJSON() (data []byte, err error) {
 
 type ImageOverlayParam struct {
 	// Specifies the relative path to the image used as an overlay.
-	Input string         `json:"input,required"`
-	Type  constant.Image `json:"type,required"`
+	Input string         `json:"input" api:"required"`
+	Type  constant.Image `json:"type" default:"image"`
 	// The input path can be included in the layer as either `i-{input}` or
 	// `ie-{base64_encoded_input}`. By default, the SDK determines the appropriate
 	// format automatically. To always use base64 encoding (`ie-{base64}`), set this
@@ -2944,8 +2959,16 @@ func init() {
 }
 
 type OverlayPositionParam struct {
-	// Specifies the position of the overlay relative to the parent image or video.
-	// Maps to `lfo` in the URL.
+	// Sets the anchor point on the base asset from which the overlay offset is
+	// calculated. The default value is `top_left`. Maps to `lap` in the URL. Can only
+	// be used with one or more of `x`, `y`, `xCenter`, or `yCenter`.
+	//
+	// Any of "top", "left", "right", "bottom", "top_left", "top_right", "bottom_left",
+	// "bottom_right", "center".
+	AnchorPoint OverlayPositionAnchorPoint `json:"anchorPoint,omitzero"`
+	// Specifies the position of the overlay relative to the parent image or video. If
+	// one or more of `x`, `y`, `xCenter`, or `yCenter` parameters are specified, this
+	// parameter is ignored. Maps to `lfo` in the URL.
 	//
 	// Any of "center", "top", "left", "bottom", "right", "top_left", "top_right",
 	// "bottom_left", "bottom_right".
@@ -2956,12 +2979,24 @@ type OverlayPositionParam struct {
 	// about
 	// [Arithmetic expressions](https://imagekit.io/docs/arithmetic-expressions-in-transformations).
 	X OverlayPositionXUnionParam `json:"x,omitzero"`
+	// Specifies the x-coordinate on the base asset where the overlay's center will be
+	// positioned. It also accepts arithmetic expressions such as `bw_mul_0.4` or
+	// `bw_sub_cw`. Maps to `lxc` in the URL. Cannot be used together with `x`, but can
+	// be used with `y`. Learn about
+	// [Arithmetic expressions](https://imagekit.io/docs/arithmetic-expressions-in-transformations).
+	XCenter OverlayPositionXCenterUnionParam `json:"xCenter,omitzero"`
 	// Specifies the y-coordinate of the top-left corner of the base asset where the
 	// overlay's top-left corner will be positioned. It also accepts arithmetic
 	// expressions such as `bh_mul_0.4` or `bh_sub_ch`. Maps to `ly` in the URL. Learn
 	// about
 	// [Arithmetic expressions](https://imagekit.io/docs/arithmetic-expressions-in-transformations).
 	Y OverlayPositionYUnionParam `json:"y,omitzero"`
+	// Specifies the y-coordinate on the base asset where the overlay's center will be
+	// positioned. It also accepts arithmetic expressions such as `bh_mul_0.4` or
+	// `bh_sub_ch`. Maps to `lyc` in the URL. Cannot be used together with `y`, but can
+	// be used with `x`. Learn about
+	// [Arithmetic expressions](https://imagekit.io/docs/arithmetic-expressions-in-transformations).
+	YCenter OverlayPositionYCenterUnionParam `json:"yCenter,omitzero"`
 	paramObj
 }
 
@@ -2973,8 +3008,26 @@ func (r *OverlayPositionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Specifies the position of the overlay relative to the parent image or video.
-// Maps to `lfo` in the URL.
+// Sets the anchor point on the base asset from which the overlay offset is
+// calculated. The default value is `top_left`. Maps to `lap` in the URL. Can only
+// be used with one or more of `x`, `y`, `xCenter`, or `yCenter`.
+type OverlayPositionAnchorPoint string
+
+const (
+	OverlayPositionAnchorPointTop         OverlayPositionAnchorPoint = "top"
+	OverlayPositionAnchorPointLeft        OverlayPositionAnchorPoint = "left"
+	OverlayPositionAnchorPointRight       OverlayPositionAnchorPoint = "right"
+	OverlayPositionAnchorPointBottom      OverlayPositionAnchorPoint = "bottom"
+	OverlayPositionAnchorPointTopLeft     OverlayPositionAnchorPoint = "top_left"
+	OverlayPositionAnchorPointTopRight    OverlayPositionAnchorPoint = "top_right"
+	OverlayPositionAnchorPointBottomLeft  OverlayPositionAnchorPoint = "bottom_left"
+	OverlayPositionAnchorPointBottomRight OverlayPositionAnchorPoint = "bottom_right"
+	OverlayPositionAnchorPointCenter      OverlayPositionAnchorPoint = "center"
+)
+
+// Specifies the position of the overlay relative to the parent image or video. If
+// one or more of `x`, `y`, `xCenter`, or `yCenter` parameters are specified, this
+// parameter is ignored. Maps to `lfo` in the URL.
 type OverlayPositionFocus string
 
 const (
@@ -3017,6 +3070,31 @@ func (u *OverlayPositionXUnionParam) asAny() any {
 // Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
+type OverlayPositionXCenterUnionParam struct {
+	OfFloat  param.Opt[float64] `json:",omitzero,inline"`
+	OfString param.Opt[string]  `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u OverlayPositionXCenterUnionParam) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfFloat, u.OfString)
+}
+func (u *OverlayPositionXCenterUnionParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *OverlayPositionXCenterUnionParam) asAny() any {
+	if !param.IsOmitted(u.OfFloat) {
+		return &u.OfFloat.Value
+	} else if !param.IsOmitted(u.OfString) {
+		return &u.OfString.Value
+	}
+	return nil
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
 type OverlayPositionYUnionParam struct {
 	OfFloat  param.Opt[float64] `json:",omitzero,inline"`
 	OfString param.Opt[string]  `json:",omitzero,inline"`
@@ -3031,6 +3109,31 @@ func (u *OverlayPositionYUnionParam) UnmarshalJSON(data []byte) error {
 }
 
 func (u *OverlayPositionYUnionParam) asAny() any {
+	if !param.IsOmitted(u.OfFloat) {
+		return &u.OfFloat.Value
+	} else if !param.IsOmitted(u.OfString) {
+		return &u.OfString.Value
+	}
+	return nil
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type OverlayPositionYCenterUnionParam struct {
+	OfFloat  param.Opt[float64] `json:",omitzero,inline"`
+	OfString param.Opt[string]  `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u OverlayPositionYCenterUnionParam) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfFloat, u.OfString)
+}
+func (u *OverlayPositionYCenterUnionParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *OverlayPositionYCenterUnionParam) asAny() any {
 	if !param.IsOmitted(u.OfFloat) {
 		return &u.OfFloat.Value
 	} else if !param.IsOmitted(u.OfString) {
@@ -3148,7 +3251,7 @@ func (u *OverlayTimingStartUnionParam) asAny() any {
 // The property Src is required.
 type ResponsiveImageAttributesParam struct {
 	// URL for the _largest_ candidate (assigned to plain `src`).
-	Src string `json:"src,required" format:"uri"`
+	Src string `json:"src" api:"required" format:"uri"`
 	// `sizes` returned (or synthesised as `100vw`). The value for the HTML `sizes`
 	// attribute.
 	Sizes param.Opt[string] `json:"sizes,omitzero"`
@@ -3242,8 +3345,8 @@ type SolidColorOverlayParam struct {
 	// code (e.g., `FFAABB50`), or a color name (e.g., `red`). If an 8-character value
 	// is provided, the last two characters represent the opacity level (from `00` for
 	// 0.00 to `99` for 0.99).
-	Color string              `json:"color,required"`
-	Type  constant.SolidColor `json:"type,required"`
+	Color string              `json:"color" api:"required"`
+	Type  constant.SolidColor `json:"type" default:"solidColor"`
 	// Control width and height of the solid color overlay. Supported transformations
 	// depend on the base/parent asset. See overlays on
 	// [Images](https://imagekit.io/docs/add-overlays-on-images#apply-transformation-on-solid-color-overlay)
@@ -3420,10 +3523,10 @@ type SrcOptionsParam struct {
 	// Accepts a relative or absolute path of the resource. If a relative path is
 	// provided, it is appended to the `urlEndpoint`. If an absolute path is provided,
 	// `urlEndpoint` is ignored.
-	Src string `json:"src,required"`
+	Src string `json:"src" api:"required"`
 	// Get your urlEndpoint from the
 	// [ImageKit dashboard](https://imagekit.io/dashboard/url-endpoints).
-	URLEndpoint string `json:"urlEndpoint,required" format:"uri"`
+	URLEndpoint string `json:"urlEndpoint" api:"required" format:"uri"`
 	// When you want the signed URL to expire, specified in seconds. If `expiresIn` is
 	// anything above 0, the URL will always be signed even if `signed` is set to
 	// false. If not specified and `signed` is `true`, the signed URL will not expire
@@ -3484,8 +3587,8 @@ const (
 
 type SubtitleOverlayParam struct {
 	// Specifies the relative path to the subtitle file used as an overlay.
-	Input string            `json:"input,required"`
-	Type  constant.Subtitle `json:"type,required"`
+	Input string            `json:"input" api:"required"`
+	Type  constant.Subtitle `json:"type" default:"subtitle"`
 	// The input path can be included in the layer as either `i-{input}` or
 	// `ie-{base64_encoded_input}`. By default, the SDK determines the appropriate
 	// format automatically. To always use base64 encoding (`ie-{base64}`), set this
@@ -3584,8 +3687,8 @@ const (
 type TextOverlayParam struct {
 	// Specifies the text to be displayed in the overlay. The SDK automatically handles
 	// special characters and encoding.
-	Text string        `json:"text,required"`
-	Type constant.Text `json:"type,required"`
+	Text string        `json:"text" api:"required"`
+	Type constant.Text `json:"type" default:"text"`
 	// Text can be included in the layer as either `i-{input}` (plain text) or
 	// `ie-{base64_encoded_input}` (base64). By default, the SDK selects the
 	// appropriate format based on the input text. To always use base64
@@ -4805,8 +4908,8 @@ const (
 
 type VideoOverlayParam struct {
 	// Specifies the relative path to the video used as an overlay.
-	Input string         `json:"input,required"`
-	Type  constant.Video `json:"type,required"`
+	Input string         `json:"input" api:"required"`
+	Type  constant.Video `json:"type" default:"video"`
 	// The input path can be included in the layer as either `i-{input}` or
 	// `ie-{base64_encoded_input}`. By default, the SDK determines the appropriate
 	// format automatically. To always use base64 encoding (`ie-{base64}`), set this
