@@ -25,6 +25,7 @@ func TestAccountOriginNewWithOptionalParams(t *testing.T) {
 	client := imagekit.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithPrivateKey("My Private Key"),
+		option.WithPassword("My Password"),
 	)
 	_, err := client.Accounts.Origins.New(context.TODO(), imagekit.AccountOriginNewParams{
 		OriginRequest: imagekit.OriginRequestUnionParam{
@@ -60,6 +61,7 @@ func TestAccountOriginUpdateWithOptionalParams(t *testing.T) {
 	client := imagekit.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithPrivateKey("My Private Key"),
+		option.WithPassword("My Password"),
 	)
 	_, err := client.Accounts.Origins.Update(
 		context.TODO(),
@@ -99,6 +101,7 @@ func TestAccountOriginList(t *testing.T) {
 	client := imagekit.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithPrivateKey("My Private Key"),
+		option.WithPassword("My Password"),
 	)
 	_, err := client.Accounts.Origins.List(context.TODO())
 	if err != nil {
@@ -122,6 +125,7 @@ func TestAccountOriginDelete(t *testing.T) {
 	client := imagekit.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithPrivateKey("My Private Key"),
+		option.WithPassword("My Password"),
 	)
 	err := client.Accounts.Origins.Delete(context.TODO(), "id")
 	if err != nil {
@@ -145,6 +149,7 @@ func TestAccountOriginGet(t *testing.T) {
 	client := imagekit.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithPrivateKey("My Private Key"),
+		option.WithPassword("My Password"),
 	)
 	_, err := client.Accounts.Origins.Get(context.TODO(), "id")
 	if err != nil {

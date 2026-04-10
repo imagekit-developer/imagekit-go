@@ -26,6 +26,7 @@ func TestSavedExtensionNewWithOptionalParams(t *testing.T) {
 	client := imagekit.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithPrivateKey("My Private Key"),
+		option.WithPassword("My Password"),
 	)
 	_, err := client.SavedExtensions.New(context.TODO(), imagekit.SavedExtensionNewParams{
 		Config: shared.ExtensionConfigUnionParam{
@@ -62,6 +63,7 @@ func TestSavedExtensionUpdateWithOptionalParams(t *testing.T) {
 	client := imagekit.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithPrivateKey("My Private Key"),
+		option.WithPassword("My Password"),
 	)
 	_, err := client.SavedExtensions.Update(
 		context.TODO(),
@@ -102,6 +104,7 @@ func TestSavedExtensionList(t *testing.T) {
 	client := imagekit.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithPrivateKey("My Private Key"),
+		option.WithPassword("My Password"),
 	)
 	_, err := client.SavedExtensions.List(context.TODO())
 	if err != nil {
@@ -125,6 +128,7 @@ func TestSavedExtensionDelete(t *testing.T) {
 	client := imagekit.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithPrivateKey("My Private Key"),
+		option.WithPassword("My Password"),
 	)
 	err := client.SavedExtensions.Delete(context.TODO(), "id")
 	if err != nil {
@@ -148,6 +152,7 @@ func TestSavedExtensionGet(t *testing.T) {
 	client := imagekit.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithPrivateKey("My Private Key"),
+		option.WithPassword("My Password"),
 	)
 	_, err := client.SavedExtensions.Get(context.TODO(), "id")
 	if err != nil {

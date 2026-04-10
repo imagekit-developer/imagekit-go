@@ -25,6 +25,7 @@ func TestCustomMetadataFieldNewWithOptionalParams(t *testing.T) {
 	client := imagekit.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithPrivateKey("My Private Key"),
+		option.WithPassword("My Password"),
 	)
 	_, err := client.CustomMetadataFields.New(context.TODO(), imagekit.CustomMetadataFieldNewParams{
 		Label: "price",
@@ -79,6 +80,7 @@ func TestCustomMetadataFieldUpdateWithOptionalParams(t *testing.T) {
 	client := imagekit.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithPrivateKey("My Private Key"),
+		option.WithPassword("My Password"),
 	)
 	_, err := client.CustomMetadataFields.Update(
 		context.TODO(),
@@ -135,6 +137,7 @@ func TestCustomMetadataFieldListWithOptionalParams(t *testing.T) {
 	client := imagekit.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithPrivateKey("My Private Key"),
+		option.WithPassword("My Password"),
 	)
 	_, err := client.CustomMetadataFields.List(context.TODO(), imagekit.CustomMetadataFieldListParams{
 		FolderPath:     imagekit.String("folderPath"),
@@ -161,6 +164,7 @@ func TestCustomMetadataFieldDelete(t *testing.T) {
 	client := imagekit.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithPrivateKey("My Private Key"),
+		option.WithPassword("My Password"),
 	)
 	_, err := client.CustomMetadataFields.Delete(context.TODO(), "id")
 	if err != nil {
