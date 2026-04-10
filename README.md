@@ -87,7 +87,6 @@ import (
 func main() {
 	client := imagekit.NewClient(
 		option.WithPrivateKey("private_key_xxx"), // defaults to os.LookupEnv("IMAGEKIT_PRIVATE_KEY")
-		option.WithPassword("My Password"),      // defaults to os.LookupEnv("OPTIONAL_IMAGEKIT_IGNORES_THIS")
 	)
 	
 	file, err := os.Open("/path/to/your/image.jpg")
