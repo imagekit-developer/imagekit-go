@@ -370,43 +370,8 @@ type OverlayUnionParam = shared.OverlayUnionParam
 // This is an alias to an internal type.
 type OverlayPositionParam = shared.OverlayPositionParam
 
-// Sets the anchor point on the base asset from which the overlay offset is
-// calculated. The default value is `top_left`. Maps to `lap` in the URL. Can only
-// be used with one or more of `x`, `y`, `xCenter`, or `yCenter`.
-//
-// This is an alias to an internal type.
-type OverlayPositionAnchorPoint = shared.OverlayPositionAnchorPoint
-
-// Equals "top"
-const OverlayPositionAnchorPointTop = shared.OverlayPositionAnchorPointTop
-
-// Equals "left"
-const OverlayPositionAnchorPointLeft = shared.OverlayPositionAnchorPointLeft
-
-// Equals "right"
-const OverlayPositionAnchorPointRight = shared.OverlayPositionAnchorPointRight
-
-// Equals "bottom"
-const OverlayPositionAnchorPointBottom = shared.OverlayPositionAnchorPointBottom
-
-// Equals "top_left"
-const OverlayPositionAnchorPointTopLeft = shared.OverlayPositionAnchorPointTopLeft
-
-// Equals "top_right"
-const OverlayPositionAnchorPointTopRight = shared.OverlayPositionAnchorPointTopRight
-
-// Equals "bottom_left"
-const OverlayPositionAnchorPointBottomLeft = shared.OverlayPositionAnchorPointBottomLeft
-
-// Equals "bottom_right"
-const OverlayPositionAnchorPointBottomRight = shared.OverlayPositionAnchorPointBottomRight
-
-// Equals "center"
-const OverlayPositionAnchorPointCenter = shared.OverlayPositionAnchorPointCenter
-
-// Specifies the position of the overlay relative to the parent image or video. If
-// one or more of `x`, `y`, `xCenter`, or `yCenter` parameters are specified, this
-// parameter is ignored. Maps to `lfo` in the URL.
+// Specifies the position of the overlay relative to the parent image or video.
+// Maps to `lfo` in the URL.
 //
 // This is an alias to an internal type.
 type OverlayPositionFocus = shared.OverlayPositionFocus
@@ -447,15 +412,6 @@ const OverlayPositionFocusBottomRight = shared.OverlayPositionFocusBottomRight
 // This is an alias to an internal type.
 type OverlayPositionXUnionParam = shared.OverlayPositionXUnionParam
 
-// Specifies the x-coordinate on the base asset where the overlay's center will be
-// positioned. It also accepts arithmetic expressions such as `bw_mul_0.4` or
-// `bw_sub_cw`. Maps to `lxc` in the URL. Cannot be used together with `x`, but can
-// be used with `y`. Learn about
-// [Arithmetic expressions](https://imagekit.io/docs/arithmetic-expressions-in-transformations).
-//
-// This is an alias to an internal type.
-type OverlayPositionXCenterUnionParam = shared.OverlayPositionXCenterUnionParam
-
 // Specifies the y-coordinate of the top-left corner of the base asset where the
 // overlay's top-left corner will be positioned. It also accepts arithmetic
 // expressions such as `bh_mul_0.4` or `bh_sub_ch`. Maps to `ly` in the URL. Learn
@@ -464,15 +420,6 @@ type OverlayPositionXCenterUnionParam = shared.OverlayPositionXCenterUnionParam
 //
 // This is an alias to an internal type.
 type OverlayPositionYUnionParam = shared.OverlayPositionYUnionParam
-
-// Specifies the y-coordinate on the base asset where the overlay's center will be
-// positioned. It also accepts arithmetic expressions such as `bh_mul_0.4` or
-// `bh_sub_ch`. Maps to `lyc` in the URL. Cannot be used together with `y`, but can
-// be used with `x`. Learn about
-// [Arithmetic expressions](https://imagekit.io/docs/arithmetic-expressions-in-transformations).
-//
-// This is an alias to an internal type.
-type OverlayPositionYCenterUnionParam = shared.OverlayPositionYCenterUnionParam
 
 // This is an alias to an internal type.
 type OverlayTimingParam = shared.OverlayTimingParam

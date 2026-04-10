@@ -28,7 +28,6 @@ func TestBetaV2FileUploadWithOptionalParams(t *testing.T) {
 	client := imagekit.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithPrivateKey("My Private Key"),
-		option.WithPassword("My Password"),
 	)
 	_, err := client.Beta.V2.Files.Upload(context.TODO(), imagekit.BetaV2FileUploadParams{
 		File:              io.Reader(bytes.NewBuffer([]byte("Example data"))),

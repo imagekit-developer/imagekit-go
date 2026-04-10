@@ -27,6 +27,11 @@ type All string                         // Always "all"
 type AzureBlob string                   // Always "AZURE_BLOB"
 type Cloudinary string                  // Always "CLOUDINARY"
 type CloudinaryBackup string            // Always "CLOUDINARY_BACKUP"
+type FileVersionCreated string          // Always "file-version.created"
+type FileVersionDeleted string          // Always "file-version.deleted"
+type FileCreated string                 // Always "file.created"
+type FileDeleted string                 // Always "file.deleted"
+type FileUpdated string                 // Always "file.updated"
 type Gcs string                         // Always "GCS"
 type GifToVideo string                  // Always "gif-to-video"
 type Image string                       // Always "image"
@@ -55,31 +60,36 @@ type WebFolder string                   // Always "WEB_FOLDER"
 type WebProxy string                    // Always "WEB_PROXY"
 type YesNo string                       // Always "yes_no"
 
-func (c Abs) Default() Abs                             { return "abs" }
-func (c AIAutoDescription) Default() AIAutoDescription { return "ai-auto-description" }
-func (c AITasks) Default() AITasks                     { return "ai-tasks" }
-func (c Akamai) Default() Akamai                       { return "AKAMAI" }
-func (c AkeneoPim) Default() AkeneoPim                 { return "AKENEO_PIM" }
-func (c All) Default() All                             { return "all" }
-func (c AzureBlob) Default() AzureBlob                 { return "AZURE_BLOB" }
-func (c Cloudinary) Default() Cloudinary               { return "CLOUDINARY" }
-func (c CloudinaryBackup) Default() CloudinaryBackup   { return "CLOUDINARY_BACKUP" }
-func (c Gcs) Default() Gcs                             { return "GCS" }
-func (c GifToVideo) Default() GifToVideo               { return "gif-to-video" }
-func (c Image) Default() Image                         { return "image" }
-func (c Imgix) Default() Imgix                         { return "IMGIX" }
-func (c Max) Default() Max                             { return "max" }
-func (c RemoveBg) Default() RemoveBg                   { return "remove-bg" }
-func (c S3) Default() S3                               { return "S3" }
-func (c S3Compatible) Default() S3Compatible           { return "S3_COMPATIBLE" }
-func (c SavedExtension) Default() SavedExtension       { return "saved-extension" }
-func (c SelectMetadata) Default() SelectMetadata       { return "select_metadata" }
-func (c SelectTags) Default() SelectTags               { return "select_tags" }
-func (c SolidColor) Default() SolidColor               { return "solidColor" }
-func (c Subtitle) Default() Subtitle                   { return "subtitle" }
-func (c Text) Default() Text                           { return "text" }
-func (c Thumbnail) Default() Thumbnail                 { return "thumbnail" }
-func (c Transformation) Default() Transformation       { return "transformation" }
+func (c Abs) Default() Abs                               { return "abs" }
+func (c AIAutoDescription) Default() AIAutoDescription   { return "ai-auto-description" }
+func (c AITasks) Default() AITasks                       { return "ai-tasks" }
+func (c Akamai) Default() Akamai                         { return "AKAMAI" }
+func (c AkeneoPim) Default() AkeneoPim                   { return "AKENEO_PIM" }
+func (c All) Default() All                               { return "all" }
+func (c AzureBlob) Default() AzureBlob                   { return "AZURE_BLOB" }
+func (c Cloudinary) Default() Cloudinary                 { return "CLOUDINARY" }
+func (c CloudinaryBackup) Default() CloudinaryBackup     { return "CLOUDINARY_BACKUP" }
+func (c FileVersionCreated) Default() FileVersionCreated { return "file-version.created" }
+func (c FileVersionDeleted) Default() FileVersionDeleted { return "file-version.deleted" }
+func (c FileCreated) Default() FileCreated               { return "file.created" }
+func (c FileDeleted) Default() FileDeleted               { return "file.deleted" }
+func (c FileUpdated) Default() FileUpdated               { return "file.updated" }
+func (c Gcs) Default() Gcs                               { return "GCS" }
+func (c GifToVideo) Default() GifToVideo                 { return "gif-to-video" }
+func (c Image) Default() Image                           { return "image" }
+func (c Imgix) Default() Imgix                           { return "IMGIX" }
+func (c Max) Default() Max                               { return "max" }
+func (c RemoveBg) Default() RemoveBg                     { return "remove-bg" }
+func (c S3) Default() S3                                 { return "S3" }
+func (c S3Compatible) Default() S3Compatible             { return "S3_COMPATIBLE" }
+func (c SavedExtension) Default() SavedExtension         { return "saved-extension" }
+func (c SelectMetadata) Default() SelectMetadata         { return "select_metadata" }
+func (c SelectTags) Default() SelectTags                 { return "select_tags" }
+func (c SolidColor) Default() SolidColor                 { return "solidColor" }
+func (c Subtitle) Default() Subtitle                     { return "subtitle" }
+func (c Text) Default() Text                             { return "text" }
+func (c Thumbnail) Default() Thumbnail                   { return "thumbnail" }
+func (c Transformation) Default() Transformation         { return "transformation" }
 func (c UploadPostTransformError) Default() UploadPostTransformError {
 	return "upload.post-transform.error"
 }
@@ -115,6 +125,11 @@ func (c All) MarshalJSON() ([]byte, error)                         { return mars
 func (c AzureBlob) MarshalJSON() ([]byte, error)                   { return marshalString(c) }
 func (c Cloudinary) MarshalJSON() ([]byte, error)                  { return marshalString(c) }
 func (c CloudinaryBackup) MarshalJSON() ([]byte, error)            { return marshalString(c) }
+func (c FileVersionCreated) MarshalJSON() ([]byte, error)          { return marshalString(c) }
+func (c FileVersionDeleted) MarshalJSON() ([]byte, error)          { return marshalString(c) }
+func (c FileCreated) MarshalJSON() ([]byte, error)                 { return marshalString(c) }
+func (c FileDeleted) MarshalJSON() ([]byte, error)                 { return marshalString(c) }
+func (c FileUpdated) MarshalJSON() ([]byte, error)                 { return marshalString(c) }
 func (c Gcs) MarshalJSON() ([]byte, error)                         { return marshalString(c) }
 func (c GifToVideo) MarshalJSON() ([]byte, error)                  { return marshalString(c) }
 func (c Image) MarshalJSON() ([]byte, error)                       { return marshalString(c) }

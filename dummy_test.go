@@ -27,24 +27,16 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 	client := imagekit.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithPrivateKey("My Private Key"),
-		option.WithPassword("My Password"),
 	)
 	err := client.Dummy.New(context.TODO(), imagekit.DummyNewParams{
 		BaseOverlay: shared.BaseOverlayParam{
 			LayerMode: shared.BaseOverlayLayerModeMultiply,
 			Position: shared.OverlayPositionParam{
-				AnchorPoint: shared.OverlayPositionAnchorPointTop,
-				Focus:       shared.OverlayPositionFocusCenter,
+				Focus: shared.OverlayPositionFocusCenter,
 				X: shared.OverlayPositionXUnionParam{
 					OfFloat: imagekit.Float(0),
 				},
-				XCenter: shared.OverlayPositionXCenterUnionParam{
-					OfFloat: imagekit.Float(0),
-				},
 				Y: shared.OverlayPositionYUnionParam{
-					OfFloat: imagekit.Float(0),
-				},
-				YCenter: shared.OverlayPositionYCenterUnionParam{
 					OfFloat: imagekit.Float(0),
 				},
 			},
@@ -207,18 +199,11 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 							BaseOverlayParam: shared.BaseOverlayParam{
 								LayerMode: shared.BaseOverlayLayerModeMultiply,
 								Position: shared.OverlayPositionParam{
-									AnchorPoint: shared.OverlayPositionAnchorPointTop,
-									Focus:       shared.OverlayPositionFocusCenter,
+									Focus: shared.OverlayPositionFocusCenter,
 									X: shared.OverlayPositionXUnionParam{
 										OfFloat: imagekit.Float(0),
 									},
-									XCenter: shared.OverlayPositionXCenterUnionParam{
-										OfFloat: imagekit.Float(0),
-									},
 									Y: shared.OverlayPositionYUnionParam{
-										OfFloat: imagekit.Float(0),
-									},
-									YCenter: shared.OverlayPositionYCenterUnionParam{
 										OfFloat: imagekit.Float(0),
 									},
 								},
@@ -322,18 +307,11 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 			BaseOverlayParam: shared.BaseOverlayParam{
 				LayerMode: shared.BaseOverlayLayerModeMultiply,
 				Position: shared.OverlayPositionParam{
-					AnchorPoint: shared.OverlayPositionAnchorPointTop,
-					Focus:       shared.OverlayPositionFocusCenter,
+					Focus: shared.OverlayPositionFocusCenter,
 					X: shared.OverlayPositionXUnionParam{
 						OfFloat: imagekit.Float(0),
 					},
-					XCenter: shared.OverlayPositionXCenterUnionParam{
-						OfFloat: imagekit.Float(0),
-					},
 					Y: shared.OverlayPositionYUnionParam{
-						OfFloat: imagekit.Float(0),
-					},
-					YCenter: shared.OverlayPositionYCenterUnionParam{
 						OfFloat: imagekit.Float(0),
 					},
 				},
@@ -403,18 +381,11 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 						BaseOverlayParam: shared.BaseOverlayParam{
 							LayerMode: shared.BaseOverlayLayerModeMultiply,
 							Position: shared.OverlayPositionParam{
-								AnchorPoint: shared.OverlayPositionAnchorPointTop,
-								Focus:       shared.OverlayPositionFocusCenter,
+								Focus: shared.OverlayPositionFocusCenter,
 								X: shared.OverlayPositionXUnionParam{
 									OfFloat: imagekit.Float(0),
 								},
-								XCenter: shared.OverlayPositionXCenterUnionParam{
-									OfFloat: imagekit.Float(0),
-								},
 								Y: shared.OverlayPositionYUnionParam{
-									OfFloat: imagekit.Float(0),
-								},
-								YCenter: shared.OverlayPositionYCenterUnionParam{
 									OfFloat: imagekit.Float(0),
 								},
 							},
@@ -513,18 +484,11 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 				BaseOverlayParam: shared.BaseOverlayParam{
 					LayerMode: shared.BaseOverlayLayerModeMultiply,
 					Position: shared.OverlayPositionParam{
-						AnchorPoint: shared.OverlayPositionAnchorPointTop,
-						Focus:       shared.OverlayPositionFocusCenter,
+						Focus: shared.OverlayPositionFocusCenter,
 						X: shared.OverlayPositionXUnionParam{
 							OfFloat: imagekit.Float(0),
 						},
-						XCenter: shared.OverlayPositionXCenterUnionParam{
-							OfFloat: imagekit.Float(0),
-						},
 						Y: shared.OverlayPositionYUnionParam{
-							OfFloat: imagekit.Float(0),
-						},
-						YCenter: shared.OverlayPositionYCenterUnionParam{
 							OfFloat: imagekit.Float(0),
 						},
 					},
@@ -572,18 +536,11 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 			},
 		},
 		OverlayPosition: shared.OverlayPositionParam{
-			AnchorPoint: shared.OverlayPositionAnchorPointTop,
-			Focus:       shared.OverlayPositionFocusCenter,
+			Focus: shared.OverlayPositionFocusCenter,
 			X: shared.OverlayPositionXUnionParam{
 				OfFloat: imagekit.Float(0),
 			},
-			XCenter: shared.OverlayPositionXCenterUnionParam{
-				OfFloat: imagekit.Float(0),
-			},
 			Y: shared.OverlayPositionYUnionParam{
-				OfFloat: imagekit.Float(0),
-			},
-			YCenter: shared.OverlayPositionYCenterUnionParam{
 				OfFloat: imagekit.Float(0),
 			},
 		},
@@ -625,18 +582,11 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 			BaseOverlayParam: shared.BaseOverlayParam{
 				LayerMode: shared.BaseOverlayLayerModeMultiply,
 				Position: shared.OverlayPositionParam{
-					AnchorPoint: shared.OverlayPositionAnchorPointTop,
-					Focus:       shared.OverlayPositionFocusCenter,
+					Focus: shared.OverlayPositionFocusCenter,
 					X: shared.OverlayPositionXUnionParam{
 						OfFloat: imagekit.Float(0),
 					},
-					XCenter: shared.OverlayPositionXCenterUnionParam{
-						OfFloat: imagekit.Float(0),
-					},
 					Y: shared.OverlayPositionYUnionParam{
-						OfFloat: imagekit.Float(0),
-					},
-					YCenter: shared.OverlayPositionYCenterUnionParam{
 						OfFloat: imagekit.Float(0),
 					},
 				},
@@ -746,18 +696,11 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 						BaseOverlayParam: shared.BaseOverlayParam{
 							LayerMode: shared.BaseOverlayLayerModeMultiply,
 							Position: shared.OverlayPositionParam{
-								AnchorPoint: shared.OverlayPositionAnchorPointTop,
-								Focus:       shared.OverlayPositionFocusCenter,
+								Focus: shared.OverlayPositionFocusCenter,
 								X: shared.OverlayPositionXUnionParam{
 									OfFloat: imagekit.Float(0),
 								},
-								XCenter: shared.OverlayPositionXCenterUnionParam{
-									OfFloat: imagekit.Float(0),
-								},
 								Y: shared.OverlayPositionYUnionParam{
-									OfFloat: imagekit.Float(0),
-								},
-								YCenter: shared.OverlayPositionYCenterUnionParam{
 									OfFloat: imagekit.Float(0),
 								},
 							},
@@ -857,18 +800,11 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 			BaseOverlayParam: shared.BaseOverlayParam{
 				LayerMode: shared.BaseOverlayLayerModeMultiply,
 				Position: shared.OverlayPositionParam{
-					AnchorPoint: shared.OverlayPositionAnchorPointTop,
-					Focus:       shared.OverlayPositionFocusCenter,
+					Focus: shared.OverlayPositionFocusCenter,
 					X: shared.OverlayPositionXUnionParam{
 						OfFloat: imagekit.Float(0),
 					},
-					XCenter: shared.OverlayPositionXCenterUnionParam{
-						OfFloat: imagekit.Float(0),
-					},
 					Y: shared.OverlayPositionYUnionParam{
-						OfFloat: imagekit.Float(0),
-					},
-					YCenter: shared.OverlayPositionYCenterUnionParam{
 						OfFloat: imagekit.Float(0),
 					},
 				},
@@ -909,18 +845,11 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 			BaseOverlayParam: shared.BaseOverlayParam{
 				LayerMode: shared.BaseOverlayLayerModeMultiply,
 				Position: shared.OverlayPositionParam{
-					AnchorPoint: shared.OverlayPositionAnchorPointTop,
-					Focus:       shared.OverlayPositionFocusCenter,
+					Focus: shared.OverlayPositionFocusCenter,
 					X: shared.OverlayPositionXUnionParam{
 						OfFloat: imagekit.Float(0),
 					},
-					XCenter: shared.OverlayPositionXCenterUnionParam{
-						OfFloat: imagekit.Float(0),
-					},
 					Y: shared.OverlayPositionYUnionParam{
-						OfFloat: imagekit.Float(0),
-					},
-					YCenter: shared.OverlayPositionYCenterUnionParam{
 						OfFloat: imagekit.Float(0),
 					},
 				},
@@ -1045,18 +974,11 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 					BaseOverlayParam: shared.BaseOverlayParam{
 						LayerMode: shared.BaseOverlayLayerModeMultiply,
 						Position: shared.OverlayPositionParam{
-							AnchorPoint: shared.OverlayPositionAnchorPointTop,
-							Focus:       shared.OverlayPositionFocusCenter,
+							Focus: shared.OverlayPositionFocusCenter,
 							X: shared.OverlayPositionXUnionParam{
 								OfFloat: imagekit.Float(0),
 							},
-							XCenter: shared.OverlayPositionXCenterUnionParam{
-								OfFloat: imagekit.Float(0),
-							},
 							Y: shared.OverlayPositionYUnionParam{
-								OfFloat: imagekit.Float(0),
-							},
-							YCenter: shared.OverlayPositionYCenterUnionParam{
 								OfFloat: imagekit.Float(0),
 							},
 						},
@@ -1154,18 +1076,11 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 			BaseOverlayParam: shared.BaseOverlayParam{
 				LayerMode: shared.BaseOverlayLayerModeMultiply,
 				Position: shared.OverlayPositionParam{
-					AnchorPoint: shared.OverlayPositionAnchorPointTop,
-					Focus:       shared.OverlayPositionFocusCenter,
+					Focus: shared.OverlayPositionFocusCenter,
 					X: shared.OverlayPositionXUnionParam{
 						OfFloat: imagekit.Float(0),
 					},
-					XCenter: shared.OverlayPositionXCenterUnionParam{
-						OfFloat: imagekit.Float(0),
-					},
 					Y: shared.OverlayPositionYUnionParam{
-						OfFloat: imagekit.Float(0),
-					},
-					YCenter: shared.OverlayPositionYCenterUnionParam{
 						OfFloat: imagekit.Float(0),
 					},
 				},
@@ -1235,18 +1150,11 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 						BaseOverlayParam: shared.BaseOverlayParam{
 							LayerMode: shared.BaseOverlayLayerModeMultiply,
 							Position: shared.OverlayPositionParam{
-								AnchorPoint: shared.OverlayPositionAnchorPointTop,
-								Focus:       shared.OverlayPositionFocusCenter,
+								Focus: shared.OverlayPositionFocusCenter,
 								X: shared.OverlayPositionXUnionParam{
 									OfFloat: imagekit.Float(0),
 								},
-								XCenter: shared.OverlayPositionXCenterUnionParam{
-									OfFloat: imagekit.Float(0),
-								},
 								Y: shared.OverlayPositionYUnionParam{
-									OfFloat: imagekit.Float(0),
-								},
-								YCenter: shared.OverlayPositionYCenterUnionParam{
 									OfFloat: imagekit.Float(0),
 								},
 							},

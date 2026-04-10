@@ -25,7 +25,6 @@ func TestFolderNew(t *testing.T) {
 	client := imagekit.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithPrivateKey("My Private Key"),
-		option.WithPassword("My Password"),
 	)
 	_, err := client.Folders.New(context.TODO(), imagekit.FolderNewParams{
 		FolderName:       "summer",
@@ -52,7 +51,6 @@ func TestFolderDelete(t *testing.T) {
 	client := imagekit.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithPrivateKey("My Private Key"),
-		option.WithPassword("My Password"),
 	)
 	_, err := client.Folders.Delete(context.TODO(), imagekit.FolderDeleteParams{
 		FolderPath: "/folder/to/delete/",
@@ -78,7 +76,6 @@ func TestFolderCopyWithOptionalParams(t *testing.T) {
 	client := imagekit.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithPrivateKey("My Private Key"),
-		option.WithPassword("My Password"),
 	)
 	_, err := client.Folders.Copy(context.TODO(), imagekit.FolderCopyParams{
 		DestinationPath:  "/path/of/destination/folder",
@@ -106,7 +103,6 @@ func TestFolderMove(t *testing.T) {
 	client := imagekit.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithPrivateKey("My Private Key"),
-		option.WithPassword("My Password"),
 	)
 	_, err := client.Folders.Move(context.TODO(), imagekit.FolderMoveParams{
 		DestinationPath:  "/path/of/destination/folder",
@@ -133,7 +129,6 @@ func TestFolderRenameWithOptionalParams(t *testing.T) {
 	client := imagekit.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithPrivateKey("My Private Key"),
-		option.WithPassword("My Password"),
 	)
 	_, err := client.Folders.Rename(context.TODO(), imagekit.FolderRenameParams{
 		FolderPath:    "/path/of/folder",

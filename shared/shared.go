@@ -390,10 +390,8 @@ type ExtensionConfigAITasksTaskSelectTags struct {
 	MaxSelections int64 `json:"max_selections"`
 	// Minimum number of tags to select from the vocabulary.
 	MinSelections int64 `json:"min_selections"`
-	// Array of possible tag values. The combined length of all strings must not exceed
-	// 500 characters, and values cannot include the `%` character. When providing
-	// large vocabularies (more than 30 items), the AI may not follow the list
-	// strictly.
+	// Array of possible tag values. Combined length of all strings must not exceed 500
+	// characters. Cannot contain the `%` character.
 	Vocabulary []string `json:"vocabulary"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -427,10 +425,7 @@ type ExtensionConfigAITasksTaskSelectMetadata struct {
 	MaxSelections int64 `json:"max_selections"`
 	// Minimum number of values to select from the vocabulary.
 	MinSelections int64 `json:"min_selections"`
-	// An array of possible values matching the custom metadata field type. If not
-	// provided for SingleSelect or MultiSelect field types, all values from the custom
-	// metadata field definition will be used. When providing large vocabularies (above
-	// 30 items), the AI may not strictly adhere to the list.
+	// Array of possible values matching the custom metadata field type.
 	Vocabulary []ExtensionConfigAITasksTaskSelectMetadataVocabularyUnion `json:"vocabulary"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1390,10 +1385,8 @@ type ExtensionConfigAITasksTaskSelectTagsParam struct {
 	MaxSelections param.Opt[int64] `json:"max_selections,omitzero"`
 	// Minimum number of tags to select from the vocabulary.
 	MinSelections param.Opt[int64] `json:"min_selections,omitzero"`
-	// Array of possible tag values. The combined length of all strings must not exceed
-	// 500 characters, and values cannot include the `%` character. When providing
-	// large vocabularies (more than 30 items), the AI may not follow the list
-	// strictly.
+	// Array of possible tag values. Combined length of all strings must not exceed 500
+	// characters. Cannot contain the `%` character.
 	Vocabulary []string `json:"vocabulary,omitzero"`
 	// Task type that analyzes the image and adds matching tags from a vocabulary.
 	//
@@ -1420,10 +1413,7 @@ type ExtensionConfigAITasksTaskSelectMetadataParam struct {
 	MaxSelections param.Opt[int64] `json:"max_selections,omitzero"`
 	// Minimum number of values to select from the vocabulary.
 	MinSelections param.Opt[int64] `json:"min_selections,omitzero"`
-	// An array of possible values matching the custom metadata field type. If not
-	// provided for SingleSelect or MultiSelect field types, all values from the custom
-	// metadata field definition will be used. When providing large vocabularies (above
-	// 30 items), the AI may not strictly adhere to the list.
+	// Array of possible values matching the custom metadata field type.
 	Vocabulary []ExtensionConfigAITasksTaskSelectMetadataVocabularyUnionParam `json:"vocabulary,omitzero"`
 	// Task type that analyzes the image and sets a custom metadata field value from a
 	// vocabulary.
@@ -2199,10 +2189,8 @@ type ExtensionAITasksTaskSelectTagsParam struct {
 	MaxSelections param.Opt[int64] `json:"max_selections,omitzero"`
 	// Minimum number of tags to select from the vocabulary.
 	MinSelections param.Opt[int64] `json:"min_selections,omitzero"`
-	// Array of possible tag values. The combined length of all strings must not exceed
-	// 500 characters, and values cannot include the `%` character. When providing
-	// large vocabularies (more than 30 items), the AI may not follow the list
-	// strictly.
+	// Array of possible tag values. Combined length of all strings must not exceed 500
+	// characters. Cannot contain the `%` character.
 	Vocabulary []string `json:"vocabulary,omitzero"`
 	// Task type that analyzes the image and adds matching tags from a vocabulary.
 	//
@@ -2229,10 +2217,7 @@ type ExtensionAITasksTaskSelectMetadataParam struct {
 	MaxSelections param.Opt[int64] `json:"max_selections,omitzero"`
 	// Minimum number of values to select from the vocabulary.
 	MinSelections param.Opt[int64] `json:"min_selections,omitzero"`
-	// An array of possible values matching the custom metadata field type. If not
-	// provided for SingleSelect or MultiSelect field types, all values from the custom
-	// metadata field definition will be used. When providing large vocabularies (above
-	// 30 items), the AI may not strictly adhere to the list.
+	// Array of possible values matching the custom metadata field type.
 	Vocabulary []ExtensionAITasksTaskSelectMetadataVocabularyUnionParam `json:"vocabulary,omitzero"`
 	// Task type that analyzes the image and sets a custom metadata field value from a
 	// vocabulary.
@@ -2959,16 +2944,8 @@ func init() {
 }
 
 type OverlayPositionParam struct {
-	// Sets the anchor point on the base asset from which the overlay offset is
-	// calculated. The default value is `top_left`. Maps to `lap` in the URL. Can only
-	// be used with one or more of `x`, `y`, `xCenter`, or `yCenter`.
-	//
-	// Any of "top", "left", "right", "bottom", "top_left", "top_right", "bottom_left",
-	// "bottom_right", "center".
-	AnchorPoint OverlayPositionAnchorPoint `json:"anchorPoint,omitzero"`
-	// Specifies the position of the overlay relative to the parent image or video. If
-	// one or more of `x`, `y`, `xCenter`, or `yCenter` parameters are specified, this
-	// parameter is ignored. Maps to `lfo` in the URL.
+	// Specifies the position of the overlay relative to the parent image or video.
+	// Maps to `lfo` in the URL.
 	//
 	// Any of "center", "top", "left", "bottom", "right", "top_left", "top_right",
 	// "bottom_left", "bottom_right".
@@ -2979,24 +2956,12 @@ type OverlayPositionParam struct {
 	// about
 	// [Arithmetic expressions](https://imagekit.io/docs/arithmetic-expressions-in-transformations).
 	X OverlayPositionXUnionParam `json:"x,omitzero"`
-	// Specifies the x-coordinate on the base asset where the overlay's center will be
-	// positioned. It also accepts arithmetic expressions such as `bw_mul_0.4` or
-	// `bw_sub_cw`. Maps to `lxc` in the URL. Cannot be used together with `x`, but can
-	// be used with `y`. Learn about
-	// [Arithmetic expressions](https://imagekit.io/docs/arithmetic-expressions-in-transformations).
-	XCenter OverlayPositionXCenterUnionParam `json:"xCenter,omitzero"`
 	// Specifies the y-coordinate of the top-left corner of the base asset where the
 	// overlay's top-left corner will be positioned. It also accepts arithmetic
 	// expressions such as `bh_mul_0.4` or `bh_sub_ch`. Maps to `ly` in the URL. Learn
 	// about
 	// [Arithmetic expressions](https://imagekit.io/docs/arithmetic-expressions-in-transformations).
 	Y OverlayPositionYUnionParam `json:"y,omitzero"`
-	// Specifies the y-coordinate on the base asset where the overlay's center will be
-	// positioned. It also accepts arithmetic expressions such as `bh_mul_0.4` or
-	// `bh_sub_ch`. Maps to `lyc` in the URL. Cannot be used together with `y`, but can
-	// be used with `x`. Learn about
-	// [Arithmetic expressions](https://imagekit.io/docs/arithmetic-expressions-in-transformations).
-	YCenter OverlayPositionYCenterUnionParam `json:"yCenter,omitzero"`
 	paramObj
 }
 
@@ -3008,26 +2973,8 @@ func (r *OverlayPositionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Sets the anchor point on the base asset from which the overlay offset is
-// calculated. The default value is `top_left`. Maps to `lap` in the URL. Can only
-// be used with one or more of `x`, `y`, `xCenter`, or `yCenter`.
-type OverlayPositionAnchorPoint string
-
-const (
-	OverlayPositionAnchorPointTop         OverlayPositionAnchorPoint = "top"
-	OverlayPositionAnchorPointLeft        OverlayPositionAnchorPoint = "left"
-	OverlayPositionAnchorPointRight       OverlayPositionAnchorPoint = "right"
-	OverlayPositionAnchorPointBottom      OverlayPositionAnchorPoint = "bottom"
-	OverlayPositionAnchorPointTopLeft     OverlayPositionAnchorPoint = "top_left"
-	OverlayPositionAnchorPointTopRight    OverlayPositionAnchorPoint = "top_right"
-	OverlayPositionAnchorPointBottomLeft  OverlayPositionAnchorPoint = "bottom_left"
-	OverlayPositionAnchorPointBottomRight OverlayPositionAnchorPoint = "bottom_right"
-	OverlayPositionAnchorPointCenter      OverlayPositionAnchorPoint = "center"
-)
-
-// Specifies the position of the overlay relative to the parent image or video. If
-// one or more of `x`, `y`, `xCenter`, or `yCenter` parameters are specified, this
-// parameter is ignored. Maps to `lfo` in the URL.
+// Specifies the position of the overlay relative to the parent image or video.
+// Maps to `lfo` in the URL.
 type OverlayPositionFocus string
 
 const (
@@ -3070,31 +3017,6 @@ func (u *OverlayPositionXUnionParam) asAny() any {
 // Only one field can be non-zero.
 //
 // Use [param.IsOmitted] to confirm if a field is set.
-type OverlayPositionXCenterUnionParam struct {
-	OfFloat  param.Opt[float64] `json:",omitzero,inline"`
-	OfString param.Opt[string]  `json:",omitzero,inline"`
-	paramUnion
-}
-
-func (u OverlayPositionXCenterUnionParam) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfFloat, u.OfString)
-}
-func (u *OverlayPositionXCenterUnionParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
-}
-
-func (u *OverlayPositionXCenterUnionParam) asAny() any {
-	if !param.IsOmitted(u.OfFloat) {
-		return &u.OfFloat.Value
-	} else if !param.IsOmitted(u.OfString) {
-		return &u.OfString.Value
-	}
-	return nil
-}
-
-// Only one field can be non-zero.
-//
-// Use [param.IsOmitted] to confirm if a field is set.
 type OverlayPositionYUnionParam struct {
 	OfFloat  param.Opt[float64] `json:",omitzero,inline"`
 	OfString param.Opt[string]  `json:",omitzero,inline"`
@@ -3109,31 +3031,6 @@ func (u *OverlayPositionYUnionParam) UnmarshalJSON(data []byte) error {
 }
 
 func (u *OverlayPositionYUnionParam) asAny() any {
-	if !param.IsOmitted(u.OfFloat) {
-		return &u.OfFloat.Value
-	} else if !param.IsOmitted(u.OfString) {
-		return &u.OfString.Value
-	}
-	return nil
-}
-
-// Only one field can be non-zero.
-//
-// Use [param.IsOmitted] to confirm if a field is set.
-type OverlayPositionYCenterUnionParam struct {
-	OfFloat  param.Opt[float64] `json:",omitzero,inline"`
-	OfString param.Opt[string]  `json:",omitzero,inline"`
-	paramUnion
-}
-
-func (u OverlayPositionYCenterUnionParam) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfFloat, u.OfString)
-}
-func (u *OverlayPositionYCenterUnionParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
-}
-
-func (u *OverlayPositionYCenterUnionParam) asAny() any {
 	if !param.IsOmitted(u.OfFloat) {
 		return &u.OfFloat.Value
 	} else if !param.IsOmitted(u.OfString) {
