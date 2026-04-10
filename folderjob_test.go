@@ -25,7 +25,6 @@ func TestFolderJobGet(t *testing.T) {
 	client := imagekit.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithPrivateKey("My Private Key"),
-		option.WithPassword("My Password"),
 	)
 	_, err := client.Folders.Job.Get(context.TODO(), "jobId")
 	if err != nil {

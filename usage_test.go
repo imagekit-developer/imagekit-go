@@ -26,7 +26,6 @@ func TestUsage(t *testing.T) {
 	client := imagekit.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithPrivateKey("My Private Key"),
-		option.WithPassword("My Password"),
 	)
 	response, err := client.Files.Upload(context.TODO(), imagekit.FileUploadParams{
 		File:     io.Reader(bytes.NewBuffer([]byte("https://www.example.com/public-url.jpg"))),

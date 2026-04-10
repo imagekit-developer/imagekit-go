@@ -25,7 +25,6 @@ func TestFileVersionList(t *testing.T) {
 	client := imagekit.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithPrivateKey("My Private Key"),
-		option.WithPassword("My Password"),
 	)
 	_, err := client.Files.Versions.List(context.TODO(), "fileId")
 	if err != nil {
@@ -49,7 +48,6 @@ func TestFileVersionDelete(t *testing.T) {
 	client := imagekit.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithPrivateKey("My Private Key"),
-		option.WithPassword("My Password"),
 	)
 	_, err := client.Files.Versions.Delete(
 		context.TODO(),
@@ -79,7 +77,6 @@ func TestFileVersionGet(t *testing.T) {
 	client := imagekit.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithPrivateKey("My Private Key"),
-		option.WithPassword("My Password"),
 	)
 	_, err := client.Files.Versions.Get(
 		context.TODO(),
@@ -109,7 +106,6 @@ func TestFileVersionRestore(t *testing.T) {
 	client := imagekit.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithPrivateKey("My Private Key"),
-		option.WithPassword("My Password"),
 	)
 	_, err := client.Files.Versions.Restore(
 		context.TODO(),
