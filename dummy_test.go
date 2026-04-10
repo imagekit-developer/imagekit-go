@@ -27,6 +27,7 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 	client := imagekit.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithPrivateKey("My Private Key"),
+		option.WithPassword("My Password"),
 	)
 	err := client.Dummy.New(context.TODO(), imagekit.DummyNewParams{
 		BaseOverlay: shared.BaseOverlayParam{

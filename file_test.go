@@ -28,6 +28,7 @@ func TestFileUpdateWithOptionalParams(t *testing.T) {
 	client := imagekit.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithPrivateKey("My Private Key"),
+		option.WithPassword("My Password"),
 	)
 	_, err := client.Files.Update(
 		context.TODO(),
@@ -110,6 +111,7 @@ func TestFileDelete(t *testing.T) {
 	client := imagekit.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithPrivateKey("My Private Key"),
+		option.WithPassword("My Password"),
 	)
 	err := client.Files.Delete(context.TODO(), "fileId")
 	if err != nil {
@@ -133,6 +135,7 @@ func TestFileCopyWithOptionalParams(t *testing.T) {
 	client := imagekit.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithPrivateKey("My Private Key"),
+		option.WithPassword("My Password"),
 	)
 	_, err := client.Files.Copy(context.TODO(), imagekit.FileCopyParams{
 		DestinationPath:     "/folder/to/copy/into/",
@@ -160,6 +163,7 @@ func TestFileGet(t *testing.T) {
 	client := imagekit.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithPrivateKey("My Private Key"),
+		option.WithPassword("My Password"),
 	)
 	_, err := client.Files.Get(context.TODO(), "fileId")
 	if err != nil {
@@ -183,6 +187,7 @@ func TestFileMove(t *testing.T) {
 	client := imagekit.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithPrivateKey("My Private Key"),
+		option.WithPassword("My Password"),
 	)
 	_, err := client.Files.Move(context.TODO(), imagekit.FileMoveParams{
 		DestinationPath: "/folder/to/move/into/",
@@ -209,6 +214,7 @@ func TestFileRenameWithOptionalParams(t *testing.T) {
 	client := imagekit.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithPrivateKey("My Private Key"),
+		option.WithPassword("My Password"),
 	)
 	_, err := client.Files.Rename(context.TODO(), imagekit.FileRenameParams{
 		FilePath:    "/path/to/file.jpg",
@@ -236,6 +242,7 @@ func TestFileUploadWithOptionalParams(t *testing.T) {
 	client := imagekit.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithPrivateKey("My Private Key"),
+		option.WithPassword("My Password"),
 	)
 	_, err := client.Files.Upload(context.TODO(), imagekit.FileUploadParams{
 		File:              io.Reader(bytes.NewBuffer([]byte("Example data"))),

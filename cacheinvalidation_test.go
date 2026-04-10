@@ -25,6 +25,7 @@ func TestCacheInvalidationNew(t *testing.T) {
 	client := imagekit.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithPrivateKey("My Private Key"),
+		option.WithPassword("My Password"),
 	)
 	_, err := client.Cache.Invalidation.New(context.TODO(), imagekit.CacheInvalidationNewParams{
 		URL: "https://ik.imagekit.io/your_imagekit_id/default-image.jpg",
@@ -50,6 +51,7 @@ func TestCacheInvalidationGet(t *testing.T) {
 	client := imagekit.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithPrivateKey("My Private Key"),
+		option.WithPassword("My Password"),
 	)
 	_, err := client.Cache.Invalidation.Get(context.TODO(), "requestId")
 	if err != nil {

@@ -4,6 +4,7 @@ package option
 
 import (
 	"bytes"
+	"encoding/base64"
 	"fmt"
 	"io"
 	"net/http"
@@ -270,7 +271,7 @@ func WithEnvironmentProduction() RequestOption {
 func WithPrivateKey(value string) RequestOption {
 	return requestconfig.RequestOptionFunc(func(r *requestconfig.RequestConfig) error {
 		r.PrivateKey = value
-		return nil
+		return r.Apply(WithHeader("authorization", fmt.Sprintf("Basic %s", base64.StdEncoding.EncodeToString([]byte(r.PrivateKey+":"+r.Password)))))
 	})
 }
 
@@ -278,7 +279,7 @@ func WithPrivateKey(value string) RequestOption {
 func WithPassword(value string) RequestOption {
 	return requestconfig.PreRequestOptionFunc(func(r *requestconfig.RequestConfig) error {
 		r.Password = value
-		return nil
+		return r.Apply(WithHeader("authorization", fmt.Sprintf("Basic %s", base64.StdEncoding.EncodeToString([]byte(r.PrivateKey+":"+r.Password)))))
 	})
 }
 
