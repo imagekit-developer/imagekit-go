@@ -186,7 +186,8 @@ func (r *DamFileUpdateEvent) UnmarshalJSON(data []byte) error {
 type DamFileVersionCreateEvent struct {
 	// Timestamp of when the event occurred in ISO8601 format.
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
-	Data      any       `json:"data" api:"required"`
+	// Object containing details of a file or file version.
+	Data File `json:"data" api:"required"`
 	// Type of the webhook event.
 	Type constant.FileVersionCreated `json:"type" default:"file-version.created"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1731,7 +1732,7 @@ type UnsafeUnwrapWebhookEventUnion struct {
 	// [VideoTransformationReadyEventData], [VideoTransformationErrorEventData],
 	// [UploadPreTransformSuccessEventData], [UploadPreTransformErrorEventData],
 	// [UploadPostTransformSuccessEventData], [UploadPostTransformErrorEventData],
-	// [File], [DamFileDeleteEventData], [any], [DamFileVersionDeleteEventData]
+	// [File], [DamFileDeleteEventData], [DamFileVersionDeleteEventData]
 	Data UnsafeUnwrapWebhookEventUnionData `json:"data"`
 	// This field is a union of [VideoTransformationAcceptedEventRequest],
 	// [VideoTransformationReadyEventRequest], [VideoTransformationErrorEventRequest],
@@ -1824,12 +1825,7 @@ func (r *UnsafeUnwrapWebhookEventUnion) UnmarshalJSON(data []byte) error {
 //
 // For type safety it is recommended to directly use a variant of the
 // [UnsafeUnwrapWebhookEventUnion].
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfDamFileVersionCreateEventData]
 type UnsafeUnwrapWebhookEventUnionData struct {
-	// This field will be present if the value is a [any] instead of an object.
-	OfDamFileVersionCreateEventData any `json:",inline"`
 	// This field is a union of [VideoTransformationAcceptedEventDataAsset],
 	// [VideoTransformationReadyEventDataAsset],
 	// [VideoTransformationErrorEventDataAsset]
@@ -1891,43 +1887,42 @@ type UnsafeUnwrapWebhookEventUnionData struct {
 	// This field is from variant [DamFileVersionDeleteEventData].
 	VersionID string `json:"versionId"`
 	JSON      struct {
-		OfDamFileVersionCreateEventData respjson.Field
-		Asset                           respjson.Field
-		Transformation                  respjson.Field
-		AITags                          respjson.Field
-		AudioCodec                      respjson.Field
-		BitRate                         respjson.Field
-		CustomCoordinates               respjson.Field
-		CustomMetadata                  respjson.Field
-		Description                     respjson.Field
-		Duration                        respjson.Field
-		EmbeddedMetadata                respjson.Field
-		ExtensionStatus                 respjson.Field
-		FileID                          respjson.Field
-		FilePath                        respjson.Field
-		FileType                        respjson.Field
-		Height                          respjson.Field
-		IsPrivateFile                   respjson.Field
-		IsPublished                     respjson.Field
-		Metadata                        respjson.Field
-		Name                            respjson.Field
-		SelectedFieldsSchema            respjson.Field
-		Size                            respjson.Field
-		Tags                            respjson.Field
-		ThumbnailURL                    respjson.Field
-		URL                             respjson.Field
-		VersionInfo                     respjson.Field
-		VideoCodec                      respjson.Field
-		Width                           respjson.Field
-		Path                            respjson.Field
-		CreatedAt                       respjson.Field
-		HasAlpha                        respjson.Field
-		Mime                            respjson.Field
-		Thumbnail                       respjson.Field
-		Type                            respjson.Field
-		UpdatedAt                       respjson.Field
-		VersionID                       respjson.Field
-		raw                             string
+		Asset                respjson.Field
+		Transformation       respjson.Field
+		AITags               respjson.Field
+		AudioCodec           respjson.Field
+		BitRate              respjson.Field
+		CustomCoordinates    respjson.Field
+		CustomMetadata       respjson.Field
+		Description          respjson.Field
+		Duration             respjson.Field
+		EmbeddedMetadata     respjson.Field
+		ExtensionStatus      respjson.Field
+		FileID               respjson.Field
+		FilePath             respjson.Field
+		FileType             respjson.Field
+		Height               respjson.Field
+		IsPrivateFile        respjson.Field
+		IsPublished          respjson.Field
+		Metadata             respjson.Field
+		Name                 respjson.Field
+		SelectedFieldsSchema respjson.Field
+		Size                 respjson.Field
+		Tags                 respjson.Field
+		ThumbnailURL         respjson.Field
+		URL                  respjson.Field
+		VersionInfo          respjson.Field
+		VideoCodec           respjson.Field
+		Width                respjson.Field
+		Path                 respjson.Field
+		CreatedAt            respjson.Field
+		HasAlpha             respjson.Field
+		Mime                 respjson.Field
+		Thumbnail            respjson.Field
+		Type                 respjson.Field
+		UpdatedAt            respjson.Field
+		VersionID            respjson.Field
+		raw                  string
 	} `json:"-"`
 }
 
@@ -2328,7 +2323,7 @@ type UnwrapWebhookEventUnion struct {
 	// [VideoTransformationReadyEventData], [VideoTransformationErrorEventData],
 	// [UploadPreTransformSuccessEventData], [UploadPreTransformErrorEventData],
 	// [UploadPostTransformSuccessEventData], [UploadPostTransformErrorEventData],
-	// [File], [DamFileDeleteEventData], [any], [DamFileVersionDeleteEventData]
+	// [File], [DamFileDeleteEventData], [DamFileVersionDeleteEventData]
 	Data UnwrapWebhookEventUnionData `json:"data"`
 	// This field is a union of [VideoTransformationAcceptedEventRequest],
 	// [VideoTransformationReadyEventRequest], [VideoTransformationErrorEventRequest],
@@ -2421,12 +2416,7 @@ func (r *UnwrapWebhookEventUnion) UnmarshalJSON(data []byte) error {
 //
 // For type safety it is recommended to directly use a variant of the
 // [UnwrapWebhookEventUnion].
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfDamFileVersionCreateEventData]
 type UnwrapWebhookEventUnionData struct {
-	// This field will be present if the value is a [any] instead of an object.
-	OfDamFileVersionCreateEventData any `json:",inline"`
 	// This field is a union of [VideoTransformationAcceptedEventDataAsset],
 	// [VideoTransformationReadyEventDataAsset],
 	// [VideoTransformationErrorEventDataAsset]
@@ -2488,43 +2478,42 @@ type UnwrapWebhookEventUnionData struct {
 	// This field is from variant [DamFileVersionDeleteEventData].
 	VersionID string `json:"versionId"`
 	JSON      struct {
-		OfDamFileVersionCreateEventData respjson.Field
-		Asset                           respjson.Field
-		Transformation                  respjson.Field
-		AITags                          respjson.Field
-		AudioCodec                      respjson.Field
-		BitRate                         respjson.Field
-		CustomCoordinates               respjson.Field
-		CustomMetadata                  respjson.Field
-		Description                     respjson.Field
-		Duration                        respjson.Field
-		EmbeddedMetadata                respjson.Field
-		ExtensionStatus                 respjson.Field
-		FileID                          respjson.Field
-		FilePath                        respjson.Field
-		FileType                        respjson.Field
-		Height                          respjson.Field
-		IsPrivateFile                   respjson.Field
-		IsPublished                     respjson.Field
-		Metadata                        respjson.Field
-		Name                            respjson.Field
-		SelectedFieldsSchema            respjson.Field
-		Size                            respjson.Field
-		Tags                            respjson.Field
-		ThumbnailURL                    respjson.Field
-		URL                             respjson.Field
-		VersionInfo                     respjson.Field
-		VideoCodec                      respjson.Field
-		Width                           respjson.Field
-		Path                            respjson.Field
-		CreatedAt                       respjson.Field
-		HasAlpha                        respjson.Field
-		Mime                            respjson.Field
-		Thumbnail                       respjson.Field
-		Type                            respjson.Field
-		UpdatedAt                       respjson.Field
-		VersionID                       respjson.Field
-		raw                             string
+		Asset                respjson.Field
+		Transformation       respjson.Field
+		AITags               respjson.Field
+		AudioCodec           respjson.Field
+		BitRate              respjson.Field
+		CustomCoordinates    respjson.Field
+		CustomMetadata       respjson.Field
+		Description          respjson.Field
+		Duration             respjson.Field
+		EmbeddedMetadata     respjson.Field
+		ExtensionStatus      respjson.Field
+		FileID               respjson.Field
+		FilePath             respjson.Field
+		FileType             respjson.Field
+		Height               respjson.Field
+		IsPrivateFile        respjson.Field
+		IsPublished          respjson.Field
+		Metadata             respjson.Field
+		Name                 respjson.Field
+		SelectedFieldsSchema respjson.Field
+		Size                 respjson.Field
+		Tags                 respjson.Field
+		ThumbnailURL         respjson.Field
+		URL                  respjson.Field
+		VersionInfo          respjson.Field
+		VideoCodec           respjson.Field
+		Width                respjson.Field
+		Path                 respjson.Field
+		CreatedAt            respjson.Field
+		HasAlpha             respjson.Field
+		Mime                 respjson.Field
+		Thumbnail            respjson.Field
+		Type                 respjson.Field
+		UpdatedAt            respjson.Field
+		VersionID            respjson.Field
+		raw                  string
 	} `json:"-"`
 }
 
