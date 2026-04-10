@@ -91,6 +91,166 @@ func (r *BaseWebhookEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Triggered when a file is created.
+type FileCreateEvent struct {
+	// Timestamp of when the event occurred in ISO8601 format.
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
+	// Object containing details of a file or file version.
+	Data File `json:"data" api:"required"`
+	// Type of the webhook event.
+	Type constant.FileCreated `json:"type" default:"file.created"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CreatedAt   respjson.Field
+		Data        respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+	BaseWebhookEvent
+}
+
+// Returns the unmodified JSON received from the API
+func (r FileCreateEvent) RawJSON() string { return r.JSON.raw }
+func (r *FileCreateEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Triggered when a file is deleted.
+type FileDeleteEvent struct {
+	// Timestamp of when the event occurred in ISO8601 format.
+	CreatedAt time.Time           `json:"created_at" api:"required" format:"date-time"`
+	Data      FileDeleteEventData `json:"data" api:"required"`
+	// Type of the webhook event.
+	Type constant.FileDeleted `json:"type" default:"file.deleted"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CreatedAt   respjson.Field
+		Data        respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+	BaseWebhookEvent
+}
+
+// Returns the unmodified JSON received from the API
+func (r FileDeleteEvent) RawJSON() string { return r.JSON.raw }
+func (r *FileDeleteEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type FileDeleteEventData struct {
+	// The unique `fileId` of the deleted file.
+	FileID string `json:"fileId" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		FileID      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r FileDeleteEventData) RawJSON() string { return r.JSON.raw }
+func (r *FileDeleteEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Triggered when a file is updated.
+type FileUpdateEvent struct {
+	// Timestamp of when the event occurred in ISO8601 format.
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
+	// Object containing details of a file or file version.
+	Data File `json:"data" api:"required"`
+	// Type of the webhook event.
+	Type constant.FileUpdated `json:"type" default:"file.updated"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CreatedAt   respjson.Field
+		Data        respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+	BaseWebhookEvent
+}
+
+// Returns the unmodified JSON received from the API
+func (r FileUpdateEvent) RawJSON() string { return r.JSON.raw }
+func (r *FileUpdateEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Triggered when a file version is created.
+type FileVersionCreateEvent struct {
+	// Timestamp of when the event occurred in ISO8601 format.
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
+	// Object containing details of a file or file version.
+	Data File `json:"data" api:"required"`
+	// Type of the webhook event.
+	Type constant.FileVersionCreated `json:"type" default:"file-version.created"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CreatedAt   respjson.Field
+		Data        respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+	BaseWebhookEvent
+}
+
+// Returns the unmodified JSON received from the API
+func (r FileVersionCreateEvent) RawJSON() string { return r.JSON.raw }
+func (r *FileVersionCreateEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Triggered when a file version is deleted.
+type FileVersionDeleteEvent struct {
+	// Timestamp of when the event occurred in ISO8601 format.
+	CreatedAt time.Time                  `json:"created_at" api:"required" format:"date-time"`
+	Data      FileVersionDeleteEventData `json:"data" api:"required"`
+	// Type of the webhook event.
+	Type constant.FileVersionDeleted `json:"type" default:"file-version.deleted"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CreatedAt   respjson.Field
+		Data        respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+	BaseWebhookEvent
+}
+
+// Returns the unmodified JSON received from the API
+func (r FileVersionDeleteEvent) RawJSON() string { return r.JSON.raw }
+func (r *FileVersionDeleteEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type FileVersionDeleteEventData struct {
+	// The unique `fileId` of the deleted file.
+	FileID string `json:"fileId" api:"required"`
+	// The unique `versionId` of the deleted file version.
+	VersionID string `json:"versionId" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		FileID      respjson.Field
+		VersionID   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r FileVersionDeleteEventData) RawJSON() string { return r.JSON.raw }
+func (r *FileVersionDeleteEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // Triggered when a post-transformation fails. The original file remains available,
 // but the requested transformation could not be generated.
 type UploadPostTransformErrorEvent struct {
@@ -1547,173 +1707,12 @@ func (r *VideoTransformationReadyEventTimings) UnmarshalJSON(data []byte) error 
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Triggered when a file is created.
-type FileCreatedWebhookEvent struct {
-	// Timestamp of when the event occurred in ISO8601 format.
-	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
-	// Object containing details of a file or file version.
-	Data File `json:"data" api:"required"`
-	// Type of the webhook event.
-	Type constant.FileCreated `json:"type" default:"file.created"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		CreatedAt   respjson.Field
-		Data        respjson.Field
-		Type        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-	BaseWebhookEvent
-}
-
-// Returns the unmodified JSON received from the API
-func (r FileCreatedWebhookEvent) RawJSON() string { return r.JSON.raw }
-func (r *FileCreatedWebhookEvent) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Triggered when a file is updated.
-type FileUpdatedWebhookEvent struct {
-	// Timestamp of when the event occurred in ISO8601 format.
-	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
-	// Object containing details of a file or file version.
-	Data File `json:"data" api:"required"`
-	// Type of the webhook event.
-	Type constant.FileUpdated `json:"type" default:"file.updated"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		CreatedAt   respjson.Field
-		Data        respjson.Field
-		Type        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-	BaseWebhookEvent
-}
-
-// Returns the unmodified JSON received from the API
-func (r FileUpdatedWebhookEvent) RawJSON() string { return r.JSON.raw }
-func (r *FileUpdatedWebhookEvent) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Triggered when a file is deleted.
-type FileDeletedWebhookEvent struct {
-	// Timestamp of when the event occurred in ISO8601 format.
-	CreatedAt time.Time                   `json:"created_at" api:"required" format:"date-time"`
-	Data      FileDeletedWebhookEventData `json:"data" api:"required"`
-	// Type of the webhook event.
-	Type constant.FileDeleted `json:"type" default:"file.deleted"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		CreatedAt   respjson.Field
-		Data        respjson.Field
-		Type        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-	BaseWebhookEvent
-}
-
-// Returns the unmodified JSON received from the API
-func (r FileDeletedWebhookEvent) RawJSON() string { return r.JSON.raw }
-func (r *FileDeletedWebhookEvent) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type FileDeletedWebhookEventData struct {
-	// The unique `fileId` of the deleted file.
-	FileID string `json:"fileId" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		FileID      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r FileDeletedWebhookEventData) RawJSON() string { return r.JSON.raw }
-func (r *FileDeletedWebhookEventData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Triggered when a file version is created.
-type FileVersionCreatedWebhookEvent struct {
-	// Timestamp of when the event occurred in ISO8601 format.
-	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
-	// Object containing details of a file or file version.
-	Data File `json:"data" api:"required"`
-	// Type of the webhook event.
-	Type constant.FileVersionCreated `json:"type" default:"file-version.created"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		CreatedAt   respjson.Field
-		Data        respjson.Field
-		Type        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-	BaseWebhookEvent
-}
-
-// Returns the unmodified JSON received from the API
-func (r FileVersionCreatedWebhookEvent) RawJSON() string { return r.JSON.raw }
-func (r *FileVersionCreatedWebhookEvent) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Triggered when a file version is deleted.
-type FileVersionDeletedWebhookEvent struct {
-	// Timestamp of when the event occurred in ISO8601 format.
-	CreatedAt time.Time                          `json:"created_at" api:"required" format:"date-time"`
-	Data      FileVersionDeletedWebhookEventData `json:"data" api:"required"`
-	// Type of the webhook event.
-	Type constant.FileVersionDeleted `json:"type" default:"file-version.deleted"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		CreatedAt   respjson.Field
-		Data        respjson.Field
-		Type        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-	BaseWebhookEvent
-}
-
-// Returns the unmodified JSON received from the API
-func (r FileVersionDeletedWebhookEvent) RawJSON() string { return r.JSON.raw }
-func (r *FileVersionDeletedWebhookEvent) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type FileVersionDeletedWebhookEventData struct {
-	// The unique `fileId` of the deleted file.
-	FileID string `json:"fileId" api:"required"`
-	// The unique `versionId` of the deleted file version.
-	VersionID string `json:"versionId" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		FileID      respjson.Field
-		VersionID   respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r FileVersionDeletedWebhookEventData) RawJSON() string { return r.JSON.raw }
-func (r *FileVersionDeletedWebhookEventData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // UnsafeUnwrapWebhookEventUnion contains all possible properties and values from
 // [VideoTransformationAcceptedEvent], [VideoTransformationReadyEvent],
 // [VideoTransformationErrorEvent], [UploadPreTransformSuccessEvent],
 // [UploadPreTransformErrorEvent], [UploadPostTransformSuccessEvent],
-// [UploadPostTransformErrorEvent], [FileCreatedWebhookEvent],
-// [FileUpdatedWebhookEvent], [FileDeletedWebhookEvent],
-// [FileVersionCreatedWebhookEvent], [FileVersionDeletedWebhookEvent].
+// [UploadPostTransformErrorEvent], [FileCreateEvent], [FileUpdateEvent],
+// [FileDeleteEvent], [FileVersionCreateEvent], [FileVersionDeleteEvent].
 //
 // Use the [UnsafeUnwrapWebhookEventUnion.AsAny] method to switch on the variant.
 //
@@ -1723,8 +1722,8 @@ type UnsafeUnwrapWebhookEventUnion struct {
 	// [VideoTransformationReadyEvent], [VideoTransformationErrorEvent],
 	// [UploadPreTransformSuccessEvent], [UploadPreTransformErrorEvent],
 	// [UploadPostTransformSuccessEvent], [UploadPostTransformErrorEvent],
-	// [FileCreatedWebhookEvent], [FileUpdatedWebhookEvent], [FileDeletedWebhookEvent],
-	// [FileVersionCreatedWebhookEvent], [FileVersionDeletedWebhookEvent].
+	// [FileCreateEvent], [FileUpdateEvent], [FileDeleteEvent],
+	// [FileVersionCreateEvent], [FileVersionDeleteEvent].
 	ID string `json:"id"`
 	// Any of nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil.
 	Type      string    `json:"type"`
@@ -1733,7 +1732,7 @@ type UnsafeUnwrapWebhookEventUnion struct {
 	// [VideoTransformationReadyEventData], [VideoTransformationErrorEventData],
 	// [UploadPreTransformSuccessEventData], [UploadPreTransformErrorEventData],
 	// [UploadPostTransformSuccessEventData], [UploadPostTransformErrorEventData],
-	// [File], [FileDeletedWebhookEventData], [FileVersionDeletedWebhookEventData]
+	// [File], [FileDeleteEventData], [FileVersionDeleteEventData]
 	Data UnsafeUnwrapWebhookEventUnionData `json:"data"`
 	// This field is a union of [VideoTransformationAcceptedEventRequest],
 	// [VideoTransformationReadyEventRequest], [VideoTransformationErrorEventRequest],
@@ -1788,27 +1787,27 @@ func (u UnsafeUnwrapWebhookEventUnion) AsUploadPostTransformErrorEvent() (v Uplo
 	return
 }
 
-func (u UnsafeUnwrapWebhookEventUnion) AsFileCreatedWebhookEvent() (v FileCreatedWebhookEvent) {
+func (u UnsafeUnwrapWebhookEventUnion) AsFileCreateEvent() (v FileCreateEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u UnsafeUnwrapWebhookEventUnion) AsFileUpdatedWebhookEvent() (v FileUpdatedWebhookEvent) {
+func (u UnsafeUnwrapWebhookEventUnion) AsFileUpdateEvent() (v FileUpdateEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u UnsafeUnwrapWebhookEventUnion) AsFileDeletedWebhookEvent() (v FileDeletedWebhookEvent) {
+func (u UnsafeUnwrapWebhookEventUnion) AsFileDeleteEvent() (v FileDeleteEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u UnsafeUnwrapWebhookEventUnion) AsFileVersionCreatedWebhookEvent() (v FileVersionCreatedWebhookEvent) {
+func (u UnsafeUnwrapWebhookEventUnion) AsFileVersionCreateEvent() (v FileVersionCreateEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u UnsafeUnwrapWebhookEventUnion) AsFileVersionDeletedWebhookEvent() (v FileVersionDeletedWebhookEvent) {
+func (u UnsafeUnwrapWebhookEventUnion) AsFileVersionDeleteEvent() (v FileVersionDeleteEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -1885,7 +1884,7 @@ type UnsafeUnwrapWebhookEventUnionData struct {
 	Type FileType `json:"type"`
 	// This field is from variant [File].
 	UpdatedAt time.Time `json:"updatedAt"`
-	// This field is from variant [FileVersionDeletedWebhookEventData].
+	// This field is from variant [FileVersionDeleteEventData].
 	VersionID string `json:"versionId"`
 	JSON      struct {
 		Asset                respjson.Field
@@ -2303,9 +2302,8 @@ func (r *UnsafeUnwrapWebhookEventUnionRequestTransformation) UnmarshalJSON(data 
 // [VideoTransformationAcceptedEvent], [VideoTransformationReadyEvent],
 // [VideoTransformationErrorEvent], [UploadPreTransformSuccessEvent],
 // [UploadPreTransformErrorEvent], [UploadPostTransformSuccessEvent],
-// [UploadPostTransformErrorEvent], [FileCreatedWebhookEvent],
-// [FileUpdatedWebhookEvent], [FileDeletedWebhookEvent],
-// [FileVersionCreatedWebhookEvent], [FileVersionDeletedWebhookEvent].
+// [UploadPostTransformErrorEvent], [FileCreateEvent], [FileUpdateEvent],
+// [FileDeleteEvent], [FileVersionCreateEvent], [FileVersionDeleteEvent].
 //
 // Use the [UnwrapWebhookEventUnion.AsAny] method to switch on the variant.
 //
@@ -2315,8 +2313,8 @@ type UnwrapWebhookEventUnion struct {
 	// [VideoTransformationReadyEvent], [VideoTransformationErrorEvent],
 	// [UploadPreTransformSuccessEvent], [UploadPreTransformErrorEvent],
 	// [UploadPostTransformSuccessEvent], [UploadPostTransformErrorEvent],
-	// [FileCreatedWebhookEvent], [FileUpdatedWebhookEvent], [FileDeletedWebhookEvent],
-	// [FileVersionCreatedWebhookEvent], [FileVersionDeletedWebhookEvent].
+	// [FileCreateEvent], [FileUpdateEvent], [FileDeleteEvent],
+	// [FileVersionCreateEvent], [FileVersionDeleteEvent].
 	ID string `json:"id"`
 	// Any of nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil.
 	Type      string    `json:"type"`
@@ -2325,7 +2323,7 @@ type UnwrapWebhookEventUnion struct {
 	// [VideoTransformationReadyEventData], [VideoTransformationErrorEventData],
 	// [UploadPreTransformSuccessEventData], [UploadPreTransformErrorEventData],
 	// [UploadPostTransformSuccessEventData], [UploadPostTransformErrorEventData],
-	// [File], [FileDeletedWebhookEventData], [FileVersionDeletedWebhookEventData]
+	// [File], [FileDeleteEventData], [FileVersionDeleteEventData]
 	Data UnwrapWebhookEventUnionData `json:"data"`
 	// This field is a union of [VideoTransformationAcceptedEventRequest],
 	// [VideoTransformationReadyEventRequest], [VideoTransformationErrorEventRequest],
@@ -2380,27 +2378,27 @@ func (u UnwrapWebhookEventUnion) AsUploadPostTransformErrorEvent() (v UploadPost
 	return
 }
 
-func (u UnwrapWebhookEventUnion) AsFileCreatedWebhookEvent() (v FileCreatedWebhookEvent) {
+func (u UnwrapWebhookEventUnion) AsFileCreateEvent() (v FileCreateEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u UnwrapWebhookEventUnion) AsFileUpdatedWebhookEvent() (v FileUpdatedWebhookEvent) {
+func (u UnwrapWebhookEventUnion) AsFileUpdateEvent() (v FileUpdateEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u UnwrapWebhookEventUnion) AsFileDeletedWebhookEvent() (v FileDeletedWebhookEvent) {
+func (u UnwrapWebhookEventUnion) AsFileDeleteEvent() (v FileDeleteEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u UnwrapWebhookEventUnion) AsFileVersionCreatedWebhookEvent() (v FileVersionCreatedWebhookEvent) {
+func (u UnwrapWebhookEventUnion) AsFileVersionCreateEvent() (v FileVersionCreateEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u UnwrapWebhookEventUnion) AsFileVersionDeletedWebhookEvent() (v FileVersionDeletedWebhookEvent) {
+func (u UnwrapWebhookEventUnion) AsFileVersionDeleteEvent() (v FileVersionDeleteEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -2477,7 +2475,7 @@ type UnwrapWebhookEventUnionData struct {
 	Type FileType `json:"type"`
 	// This field is from variant [File].
 	UpdatedAt time.Time `json:"updatedAt"`
-	// This field is from variant [FileVersionDeletedWebhookEventData].
+	// This field is from variant [FileVersionDeleteEventData].
 	VersionID string `json:"versionId"`
 	JSON      struct {
 		Asset                respjson.Field
