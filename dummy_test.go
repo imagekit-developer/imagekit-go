@@ -13,6 +13,7 @@ import (
 	"github.com/imagekit-developer/imagekit-go/v2/internal/testutil"
 	"github.com/imagekit-developer/imagekit-go/v2/option"
 	"github.com/imagekit-developer/imagekit-go/v2/shared"
+	"github.com/imagekit-developer/imagekit-go/v2/shared/constant"
 )
 
 func TestDummyNewWithOptionalParams(t *testing.T) {
@@ -253,7 +254,7 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 									OfFloat: imagekit.Float(0),
 								},
 								Radius: shared.TextOverlayTransformationRadiusUnionParam{
-									OfFloat: imagekit.Float(0),
+									OfMax: constant.ValueOf[constant.Max](),
 								},
 								Rotation: shared.TextOverlayTransformationRotationUnionParam{
 									OfFloat: imagekit.Float(0),
@@ -449,7 +450,7 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 								OfFloat: imagekit.Float(0),
 							},
 							Radius: shared.TextOverlayTransformationRadiusUnionParam{
-								OfFloat: imagekit.Float(0),
+								OfMax: constant.ValueOf[constant.Max](),
 							},
 							Rotation: shared.TextOverlayTransformationRotationUnionParam{
 								OfFloat: imagekit.Float(0),
@@ -559,7 +560,7 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 						OfFloat: imagekit.Float(0),
 					},
 					Radius: shared.TextOverlayTransformationRadiusUnionParam{
-						OfFloat: imagekit.Float(0),
+						OfMax: constant.ValueOf[constant.Max](),
 					},
 					Rotation: shared.TextOverlayTransformationRotationUnionParam{
 						OfFloat: imagekit.Float(0),
@@ -663,7 +664,7 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 					OfFloat: imagekit.Float(0),
 				},
 				Radius: shared.SolidColorOverlayTransformationRadiusUnionParam{
-					OfFloat: imagekit.Float(0),
+					OfMax: constant.ValueOf[constant.Max](),
 				},
 				Width: shared.SolidColorOverlayTransformationWidthUnionParam{
 					OfFloat: imagekit.Float(0),
@@ -680,7 +681,7 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 				OfFloat: imagekit.Float(0),
 			},
 			Radius: shared.SolidColorOverlayTransformationRadiusUnionParam{
-				OfFloat: imagekit.Float(0),
+				OfMax: constant.ValueOf[constant.Max](),
 			},
 			Width: shared.SolidColorOverlayTransformationWidthUnionParam{
 				OfFloat: imagekit.Float(0),
@@ -792,7 +793,7 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 								OfFloat: imagekit.Float(0),
 							},
 							Radius: shared.TextOverlayTransformationRadiusUnionParam{
-								OfFloat: imagekit.Float(0),
+								OfMax: constant.ValueOf[constant.Max](),
 							},
 							Rotation: shared.TextOverlayTransformationRotationUnionParam{
 								OfFloat: imagekit.Float(0),
@@ -955,7 +956,7 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 					OfFloat: imagekit.Float(0),
 				},
 				Radius: shared.TextOverlayTransformationRadiusUnionParam{
-					OfFloat: imagekit.Float(0),
+					OfMax: constant.ValueOf[constant.Max](),
 				},
 				Rotation: shared.TextOverlayTransformationRotationUnionParam{
 					OfFloat: imagekit.Float(0),
@@ -983,7 +984,7 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 				OfFloat: imagekit.Float(0),
 			},
 			Radius: shared.TextOverlayTransformationRadiusUnionParam{
-				OfFloat: imagekit.Float(0),
+				OfMax: constant.ValueOf[constant.Max](),
 			},
 			Rotation: shared.TextOverlayTransformationRotationUnionParam{
 				OfFloat: imagekit.Float(0),
@@ -1091,7 +1092,7 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 							OfFloat: imagekit.Float(0),
 						},
 						Radius: shared.TextOverlayTransformationRadiusUnionParam{
-							OfFloat: imagekit.Float(0),
+							OfMax: constant.ValueOf[constant.Max](),
 						},
 						Rotation: shared.TextOverlayTransformationRotationUnionParam{
 							OfFloat: imagekit.Float(0),
@@ -1281,7 +1282,7 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 								OfFloat: imagekit.Float(0),
 							},
 							Radius: shared.TextOverlayTransformationRadiusUnionParam{
-								OfFloat: imagekit.Float(0),
+								OfMax: constant.ValueOf[constant.Max](),
 							},
 							Rotation: shared.TextOverlayTransformationRotationUnionParam{
 								OfFloat: imagekit.Float(0),
