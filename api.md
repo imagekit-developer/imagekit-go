@@ -24,10 +24,15 @@
 
 # Shared Response Types
 
+- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#AITag">AITag</a>
+- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#CustomMetadata">CustomMetadata</a>
+- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#EmbeddedMetadata">EmbeddedMetadata</a>
 - <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#ExtensionConfigUnion">ExtensionConfigUnion</a>
 - <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#SavedExtension">SavedExtension</a>
+- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#SelectedFieldsSchema">SelectedFieldsSchema</a>
 - <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#StreamingResolution">StreamingResolution</a>
 - <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#TransformationPosition">TransformationPosition</a>
+- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#VersionInfo">VersionInfo</a>
 
 
 # CustomMetadataFields
@@ -236,6 +241,11 @@ Methods:
 Response Types:
 
 - <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2">imagekit</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#BaseWebhookEvent">BaseWebhookEvent</a>
+- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2">imagekit</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#FileCreateEvent">FileCreateEvent</a>
+- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2">imagekit</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#FileDeleteEvent">FileDeleteEvent</a>
+- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2">imagekit</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#FileUpdateEvent">FileUpdateEvent</a>
+- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2">imagekit</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#FileVersionCreateEvent">FileVersionCreateEvent</a>
+- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2">imagekit</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#FileVersionDeleteEvent">FileVersionDeleteEvent</a>
 - <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2">imagekit</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#UploadPostTransformErrorEvent">UploadPostTransformErrorEvent</a>
 - <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2">imagekit</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#UploadPostTransformSuccessEvent">UploadPostTransformSuccessEvent</a>
 - <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2">imagekit</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#UploadPreTransformErrorEvent">UploadPreTransformErrorEvent</a>

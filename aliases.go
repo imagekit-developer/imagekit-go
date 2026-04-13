@@ -16,6 +16,12 @@ type paramObj = param.APIObject
 
 type Error = apierror.Error
 
+// AI-generated tag associated with an image. These tags can be added using the
+// `google-auto-tagging` or `aws-auto-tagging` extensions.
+//
+// This is an alias to an internal type.
+type AITag = shared.AITag
+
 // This is an alias to an internal type.
 type BaseOverlayParam = shared.BaseOverlayParam
 
@@ -54,6 +60,17 @@ const BaseOverlayLayerModeCutout = shared.BaseOverlayLayerModeCutout
 
 // Equals "displace"
 const BaseOverlayLayerModeDisplace = shared.BaseOverlayLayerModeDisplace
+
+// A key-value data associated with the asset.
+//
+// This is an alias to an internal type.
+type CustomMetadata = shared.CustomMetadata
+
+// Consolidated embedded metadata associated with the file. It includes exif, iptc,
+// and xmp data.
+//
+// This is an alias to an internal type.
+type EmbeddedMetadata = shared.EmbeddedMetadata
 
 // Configuration object for an extension (base extensions only, not saved extension
 // references).
@@ -517,6 +534,46 @@ type SavedExtension = shared.SavedExtension
 //
 // This is an alias to an internal type.
 type SavedExtensionParam = shared.SavedExtensionParam
+
+// This field is included in the response only if the Path policy feature is
+// available in the plan. It contains schema definitions for the custom metadata
+// fields selected for the specified file path. Field selection can only be done
+// when the Path policy feature is enabled.
+//
+// Keys are the names of the custom metadata fields; the value object has details
+// about the custom metadata schema.
+//
+// This is an alias to an internal type.
+type SelectedFieldsSchema = shared.SelectedFieldsSchema
+
+// This is an alias to an internal type.
+type SelectedFieldsSchemaItem = shared.SelectedFieldsSchemaItem
+
+// The default value for this custom metadata field. The value should match the
+// `type` of custom metadata field.
+//
+// This is an alias to an internal type.
+type SelectedFieldsSchemaItemDefaultValueUnion = shared.SelectedFieldsSchemaItemDefaultValueUnion
+
+// This is an alias to an internal type.
+type SelectedFieldsSchemaItemDefaultValueMixedItemUnion = shared.SelectedFieldsSchemaItemDefaultValueMixedItemUnion
+
+// Maximum value of the field. Only set if field type is `Date` or `Number`. For
+// `Date` type field, the value will be in ISO8601 string format. For `Number` type
+// field, it will be a numeric value.
+//
+// This is an alias to an internal type.
+type SelectedFieldsSchemaItemMaxValueUnion = shared.SelectedFieldsSchemaItemMaxValueUnion
+
+// Minimum value of the field. Only set if field type is `Date` or `Number`. For
+// `Date` type field, the value will be in ISO8601 string format. For `Number` type
+// field, it will be a numeric value.
+//
+// This is an alias to an internal type.
+type SelectedFieldsSchemaItemMinValueUnion = shared.SelectedFieldsSchemaItemMinValueUnion
+
+// This is an alias to an internal type.
+type SelectedFieldsSchemaItemSelectOptionUnion = shared.SelectedFieldsSchemaItemSelectOptionUnion
 
 // This is an alias to an internal type.
 type SolidColorOverlayParam = shared.SolidColorOverlayParam
@@ -1030,6 +1087,11 @@ const TransformationPositionPath = shared.TransformationPositionPath
 
 // Equals "query"
 const TransformationPositionQuery = shared.TransformationPositionQuery
+
+// An object containing the file or file version's `id` (versionId) and `name`.
+//
+// This is an alias to an internal type.
+type VersionInfo = shared.VersionInfo
 
 // This is an alias to an internal type.
 type VideoOverlayParam = shared.VideoOverlayParam

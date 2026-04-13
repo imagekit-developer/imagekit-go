@@ -14,6 +14,7 @@ import (
 	"github.com/imagekit-developer/imagekit-go/v2/internal/requestconfig"
 	"github.com/imagekit-developer/imagekit-go/v2/option"
 	"github.com/imagekit-developer/imagekit-go/v2/packages/respjson"
+	"github.com/imagekit-developer/imagekit-go/v2/shared"
 	"github.com/imagekit-developer/imagekit-go/v2/shared/constant"
 	standardwebhooks "github.com/standard-webhooks/standard-webhooks/libraries/go"
 )
@@ -90,6 +91,166 @@ type BaseWebhookEvent struct {
 // Returns the unmodified JSON received from the API
 func (r BaseWebhookEvent) RawJSON() string { return r.JSON.raw }
 func (r *BaseWebhookEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Triggered when a file is created.
+type FileCreateEvent struct {
+	// Timestamp of when the event occurred in ISO8601 format.
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
+	// Object containing details of a file or file version.
+	Data File `json:"data" api:"required"`
+	// Type of the webhook event.
+	Type constant.FileCreated `json:"type" default:"file.created"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CreatedAt   respjson.Field
+		Data        respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+	BaseWebhookEvent
+}
+
+// Returns the unmodified JSON received from the API
+func (r FileCreateEvent) RawJSON() string { return r.JSON.raw }
+func (r *FileCreateEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Triggered when a file is deleted.
+type FileDeleteEvent struct {
+	// Timestamp of when the event occurred in ISO8601 format.
+	CreatedAt time.Time           `json:"created_at" api:"required" format:"date-time"`
+	Data      FileDeleteEventData `json:"data" api:"required"`
+	// Type of the webhook event.
+	Type constant.FileDeleted `json:"type" default:"file.deleted"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CreatedAt   respjson.Field
+		Data        respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+	BaseWebhookEvent
+}
+
+// Returns the unmodified JSON received from the API
+func (r FileDeleteEvent) RawJSON() string { return r.JSON.raw }
+func (r *FileDeleteEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type FileDeleteEventData struct {
+	// The unique `fileId` of the deleted file.
+	FileID string `json:"fileId" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		FileID      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r FileDeleteEventData) RawJSON() string { return r.JSON.raw }
+func (r *FileDeleteEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Triggered when a file is updated.
+type FileUpdateEvent struct {
+	// Timestamp of when the event occurred in ISO8601 format.
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
+	// Object containing details of a file or file version.
+	Data File `json:"data" api:"required"`
+	// Type of the webhook event.
+	Type constant.FileUpdated `json:"type" default:"file.updated"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CreatedAt   respjson.Field
+		Data        respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+	BaseWebhookEvent
+}
+
+// Returns the unmodified JSON received from the API
+func (r FileUpdateEvent) RawJSON() string { return r.JSON.raw }
+func (r *FileUpdateEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Triggered when a file version is created.
+type FileVersionCreateEvent struct {
+	// Timestamp of when the event occurred in ISO8601 format.
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
+	// Object containing details of a file or file version.
+	Data File `json:"data" api:"required"`
+	// Type of the webhook event.
+	Type constant.FileVersionCreated `json:"type" default:"file-version.created"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CreatedAt   respjson.Field
+		Data        respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+	BaseWebhookEvent
+}
+
+// Returns the unmodified JSON received from the API
+func (r FileVersionCreateEvent) RawJSON() string { return r.JSON.raw }
+func (r *FileVersionCreateEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Triggered when a file version is deleted.
+type FileVersionDeleteEvent struct {
+	// Timestamp of when the event occurred in ISO8601 format.
+	CreatedAt time.Time                  `json:"created_at" api:"required" format:"date-time"`
+	Data      FileVersionDeleteEventData `json:"data" api:"required"`
+	// Type of the webhook event.
+	Type constant.FileVersionDeleted `json:"type" default:"file-version.deleted"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CreatedAt   respjson.Field
+		Data        respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+	BaseWebhookEvent
+}
+
+// Returns the unmodified JSON received from the API
+func (r FileVersionDeleteEvent) RawJSON() string { return r.JSON.raw }
+func (r *FileVersionDeleteEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type FileVersionDeleteEventData struct {
+	// The unique `fileId` of the deleted file.
+	FileID string `json:"fileId" api:"required"`
+	// The unique `versionId` of the deleted file version.
+	VersionID string `json:"versionId" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		FileID      respjson.Field
+		VersionID   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r FileVersionDeleteEventData) RawJSON() string { return r.JSON.raw }
+func (r *FileVersionDeleteEventData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -454,7 +615,7 @@ func (r *UploadPreTransformSuccessEvent) UnmarshalJSON(data []byte) error {
 // Object containing details of a successful upload.
 type UploadPreTransformSuccessEventData struct {
 	// An array of tags assigned to the uploaded file by auto tagging.
-	AITags []UploadPreTransformSuccessEventDataAITag `json:"AITags" api:"nullable"`
+	AITags []shared.AITag `json:"AITags" api:"nullable"`
 	// The audio codec used in the video (only for video).
 	AudioCodec string `json:"audioCodec"`
 	// The bit rate of the video in kbps (only for video).
@@ -469,7 +630,7 @@ type UploadPreTransformSuccessEventData struct {
 	// metadata on an asset, you have to create the field using custom metadata fields
 	// API. Send `customMetadata` in `responseFields` in API request to get the value
 	// of this field.
-	CustomMetadata map[string]any `json:"customMetadata"`
+	CustomMetadata shared.CustomMetadata `json:"customMetadata"`
 	// Optional text to describe the contents of the file. Can be set by the user or
 	// the ai-auto-description extension.
 	Description string `json:"description"`
@@ -478,7 +639,7 @@ type UploadPreTransformSuccessEventData struct {
 	// Consolidated embedded metadata associated with the file. It includes exif, iptc,
 	// and xmp data. Send `embeddedMetadata` in `responseFields` in API request to get
 	// embeddedMetadata in the upload API response.
-	EmbeddedMetadata map[string]any `json:"embeddedMetadata"`
+	EmbeddedMetadata shared.EmbeddedMetadata `json:"embeddedMetadata"`
 	// Extension names with their processing status at the time of completion of the
 	// request. It could have one of the following status values:
 	//
@@ -519,7 +680,7 @@ type UploadPreTransformSuccessEventData struct {
 	//
 	// Keys are the names of the custom metadata fields; the value object has details
 	// about the custom metadata schema.
-	SelectedFieldsSchema map[string]UploadPreTransformSuccessEventDataSelectedFieldsSchema `json:"selectedFieldsSchema"`
+	SelectedFieldsSchema shared.SelectedFieldsSchema `json:"selectedFieldsSchema"`
 	// Size of the image file in Bytes.
 	Size float64 `json:"size"`
 	// The array of tags associated with the asset. If no tags are set, it will be
@@ -531,7 +692,7 @@ type UploadPreTransformSuccessEventData struct {
 	// A publicly accessible URL of the file.
 	URL string `json:"url"`
 	// An object containing the file or file version's `id` (versionId) and `name`.
-	VersionInfo UploadPreTransformSuccessEventDataVersionInfo `json:"versionInfo"`
+	VersionInfo shared.VersionInfo `json:"versionInfo"`
 	// The video codec used in the video (only for video).
 	VideoCodec string `json:"videoCodec"`
 	// Width of the image in pixels (Only for Images)
@@ -574,31 +735,6 @@ func (r *UploadPreTransformSuccessEventData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type UploadPreTransformSuccessEventDataAITag struct {
-	// Confidence score of the tag.
-	Confidence float64 `json:"confidence"`
-	// Name of the tag.
-	Name string `json:"name"`
-	// Array of `AITags` associated with the image. If no `AITags` are set, it will be
-	// null. These tags can be added using the `google-auto-tagging` or
-	// `aws-auto-tagging` extensions.
-	Source string `json:"source"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Confidence  respjson.Field
-		Name        respjson.Field
-		Source      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r UploadPreTransformSuccessEventDataAITag) RawJSON() string { return r.JSON.raw }
-func (r *UploadPreTransformSuccessEventDataAITag) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // Extension names with their processing status at the time of completion of the
 // request. It could have one of the following status values:
 //
@@ -634,307 +770,6 @@ type UploadPreTransformSuccessEventDataExtensionStatus struct {
 // Returns the unmodified JSON received from the API
 func (r UploadPreTransformSuccessEventDataExtensionStatus) RawJSON() string { return r.JSON.raw }
 func (r *UploadPreTransformSuccessEventDataExtensionStatus) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type UploadPreTransformSuccessEventDataSelectedFieldsSchema struct {
-	// Type of the custom metadata field.
-	//
-	// Any of "Text", "Textarea", "Number", "Date", "Boolean", "SingleSelect",
-	// "MultiSelect".
-	Type string `json:"type" api:"required"`
-	// The default value for this custom metadata field. The value should match the
-	// `type` of custom metadata field.
-	DefaultValue UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueUnion `json:"defaultValue"`
-	// Specifies if the custom metadata field is required or not.
-	IsValueRequired bool `json:"isValueRequired"`
-	// Maximum length of string. Only set if `type` is set to `Text` or `Textarea`.
-	MaxLength float64 `json:"maxLength"`
-	// Maximum value of the field. Only set if field type is `Date` or `Number`. For
-	// `Date` type field, the value will be in ISO8601 string format. For `Number` type
-	// field, it will be a numeric value.
-	MaxValue UploadPreTransformSuccessEventDataSelectedFieldsSchemaMaxValueUnion `json:"maxValue"`
-	// Minimum length of string. Only set if `type` is set to `Text` or `Textarea`.
-	MinLength float64 `json:"minLength"`
-	// Minimum value of the field. Only set if field type is `Date` or `Number`. For
-	// `Date` type field, the value will be in ISO8601 string format. For `Number` type
-	// field, it will be a numeric value.
-	MinValue UploadPreTransformSuccessEventDataSelectedFieldsSchemaMinValueUnion `json:"minValue"`
-	// Indicates whether the custom metadata field is read only. A read only field
-	// cannot be modified after being set. This field is configurable only via the
-	// **Path policy** feature.
-	ReadOnly bool `json:"readOnly"`
-	// An array of allowed values when field type is `SingleSelect` or `MultiSelect`.
-	SelectOptions []UploadPreTransformSuccessEventDataSelectedFieldsSchemaSelectOptionUnion `json:"selectOptions"`
-	// Specifies if the selectOptions array is truncated. It is truncated when number
-	// of options are > 100.
-	SelectOptionsTruncated bool `json:"selectOptionsTruncated"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Type                   respjson.Field
-		DefaultValue           respjson.Field
-		IsValueRequired        respjson.Field
-		MaxLength              respjson.Field
-		MaxValue               respjson.Field
-		MinLength              respjson.Field
-		MinValue               respjson.Field
-		ReadOnly               respjson.Field
-		SelectOptions          respjson.Field
-		SelectOptionsTruncated respjson.Field
-		ExtraFields            map[string]respjson.Field
-		raw                    string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r UploadPreTransformSuccessEventDataSelectedFieldsSchema) RawJSON() string { return r.JSON.raw }
-func (r *UploadPreTransformSuccessEventDataSelectedFieldsSchema) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueUnion contains
-// all possible properties and values from [string], [float64], [bool],
-// [[]UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueMixedItemUnion].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfFloat OfBool OfMixed]
-type UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueUnion struct {
-	// This field will be present if the value is a [string] instead of an object.
-	OfString string `json:",inline"`
-	// This field will be present if the value is a [float64] instead of an object.
-	OfFloat float64 `json:",inline"`
-	// This field will be present if the value is a [bool] instead of an object.
-	OfBool bool `json:",inline"`
-	// This field will be present if the value is a
-	// [[]UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueMixedItemUnion]
-	// instead of an object.
-	OfMixed []UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueMixedItemUnion `json:",inline"`
-	JSON    struct {
-		OfString respjson.Field
-		OfFloat  respjson.Field
-		OfBool   respjson.Field
-		OfMixed  respjson.Field
-		raw      string
-	} `json:"-"`
-}
-
-func (u UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueUnion) AsBool() (v bool) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueUnion) AsMixed() (v []UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueMixedItemUnion) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueUnion) RawJSON() string {
-	return u.JSON.raw
-}
-
-func (r *UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueMixedItemUnion
-// contains all possible properties and values from [string], [float64], [bool].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfFloat OfBool]
-type UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueMixedItemUnion struct {
-	// This field will be present if the value is a [string] instead of an object.
-	OfString string `json:",inline"`
-	// This field will be present if the value is a [float64] instead of an object.
-	OfFloat float64 `json:",inline"`
-	// This field will be present if the value is a [bool] instead of an object.
-	OfBool bool `json:",inline"`
-	JSON   struct {
-		OfString respjson.Field
-		OfFloat  respjson.Field
-		OfBool   respjson.Field
-		raw      string
-	} `json:"-"`
-}
-
-func (u UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueMixedItemUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueMixedItemUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueMixedItemUnion) AsBool() (v bool) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueMixedItemUnion) RawJSON() string {
-	return u.JSON.raw
-}
-
-func (r *UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueMixedItemUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// UploadPreTransformSuccessEventDataSelectedFieldsSchemaMaxValueUnion contains all
-// possible properties and values from [string], [float64].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfFloat]
-type UploadPreTransformSuccessEventDataSelectedFieldsSchemaMaxValueUnion struct {
-	// This field will be present if the value is a [string] instead of an object.
-	OfString string `json:",inline"`
-	// This field will be present if the value is a [float64] instead of an object.
-	OfFloat float64 `json:",inline"`
-	JSON    struct {
-		OfString respjson.Field
-		OfFloat  respjson.Field
-		raw      string
-	} `json:"-"`
-}
-
-func (u UploadPreTransformSuccessEventDataSelectedFieldsSchemaMaxValueUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u UploadPreTransformSuccessEventDataSelectedFieldsSchemaMaxValueUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u UploadPreTransformSuccessEventDataSelectedFieldsSchemaMaxValueUnion) RawJSON() string {
-	return u.JSON.raw
-}
-
-func (r *UploadPreTransformSuccessEventDataSelectedFieldsSchemaMaxValueUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// UploadPreTransformSuccessEventDataSelectedFieldsSchemaMinValueUnion contains all
-// possible properties and values from [string], [float64].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfFloat]
-type UploadPreTransformSuccessEventDataSelectedFieldsSchemaMinValueUnion struct {
-	// This field will be present if the value is a [string] instead of an object.
-	OfString string `json:",inline"`
-	// This field will be present if the value is a [float64] instead of an object.
-	OfFloat float64 `json:",inline"`
-	JSON    struct {
-		OfString respjson.Field
-		OfFloat  respjson.Field
-		raw      string
-	} `json:"-"`
-}
-
-func (u UploadPreTransformSuccessEventDataSelectedFieldsSchemaMinValueUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u UploadPreTransformSuccessEventDataSelectedFieldsSchemaMinValueUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u UploadPreTransformSuccessEventDataSelectedFieldsSchemaMinValueUnion) RawJSON() string {
-	return u.JSON.raw
-}
-
-func (r *UploadPreTransformSuccessEventDataSelectedFieldsSchemaMinValueUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// UploadPreTransformSuccessEventDataSelectedFieldsSchemaSelectOptionUnion contains
-// all possible properties and values from [string], [float64], [bool].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfFloat OfBool]
-type UploadPreTransformSuccessEventDataSelectedFieldsSchemaSelectOptionUnion struct {
-	// This field will be present if the value is a [string] instead of an object.
-	OfString string `json:",inline"`
-	// This field will be present if the value is a [float64] instead of an object.
-	OfFloat float64 `json:",inline"`
-	// This field will be present if the value is a [bool] instead of an object.
-	OfBool bool `json:",inline"`
-	JSON   struct {
-		OfString respjson.Field
-		OfFloat  respjson.Field
-		OfBool   respjson.Field
-		raw      string
-	} `json:"-"`
-}
-
-func (u UploadPreTransformSuccessEventDataSelectedFieldsSchemaSelectOptionUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u UploadPreTransformSuccessEventDataSelectedFieldsSchemaSelectOptionUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u UploadPreTransformSuccessEventDataSelectedFieldsSchemaSelectOptionUnion) AsBool() (v bool) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u UploadPreTransformSuccessEventDataSelectedFieldsSchemaSelectOptionUnion) RawJSON() string {
-	return u.JSON.raw
-}
-
-func (r *UploadPreTransformSuccessEventDataSelectedFieldsSchemaSelectOptionUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// An object containing the file or file version's `id` (versionId) and `name`.
-type UploadPreTransformSuccessEventDataVersionInfo struct {
-	// Unique identifier of the file version.
-	ID string `json:"id"`
-	// Name of the file version.
-	Name string `json:"name"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		Name        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r UploadPreTransformSuccessEventDataVersionInfo) RawJSON() string { return r.JSON.raw }
-func (r *UploadPreTransformSuccessEventDataVersionInfo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1553,7 +1388,8 @@ func (r *VideoTransformationReadyEventTimings) UnmarshalJSON(data []byte) error 
 // [VideoTransformationAcceptedEvent], [VideoTransformationReadyEvent],
 // [VideoTransformationErrorEvent], [UploadPreTransformSuccessEvent],
 // [UploadPreTransformErrorEvent], [UploadPostTransformSuccessEvent],
-// [UploadPostTransformErrorEvent].
+// [UploadPostTransformErrorEvent], [FileCreateEvent], [FileUpdateEvent],
+// [FileDeleteEvent], [FileVersionCreateEvent], [FileVersionDeleteEvent].
 //
 // Use the [UnsafeUnwrapWebhookEventUnion.AsAny] method to switch on the variant.
 //
@@ -1562,15 +1398,18 @@ type UnsafeUnwrapWebhookEventUnion struct {
 	// This field is from variant [VideoTransformationAcceptedEvent],
 	// [VideoTransformationReadyEvent], [VideoTransformationErrorEvent],
 	// [UploadPreTransformSuccessEvent], [UploadPreTransformErrorEvent],
-	// [UploadPostTransformSuccessEvent], [UploadPostTransformErrorEvent].
+	// [UploadPostTransformSuccessEvent], [UploadPostTransformErrorEvent],
+	// [FileCreateEvent], [FileUpdateEvent], [FileDeleteEvent],
+	// [FileVersionCreateEvent], [FileVersionDeleteEvent].
 	ID string `json:"id"`
-	// Any of nil, nil, nil, nil, nil, nil, nil.
+	// Any of nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil.
 	Type      string    `json:"type"`
 	CreatedAt time.Time `json:"created_at"`
 	// This field is a union of [VideoTransformationAcceptedEventData],
 	// [VideoTransformationReadyEventData], [VideoTransformationErrorEventData],
 	// [UploadPreTransformSuccessEventData], [UploadPreTransformErrorEventData],
-	// [UploadPostTransformSuccessEventData], [UploadPostTransformErrorEventData]
+	// [UploadPostTransformSuccessEventData], [UploadPostTransformErrorEventData],
+	// [File], [FileDeleteEventData], [FileVersionDeleteEventData]
 	Data UnsafeUnwrapWebhookEventUnionData `json:"data"`
 	// This field is a union of [VideoTransformationAcceptedEventRequest],
 	// [VideoTransformationReadyEventRequest], [VideoTransformationErrorEventRequest],
@@ -1625,6 +1464,31 @@ func (u UnsafeUnwrapWebhookEventUnion) AsUploadPostTransformErrorEvent() (v Uplo
 	return
 }
 
+func (u UnsafeUnwrapWebhookEventUnion) AsFileCreateEvent() (v FileCreateEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsFileUpdateEvent() (v FileUpdateEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsFileDeleteEvent() (v FileDeleteEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsFileVersionCreateEvent() (v FileVersionCreateEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsFileVersionDeleteEvent() (v FileVersionDeleteEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
 // Returns the unmodified JSON received from the API
 func (u UnsafeUnwrapWebhookEventUnion) RawJSON() string { return u.JSON.raw }
 
@@ -1648,56 +1512,55 @@ type UnsafeUnwrapWebhookEventUnionData struct {
 	// [VideoTransformationErrorEventDataTransformation],
 	// [UploadPreTransformErrorEventDataTransformation],
 	// [UploadPostTransformErrorEventDataTransformation]
-	Transformation UnsafeUnwrapWebhookEventUnionDataTransformation `json:"transformation"`
+	Transformation    UnsafeUnwrapWebhookEventUnionDataTransformation `json:"transformation"`
+	AITags            []shared.AITag                                  `json:"AITags"`
+	AudioCodec        string                                          `json:"audioCodec"`
+	BitRate           int64                                           `json:"bitRate"`
+	CustomCoordinates string                                          `json:"customCoordinates"`
 	// This field is from variant [UploadPreTransformSuccessEventData].
-	AITags []UploadPreTransformSuccessEventDataAITag `json:"AITags"`
+	CustomMetadata shared.CustomMetadata `json:"customMetadata"`
+	Description    string                `json:"description"`
+	Duration       int64                 `json:"duration"`
 	// This field is from variant [UploadPreTransformSuccessEventData].
-	AudioCodec string `json:"audioCodec"`
-	// This field is from variant [UploadPreTransformSuccessEventData].
-	BitRate int64 `json:"bitRate"`
-	// This field is from variant [UploadPreTransformSuccessEventData].
-	CustomCoordinates string `json:"customCoordinates"`
-	// This field is from variant [UploadPreTransformSuccessEventData].
-	CustomMetadata map[string]any `json:"customMetadata"`
-	// This field is from variant [UploadPreTransformSuccessEventData].
-	Description string `json:"description"`
-	// This field is from variant [UploadPreTransformSuccessEventData].
-	Duration int64 `json:"duration"`
-	// This field is from variant [UploadPreTransformSuccessEventData].
-	EmbeddedMetadata map[string]any `json:"embeddedMetadata"`
+	EmbeddedMetadata shared.EmbeddedMetadata `json:"embeddedMetadata"`
 	// This field is from variant [UploadPreTransformSuccessEventData].
 	ExtensionStatus UploadPreTransformSuccessEventDataExtensionStatus `json:"extensionStatus"`
 	FileID          string                                            `json:"fileId"`
-	// This field is from variant [UploadPreTransformSuccessEventData].
-	FilePath string `json:"filePath"`
-	// This field is from variant [UploadPreTransformSuccessEventData].
-	FileType string `json:"fileType"`
-	// This field is from variant [UploadPreTransformSuccessEventData].
-	Height float64 `json:"height"`
-	// This field is from variant [UploadPreTransformSuccessEventData].
-	IsPrivateFile bool `json:"isPrivateFile"`
-	// This field is from variant [UploadPreTransformSuccessEventData].
-	IsPublished bool `json:"isPublished"`
+	FilePath        string                                            `json:"filePath"`
+	FileType        string                                            `json:"fileType"`
+	Height          float64                                           `json:"height"`
+	IsPrivateFile   bool                                              `json:"isPrivateFile"`
+	IsPublished     bool                                              `json:"isPublished"`
 	// This field is from variant [UploadPreTransformSuccessEventData].
 	Metadata Metadata `json:"metadata"`
 	Name     string   `json:"name"`
 	// This field is from variant [UploadPreTransformSuccessEventData].
-	SelectedFieldsSchema map[string]UploadPreTransformSuccessEventDataSelectedFieldsSchema `json:"selectedFieldsSchema"`
-	// This field is from variant [UploadPreTransformSuccessEventData].
-	Size float64 `json:"size"`
-	// This field is from variant [UploadPreTransformSuccessEventData].
-	Tags []string `json:"tags"`
+	SelectedFieldsSchema shared.SelectedFieldsSchema `json:"selectedFieldsSchema"`
+	Size                 float64                     `json:"size"`
+	Tags                 []string                    `json:"tags"`
 	// This field is from variant [UploadPreTransformSuccessEventData].
 	ThumbnailURL string `json:"thumbnailUrl"`
 	URL          string `json:"url"`
 	// This field is from variant [UploadPreTransformSuccessEventData].
-	VersionInfo UploadPreTransformSuccessEventDataVersionInfo `json:"versionInfo"`
-	// This field is from variant [UploadPreTransformSuccessEventData].
-	VideoCodec string `json:"videoCodec"`
-	// This field is from variant [UploadPreTransformSuccessEventData].
-	Width float64 `json:"width"`
-	Path  string  `json:"path"`
-	JSON  struct {
+	VersionInfo shared.VersionInfo `json:"versionInfo"`
+	VideoCodec  string             `json:"videoCodec"`
+	Width       float64            `json:"width"`
+	Path        string             `json:"path"`
+	// This field is from variant [File].
+	CreatedAt time.Time `json:"createdAt"`
+	// This field is from variant [File].
+	HasAlpha bool `json:"hasAlpha"`
+	// This field is from variant [File].
+	Mime string `json:"mime"`
+	// This field is from variant [File].
+	Thumbnail string `json:"thumbnail"`
+	// This field is from variant [File].
+	Type FileType `json:"type"`
+	// This field is from variant [File].
+	UpdatedAt time.Time `json:"updatedAt"`
+	// This field is from variant [FileVersionDeleteEventData].
+	VersionID string `json:"versionId"`
+	JSON      struct {
 		Asset                respjson.Field
 		Transformation       respjson.Field
 		AITags               respjson.Field
@@ -1726,6 +1589,13 @@ type UnsafeUnwrapWebhookEventUnionData struct {
 		VideoCodec           respjson.Field
 		Width                respjson.Field
 		Path                 respjson.Field
+		CreatedAt            respjson.Field
+		HasAlpha             respjson.Field
+		Mime                 respjson.Field
+		Thumbnail            respjson.Field
+		Type                 respjson.Field
+		UpdatedAt            respjson.Field
+		VersionID            respjson.Field
 		raw                  string
 	} `json:"-"`
 }
@@ -1894,7 +1764,8 @@ func (r *UnsafeUnwrapWebhookEventUnionRequestTransformation) UnmarshalJSON(data 
 // [VideoTransformationAcceptedEvent], [VideoTransformationReadyEvent],
 // [VideoTransformationErrorEvent], [UploadPreTransformSuccessEvent],
 // [UploadPreTransformErrorEvent], [UploadPostTransformSuccessEvent],
-// [UploadPostTransformErrorEvent].
+// [UploadPostTransformErrorEvent], [FileCreateEvent], [FileUpdateEvent],
+// [FileDeleteEvent], [FileVersionCreateEvent], [FileVersionDeleteEvent].
 //
 // Use the [UnwrapWebhookEventUnion.AsAny] method to switch on the variant.
 //
@@ -1903,15 +1774,18 @@ type UnwrapWebhookEventUnion struct {
 	// This field is from variant [VideoTransformationAcceptedEvent],
 	// [VideoTransformationReadyEvent], [VideoTransformationErrorEvent],
 	// [UploadPreTransformSuccessEvent], [UploadPreTransformErrorEvent],
-	// [UploadPostTransformSuccessEvent], [UploadPostTransformErrorEvent].
+	// [UploadPostTransformSuccessEvent], [UploadPostTransformErrorEvent],
+	// [FileCreateEvent], [FileUpdateEvent], [FileDeleteEvent],
+	// [FileVersionCreateEvent], [FileVersionDeleteEvent].
 	ID string `json:"id"`
-	// Any of nil, nil, nil, nil, nil, nil, nil.
+	// Any of nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil.
 	Type      string    `json:"type"`
 	CreatedAt time.Time `json:"created_at"`
 	// This field is a union of [VideoTransformationAcceptedEventData],
 	// [VideoTransformationReadyEventData], [VideoTransformationErrorEventData],
 	// [UploadPreTransformSuccessEventData], [UploadPreTransformErrorEventData],
-	// [UploadPostTransformSuccessEventData], [UploadPostTransformErrorEventData]
+	// [UploadPostTransformSuccessEventData], [UploadPostTransformErrorEventData],
+	// [File], [FileDeleteEventData], [FileVersionDeleteEventData]
 	Data UnwrapWebhookEventUnionData `json:"data"`
 	// This field is a union of [VideoTransformationAcceptedEventRequest],
 	// [VideoTransformationReadyEventRequest], [VideoTransformationErrorEventRequest],
@@ -1966,6 +1840,31 @@ func (u UnwrapWebhookEventUnion) AsUploadPostTransformErrorEvent() (v UploadPost
 	return
 }
 
+func (u UnwrapWebhookEventUnion) AsFileCreateEvent() (v FileCreateEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnwrapWebhookEventUnion) AsFileUpdateEvent() (v FileUpdateEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnwrapWebhookEventUnion) AsFileDeleteEvent() (v FileDeleteEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnwrapWebhookEventUnion) AsFileVersionCreateEvent() (v FileVersionCreateEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnwrapWebhookEventUnion) AsFileVersionDeleteEvent() (v FileVersionDeleteEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
 // Returns the unmodified JSON received from the API
 func (u UnwrapWebhookEventUnion) RawJSON() string { return u.JSON.raw }
 
@@ -1989,56 +1888,55 @@ type UnwrapWebhookEventUnionData struct {
 	// [VideoTransformationErrorEventDataTransformation],
 	// [UploadPreTransformErrorEventDataTransformation],
 	// [UploadPostTransformErrorEventDataTransformation]
-	Transformation UnwrapWebhookEventUnionDataTransformation `json:"transformation"`
+	Transformation    UnwrapWebhookEventUnionDataTransformation `json:"transformation"`
+	AITags            []shared.AITag                            `json:"AITags"`
+	AudioCodec        string                                    `json:"audioCodec"`
+	BitRate           int64                                     `json:"bitRate"`
+	CustomCoordinates string                                    `json:"customCoordinates"`
 	// This field is from variant [UploadPreTransformSuccessEventData].
-	AITags []UploadPreTransformSuccessEventDataAITag `json:"AITags"`
+	CustomMetadata shared.CustomMetadata `json:"customMetadata"`
+	Description    string                `json:"description"`
+	Duration       int64                 `json:"duration"`
 	// This field is from variant [UploadPreTransformSuccessEventData].
-	AudioCodec string `json:"audioCodec"`
-	// This field is from variant [UploadPreTransformSuccessEventData].
-	BitRate int64 `json:"bitRate"`
-	// This field is from variant [UploadPreTransformSuccessEventData].
-	CustomCoordinates string `json:"customCoordinates"`
-	// This field is from variant [UploadPreTransformSuccessEventData].
-	CustomMetadata map[string]any `json:"customMetadata"`
-	// This field is from variant [UploadPreTransformSuccessEventData].
-	Description string `json:"description"`
-	// This field is from variant [UploadPreTransformSuccessEventData].
-	Duration int64 `json:"duration"`
-	// This field is from variant [UploadPreTransformSuccessEventData].
-	EmbeddedMetadata map[string]any `json:"embeddedMetadata"`
+	EmbeddedMetadata shared.EmbeddedMetadata `json:"embeddedMetadata"`
 	// This field is from variant [UploadPreTransformSuccessEventData].
 	ExtensionStatus UploadPreTransformSuccessEventDataExtensionStatus `json:"extensionStatus"`
 	FileID          string                                            `json:"fileId"`
-	// This field is from variant [UploadPreTransformSuccessEventData].
-	FilePath string `json:"filePath"`
-	// This field is from variant [UploadPreTransformSuccessEventData].
-	FileType string `json:"fileType"`
-	// This field is from variant [UploadPreTransformSuccessEventData].
-	Height float64 `json:"height"`
-	// This field is from variant [UploadPreTransformSuccessEventData].
-	IsPrivateFile bool `json:"isPrivateFile"`
-	// This field is from variant [UploadPreTransformSuccessEventData].
-	IsPublished bool `json:"isPublished"`
+	FilePath        string                                            `json:"filePath"`
+	FileType        string                                            `json:"fileType"`
+	Height          float64                                           `json:"height"`
+	IsPrivateFile   bool                                              `json:"isPrivateFile"`
+	IsPublished     bool                                              `json:"isPublished"`
 	// This field is from variant [UploadPreTransformSuccessEventData].
 	Metadata Metadata `json:"metadata"`
 	Name     string   `json:"name"`
 	// This field is from variant [UploadPreTransformSuccessEventData].
-	SelectedFieldsSchema map[string]UploadPreTransformSuccessEventDataSelectedFieldsSchema `json:"selectedFieldsSchema"`
-	// This field is from variant [UploadPreTransformSuccessEventData].
-	Size float64 `json:"size"`
-	// This field is from variant [UploadPreTransformSuccessEventData].
-	Tags []string `json:"tags"`
+	SelectedFieldsSchema shared.SelectedFieldsSchema `json:"selectedFieldsSchema"`
+	Size                 float64                     `json:"size"`
+	Tags                 []string                    `json:"tags"`
 	// This field is from variant [UploadPreTransformSuccessEventData].
 	ThumbnailURL string `json:"thumbnailUrl"`
 	URL          string `json:"url"`
 	// This field is from variant [UploadPreTransformSuccessEventData].
-	VersionInfo UploadPreTransformSuccessEventDataVersionInfo `json:"versionInfo"`
-	// This field is from variant [UploadPreTransformSuccessEventData].
-	VideoCodec string `json:"videoCodec"`
-	// This field is from variant [UploadPreTransformSuccessEventData].
-	Width float64 `json:"width"`
-	Path  string  `json:"path"`
-	JSON  struct {
+	VersionInfo shared.VersionInfo `json:"versionInfo"`
+	VideoCodec  string             `json:"videoCodec"`
+	Width       float64            `json:"width"`
+	Path        string             `json:"path"`
+	// This field is from variant [File].
+	CreatedAt time.Time `json:"createdAt"`
+	// This field is from variant [File].
+	HasAlpha bool `json:"hasAlpha"`
+	// This field is from variant [File].
+	Mime string `json:"mime"`
+	// This field is from variant [File].
+	Thumbnail string `json:"thumbnail"`
+	// This field is from variant [File].
+	Type FileType `json:"type"`
+	// This field is from variant [File].
+	UpdatedAt time.Time `json:"updatedAt"`
+	// This field is from variant [FileVersionDeleteEventData].
+	VersionID string `json:"versionId"`
+	JSON      struct {
 		Asset                respjson.Field
 		Transformation       respjson.Field
 		AITags               respjson.Field
@@ -2067,6 +1965,13 @@ type UnwrapWebhookEventUnionData struct {
 		VideoCodec           respjson.Field
 		Width                respjson.Field
 		Path                 respjson.Field
+		CreatedAt            respjson.Field
+		HasAlpha             respjson.Field
+		Mime                 respjson.Field
+		Thumbnail            respjson.Field
+		Type                 respjson.Field
+		UpdatedAt            respjson.Field
+		VersionID            respjson.Field
 		raw                  string
 	} `json:"-"`
 }

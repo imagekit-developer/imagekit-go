@@ -16,6 +16,7 @@ import (
 	"github.com/imagekit-developer/imagekit-go/v2/option"
 	"github.com/imagekit-developer/imagekit-go/v2/packages/param"
 	"github.com/imagekit-developer/imagekit-go/v2/packages/respjson"
+	"github.com/imagekit-developer/imagekit-go/v2/shared"
 )
 
 // AssetService contains methods and other services that help with interacting with
@@ -56,7 +57,7 @@ func (r *AssetService) List(ctx context.Context, query AssetListParams, opts ...
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type AssetListResponseUnion struct {
 	// This field is from variant [File].
-	AITags []FileAITag `json:"AITags"`
+	AITags []shared.AITag `json:"AITags"`
 	// This field is from variant [File].
 	AudioCodec string `json:"audioCodec"`
 	// This field is from variant [File].
@@ -70,7 +71,7 @@ type AssetListResponseUnion struct {
 	// This field is from variant [File].
 	Duration int64 `json:"duration"`
 	// This field is from variant [File].
-	EmbeddedMetadata map[string]any `json:"embeddedMetadata"`
+	EmbeddedMetadata shared.EmbeddedMetadata `json:"embeddedMetadata"`
 	// This field is from variant [File].
 	FileID string `json:"fileId"`
 	// This field is from variant [File].
@@ -89,7 +90,7 @@ type AssetListResponseUnion struct {
 	Mime string `json:"mime"`
 	Name string `json:"name"`
 	// This field is from variant [File].
-	SelectedFieldsSchema map[string]FileSelectedFieldsSchema `json:"selectedFieldsSchema"`
+	SelectedFieldsSchema shared.SelectedFieldsSchema `json:"selectedFieldsSchema"`
 	// This field is from variant [File].
 	Size float64 `json:"size"`
 	// This field is from variant [File].
@@ -102,7 +103,7 @@ type AssetListResponseUnion struct {
 	// This field is from variant [File].
 	URL string `json:"url"`
 	// This field is from variant [File].
-	VersionInfo FileVersionInfo `json:"versionInfo"`
+	VersionInfo shared.VersionInfo `json:"versionInfo"`
 	// This field is from variant [File].
 	VideoCodec string `json:"videoCodec"`
 	// This field is from variant [File].

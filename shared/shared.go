@@ -18,6 +18,32 @@ type paramUnion = param.APIUnion
 // aliased to make [param.APIObject] private when embedding
 type paramObj = param.APIObject
 
+// AI-generated tag associated with an image. These tags can be added using the
+// `google-auto-tagging` or `aws-auto-tagging` extensions.
+type AITag struct {
+	// Confidence score of the tag.
+	Confidence float64 `json:"confidence"`
+	// Name of the tag.
+	Name string `json:"name"`
+	// Source of the tag. Possible values are `google-auto-tagging` and
+	// `aws-auto-tagging`.
+	Source string `json:"source"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Confidence  respjson.Field
+		Name        respjson.Field
+		Source      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AITag) RawJSON() string { return r.JSON.raw }
+func (r *AITag) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type BaseOverlayParam struct {
 	// Controls how the layer blends with the base image or underlying content. Maps to
 	// `lm` in the URL. By default, layers completely cover the base image beneath
@@ -88,6 +114,10 @@ const (
 	BaseOverlayLayerModeCutout   BaseOverlayLayerMode = "cutout"
 	BaseOverlayLayerModeDisplace BaseOverlayLayerMode = "displace"
 )
+
+type CustomMetadata map[string]any
+
+type EmbeddedMetadata map[string]any
 
 // ExtensionConfigUnion contains all possible properties and values from
 // [ExtensionConfigRemoveBg], [ExtensionConfigAutoTagging],
@@ -3340,6 +3370,277 @@ func (r *SavedExtensionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type SelectedFieldsSchema map[string]SelectedFieldsSchemaItem
+
+type SelectedFieldsSchemaItem struct {
+	// Type of the custom metadata field.
+	//
+	// Any of "Text", "Textarea", "Number", "Date", "Boolean", "SingleSelect",
+	// "MultiSelect".
+	Type string `json:"type" api:"required"`
+	// The default value for this custom metadata field. The value should match the
+	// `type` of custom metadata field.
+	DefaultValue SelectedFieldsSchemaItemDefaultValueUnion `json:"defaultValue"`
+	// Specifies if the custom metadata field is required or not.
+	IsValueRequired bool `json:"isValueRequired"`
+	// Maximum length of string. Only set if `type` is set to `Text` or `Textarea`.
+	MaxLength float64 `json:"maxLength"`
+	// Maximum value of the field. Only set if field type is `Date` or `Number`. For
+	// `Date` type field, the value will be in ISO8601 string format. For `Number` type
+	// field, it will be a numeric value.
+	MaxValue SelectedFieldsSchemaItemMaxValueUnion `json:"maxValue"`
+	// Minimum length of string. Only set if `type` is set to `Text` or `Textarea`.
+	MinLength float64 `json:"minLength"`
+	// Minimum value of the field. Only set if field type is `Date` or `Number`. For
+	// `Date` type field, the value will be in ISO8601 string format. For `Number` type
+	// field, it will be a numeric value.
+	MinValue SelectedFieldsSchemaItemMinValueUnion `json:"minValue"`
+	// Indicates whether the custom metadata field is read only. A read only field
+	// cannot be modified after being set. This field is configurable only via the
+	// **Path policy** feature.
+	ReadOnly bool `json:"readOnly"`
+	// An array of allowed values when field type is `SingleSelect` or `MultiSelect`.
+	SelectOptions []SelectedFieldsSchemaItemSelectOptionUnion `json:"selectOptions"`
+	// Specifies if the selectOptions array is truncated. It is truncated when number
+	// of options are > 100.
+	SelectOptionsTruncated bool `json:"selectOptionsTruncated"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type                   respjson.Field
+		DefaultValue           respjson.Field
+		IsValueRequired        respjson.Field
+		MaxLength              respjson.Field
+		MaxValue               respjson.Field
+		MinLength              respjson.Field
+		MinValue               respjson.Field
+		ReadOnly               respjson.Field
+		SelectOptions          respjson.Field
+		SelectOptionsTruncated respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SelectedFieldsSchemaItem) RawJSON() string { return r.JSON.raw }
+func (r *SelectedFieldsSchemaItem) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// SelectedFieldsSchemaItemDefaultValueUnion contains all possible properties and
+// values from [string], [float64], [bool],
+// [[]SelectedFieldsSchemaItemDefaultValueMixedItemUnion].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool OfMixed]
+type SelectedFieldsSchemaItemDefaultValueUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a
+	// [[]SelectedFieldsSchemaItemDefaultValueMixedItemUnion] instead of an object.
+	OfMixed []SelectedFieldsSchemaItemDefaultValueMixedItemUnion `json:",inline"`
+	JSON    struct {
+		OfString respjson.Field
+		OfFloat  respjson.Field
+		OfBool   respjson.Field
+		OfMixed  respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u SelectedFieldsSchemaItemDefaultValueUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u SelectedFieldsSchemaItemDefaultValueUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u SelectedFieldsSchemaItemDefaultValueUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u SelectedFieldsSchemaItemDefaultValueUnion) AsMixed() (v []SelectedFieldsSchemaItemDefaultValueMixedItemUnion) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u SelectedFieldsSchemaItemDefaultValueUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *SelectedFieldsSchemaItemDefaultValueUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// SelectedFieldsSchemaItemDefaultValueMixedItemUnion contains all possible
+// properties and values from [string], [float64], [bool].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool]
+type SelectedFieldsSchemaItemDefaultValueMixedItemUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	JSON   struct {
+		OfString respjson.Field
+		OfFloat  respjson.Field
+		OfBool   respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u SelectedFieldsSchemaItemDefaultValueMixedItemUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u SelectedFieldsSchemaItemDefaultValueMixedItemUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u SelectedFieldsSchemaItemDefaultValueMixedItemUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u SelectedFieldsSchemaItemDefaultValueMixedItemUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *SelectedFieldsSchemaItemDefaultValueMixedItemUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// SelectedFieldsSchemaItemMaxValueUnion contains all possible properties and
+// values from [string], [float64].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat]
+type SelectedFieldsSchemaItemMaxValueUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	JSON    struct {
+		OfString respjson.Field
+		OfFloat  respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u SelectedFieldsSchemaItemMaxValueUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u SelectedFieldsSchemaItemMaxValueUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u SelectedFieldsSchemaItemMaxValueUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *SelectedFieldsSchemaItemMaxValueUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// SelectedFieldsSchemaItemMinValueUnion contains all possible properties and
+// values from [string], [float64].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat]
+type SelectedFieldsSchemaItemMinValueUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	JSON    struct {
+		OfString respjson.Field
+		OfFloat  respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u SelectedFieldsSchemaItemMinValueUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u SelectedFieldsSchemaItemMinValueUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u SelectedFieldsSchemaItemMinValueUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *SelectedFieldsSchemaItemMinValueUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// SelectedFieldsSchemaItemSelectOptionUnion contains all possible properties and
+// values from [string], [float64], [bool].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool]
+type SelectedFieldsSchemaItemSelectOptionUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	JSON   struct {
+		OfString respjson.Field
+		OfFloat  respjson.Field
+		OfBool   respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u SelectedFieldsSchemaItemSelectOptionUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u SelectedFieldsSchemaItemSelectOptionUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u SelectedFieldsSchemaItemSelectOptionUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u SelectedFieldsSchemaItemSelectOptionUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *SelectedFieldsSchemaItemSelectOptionUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type SolidColorOverlayParam struct {
 	// Specifies the color of the block using an RGB hex code (e.g., `FF0000`), an RGBA
 	// code (e.g., `FFAABB50`), or a color name (e.g., `red`). If an 8-character value
@@ -4905,6 +5206,27 @@ const (
 	TransformationPositionPath  TransformationPosition = "path"
 	TransformationPositionQuery TransformationPosition = "query"
 )
+
+// An object containing the file or file version's `id` (versionId) and `name`.
+type VersionInfo struct {
+	// Unique identifier of the file version.
+	ID string `json:"id"`
+	// Name of the file version.
+	Name string `json:"name"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Name        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionInfo) RawJSON() string { return r.JSON.raw }
+func (r *VersionInfo) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type VideoOverlayParam struct {
 	// Specifies the relative path to the video used as an overlay.
