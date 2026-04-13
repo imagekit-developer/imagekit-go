@@ -26,6 +26,7 @@
 
 - <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#ExtensionConfigUnion">ExtensionConfigUnion</a>
 - <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#SavedExtension">SavedExtension</a>
+- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#SelectedFieldsSchema">SelectedFieldsSchema</a>
 - <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#StreamingResolution">StreamingResolution</a>
 - <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared">shared</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2/shared#TransformationPosition">TransformationPosition</a>
 

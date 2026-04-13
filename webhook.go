@@ -13,6 +13,7 @@ import (
 	"github.com/imagekit-developer/imagekit-go/v2/internal/requestconfig"
 	"github.com/imagekit-developer/imagekit-go/v2/option"
 	"github.com/imagekit-developer/imagekit-go/v2/packages/respjson"
+	"github.com/imagekit-developer/imagekit-go/v2/shared"
 	"github.com/imagekit-developer/imagekit-go/v2/shared/constant"
 	standardwebhooks "github.com/standard-webhooks/standard-webhooks/libraries/go"
 )
@@ -611,7 +612,9 @@ func (r *UploadPreTransformSuccessEvent) UnmarshalJSON(data []byte) error {
 
 // Object containing details of a successful upload.
 type UploadPreTransformSuccessEventData struct {
-	// An array of tags assigned to the uploaded file by auto tagging.
+	// Array of `AITags` associated with the image. If no `AITags` are set, it will be
+	// null. These tags can be added using the `google-auto-tagging` or
+	// `aws-auto-tagging` extensions.
 	AITags []UploadPreTransformSuccessEventDataAITag `json:"AITags" api:"nullable"`
 	// The audio codec used in the video (only for video).
 	AudioCodec string `json:"audioCodec"`
@@ -677,7 +680,7 @@ type UploadPreTransformSuccessEventData struct {
 	//
 	// Keys are the names of the custom metadata fields; the value object has details
 	// about the custom metadata schema.
-	SelectedFieldsSchema map[string]UploadPreTransformSuccessEventDataSelectedFieldsSchema `json:"selectedFieldsSchema"`
+	SelectedFieldsSchema shared.SelectedFieldsSchema `json:"selectedFieldsSchema"`
 	// Size of the image file in Bytes.
 	Size float64 `json:"size"`
 	// The array of tags associated with the asset. If no tags are set, it will be
@@ -737,9 +740,8 @@ type UploadPreTransformSuccessEventDataAITag struct {
 	Confidence float64 `json:"confidence"`
 	// Name of the tag.
 	Name string `json:"name"`
-	// Array of `AITags` associated with the image. If no `AITags` are set, it will be
-	// null. These tags can be added using the `google-auto-tagging` or
-	// `aws-auto-tagging` extensions.
+	// Source of the tag. Possible values are `google-auto-tagging` and
+	// `aws-auto-tagging`.
 	Source string `json:"source"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -792,286 +794,6 @@ type UploadPreTransformSuccessEventDataExtensionStatus struct {
 // Returns the unmodified JSON received from the API
 func (r UploadPreTransformSuccessEventDataExtensionStatus) RawJSON() string { return r.JSON.raw }
 func (r *UploadPreTransformSuccessEventDataExtensionStatus) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type UploadPreTransformSuccessEventDataSelectedFieldsSchema struct {
-	// Type of the custom metadata field.
-	//
-	// Any of "Text", "Textarea", "Number", "Date", "Boolean", "SingleSelect",
-	// "MultiSelect".
-	Type string `json:"type" api:"required"`
-	// The default value for this custom metadata field. The value should match the
-	// `type` of custom metadata field.
-	DefaultValue UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueUnion `json:"defaultValue"`
-	// Specifies if the custom metadata field is required or not.
-	IsValueRequired bool `json:"isValueRequired"`
-	// Maximum length of string. Only set if `type` is set to `Text` or `Textarea`.
-	MaxLength float64 `json:"maxLength"`
-	// Maximum value of the field. Only set if field type is `Date` or `Number`. For
-	// `Date` type field, the value will be in ISO8601 string format. For `Number` type
-	// field, it will be a numeric value.
-	MaxValue UploadPreTransformSuccessEventDataSelectedFieldsSchemaMaxValueUnion `json:"maxValue"`
-	// Minimum length of string. Only set if `type` is set to `Text` or `Textarea`.
-	MinLength float64 `json:"minLength"`
-	// Minimum value of the field. Only set if field type is `Date` or `Number`. For
-	// `Date` type field, the value will be in ISO8601 string format. For `Number` type
-	// field, it will be a numeric value.
-	MinValue UploadPreTransformSuccessEventDataSelectedFieldsSchemaMinValueUnion `json:"minValue"`
-	// Indicates whether the custom metadata field is read only. A read only field
-	// cannot be modified after being set. This field is configurable only via the
-	// **Path policy** feature.
-	ReadOnly bool `json:"readOnly"`
-	// An array of allowed values when field type is `SingleSelect` or `MultiSelect`.
-	SelectOptions []UploadPreTransformSuccessEventDataSelectedFieldsSchemaSelectOptionUnion `json:"selectOptions"`
-	// Specifies if the selectOptions array is truncated. It is truncated when number
-	// of options are > 100.
-	SelectOptionsTruncated bool `json:"selectOptionsTruncated"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Type                   respjson.Field
-		DefaultValue           respjson.Field
-		IsValueRequired        respjson.Field
-		MaxLength              respjson.Field
-		MaxValue               respjson.Field
-		MinLength              respjson.Field
-		MinValue               respjson.Field
-		ReadOnly               respjson.Field
-		SelectOptions          respjson.Field
-		SelectOptionsTruncated respjson.Field
-		ExtraFields            map[string]respjson.Field
-		raw                    string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r UploadPreTransformSuccessEventDataSelectedFieldsSchema) RawJSON() string { return r.JSON.raw }
-func (r *UploadPreTransformSuccessEventDataSelectedFieldsSchema) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueUnion contains
-// all possible properties and values from [string], [float64], [bool],
-// [[]UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueMixedItemUnion].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfFloat OfBool OfMixed]
-type UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueUnion struct {
-	// This field will be present if the value is a [string] instead of an object.
-	OfString string `json:",inline"`
-	// This field will be present if the value is a [float64] instead of an object.
-	OfFloat float64 `json:",inline"`
-	// This field will be present if the value is a [bool] instead of an object.
-	OfBool bool `json:",inline"`
-	// This field will be present if the value is a
-	// [[]UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueMixedItemUnion]
-	// instead of an object.
-	OfMixed []UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueMixedItemUnion `json:",inline"`
-	JSON    struct {
-		OfString respjson.Field
-		OfFloat  respjson.Field
-		OfBool   respjson.Field
-		OfMixed  respjson.Field
-		raw      string
-	} `json:"-"`
-}
-
-func (u UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueUnion) AsBool() (v bool) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueUnion) AsMixed() (v []UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueMixedItemUnion) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueUnion) RawJSON() string {
-	return u.JSON.raw
-}
-
-func (r *UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueMixedItemUnion
-// contains all possible properties and values from [string], [float64], [bool].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfFloat OfBool]
-type UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueMixedItemUnion struct {
-	// This field will be present if the value is a [string] instead of an object.
-	OfString string `json:",inline"`
-	// This field will be present if the value is a [float64] instead of an object.
-	OfFloat float64 `json:",inline"`
-	// This field will be present if the value is a [bool] instead of an object.
-	OfBool bool `json:",inline"`
-	JSON   struct {
-		OfString respjson.Field
-		OfFloat  respjson.Field
-		OfBool   respjson.Field
-		raw      string
-	} `json:"-"`
-}
-
-func (u UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueMixedItemUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueMixedItemUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueMixedItemUnion) AsBool() (v bool) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueMixedItemUnion) RawJSON() string {
-	return u.JSON.raw
-}
-
-func (r *UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueMixedItemUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// UploadPreTransformSuccessEventDataSelectedFieldsSchemaMaxValueUnion contains all
-// possible properties and values from [string], [float64].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfFloat]
-type UploadPreTransformSuccessEventDataSelectedFieldsSchemaMaxValueUnion struct {
-	// This field will be present if the value is a [string] instead of an object.
-	OfString string `json:",inline"`
-	// This field will be present if the value is a [float64] instead of an object.
-	OfFloat float64 `json:",inline"`
-	JSON    struct {
-		OfString respjson.Field
-		OfFloat  respjson.Field
-		raw      string
-	} `json:"-"`
-}
-
-func (u UploadPreTransformSuccessEventDataSelectedFieldsSchemaMaxValueUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u UploadPreTransformSuccessEventDataSelectedFieldsSchemaMaxValueUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u UploadPreTransformSuccessEventDataSelectedFieldsSchemaMaxValueUnion) RawJSON() string {
-	return u.JSON.raw
-}
-
-func (r *UploadPreTransformSuccessEventDataSelectedFieldsSchemaMaxValueUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// UploadPreTransformSuccessEventDataSelectedFieldsSchemaMinValueUnion contains all
-// possible properties and values from [string], [float64].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfFloat]
-type UploadPreTransformSuccessEventDataSelectedFieldsSchemaMinValueUnion struct {
-	// This field will be present if the value is a [string] instead of an object.
-	OfString string `json:",inline"`
-	// This field will be present if the value is a [float64] instead of an object.
-	OfFloat float64 `json:",inline"`
-	JSON    struct {
-		OfString respjson.Field
-		OfFloat  respjson.Field
-		raw      string
-	} `json:"-"`
-}
-
-func (u UploadPreTransformSuccessEventDataSelectedFieldsSchemaMinValueUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u UploadPreTransformSuccessEventDataSelectedFieldsSchemaMinValueUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u UploadPreTransformSuccessEventDataSelectedFieldsSchemaMinValueUnion) RawJSON() string {
-	return u.JSON.raw
-}
-
-func (r *UploadPreTransformSuccessEventDataSelectedFieldsSchemaMinValueUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// UploadPreTransformSuccessEventDataSelectedFieldsSchemaSelectOptionUnion contains
-// all possible properties and values from [string], [float64], [bool].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfFloat OfBool]
-type UploadPreTransformSuccessEventDataSelectedFieldsSchemaSelectOptionUnion struct {
-	// This field will be present if the value is a [string] instead of an object.
-	OfString string `json:",inline"`
-	// This field will be present if the value is a [float64] instead of an object.
-	OfFloat float64 `json:",inline"`
-	// This field will be present if the value is a [bool] instead of an object.
-	OfBool bool `json:",inline"`
-	JSON   struct {
-		OfString respjson.Field
-		OfFloat  respjson.Field
-		OfBool   respjson.Field
-		raw      string
-	} `json:"-"`
-}
-
-func (u UploadPreTransformSuccessEventDataSelectedFieldsSchemaSelectOptionUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u UploadPreTransformSuccessEventDataSelectedFieldsSchemaSelectOptionUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u UploadPreTransformSuccessEventDataSelectedFieldsSchemaSelectOptionUnion) AsBool() (v bool) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u UploadPreTransformSuccessEventDataSelectedFieldsSchemaSelectOptionUnion) RawJSON() string {
-	return u.JSON.raw
-}
-
-func (r *UploadPreTransformSuccessEventDataSelectedFieldsSchemaSelectOptionUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1857,12 +1579,10 @@ type UnsafeUnwrapWebhookEventUnionData struct {
 	// This field is from variant [UploadPreTransformSuccessEventData].
 	Metadata Metadata `json:"metadata"`
 	Name     string   `json:"name"`
-	// This field is a union of
-	// [map[string]UploadPreTransformSuccessEventDataSelectedFieldsSchema],
-	// [map[string]FileSelectedFieldsSchema]
-	SelectedFieldsSchema UnsafeUnwrapWebhookEventUnionDataSelectedFieldsSchema `json:"selectedFieldsSchema"`
-	Size                 float64                                               `json:"size"`
-	Tags                 []string                                              `json:"tags"`
+	// This field is from variant [UploadPreTransformSuccessEventData].
+	SelectedFieldsSchema shared.SelectedFieldsSchema `json:"selectedFieldsSchema"`
+	Size                 float64                     `json:"size"`
+	Tags                 []string                    `json:"tags"`
 	// This field is from variant [UploadPreTransformSuccessEventData].
 	ThumbnailURL string `json:"thumbnailUrl"`
 	URL          string `json:"url"`
@@ -2053,172 +1773,6 @@ type UnsafeUnwrapWebhookEventUnionDataAITags struct {
 }
 
 func (r *UnsafeUnwrapWebhookEventUnionDataAITags) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// UnsafeUnwrapWebhookEventUnionDataSelectedFieldsSchema is an implicit subunion of
-// [UnsafeUnwrapWebhookEventUnion].
-// UnsafeUnwrapWebhookEventUnionDataSelectedFieldsSchema provides convenient access
-// to the sub-properties of the union.
-//
-// For type safety it is recommended to directly use a variant of the
-// [UnsafeUnwrapWebhookEventUnion].
-type UnsafeUnwrapWebhookEventUnionDataSelectedFieldsSchema struct {
-	Type string `json:"type"`
-	// This field is a union of
-	// [UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueUnion],
-	// [FileSelectedFieldsSchemaDefaultValueUnion]
-	DefaultValue    UnsafeUnwrapWebhookEventUnionDataSelectedFieldsSchemaDefaultValue `json:"defaultValue"`
-	IsValueRequired bool                                                              `json:"isValueRequired"`
-	MaxLength       float64                                                           `json:"maxLength"`
-	// This field is a union of
-	// [UploadPreTransformSuccessEventDataSelectedFieldsSchemaMaxValueUnion],
-	// [FileSelectedFieldsSchemaMaxValueUnion]
-	MaxValue  UnsafeUnwrapWebhookEventUnionDataSelectedFieldsSchemaMaxValue `json:"maxValue"`
-	MinLength float64                                                       `json:"minLength"`
-	// This field is a union of
-	// [UploadPreTransformSuccessEventDataSelectedFieldsSchemaMinValueUnion],
-	// [FileSelectedFieldsSchemaMinValueUnion]
-	MinValue UnsafeUnwrapWebhookEventUnionDataSelectedFieldsSchemaMinValue `json:"minValue"`
-	ReadOnly bool                                                          `json:"readOnly"`
-	// This field is a union of
-	// [[]UploadPreTransformSuccessEventDataSelectedFieldsSchemaSelectOptionUnion],
-	// [[]FileSelectedFieldsSchemaSelectOptionUnion]
-	SelectOptions          UnsafeUnwrapWebhookEventUnionDataSelectedFieldsSchemaSelectOptions `json:"selectOptions"`
-	SelectOptionsTruncated bool                                                               `json:"selectOptionsTruncated"`
-	JSON                   struct {
-		Type                   respjson.Field
-		DefaultValue           respjson.Field
-		IsValueRequired        respjson.Field
-		MaxLength              respjson.Field
-		MaxValue               respjson.Field
-		MinLength              respjson.Field
-		MinValue               respjson.Field
-		ReadOnly               respjson.Field
-		SelectOptions          respjson.Field
-		SelectOptionsTruncated respjson.Field
-		raw                    string
-	} `json:"-"`
-}
-
-func (r *UnsafeUnwrapWebhookEventUnionDataSelectedFieldsSchema) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// UnsafeUnwrapWebhookEventUnionDataSelectedFieldsSchemaDefaultValue is an implicit
-// subunion of [UnsafeUnwrapWebhookEventUnion].
-// UnsafeUnwrapWebhookEventUnionDataSelectedFieldsSchemaDefaultValue provides
-// convenient access to the sub-properties of the union.
-//
-// For type safety it is recommended to directly use a variant of the
-// [UnsafeUnwrapWebhookEventUnion].
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfFloat OfBool OfMixed]
-type UnsafeUnwrapWebhookEventUnionDataSelectedFieldsSchemaDefaultValue struct {
-	// This field will be present if the value is a [string] instead of an object.
-	OfString string `json:",inline"`
-	// This field will be present if the value is a [float64] instead of an object.
-	OfFloat float64 `json:",inline"`
-	// This field will be present if the value is a [bool] instead of an object.
-	OfBool bool `json:",inline"`
-	// This field will be present if the value is a
-	// [[]UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueMixedItemUnion]
-	// instead of an object.
-	OfMixed []UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueMixedItemUnion `json:",inline"`
-	JSON    struct {
-		OfString respjson.Field
-		OfFloat  respjson.Field
-		OfBool   respjson.Field
-		OfMixed  respjson.Field
-		raw      string
-	} `json:"-"`
-}
-
-func (r *UnsafeUnwrapWebhookEventUnionDataSelectedFieldsSchemaDefaultValue) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// UnsafeUnwrapWebhookEventUnionDataSelectedFieldsSchemaMaxValue is an implicit
-// subunion of [UnsafeUnwrapWebhookEventUnion].
-// UnsafeUnwrapWebhookEventUnionDataSelectedFieldsSchemaMaxValue provides
-// convenient access to the sub-properties of the union.
-//
-// For type safety it is recommended to directly use a variant of the
-// [UnsafeUnwrapWebhookEventUnion].
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfFloat]
-type UnsafeUnwrapWebhookEventUnionDataSelectedFieldsSchemaMaxValue struct {
-	// This field will be present if the value is a [string] instead of an object.
-	OfString string `json:",inline"`
-	// This field will be present if the value is a [float64] instead of an object.
-	OfFloat float64 `json:",inline"`
-	JSON    struct {
-		OfString respjson.Field
-		OfFloat  respjson.Field
-		raw      string
-	} `json:"-"`
-}
-
-func (r *UnsafeUnwrapWebhookEventUnionDataSelectedFieldsSchemaMaxValue) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// UnsafeUnwrapWebhookEventUnionDataSelectedFieldsSchemaMinValue is an implicit
-// subunion of [UnsafeUnwrapWebhookEventUnion].
-// UnsafeUnwrapWebhookEventUnionDataSelectedFieldsSchemaMinValue provides
-// convenient access to the sub-properties of the union.
-//
-// For type safety it is recommended to directly use a variant of the
-// [UnsafeUnwrapWebhookEventUnion].
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfFloat]
-type UnsafeUnwrapWebhookEventUnionDataSelectedFieldsSchemaMinValue struct {
-	// This field will be present if the value is a [string] instead of an object.
-	OfString string `json:",inline"`
-	// This field will be present if the value is a [float64] instead of an object.
-	OfFloat float64 `json:",inline"`
-	JSON    struct {
-		OfString respjson.Field
-		OfFloat  respjson.Field
-		raw      string
-	} `json:"-"`
-}
-
-func (r *UnsafeUnwrapWebhookEventUnionDataSelectedFieldsSchemaMinValue) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// UnsafeUnwrapWebhookEventUnionDataSelectedFieldsSchemaSelectOptions is an
-// implicit subunion of [UnsafeUnwrapWebhookEventUnion].
-// UnsafeUnwrapWebhookEventUnionDataSelectedFieldsSchemaSelectOptions provides
-// convenient access to the sub-properties of the union.
-//
-// For type safety it is recommended to directly use a variant of the
-// [UnsafeUnwrapWebhookEventUnion].
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid:
-// OfUploadPreTransformSuccessEventDataSelectedFieldsSchemaSelectOptions
-// OfFileSelectedFieldsSchemaSelectOptions]
-type UnsafeUnwrapWebhookEventUnionDataSelectedFieldsSchemaSelectOptions struct {
-	// This field will be present if the value is a
-	// [[]UploadPreTransformSuccessEventDataSelectedFieldsSchemaSelectOptionUnion]
-	// instead of an object.
-	OfUploadPreTransformSuccessEventDataSelectedFieldsSchemaSelectOptions []UploadPreTransformSuccessEventDataSelectedFieldsSchemaSelectOptionUnion `json:",inline"`
-	// This field will be present if the value is a
-	// [[]FileSelectedFieldsSchemaSelectOptionUnion] instead of an object.
-	OfFileSelectedFieldsSchemaSelectOptions []FileSelectedFieldsSchemaSelectOptionUnion `json:",inline"`
-	JSON                                    struct {
-		OfUploadPreTransformSuccessEventDataSelectedFieldsSchemaSelectOptions respjson.Field
-		OfFileSelectedFieldsSchemaSelectOptions                               respjson.Field
-		raw                                                                   string
-	} `json:"-"`
-}
-
-func (r *UnsafeUnwrapWebhookEventUnionDataSelectedFieldsSchemaSelectOptions) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -2448,12 +2002,10 @@ type UnwrapWebhookEventUnionData struct {
 	// This field is from variant [UploadPreTransformSuccessEventData].
 	Metadata Metadata `json:"metadata"`
 	Name     string   `json:"name"`
-	// This field is a union of
-	// [map[string]UploadPreTransformSuccessEventDataSelectedFieldsSchema],
-	// [map[string]FileSelectedFieldsSchema]
-	SelectedFieldsSchema UnwrapWebhookEventUnionDataSelectedFieldsSchema `json:"selectedFieldsSchema"`
-	Size                 float64                                         `json:"size"`
-	Tags                 []string                                        `json:"tags"`
+	// This field is from variant [UploadPreTransformSuccessEventData].
+	SelectedFieldsSchema shared.SelectedFieldsSchema `json:"selectedFieldsSchema"`
+	Size                 float64                     `json:"size"`
+	Tags                 []string                    `json:"tags"`
 	// This field is from variant [UploadPreTransformSuccessEventData].
 	ThumbnailURL string `json:"thumbnailUrl"`
 	URL          string `json:"url"`
@@ -2642,171 +2194,6 @@ type UnwrapWebhookEventUnionDataAITags struct {
 }
 
 func (r *UnwrapWebhookEventUnionDataAITags) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// UnwrapWebhookEventUnionDataSelectedFieldsSchema is an implicit subunion of
-// [UnwrapWebhookEventUnion]. UnwrapWebhookEventUnionDataSelectedFieldsSchema
-// provides convenient access to the sub-properties of the union.
-//
-// For type safety it is recommended to directly use a variant of the
-// [UnwrapWebhookEventUnion].
-type UnwrapWebhookEventUnionDataSelectedFieldsSchema struct {
-	Type string `json:"type"`
-	// This field is a union of
-	// [UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueUnion],
-	// [FileSelectedFieldsSchemaDefaultValueUnion]
-	DefaultValue    UnwrapWebhookEventUnionDataSelectedFieldsSchemaDefaultValue `json:"defaultValue"`
-	IsValueRequired bool                                                        `json:"isValueRequired"`
-	MaxLength       float64                                                     `json:"maxLength"`
-	// This field is a union of
-	// [UploadPreTransformSuccessEventDataSelectedFieldsSchemaMaxValueUnion],
-	// [FileSelectedFieldsSchemaMaxValueUnion]
-	MaxValue  UnwrapWebhookEventUnionDataSelectedFieldsSchemaMaxValue `json:"maxValue"`
-	MinLength float64                                                 `json:"minLength"`
-	// This field is a union of
-	// [UploadPreTransformSuccessEventDataSelectedFieldsSchemaMinValueUnion],
-	// [FileSelectedFieldsSchemaMinValueUnion]
-	MinValue UnwrapWebhookEventUnionDataSelectedFieldsSchemaMinValue `json:"minValue"`
-	ReadOnly bool                                                    `json:"readOnly"`
-	// This field is a union of
-	// [[]UploadPreTransformSuccessEventDataSelectedFieldsSchemaSelectOptionUnion],
-	// [[]FileSelectedFieldsSchemaSelectOptionUnion]
-	SelectOptions          UnwrapWebhookEventUnionDataSelectedFieldsSchemaSelectOptions `json:"selectOptions"`
-	SelectOptionsTruncated bool                                                         `json:"selectOptionsTruncated"`
-	JSON                   struct {
-		Type                   respjson.Field
-		DefaultValue           respjson.Field
-		IsValueRequired        respjson.Field
-		MaxLength              respjson.Field
-		MaxValue               respjson.Field
-		MinLength              respjson.Field
-		MinValue               respjson.Field
-		ReadOnly               respjson.Field
-		SelectOptions          respjson.Field
-		SelectOptionsTruncated respjson.Field
-		raw                    string
-	} `json:"-"`
-}
-
-func (r *UnwrapWebhookEventUnionDataSelectedFieldsSchema) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// UnwrapWebhookEventUnionDataSelectedFieldsSchemaDefaultValue is an implicit
-// subunion of [UnwrapWebhookEventUnion].
-// UnwrapWebhookEventUnionDataSelectedFieldsSchemaDefaultValue provides convenient
-// access to the sub-properties of the union.
-//
-// For type safety it is recommended to directly use a variant of the
-// [UnwrapWebhookEventUnion].
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfFloat OfBool OfMixed]
-type UnwrapWebhookEventUnionDataSelectedFieldsSchemaDefaultValue struct {
-	// This field will be present if the value is a [string] instead of an object.
-	OfString string `json:",inline"`
-	// This field will be present if the value is a [float64] instead of an object.
-	OfFloat float64 `json:",inline"`
-	// This field will be present if the value is a [bool] instead of an object.
-	OfBool bool `json:",inline"`
-	// This field will be present if the value is a
-	// [[]UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueMixedItemUnion]
-	// instead of an object.
-	OfMixed []UploadPreTransformSuccessEventDataSelectedFieldsSchemaDefaultValueMixedItemUnion `json:",inline"`
-	JSON    struct {
-		OfString respjson.Field
-		OfFloat  respjson.Field
-		OfBool   respjson.Field
-		OfMixed  respjson.Field
-		raw      string
-	} `json:"-"`
-}
-
-func (r *UnwrapWebhookEventUnionDataSelectedFieldsSchemaDefaultValue) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// UnwrapWebhookEventUnionDataSelectedFieldsSchemaMaxValue is an implicit subunion
-// of [UnwrapWebhookEventUnion].
-// UnwrapWebhookEventUnionDataSelectedFieldsSchemaMaxValue provides convenient
-// access to the sub-properties of the union.
-//
-// For type safety it is recommended to directly use a variant of the
-// [UnwrapWebhookEventUnion].
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfFloat]
-type UnwrapWebhookEventUnionDataSelectedFieldsSchemaMaxValue struct {
-	// This field will be present if the value is a [string] instead of an object.
-	OfString string `json:",inline"`
-	// This field will be present if the value is a [float64] instead of an object.
-	OfFloat float64 `json:",inline"`
-	JSON    struct {
-		OfString respjson.Field
-		OfFloat  respjson.Field
-		raw      string
-	} `json:"-"`
-}
-
-func (r *UnwrapWebhookEventUnionDataSelectedFieldsSchemaMaxValue) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// UnwrapWebhookEventUnionDataSelectedFieldsSchemaMinValue is an implicit subunion
-// of [UnwrapWebhookEventUnion].
-// UnwrapWebhookEventUnionDataSelectedFieldsSchemaMinValue provides convenient
-// access to the sub-properties of the union.
-//
-// For type safety it is recommended to directly use a variant of the
-// [UnwrapWebhookEventUnion].
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfFloat]
-type UnwrapWebhookEventUnionDataSelectedFieldsSchemaMinValue struct {
-	// This field will be present if the value is a [string] instead of an object.
-	OfString string `json:",inline"`
-	// This field will be present if the value is a [float64] instead of an object.
-	OfFloat float64 `json:",inline"`
-	JSON    struct {
-		OfString respjson.Field
-		OfFloat  respjson.Field
-		raw      string
-	} `json:"-"`
-}
-
-func (r *UnwrapWebhookEventUnionDataSelectedFieldsSchemaMinValue) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// UnwrapWebhookEventUnionDataSelectedFieldsSchemaSelectOptions is an implicit
-// subunion of [UnwrapWebhookEventUnion].
-// UnwrapWebhookEventUnionDataSelectedFieldsSchemaSelectOptions provides convenient
-// access to the sub-properties of the union.
-//
-// For type safety it is recommended to directly use a variant of the
-// [UnwrapWebhookEventUnion].
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid:
-// OfUploadPreTransformSuccessEventDataSelectedFieldsSchemaSelectOptions
-// OfFileSelectedFieldsSchemaSelectOptions]
-type UnwrapWebhookEventUnionDataSelectedFieldsSchemaSelectOptions struct {
-	// This field will be present if the value is a
-	// [[]UploadPreTransformSuccessEventDataSelectedFieldsSchemaSelectOptionUnion]
-	// instead of an object.
-	OfUploadPreTransformSuccessEventDataSelectedFieldsSchemaSelectOptions []UploadPreTransformSuccessEventDataSelectedFieldsSchemaSelectOptionUnion `json:",inline"`
-	// This field will be present if the value is a
-	// [[]FileSelectedFieldsSchemaSelectOptionUnion] instead of an object.
-	OfFileSelectedFieldsSchemaSelectOptions []FileSelectedFieldsSchemaSelectOptionUnion `json:",inline"`
-	JSON                                    struct {
-		OfUploadPreTransformSuccessEventDataSelectedFieldsSchemaSelectOptions respjson.Field
-		OfFileSelectedFieldsSchemaSelectOptions                               respjson.Field
-		raw                                                                   string
-	} `json:"-"`
-}
-
-func (r *UnwrapWebhookEventUnionDataSelectedFieldsSchemaSelectOptions) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
