@@ -18,8 +18,8 @@ type paramUnion = param.APIUnion
 // aliased to make [param.APIObject] private when embedding
 type paramObj = param.APIObject
 
-type AITags []AITag
-
+// AI-generated tag associated with an image. These tags can be added using the
+// `google-auto-tagging` or `aws-auto-tagging` extensions.
 type AITag struct {
 	// Confidence score of the tag.
 	Confidence float64 `json:"confidence"`
