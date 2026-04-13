@@ -18,6 +18,32 @@ type paramUnion = param.APIUnion
 // aliased to make [param.APIObject] private when embedding
 type paramObj = param.APIObject
 
+type AITags []AITag
+
+type AITag struct {
+	// Confidence score of the tag.
+	Confidence float64 `json:"confidence"`
+	// Name of the tag.
+	Name string `json:"name"`
+	// Source of the tag. Possible values are `google-auto-tagging` and
+	// `aws-auto-tagging`.
+	Source string `json:"source"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Confidence  respjson.Field
+		Name        respjson.Field
+		Source      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AITag) RawJSON() string { return r.JSON.raw }
+func (r *AITag) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type BaseOverlayParam struct {
 	// Controls how the layer blends with the base image or underlying content. Maps to
 	// `lm` in the URL. By default, layers completely cover the base image beneath
@@ -88,6 +114,10 @@ const (
 	BaseOverlayLayerModeCutout   BaseOverlayLayerMode = "cutout"
 	BaseOverlayLayerModeDisplace BaseOverlayLayerMode = "displace"
 )
+
+type CustomMetadata map[string]any
+
+type EmbeddedMetadata map[string]any
 
 // ExtensionConfigUnion contains all possible properties and values from
 // [ExtensionConfigRemoveBg], [ExtensionConfigAutoTagging],
@@ -5176,6 +5206,27 @@ const (
 	TransformationPositionPath  TransformationPosition = "path"
 	TransformationPositionQuery TransformationPosition = "query"
 )
+
+// An object containing the file or file version's `id` (versionId) and `name`.
+type VersionInfo struct {
+	// Unique identifier of the file version.
+	ID string `json:"id"`
+	// Name of the file version.
+	Name string `json:"name"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Name        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionInfo) RawJSON() string { return r.JSON.raw }
+func (r *VersionInfo) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type VideoOverlayParam struct {
 	// Specifies the relative path to the video used as an overlay.

@@ -80,7 +80,7 @@ type BetaV2FileUploadResponse struct {
 	// Array of `AITags` associated with the image. If no `AITags` are set, it will be
 	// null. These tags can be added using the `google-auto-tagging` or
 	// `aws-auto-tagging` extensions.
-	AITags []BetaV2FileUploadResponseAITag `json:"AITags" api:"nullable"`
+	AITags shared.AITags `json:"AITags" api:"nullable"`
 	// The audio codec used in the video (only for video).
 	AudioCodec string `json:"audioCodec"`
 	// The bit rate of the video in kbps (only for video).
@@ -95,7 +95,7 @@ type BetaV2FileUploadResponse struct {
 	// metadata on an asset, you have to create the field using custom metadata fields
 	// API. Send `customMetadata` in `responseFields` in API request to get the value
 	// of this field.
-	CustomMetadata map[string]any `json:"customMetadata"`
+	CustomMetadata shared.CustomMetadata `json:"customMetadata"`
 	// Optional text to describe the contents of the file. Can be set by the user or
 	// the ai-auto-description extension.
 	Description string `json:"description"`
@@ -104,7 +104,7 @@ type BetaV2FileUploadResponse struct {
 	// Consolidated embedded metadata associated with the file. It includes exif, iptc,
 	// and xmp data. Send `embeddedMetadata` in `responseFields` in API request to get
 	// embeddedMetadata in the upload API response.
-	EmbeddedMetadata map[string]any `json:"embeddedMetadata"`
+	EmbeddedMetadata shared.EmbeddedMetadata `json:"embeddedMetadata"`
 	// Extension names with their processing status at the time of completion of the
 	// request. It could have one of the following status values:
 	//
@@ -157,7 +157,7 @@ type BetaV2FileUploadResponse struct {
 	// A publicly accessible URL of the file.
 	URL string `json:"url"`
 	// An object containing the file or file version's `id` (versionId) and `name`.
-	VersionInfo BetaV2FileUploadResponseVersionInfo `json:"versionInfo"`
+	VersionInfo shared.VersionInfo `json:"versionInfo"`
 	// The video codec used in the video (only for video).
 	VideoCodec string `json:"videoCodec"`
 	// Width of the image in pixels (Only for Images)
@@ -200,30 +200,6 @@ func (r *BetaV2FileUploadResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type BetaV2FileUploadResponseAITag struct {
-	// Confidence score of the tag.
-	Confidence float64 `json:"confidence"`
-	// Name of the tag.
-	Name string `json:"name"`
-	// Source of the tag. Possible values are `google-auto-tagging` and
-	// `aws-auto-tagging`.
-	Source string `json:"source"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Confidence  respjson.Field
-		Name        respjson.Field
-		Source      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r BetaV2FileUploadResponseAITag) RawJSON() string { return r.JSON.raw }
-func (r *BetaV2FileUploadResponseAITag) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // Extension names with their processing status at the time of completion of the
 // request. It could have one of the following status values:
 //
@@ -259,27 +235,6 @@ type BetaV2FileUploadResponseExtensionStatus struct {
 // Returns the unmodified JSON received from the API
 func (r BetaV2FileUploadResponseExtensionStatus) RawJSON() string { return r.JSON.raw }
 func (r *BetaV2FileUploadResponseExtensionStatus) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// An object containing the file or file version's `id` (versionId) and `name`.
-type BetaV2FileUploadResponseVersionInfo struct {
-	// Unique identifier of the file version.
-	ID string `json:"id"`
-	// Name of the file version.
-	Name string `json:"name"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		Name        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r BetaV2FileUploadResponseVersionInfo) RawJSON() string { return r.JSON.raw }
-func (r *BetaV2FileUploadResponseVersionInfo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
