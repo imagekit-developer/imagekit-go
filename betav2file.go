@@ -79,10 +79,8 @@ func (r *BetaV2FileService) Upload(ctx context.Context, body BetaV2FileUploadPar
 
 // Object containing details of a successful upload.
 type BetaV2FileUploadResponse struct {
-	// Array of `AITags` associated with the image. If no `AITags` are set, it will be
-	// null. These tags can be added using the `google-auto-tagging` or
-	// `aws-auto-tagging` extensions.
-	AITags shared.AITags `json:"AITags" api:"nullable"`
+	// An array of tags assigned to the uploaded file by auto tagging.
+	AITags []shared.AITag `json:"AITags" api:"nullable"`
 	// The audio codec used in the video (only for video).
 	AudioCodec string `json:"audioCodec"`
 	// The bit rate of the video in kbps (only for video).

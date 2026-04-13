@@ -16,13 +16,9 @@ type paramObj = param.APIObject
 
 type Error = apierror.Error
 
-// Array of `AITags` associated with the image. If no `AITags` are set, it will be
-// null. These tags can be added using the `google-auto-tagging` or
-// `aws-auto-tagging` extensions.
+// AI-generated tag associated with an image. These tags can be added using the
+// `google-auto-tagging` or `aws-auto-tagging` extensions.
 //
-// This is an alias to an internal type.
-type AITags = shared.AITags
-
 // This is an alias to an internal type.
 type AITag = shared.AITag
 
@@ -65,18 +61,13 @@ const BaseOverlayLayerModeCutout = shared.BaseOverlayLayerModeCutout
 // Equals "displace"
 const BaseOverlayLayerModeDisplace = shared.BaseOverlayLayerModeDisplace
 
-// A key-value data associated with the asset. Use `responseField` in API request
-// to get `customMetadata` in the upload API response. Before setting any custom
-// metadata on an asset, you have to create the field using custom metadata fields
-// API. Send `customMetadata` in `responseFields` in API request to get the value
-// of this field.
+// A key-value data associated with the asset.
 //
 // This is an alias to an internal type.
 type CustomMetadata = shared.CustomMetadata
 
 // Consolidated embedded metadata associated with the file. It includes exif, iptc,
-// and xmp data. Send `embeddedMetadata` in `responseFields` in API request to get
-// embeddedMetadata in the upload API response.
+// and xmp data.
 //
 // This is an alias to an internal type.
 type EmbeddedMetadata = shared.EmbeddedMetadata

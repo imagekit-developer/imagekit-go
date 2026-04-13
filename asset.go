@@ -57,7 +57,7 @@ func (r *AssetService) List(ctx context.Context, query AssetListParams, opts ...
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type AssetListResponseUnion struct {
 	// This field is from variant [File].
-	AITags shared.AITags `json:"AITags"`
+	AITags []shared.AITag `json:"AITags"`
 	// This field is from variant [File].
 	AudioCodec string `json:"audioCodec"`
 	// This field is from variant [File].

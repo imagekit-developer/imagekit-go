@@ -614,10 +614,8 @@ func (r *UploadPreTransformSuccessEvent) UnmarshalJSON(data []byte) error {
 
 // Object containing details of a successful upload.
 type UploadPreTransformSuccessEventData struct {
-	// Array of `AITags` associated with the image. If no `AITags` are set, it will be
-	// null. These tags can be added using the `google-auto-tagging` or
-	// `aws-auto-tagging` extensions.
-	AITags shared.AITags `json:"AITags" api:"nullable"`
+	// An array of tags assigned to the uploaded file by auto tagging.
+	AITags []shared.AITag `json:"AITags" api:"nullable"`
 	// The audio codec used in the video (only for video).
 	AudioCodec string `json:"audioCodec"`
 	// The bit rate of the video in kbps (only for video).
@@ -1514,12 +1512,11 @@ type UnsafeUnwrapWebhookEventUnionData struct {
 	// [VideoTransformationErrorEventDataTransformation],
 	// [UploadPreTransformErrorEventDataTransformation],
 	// [UploadPostTransformErrorEventDataTransformation]
-	Transformation UnsafeUnwrapWebhookEventUnionDataTransformation `json:"transformation"`
-	// This field is from variant [UploadPreTransformSuccessEventData].
-	AITags            shared.AITags `json:"AITags"`
-	AudioCodec        string        `json:"audioCodec"`
-	BitRate           int64         `json:"bitRate"`
-	CustomCoordinates string        `json:"customCoordinates"`
+	Transformation    UnsafeUnwrapWebhookEventUnionDataTransformation `json:"transformation"`
+	AITags            []shared.AITag                                  `json:"AITags"`
+	AudioCodec        string                                          `json:"audioCodec"`
+	BitRate           int64                                           `json:"bitRate"`
+	CustomCoordinates string                                          `json:"customCoordinates"`
 	// This field is from variant [UploadPreTransformSuccessEventData].
 	CustomMetadata shared.CustomMetadata `json:"customMetadata"`
 	Description    string                `json:"description"`
@@ -1891,12 +1888,11 @@ type UnwrapWebhookEventUnionData struct {
 	// [VideoTransformationErrorEventDataTransformation],
 	// [UploadPreTransformErrorEventDataTransformation],
 	// [UploadPostTransformErrorEventDataTransformation]
-	Transformation UnwrapWebhookEventUnionDataTransformation `json:"transformation"`
-	// This field is from variant [UploadPreTransformSuccessEventData].
-	AITags            shared.AITags `json:"AITags"`
-	AudioCodec        string        `json:"audioCodec"`
-	BitRate           int64         `json:"bitRate"`
-	CustomCoordinates string        `json:"customCoordinates"`
+	Transformation    UnwrapWebhookEventUnionDataTransformation `json:"transformation"`
+	AITags            []shared.AITag                            `json:"AITags"`
+	AudioCodec        string                                    `json:"audioCodec"`
+	BitRate           int64                                     `json:"bitRate"`
+	CustomCoordinates string                                    `json:"customCoordinates"`
 	// This field is from variant [UploadPreTransformSuccessEventData].
 	CustomMetadata shared.CustomMetadata `json:"customMetadata"`
 	Description    string                `json:"description"`

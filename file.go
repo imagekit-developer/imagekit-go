@@ -167,10 +167,9 @@ func (r *FileService) Upload(ctx context.Context, body FileUploadParams, opts ..
 
 // Object containing details of a file or file version.
 type File struct {
-	// Array of `AITags` associated with the image. If no `AITags` are set, it will be
-	// null. These tags can be added using the `google-auto-tagging` or
-	// `aws-auto-tagging` extensions.
-	AITags shared.AITags `json:"AITags" api:"nullable"`
+	// Array of AI-generated tags associated with the image. If no AITags are set, it
+	// will be null.
+	AITags []shared.AITag `json:"AITags" api:"nullable"`
 	// The audio codec used in the video (only for video/audio).
 	AudioCodec string `json:"audioCodec"`
 	// The bit rate of the video in kbps (only for video).
@@ -180,11 +179,7 @@ type File struct {
 	CreatedAt time.Time `json:"createdAt" format:"date-time"`
 	// An string with custom coordinates of the file.
 	CustomCoordinates string `json:"customCoordinates" api:"nullable"`
-	// A key-value data associated with the asset. Use `responseField` in API request
-	// to get `customMetadata` in the upload API response. Before setting any custom
-	// metadata on an asset, you have to create the field using custom metadata fields
-	// API. Send `customMetadata` in `responseFields` in API request to get the value
-	// of this field.
+	// An object with custom metadata for the file.
 	CustomMetadata shared.CustomMetadata `json:"customMetadata"`
 	// Optional text to describe the contents of the file. Can be set by the user or
 	// the ai-auto-description extension.
@@ -192,8 +187,7 @@ type File struct {
 	// The duration of the video in seconds (only for video).
 	Duration int64 `json:"duration"`
 	// Consolidated embedded metadata associated with the file. It includes exif, iptc,
-	// and xmp data. Send `embeddedMetadata` in `responseFields` in API request to get
-	// embeddedMetadata in the upload API response.
+	// and xmp data.
 	EmbeddedMetadata shared.EmbeddedMetadata `json:"embeddedMetadata"`
 	// Unique identifier of the asset.
 	FileID string `json:"fileId"`
@@ -241,7 +235,7 @@ type File struct {
 	UpdatedAt time.Time `json:"updatedAt" format:"date-time"`
 	// URL of the file.
 	URL string `json:"url" format:"uri"`
-	// An object containing the file or file version's `id` (versionId) and `name`.
+	// An object with details of the file version.
 	VersionInfo shared.VersionInfo `json:"versionInfo"`
 	// The video codec used in the video (only for video).
 	VideoCodec string `json:"videoCodec"`
@@ -821,10 +815,8 @@ func (r *FileRenameResponse) UnmarshalJSON(data []byte) error {
 
 // Object containing details of a successful upload.
 type FileUploadResponse struct {
-	// Array of `AITags` associated with the image. If no `AITags` are set, it will be
-	// null. These tags can be added using the `google-auto-tagging` or
-	// `aws-auto-tagging` extensions.
-	AITags shared.AITags `json:"AITags" api:"nullable"`
+	// An array of tags assigned to the uploaded file by auto tagging.
+	AITags []shared.AITag `json:"AITags" api:"nullable"`
 	// The audio codec used in the video (only for video).
 	AudioCodec string `json:"audioCodec"`
 	// The bit rate of the video in kbps (only for video).
