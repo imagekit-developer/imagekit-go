@@ -1,5 +1,36 @@
 # Changelog
 
+## 2.4.0 (2026-04-13)
+
+Full Changelog: [v2.3.0...v2.4.0](https://github.com/imagekit-developer/imagekit-go/compare/v2.3.0...v2.4.0)
+
+### Features
+
+* **api:** dam related webhook events ([b364b42](https://github.com/imagekit-developer/imagekit-go/commit/b364b4250885a0c3d172d26e0121979970c55990))
+* **api:** fix spec indentation ([f254242](https://github.com/imagekit-developer/imagekit-go/commit/f2542428409b7963a25d629c667291292d5b0126))
+* **api:** indentation fix ([d9bbacf](https://github.com/imagekit-developer/imagekit-go/commit/d9bbacf78dd49e892ea97ead76000115c863495f))
+* **api:** merge with main to bring back missing parameters ([4ab1555](https://github.com/imagekit-developer/imagekit-go/commit/4ab1555f5ecf9f5aeca0de356f67b7e7ce831a7c))
+* **api:** update webhook event names and remove DAM prefix ([5054493](https://github.com/imagekit-developer/imagekit-go/commit/5054493498d777340e64c267da0621cc1fa3f804))
+
+
+### Bug Fixes
+
+* **api:** extract shared schemas to prevent Go webhook union breaking changes ([57ff5e2](https://github.com/imagekit-developer/imagekit-go/commit/57ff5e25ba5dfb11ebed03cdfb145001bf717d40))
+* **api:** fix references of schema ([991d381](https://github.com/imagekit-developer/imagekit-go/commit/991d3815942efcb68655192ad7b81ab3fb37b791))
+* **api:** remove optional password parameter from client initialization ([e322edc](https://github.com/imagekit-developer/imagekit-go/commit/e322edc056ae3145fcc1e10af75b6a1208692cd0))
+* **api:** rename DamFile events to File for consistency ([6d142f5](https://github.com/imagekit-developer/imagekit-go/commit/6d142f5d4d48d2368a7b59d6508062dd63a46c72))
+
+
+### Documentation
+
+* improve examples ([3953c51](https://github.com/imagekit-developer/imagekit-go/commit/3953c51e4f8582b9ac3e317f846e8fcc17725c05))
+
+
+### Refactors
+
+* add backwards-compatible type aliases and import removed json package ([e12a0f6](https://github.com/imagekit-developer/imagekit-go/commit/e12a0f663b5fb2f89306aa02f2da40217a18a2b3))
+* AITags to singular AITag schema with array items pattern ([1fe0465](https://github.com/imagekit-developer/imagekit-go/commit/1fe04652d68fccf6ce2465a8148b4aa892f9e3e0))
+
 ## 2.3.0 (2026-04-06)
 
 Full Changelog: [v2.2.0...v2.3.0](https://github.com/imagekit-developer/imagekit-go/compare/v2.2.0...v2.3.0)
