@@ -16,6 +16,16 @@ type paramObj = param.APIObject
 
 type Error = apierror.Error
 
+// Array of `AITags` associated with the image. If no `AITags` are set, it will be
+// null. These tags can be added using the `google-auto-tagging` or
+// `aws-auto-tagging` extensions.
+//
+// This is an alias to an internal type.
+type AITags = shared.AITags
+
+// This is an alias to an internal type.
+type AITag = shared.AITag
+
 // This is an alias to an internal type.
 type BaseOverlayParam = shared.BaseOverlayParam
 
@@ -54,6 +64,22 @@ const BaseOverlayLayerModeCutout = shared.BaseOverlayLayerModeCutout
 
 // Equals "displace"
 const BaseOverlayLayerModeDisplace = shared.BaseOverlayLayerModeDisplace
+
+// A key-value data associated with the asset. Use `responseField` in API request
+// to get `customMetadata` in the upload API response. Before setting any custom
+// metadata on an asset, you have to create the field using custom metadata fields
+// API. Send `customMetadata` in `responseFields` in API request to get the value
+// of this field.
+//
+// This is an alias to an internal type.
+type CustomMetadata = shared.CustomMetadata
+
+// Consolidated embedded metadata associated with the file. It includes exif, iptc,
+// and xmp data. Send `embeddedMetadata` in `responseFields` in API request to get
+// embeddedMetadata in the upload API response.
+//
+// This is an alias to an internal type.
+type EmbeddedMetadata = shared.EmbeddedMetadata
 
 // Configuration object for an extension (base extensions only, not saved extension
 // references).
@@ -1070,6 +1096,11 @@ const TransformationPositionPath = shared.TransformationPositionPath
 
 // Equals "query"
 const TransformationPositionQuery = shared.TransformationPositionQuery
+
+// An object containing the file or file version's `id` (versionId) and `name`.
+//
+// This is an alias to an internal type.
+type VersionInfo = shared.VersionInfo
 
 // This is an alias to an internal type.
 type VideoOverlayParam = shared.VideoOverlayParam

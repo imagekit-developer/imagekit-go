@@ -617,7 +617,7 @@ type UploadPreTransformSuccessEventData struct {
 	// Array of `AITags` associated with the image. If no `AITags` are set, it will be
 	// null. These tags can be added using the `google-auto-tagging` or
 	// `aws-auto-tagging` extensions.
-	AITags []UploadPreTransformSuccessEventDataAITag `json:"AITags" api:"nullable"`
+	AITags shared.AITags `json:"AITags" api:"nullable"`
 	// The audio codec used in the video (only for video).
 	AudioCodec string `json:"audioCodec"`
 	// The bit rate of the video in kbps (only for video).
@@ -632,7 +632,7 @@ type UploadPreTransformSuccessEventData struct {
 	// metadata on an asset, you have to create the field using custom metadata fields
 	// API. Send `customMetadata` in `responseFields` in API request to get the value
 	// of this field.
-	CustomMetadata map[string]any `json:"customMetadata"`
+	CustomMetadata shared.CustomMetadata `json:"customMetadata"`
 	// Optional text to describe the contents of the file. Can be set by the user or
 	// the ai-auto-description extension.
 	Description string `json:"description"`
@@ -641,7 +641,7 @@ type UploadPreTransformSuccessEventData struct {
 	// Consolidated embedded metadata associated with the file. It includes exif, iptc,
 	// and xmp data. Send `embeddedMetadata` in `responseFields` in API request to get
 	// embeddedMetadata in the upload API response.
-	EmbeddedMetadata map[string]any `json:"embeddedMetadata"`
+	EmbeddedMetadata shared.EmbeddedMetadata `json:"embeddedMetadata"`
 	// Extension names with their processing status at the time of completion of the
 	// request. It could have one of the following status values:
 	//
@@ -694,7 +694,7 @@ type UploadPreTransformSuccessEventData struct {
 	// A publicly accessible URL of the file.
 	URL string `json:"url"`
 	// An object containing the file or file version's `id` (versionId) and `name`.
-	VersionInfo UploadPreTransformSuccessEventDataVersionInfo `json:"versionInfo"`
+	VersionInfo shared.VersionInfo `json:"versionInfo"`
 	// The video codec used in the video (only for video).
 	VideoCodec string `json:"videoCodec"`
 	// Width of the image in pixels (Only for Images)
@@ -737,30 +737,6 @@ func (r *UploadPreTransformSuccessEventData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type UploadPreTransformSuccessEventDataAITag struct {
-	// Confidence score of the tag.
-	Confidence float64 `json:"confidence"`
-	// Name of the tag.
-	Name string `json:"name"`
-	// Source of the tag. Possible values are `google-auto-tagging` and
-	// `aws-auto-tagging`.
-	Source string `json:"source"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Confidence  respjson.Field
-		Name        respjson.Field
-		Source      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r UploadPreTransformSuccessEventDataAITag) RawJSON() string { return r.JSON.raw }
-func (r *UploadPreTransformSuccessEventDataAITag) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // Extension names with their processing status at the time of completion of the
 // request. It could have one of the following status values:
 //
@@ -796,27 +772,6 @@ type UploadPreTransformSuccessEventDataExtensionStatus struct {
 // Returns the unmodified JSON received from the API
 func (r UploadPreTransformSuccessEventDataExtensionStatus) RawJSON() string { return r.JSON.raw }
 func (r *UploadPreTransformSuccessEventDataExtensionStatus) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// An object containing the file or file version's `id` (versionId) and `name`.
-type UploadPreTransformSuccessEventDataVersionInfo struct {
-	// Unique identifier of the file version.
-	ID string `json:"id"`
-	// Name of the file version.
-	Name string `json:"name"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		Name        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r UploadPreTransformSuccessEventDataVersionInfo) RawJSON() string { return r.JSON.raw }
-func (r *UploadPreTransformSuccessEventDataVersionInfo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1560,16 +1515,17 @@ type UnsafeUnwrapWebhookEventUnionData struct {
 	// [UploadPreTransformErrorEventDataTransformation],
 	// [UploadPostTransformErrorEventDataTransformation]
 	Transformation UnsafeUnwrapWebhookEventUnionDataTransformation `json:"transformation"`
-	// This field is a union of [[]UploadPreTransformSuccessEventDataAITag],
-	// [[]FileAITag]
-	AITags            UnsafeUnwrapWebhookEventUnionDataAITags `json:"AITags"`
-	AudioCodec        string                                  `json:"audioCodec"`
-	BitRate           int64                                   `json:"bitRate"`
-	CustomCoordinates string                                  `json:"customCoordinates"`
-	CustomMetadata    any                                     `json:"customMetadata"`
-	Description       string                                  `json:"description"`
-	Duration          int64                                   `json:"duration"`
-	EmbeddedMetadata  any                                     `json:"embeddedMetadata"`
+	// This field is from variant [UploadPreTransformSuccessEventData].
+	AITags            shared.AITags `json:"AITags"`
+	AudioCodec        string        `json:"audioCodec"`
+	BitRate           int64         `json:"bitRate"`
+	CustomCoordinates string        `json:"customCoordinates"`
+	// This field is from variant [UploadPreTransformSuccessEventData].
+	CustomMetadata shared.CustomMetadata `json:"customMetadata"`
+	Description    string                `json:"description"`
+	Duration       int64                 `json:"duration"`
+	// This field is from variant [UploadPreTransformSuccessEventData].
+	EmbeddedMetadata shared.EmbeddedMetadata `json:"embeddedMetadata"`
 	// This field is from variant [UploadPreTransformSuccessEventData].
 	ExtensionStatus UploadPreTransformSuccessEventDataExtensionStatus `json:"extensionStatus"`
 	FileID          string                                            `json:"fileId"`
@@ -1588,12 +1544,11 @@ type UnsafeUnwrapWebhookEventUnionData struct {
 	// This field is from variant [UploadPreTransformSuccessEventData].
 	ThumbnailURL string `json:"thumbnailUrl"`
 	URL          string `json:"url"`
-	// This field is a union of [UploadPreTransformSuccessEventDataVersionInfo],
-	// [FileVersionInfo]
-	VersionInfo UnsafeUnwrapWebhookEventUnionDataVersionInfo `json:"versionInfo"`
-	VideoCodec  string                                       `json:"videoCodec"`
-	Width       float64                                      `json:"width"`
-	Path        string                                       `json:"path"`
+	// This field is from variant [UploadPreTransformSuccessEventData].
+	VersionInfo shared.VersionInfo `json:"versionInfo"`
+	VideoCodec  string             `json:"videoCodec"`
+	Width       float64            `json:"width"`
+	Path        string             `json:"path"`
 	// This field is from variant [File].
 	CreatedAt time.Time `json:"createdAt"`
 	// This field is from variant [File].
@@ -1749,52 +1704,6 @@ type UnsafeUnwrapWebhookEventUnionDataTransformationError struct {
 }
 
 func (r *UnsafeUnwrapWebhookEventUnionDataTransformationError) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// UnsafeUnwrapWebhookEventUnionDataAITags is an implicit subunion of
-// [UnsafeUnwrapWebhookEventUnion]. UnsafeUnwrapWebhookEventUnionDataAITags
-// provides convenient access to the sub-properties of the union.
-//
-// For type safety it is recommended to directly use a variant of the
-// [UnsafeUnwrapWebhookEventUnion].
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfUploadPreTransformSuccessEventDataAITags OfFileAITags]
-type UnsafeUnwrapWebhookEventUnionDataAITags struct {
-	// This field will be present if the value is a
-	// [[]UploadPreTransformSuccessEventDataAITag] instead of an object.
-	OfUploadPreTransformSuccessEventDataAITags []UploadPreTransformSuccessEventDataAITag `json:",inline"`
-	// This field will be present if the value is a [[]FileAITag] instead of an object.
-	OfFileAITags []FileAITag `json:",inline"`
-	JSON         struct {
-		OfUploadPreTransformSuccessEventDataAITags respjson.Field
-		OfFileAITags                               respjson.Field
-		raw                                        string
-	} `json:"-"`
-}
-
-func (r *UnsafeUnwrapWebhookEventUnionDataAITags) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// UnsafeUnwrapWebhookEventUnionDataVersionInfo is an implicit subunion of
-// [UnsafeUnwrapWebhookEventUnion]. UnsafeUnwrapWebhookEventUnionDataVersionInfo
-// provides convenient access to the sub-properties of the union.
-//
-// For type safety it is recommended to directly use a variant of the
-// [UnsafeUnwrapWebhookEventUnion].
-type UnsafeUnwrapWebhookEventUnionDataVersionInfo struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
-	JSON struct {
-		ID   respjson.Field
-		Name respjson.Field
-		raw  string
-	} `json:"-"`
-}
-
-func (r *UnsafeUnwrapWebhookEventUnionDataVersionInfo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1983,16 +1892,17 @@ type UnwrapWebhookEventUnionData struct {
 	// [UploadPreTransformErrorEventDataTransformation],
 	// [UploadPostTransformErrorEventDataTransformation]
 	Transformation UnwrapWebhookEventUnionDataTransformation `json:"transformation"`
-	// This field is a union of [[]UploadPreTransformSuccessEventDataAITag],
-	// [[]FileAITag]
-	AITags            UnwrapWebhookEventUnionDataAITags `json:"AITags"`
-	AudioCodec        string                            `json:"audioCodec"`
-	BitRate           int64                             `json:"bitRate"`
-	CustomCoordinates string                            `json:"customCoordinates"`
-	CustomMetadata    any                               `json:"customMetadata"`
-	Description       string                            `json:"description"`
-	Duration          int64                             `json:"duration"`
-	EmbeddedMetadata  any                               `json:"embeddedMetadata"`
+	// This field is from variant [UploadPreTransformSuccessEventData].
+	AITags            shared.AITags `json:"AITags"`
+	AudioCodec        string        `json:"audioCodec"`
+	BitRate           int64         `json:"bitRate"`
+	CustomCoordinates string        `json:"customCoordinates"`
+	// This field is from variant [UploadPreTransformSuccessEventData].
+	CustomMetadata shared.CustomMetadata `json:"customMetadata"`
+	Description    string                `json:"description"`
+	Duration       int64                 `json:"duration"`
+	// This field is from variant [UploadPreTransformSuccessEventData].
+	EmbeddedMetadata shared.EmbeddedMetadata `json:"embeddedMetadata"`
 	// This field is from variant [UploadPreTransformSuccessEventData].
 	ExtensionStatus UploadPreTransformSuccessEventDataExtensionStatus `json:"extensionStatus"`
 	FileID          string                                            `json:"fileId"`
@@ -2011,12 +1921,11 @@ type UnwrapWebhookEventUnionData struct {
 	// This field is from variant [UploadPreTransformSuccessEventData].
 	ThumbnailURL string `json:"thumbnailUrl"`
 	URL          string `json:"url"`
-	// This field is a union of [UploadPreTransformSuccessEventDataVersionInfo],
-	// [FileVersionInfo]
-	VersionInfo UnwrapWebhookEventUnionDataVersionInfo `json:"versionInfo"`
-	VideoCodec  string                                 `json:"videoCodec"`
-	Width       float64                                `json:"width"`
-	Path        string                                 `json:"path"`
+	// This field is from variant [UploadPreTransformSuccessEventData].
+	VersionInfo shared.VersionInfo `json:"versionInfo"`
+	VideoCodec  string             `json:"videoCodec"`
+	Width       float64            `json:"width"`
+	Path        string             `json:"path"`
 	// This field is from variant [File].
 	CreatedAt time.Time `json:"createdAt"`
 	// This field is from variant [File].
@@ -2170,52 +2079,6 @@ type UnwrapWebhookEventUnionDataTransformationError struct {
 }
 
 func (r *UnwrapWebhookEventUnionDataTransformationError) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// UnwrapWebhookEventUnionDataAITags is an implicit subunion of
-// [UnwrapWebhookEventUnion]. UnwrapWebhookEventUnionDataAITags provides convenient
-// access to the sub-properties of the union.
-//
-// For type safety it is recommended to directly use a variant of the
-// [UnwrapWebhookEventUnion].
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfUploadPreTransformSuccessEventDataAITags OfFileAITags]
-type UnwrapWebhookEventUnionDataAITags struct {
-	// This field will be present if the value is a
-	// [[]UploadPreTransformSuccessEventDataAITag] instead of an object.
-	OfUploadPreTransformSuccessEventDataAITags []UploadPreTransformSuccessEventDataAITag `json:",inline"`
-	// This field will be present if the value is a [[]FileAITag] instead of an object.
-	OfFileAITags []FileAITag `json:",inline"`
-	JSON         struct {
-		OfUploadPreTransformSuccessEventDataAITags respjson.Field
-		OfFileAITags                               respjson.Field
-		raw                                        string
-	} `json:"-"`
-}
-
-func (r *UnwrapWebhookEventUnionDataAITags) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// UnwrapWebhookEventUnionDataVersionInfo is an implicit subunion of
-// [UnwrapWebhookEventUnion]. UnwrapWebhookEventUnionDataVersionInfo provides
-// convenient access to the sub-properties of the union.
-//
-// For type safety it is recommended to directly use a variant of the
-// [UnwrapWebhookEventUnion].
-type UnwrapWebhookEventUnionDataVersionInfo struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
-	JSON struct {
-		ID   respjson.Field
-		Name respjson.Field
-		raw  string
-	} `json:"-"`
-}
-
-func (r *UnwrapWebhookEventUnionDataVersionInfo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
