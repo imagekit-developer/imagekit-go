@@ -518,6 +518,46 @@ type SavedExtension = shared.SavedExtension
 // This is an alias to an internal type.
 type SavedExtensionParam = shared.SavedExtensionParam
 
+// This field is included in the response only if the Path policy feature is
+// available in the plan. It contains schema definitions for the custom metadata
+// fields selected for the specified file path. Field selection can only be done
+// when the Path policy feature is enabled.
+//
+// Keys are the names of the custom metadata fields; the value object has details
+// about the custom metadata schema.
+//
+// This is an alias to an internal type.
+type SelectedFieldsSchema = shared.SelectedFieldsSchema
+
+// This is an alias to an internal type.
+type SelectedFieldsSchemaItem = shared.SelectedFieldsSchemaItem
+
+// The default value for this custom metadata field. The value should match the
+// `type` of custom metadata field.
+//
+// This is an alias to an internal type.
+type SelectedFieldsSchemaItemDefaultValueUnion = shared.SelectedFieldsSchemaItemDefaultValueUnion
+
+// This is an alias to an internal type.
+type SelectedFieldsSchemaItemDefaultValueMixedItemUnion = shared.SelectedFieldsSchemaItemDefaultValueMixedItemUnion
+
+// Maximum value of the field. Only set if field type is `Date` or `Number`. For
+// `Date` type field, the value will be in ISO8601 string format. For `Number` type
+// field, it will be a numeric value.
+//
+// This is an alias to an internal type.
+type SelectedFieldsSchemaItemMaxValueUnion = shared.SelectedFieldsSchemaItemMaxValueUnion
+
+// Minimum value of the field. Only set if field type is `Date` or `Number`. For
+// `Date` type field, the value will be in ISO8601 string format. For `Number` type
+// field, it will be a numeric value.
+//
+// This is an alias to an internal type.
+type SelectedFieldsSchemaItemMinValueUnion = shared.SelectedFieldsSchemaItemMinValueUnion
+
+// This is an alias to an internal type.
+type SelectedFieldsSchemaItemSelectOptionUnion = shared.SelectedFieldsSchemaItemSelectOptionUnion
+
 // This is an alias to an internal type.
 type SolidColorOverlayParam = shared.SolidColorOverlayParam
 

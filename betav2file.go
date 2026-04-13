@@ -5,7 +5,6 @@ package imagekit
 import (
 	"bytes"
 	"context"
-	"encoding/json"
 	"fmt"
 	"io"
 	"mime/multipart"
@@ -80,7 +79,9 @@ func (r *BetaV2FileService) Upload(ctx context.Context, body BetaV2FileUploadPar
 
 // Object containing details of a successful upload.
 type BetaV2FileUploadResponse struct {
-	// An array of tags assigned to the uploaded file by auto tagging.
+	// Array of `AITags` associated with the image. If no `AITags` are set, it will be
+	// null. These tags can be added using the `google-auto-tagging` or
+	// `aws-auto-tagging` extensions.
 	AITags []BetaV2FileUploadResponseAITag `json:"AITags" api:"nullable"`
 	// The audio codec used in the video (only for video).
 	AudioCodec string `json:"audioCodec"`
@@ -146,7 +147,7 @@ type BetaV2FileUploadResponse struct {
 	//
 	// Keys are the names of the custom metadata fields; the value object has details
 	// about the custom metadata schema.
-	SelectedFieldsSchema map[string]BetaV2FileUploadResponseSelectedFieldsSchema `json:"selectedFieldsSchema"`
+	SelectedFieldsSchema shared.SelectedFieldsSchema `json:"selectedFieldsSchema"`
 	// Size of the image file in Bytes.
 	Size float64 `json:"size"`
 	// The array of tags associated with the asset. If no tags are set, it will be
@@ -206,9 +207,8 @@ type BetaV2FileUploadResponseAITag struct {
 	Confidence float64 `json:"confidence"`
 	// Name of the tag.
 	Name string `json:"name"`
-	// Array of `AITags` associated with the image. If no `AITags` are set, it will be
-	// null. These tags can be added using the `google-auto-tagging` or
-	// `aws-auto-tagging` extensions.
+	// Source of the tag. Possible values are `google-auto-tagging` and
+	// `aws-auto-tagging`.
 	Source string `json:"source"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -261,286 +261,6 @@ type BetaV2FileUploadResponseExtensionStatus struct {
 // Returns the unmodified JSON received from the API
 func (r BetaV2FileUploadResponseExtensionStatus) RawJSON() string { return r.JSON.raw }
 func (r *BetaV2FileUploadResponseExtensionStatus) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type BetaV2FileUploadResponseSelectedFieldsSchema struct {
-	// Type of the custom metadata field.
-	//
-	// Any of "Text", "Textarea", "Number", "Date", "Boolean", "SingleSelect",
-	// "MultiSelect".
-	Type string `json:"type" api:"required"`
-	// The default value for this custom metadata field. The value should match the
-	// `type` of custom metadata field.
-	DefaultValue BetaV2FileUploadResponseSelectedFieldsSchemaDefaultValueUnion `json:"defaultValue"`
-	// Specifies if the custom metadata field is required or not.
-	IsValueRequired bool `json:"isValueRequired"`
-	// Maximum length of string. Only set if `type` is set to `Text` or `Textarea`.
-	MaxLength float64 `json:"maxLength"`
-	// Maximum value of the field. Only set if field type is `Date` or `Number`. For
-	// `Date` type field, the value will be in ISO8601 string format. For `Number` type
-	// field, it will be a numeric value.
-	MaxValue BetaV2FileUploadResponseSelectedFieldsSchemaMaxValueUnion `json:"maxValue"`
-	// Minimum length of string. Only set if `type` is set to `Text` or `Textarea`.
-	MinLength float64 `json:"minLength"`
-	// Minimum value of the field. Only set if field type is `Date` or `Number`. For
-	// `Date` type field, the value will be in ISO8601 string format. For `Number` type
-	// field, it will be a numeric value.
-	MinValue BetaV2FileUploadResponseSelectedFieldsSchemaMinValueUnion `json:"minValue"`
-	// Indicates whether the custom metadata field is read only. A read only field
-	// cannot be modified after being set. This field is configurable only via the
-	// **Path policy** feature.
-	ReadOnly bool `json:"readOnly"`
-	// An array of allowed values when field type is `SingleSelect` or `MultiSelect`.
-	SelectOptions []BetaV2FileUploadResponseSelectedFieldsSchemaSelectOptionUnion `json:"selectOptions"`
-	// Specifies if the selectOptions array is truncated. It is truncated when number
-	// of options are > 100.
-	SelectOptionsTruncated bool `json:"selectOptionsTruncated"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Type                   respjson.Field
-		DefaultValue           respjson.Field
-		IsValueRequired        respjson.Field
-		MaxLength              respjson.Field
-		MaxValue               respjson.Field
-		MinLength              respjson.Field
-		MinValue               respjson.Field
-		ReadOnly               respjson.Field
-		SelectOptions          respjson.Field
-		SelectOptionsTruncated respjson.Field
-		ExtraFields            map[string]respjson.Field
-		raw                    string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r BetaV2FileUploadResponseSelectedFieldsSchema) RawJSON() string { return r.JSON.raw }
-func (r *BetaV2FileUploadResponseSelectedFieldsSchema) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// BetaV2FileUploadResponseSelectedFieldsSchemaDefaultValueUnion contains all
-// possible properties and values from [string], [float64], [bool],
-// [[]BetaV2FileUploadResponseSelectedFieldsSchemaDefaultValueMixedItemUnion].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfFloat OfBool OfMixed]
-type BetaV2FileUploadResponseSelectedFieldsSchemaDefaultValueUnion struct {
-	// This field will be present if the value is a [string] instead of an object.
-	OfString string `json:",inline"`
-	// This field will be present if the value is a [float64] instead of an object.
-	OfFloat float64 `json:",inline"`
-	// This field will be present if the value is a [bool] instead of an object.
-	OfBool bool `json:",inline"`
-	// This field will be present if the value is a
-	// [[]BetaV2FileUploadResponseSelectedFieldsSchemaDefaultValueMixedItemUnion]
-	// instead of an object.
-	OfMixed []BetaV2FileUploadResponseSelectedFieldsSchemaDefaultValueMixedItemUnion `json:",inline"`
-	JSON    struct {
-		OfString respjson.Field
-		OfFloat  respjson.Field
-		OfBool   respjson.Field
-		OfMixed  respjson.Field
-		raw      string
-	} `json:"-"`
-}
-
-func (u BetaV2FileUploadResponseSelectedFieldsSchemaDefaultValueUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u BetaV2FileUploadResponseSelectedFieldsSchemaDefaultValueUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u BetaV2FileUploadResponseSelectedFieldsSchemaDefaultValueUnion) AsBool() (v bool) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u BetaV2FileUploadResponseSelectedFieldsSchemaDefaultValueUnion) AsMixed() (v []BetaV2FileUploadResponseSelectedFieldsSchemaDefaultValueMixedItemUnion) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u BetaV2FileUploadResponseSelectedFieldsSchemaDefaultValueUnion) RawJSON() string {
-	return u.JSON.raw
-}
-
-func (r *BetaV2FileUploadResponseSelectedFieldsSchemaDefaultValueUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// BetaV2FileUploadResponseSelectedFieldsSchemaDefaultValueMixedItemUnion contains
-// all possible properties and values from [string], [float64], [bool].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfFloat OfBool]
-type BetaV2FileUploadResponseSelectedFieldsSchemaDefaultValueMixedItemUnion struct {
-	// This field will be present if the value is a [string] instead of an object.
-	OfString string `json:",inline"`
-	// This field will be present if the value is a [float64] instead of an object.
-	OfFloat float64 `json:",inline"`
-	// This field will be present if the value is a [bool] instead of an object.
-	OfBool bool `json:",inline"`
-	JSON   struct {
-		OfString respjson.Field
-		OfFloat  respjson.Field
-		OfBool   respjson.Field
-		raw      string
-	} `json:"-"`
-}
-
-func (u BetaV2FileUploadResponseSelectedFieldsSchemaDefaultValueMixedItemUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u BetaV2FileUploadResponseSelectedFieldsSchemaDefaultValueMixedItemUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u BetaV2FileUploadResponseSelectedFieldsSchemaDefaultValueMixedItemUnion) AsBool() (v bool) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u BetaV2FileUploadResponseSelectedFieldsSchemaDefaultValueMixedItemUnion) RawJSON() string {
-	return u.JSON.raw
-}
-
-func (r *BetaV2FileUploadResponseSelectedFieldsSchemaDefaultValueMixedItemUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// BetaV2FileUploadResponseSelectedFieldsSchemaMaxValueUnion contains all possible
-// properties and values from [string], [float64].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfFloat]
-type BetaV2FileUploadResponseSelectedFieldsSchemaMaxValueUnion struct {
-	// This field will be present if the value is a [string] instead of an object.
-	OfString string `json:",inline"`
-	// This field will be present if the value is a [float64] instead of an object.
-	OfFloat float64 `json:",inline"`
-	JSON    struct {
-		OfString respjson.Field
-		OfFloat  respjson.Field
-		raw      string
-	} `json:"-"`
-}
-
-func (u BetaV2FileUploadResponseSelectedFieldsSchemaMaxValueUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u BetaV2FileUploadResponseSelectedFieldsSchemaMaxValueUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u BetaV2FileUploadResponseSelectedFieldsSchemaMaxValueUnion) RawJSON() string {
-	return u.JSON.raw
-}
-
-func (r *BetaV2FileUploadResponseSelectedFieldsSchemaMaxValueUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// BetaV2FileUploadResponseSelectedFieldsSchemaMinValueUnion contains all possible
-// properties and values from [string], [float64].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfFloat]
-type BetaV2FileUploadResponseSelectedFieldsSchemaMinValueUnion struct {
-	// This field will be present if the value is a [string] instead of an object.
-	OfString string `json:",inline"`
-	// This field will be present if the value is a [float64] instead of an object.
-	OfFloat float64 `json:",inline"`
-	JSON    struct {
-		OfString respjson.Field
-		OfFloat  respjson.Field
-		raw      string
-	} `json:"-"`
-}
-
-func (u BetaV2FileUploadResponseSelectedFieldsSchemaMinValueUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u BetaV2FileUploadResponseSelectedFieldsSchemaMinValueUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u BetaV2FileUploadResponseSelectedFieldsSchemaMinValueUnion) RawJSON() string {
-	return u.JSON.raw
-}
-
-func (r *BetaV2FileUploadResponseSelectedFieldsSchemaMinValueUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// BetaV2FileUploadResponseSelectedFieldsSchemaSelectOptionUnion contains all
-// possible properties and values from [string], [float64], [bool].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfFloat OfBool]
-type BetaV2FileUploadResponseSelectedFieldsSchemaSelectOptionUnion struct {
-	// This field will be present if the value is a [string] instead of an object.
-	OfString string `json:",inline"`
-	// This field will be present if the value is a [float64] instead of an object.
-	OfFloat float64 `json:",inline"`
-	// This field will be present if the value is a [bool] instead of an object.
-	OfBool bool `json:",inline"`
-	JSON   struct {
-		OfString respjson.Field
-		OfFloat  respjson.Field
-		OfBool   respjson.Field
-		raw      string
-	} `json:"-"`
-}
-
-func (u BetaV2FileUploadResponseSelectedFieldsSchemaSelectOptionUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u BetaV2FileUploadResponseSelectedFieldsSchemaSelectOptionUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u BetaV2FileUploadResponseSelectedFieldsSchemaSelectOptionUnion) AsBool() (v bool) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u BetaV2FileUploadResponseSelectedFieldsSchemaSelectOptionUnion) RawJSON() string {
-	return u.JSON.raw
-}
-
-func (r *BetaV2FileUploadResponseSelectedFieldsSchemaSelectOptionUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -877,6 +597,12 @@ func init() {
 	)
 }
 
+func init() {
+	apijson.RegisterFieldValidator[BetaV2FileUploadParamsTransformationPostAbs](
+		"protocol", "hls", "dash",
+	)
+}
+
 // The properties Type, Value are required.
 type BetaV2FileUploadParamsTransformationPostTransformation struct {
 	// Transformation string (e.g. `w-200,h-200`).
@@ -958,10 +684,4 @@ func (r BetaV2FileUploadParamsTransformationPostAbs) MarshalJSON() (data []byte,
 }
 func (r *BetaV2FileUploadParamsTransformationPostAbs) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[BetaV2FileUploadParamsTransformationPostAbs](
-		"protocol", "hls", "dash",
-	)
 }

@@ -16,6 +16,7 @@ import (
 	"github.com/imagekit-developer/imagekit-go/v2/option"
 	"github.com/imagekit-developer/imagekit-go/v2/packages/param"
 	"github.com/imagekit-developer/imagekit-go/v2/packages/respjson"
+	"github.com/imagekit-developer/imagekit-go/v2/shared"
 )
 
 // AssetService contains methods and other services that help with interacting with
@@ -89,7 +90,7 @@ type AssetListResponseUnion struct {
 	Mime string `json:"mime"`
 	Name string `json:"name"`
 	// This field is from variant [File].
-	SelectedFieldsSchema map[string]FileSelectedFieldsSchema `json:"selectedFieldsSchema"`
+	SelectedFieldsSchema shared.SelectedFieldsSchema `json:"selectedFieldsSchema"`
 	// This field is from variant [File].
 	Size float64 `json:"size"`
 	// This field is from variant [File].

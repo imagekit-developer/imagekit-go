@@ -5,7 +5,6 @@ package imagekit
 import (
 	"bytes"
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -168,7 +167,9 @@ func (r *FileService) Upload(ctx context.Context, body FileUploadParams, opts ..
 
 // Object containing details of a file or file version.
 type File struct {
-	// An array of tags assigned to the file by auto tagging.
+	// Array of `AITags` associated with the image. If no `AITags` are set, it will be
+	// null. These tags can be added using the `google-auto-tagging` or
+	// `aws-auto-tagging` extensions.
 	AITags []FileAITag `json:"AITags" api:"nullable"`
 	// The audio codec used in the video (only for video/audio).
 	AudioCodec string `json:"audioCodec"`
@@ -179,7 +180,11 @@ type File struct {
 	CreatedAt time.Time `json:"createdAt" format:"date-time"`
 	// An string with custom coordinates of the file.
 	CustomCoordinates string `json:"customCoordinates" api:"nullable"`
-	// An object with custom metadata for the file.
+	// A key-value data associated with the asset. Use `responseField` in API request
+	// to get `customMetadata` in the upload API response. Before setting any custom
+	// metadata on an asset, you have to create the field using custom metadata fields
+	// API. Send `customMetadata` in `responseFields` in API request to get the value
+	// of this field.
 	CustomMetadata map[string]any `json:"customMetadata"`
 	// Optional text to describe the contents of the file. Can be set by the user or
 	// the ai-auto-description extension.
@@ -187,7 +192,8 @@ type File struct {
 	// The duration of the video in seconds (only for video).
 	Duration int64 `json:"duration"`
 	// Consolidated embedded metadata associated with the file. It includes exif, iptc,
-	// and xmp data.
+	// and xmp data. Send `embeddedMetadata` in `responseFields` in API request to get
+	// embeddedMetadata in the upload API response.
 	EmbeddedMetadata map[string]any `json:"embeddedMetadata"`
 	// Unique identifier of the asset.
 	FileID string `json:"fileId"`
@@ -217,7 +223,7 @@ type File struct {
 	//
 	// Keys are the names of the custom metadata fields; the value object has details
 	// about the custom metadata schema.
-	SelectedFieldsSchema map[string]FileSelectedFieldsSchema `json:"selectedFieldsSchema"`
+	SelectedFieldsSchema shared.SelectedFieldsSchema `json:"selectedFieldsSchema"`
 	// Size of the file in bytes.
 	Size float64 `json:"size"`
 	// An array of tags assigned to the file. Tags are used to search files in the
@@ -235,7 +241,7 @@ type File struct {
 	UpdatedAt time.Time `json:"updatedAt" format:"date-time"`
 	// URL of the file.
 	URL string `json:"url" format:"uri"`
-	// An object with details of the file version.
+	// An object containing the file or file version's `id` (versionId) and `name`.
 	VersionInfo FileVersionInfo `json:"versionInfo"`
 	// The video codec used in the video (only for video).
 	VideoCodec string `json:"videoCodec"`
@@ -306,275 +312,6 @@ func (r *FileAITag) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type FileSelectedFieldsSchema struct {
-	// Type of the custom metadata field.
-	//
-	// Any of "Text", "Textarea", "Number", "Date", "Boolean", "SingleSelect",
-	// "MultiSelect".
-	Type string `json:"type" api:"required"`
-	// The default value for this custom metadata field. The value should match the
-	// `type` of custom metadata field.
-	DefaultValue FileSelectedFieldsSchemaDefaultValueUnion `json:"defaultValue"`
-	// Specifies if the custom metadata field is required or not.
-	IsValueRequired bool `json:"isValueRequired"`
-	// Maximum length of string. Only set if `type` is set to `Text` or `Textarea`.
-	MaxLength float64 `json:"maxLength"`
-	// Maximum value of the field. Only set if field type is `Date` or `Number`. For
-	// `Date` type field, the value will be in ISO8601 string format. For `Number` type
-	// field, it will be a numeric value.
-	MaxValue FileSelectedFieldsSchemaMaxValueUnion `json:"maxValue"`
-	// Minimum length of string. Only set if `type` is set to `Text` or `Textarea`.
-	MinLength float64 `json:"minLength"`
-	// Minimum value of the field. Only set if field type is `Date` or `Number`. For
-	// `Date` type field, the value will be in ISO8601 string format. For `Number` type
-	// field, it will be a numeric value.
-	MinValue FileSelectedFieldsSchemaMinValueUnion `json:"minValue"`
-	// Indicates whether the custom metadata field is read only. A read only field
-	// cannot be modified after being set. This field is configurable only via the
-	// **Path policy** feature.
-	ReadOnly bool `json:"readOnly"`
-	// An array of allowed values when field type is `SingleSelect` or `MultiSelect`.
-	SelectOptions []FileSelectedFieldsSchemaSelectOptionUnion `json:"selectOptions"`
-	// Specifies if the selectOptions array is truncated. It is truncated when number
-	// of options are > 100.
-	SelectOptionsTruncated bool `json:"selectOptionsTruncated"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Type                   respjson.Field
-		DefaultValue           respjson.Field
-		IsValueRequired        respjson.Field
-		MaxLength              respjson.Field
-		MaxValue               respjson.Field
-		MinLength              respjson.Field
-		MinValue               respjson.Field
-		ReadOnly               respjson.Field
-		SelectOptions          respjson.Field
-		SelectOptionsTruncated respjson.Field
-		ExtraFields            map[string]respjson.Field
-		raw                    string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r FileSelectedFieldsSchema) RawJSON() string { return r.JSON.raw }
-func (r *FileSelectedFieldsSchema) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// FileSelectedFieldsSchemaDefaultValueUnion contains all possible properties and
-// values from [string], [float64], [bool],
-// [[]FileSelectedFieldsSchemaDefaultValueMixedItemUnion].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfFloat OfBool OfMixed]
-type FileSelectedFieldsSchemaDefaultValueUnion struct {
-	// This field will be present if the value is a [string] instead of an object.
-	OfString string `json:",inline"`
-	// This field will be present if the value is a [float64] instead of an object.
-	OfFloat float64 `json:",inline"`
-	// This field will be present if the value is a [bool] instead of an object.
-	OfBool bool `json:",inline"`
-	// This field will be present if the value is a
-	// [[]FileSelectedFieldsSchemaDefaultValueMixedItemUnion] instead of an object.
-	OfMixed []FileSelectedFieldsSchemaDefaultValueMixedItemUnion `json:",inline"`
-	JSON    struct {
-		OfString respjson.Field
-		OfFloat  respjson.Field
-		OfBool   respjson.Field
-		OfMixed  respjson.Field
-		raw      string
-	} `json:"-"`
-}
-
-func (u FileSelectedFieldsSchemaDefaultValueUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u FileSelectedFieldsSchemaDefaultValueUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u FileSelectedFieldsSchemaDefaultValueUnion) AsBool() (v bool) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u FileSelectedFieldsSchemaDefaultValueUnion) AsMixed() (v []FileSelectedFieldsSchemaDefaultValueMixedItemUnion) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u FileSelectedFieldsSchemaDefaultValueUnion) RawJSON() string { return u.JSON.raw }
-
-func (r *FileSelectedFieldsSchemaDefaultValueUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// FileSelectedFieldsSchemaDefaultValueMixedItemUnion contains all possible
-// properties and values from [string], [float64], [bool].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfFloat OfBool]
-type FileSelectedFieldsSchemaDefaultValueMixedItemUnion struct {
-	// This field will be present if the value is a [string] instead of an object.
-	OfString string `json:",inline"`
-	// This field will be present if the value is a [float64] instead of an object.
-	OfFloat float64 `json:",inline"`
-	// This field will be present if the value is a [bool] instead of an object.
-	OfBool bool `json:",inline"`
-	JSON   struct {
-		OfString respjson.Field
-		OfFloat  respjson.Field
-		OfBool   respjson.Field
-		raw      string
-	} `json:"-"`
-}
-
-func (u FileSelectedFieldsSchemaDefaultValueMixedItemUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u FileSelectedFieldsSchemaDefaultValueMixedItemUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u FileSelectedFieldsSchemaDefaultValueMixedItemUnion) AsBool() (v bool) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u FileSelectedFieldsSchemaDefaultValueMixedItemUnion) RawJSON() string { return u.JSON.raw }
-
-func (r *FileSelectedFieldsSchemaDefaultValueMixedItemUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// FileSelectedFieldsSchemaMaxValueUnion contains all possible properties and
-// values from [string], [float64].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfFloat]
-type FileSelectedFieldsSchemaMaxValueUnion struct {
-	// This field will be present if the value is a [string] instead of an object.
-	OfString string `json:",inline"`
-	// This field will be present if the value is a [float64] instead of an object.
-	OfFloat float64 `json:",inline"`
-	JSON    struct {
-		OfString respjson.Field
-		OfFloat  respjson.Field
-		raw      string
-	} `json:"-"`
-}
-
-func (u FileSelectedFieldsSchemaMaxValueUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u FileSelectedFieldsSchemaMaxValueUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u FileSelectedFieldsSchemaMaxValueUnion) RawJSON() string { return u.JSON.raw }
-
-func (r *FileSelectedFieldsSchemaMaxValueUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// FileSelectedFieldsSchemaMinValueUnion contains all possible properties and
-// values from [string], [float64].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfFloat]
-type FileSelectedFieldsSchemaMinValueUnion struct {
-	// This field will be present if the value is a [string] instead of an object.
-	OfString string `json:",inline"`
-	// This field will be present if the value is a [float64] instead of an object.
-	OfFloat float64 `json:",inline"`
-	JSON    struct {
-		OfString respjson.Field
-		OfFloat  respjson.Field
-		raw      string
-	} `json:"-"`
-}
-
-func (u FileSelectedFieldsSchemaMinValueUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u FileSelectedFieldsSchemaMinValueUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u FileSelectedFieldsSchemaMinValueUnion) RawJSON() string { return u.JSON.raw }
-
-func (r *FileSelectedFieldsSchemaMinValueUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// FileSelectedFieldsSchemaSelectOptionUnion contains all possible properties and
-// values from [string], [float64], [bool].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfFloat OfBool]
-type FileSelectedFieldsSchemaSelectOptionUnion struct {
-	// This field will be present if the value is a [string] instead of an object.
-	OfString string `json:",inline"`
-	// This field will be present if the value is a [float64] instead of an object.
-	OfFloat float64 `json:",inline"`
-	// This field will be present if the value is a [bool] instead of an object.
-	OfBool bool `json:",inline"`
-	JSON   struct {
-		OfString respjson.Field
-		OfFloat  respjson.Field
-		OfBool   respjson.Field
-		raw      string
-	} `json:"-"`
-}
-
-func (u FileSelectedFieldsSchemaSelectOptionUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u FileSelectedFieldsSchemaSelectOptionUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u FileSelectedFieldsSchemaSelectOptionUnion) AsBool() (v bool) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u FileSelectedFieldsSchemaSelectOptionUnion) RawJSON() string { return u.JSON.raw }
-
-func (r *FileSelectedFieldsSchemaSelectOptionUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // Type of the asset.
 type FileType string
 
@@ -583,7 +320,7 @@ const (
 	FileTypeFileVersion FileType = "file-version"
 )
 
-// An object with details of the file version.
+// An object containing the file or file version's `id` (versionId) and `name`.
 type FileVersionInfo struct {
 	// Unique identifier of the file version.
 	ID string `json:"id"`
@@ -1129,7 +866,9 @@ func (r *FileRenameResponse) UnmarshalJSON(data []byte) error {
 
 // Object containing details of a successful upload.
 type FileUploadResponse struct {
-	// An array of tags assigned to the uploaded file by auto tagging.
+	// Array of `AITags` associated with the image. If no `AITags` are set, it will be
+	// null. These tags can be added using the `google-auto-tagging` or
+	// `aws-auto-tagging` extensions.
 	AITags []FileUploadResponseAITag `json:"AITags" api:"nullable"`
 	// The audio codec used in the video (only for video).
 	AudioCodec string `json:"audioCodec"`
@@ -1195,7 +934,7 @@ type FileUploadResponse struct {
 	//
 	// Keys are the names of the custom metadata fields; the value object has details
 	// about the custom metadata schema.
-	SelectedFieldsSchema map[string]FileUploadResponseSelectedFieldsSchema `json:"selectedFieldsSchema"`
+	SelectedFieldsSchema shared.SelectedFieldsSchema `json:"selectedFieldsSchema"`
 	// Size of the image file in Bytes.
 	Size float64 `json:"size"`
 	// The array of tags associated with the asset. If no tags are set, it will be
@@ -1255,9 +994,8 @@ type FileUploadResponseAITag struct {
 	Confidence float64 `json:"confidence"`
 	// Name of the tag.
 	Name string `json:"name"`
-	// Array of `AITags` associated with the image. If no `AITags` are set, it will be
-	// null. These tags can be added using the `google-auto-tagging` or
-	// `aws-auto-tagging` extensions.
+	// Source of the tag. Possible values are `google-auto-tagging` and
+	// `aws-auto-tagging`.
 	Source string `json:"source"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1310,278 +1048,6 @@ type FileUploadResponseExtensionStatus struct {
 // Returns the unmodified JSON received from the API
 func (r FileUploadResponseExtensionStatus) RawJSON() string { return r.JSON.raw }
 func (r *FileUploadResponseExtensionStatus) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type FileUploadResponseSelectedFieldsSchema struct {
-	// Type of the custom metadata field.
-	//
-	// Any of "Text", "Textarea", "Number", "Date", "Boolean", "SingleSelect",
-	// "MultiSelect".
-	Type string `json:"type" api:"required"`
-	// The default value for this custom metadata field. The value should match the
-	// `type` of custom metadata field.
-	DefaultValue FileUploadResponseSelectedFieldsSchemaDefaultValueUnion `json:"defaultValue"`
-	// Specifies if the custom metadata field is required or not.
-	IsValueRequired bool `json:"isValueRequired"`
-	// Maximum length of string. Only set if `type` is set to `Text` or `Textarea`.
-	MaxLength float64 `json:"maxLength"`
-	// Maximum value of the field. Only set if field type is `Date` or `Number`. For
-	// `Date` type field, the value will be in ISO8601 string format. For `Number` type
-	// field, it will be a numeric value.
-	MaxValue FileUploadResponseSelectedFieldsSchemaMaxValueUnion `json:"maxValue"`
-	// Minimum length of string. Only set if `type` is set to `Text` or `Textarea`.
-	MinLength float64 `json:"minLength"`
-	// Minimum value of the field. Only set if field type is `Date` or `Number`. For
-	// `Date` type field, the value will be in ISO8601 string format. For `Number` type
-	// field, it will be a numeric value.
-	MinValue FileUploadResponseSelectedFieldsSchemaMinValueUnion `json:"minValue"`
-	// Indicates whether the custom metadata field is read only. A read only field
-	// cannot be modified after being set. This field is configurable only via the
-	// **Path policy** feature.
-	ReadOnly bool `json:"readOnly"`
-	// An array of allowed values when field type is `SingleSelect` or `MultiSelect`.
-	SelectOptions []FileUploadResponseSelectedFieldsSchemaSelectOptionUnion `json:"selectOptions"`
-	// Specifies if the selectOptions array is truncated. It is truncated when number
-	// of options are > 100.
-	SelectOptionsTruncated bool `json:"selectOptionsTruncated"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Type                   respjson.Field
-		DefaultValue           respjson.Field
-		IsValueRequired        respjson.Field
-		MaxLength              respjson.Field
-		MaxValue               respjson.Field
-		MinLength              respjson.Field
-		MinValue               respjson.Field
-		ReadOnly               respjson.Field
-		SelectOptions          respjson.Field
-		SelectOptionsTruncated respjson.Field
-		ExtraFields            map[string]respjson.Field
-		raw                    string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r FileUploadResponseSelectedFieldsSchema) RawJSON() string { return r.JSON.raw }
-func (r *FileUploadResponseSelectedFieldsSchema) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// FileUploadResponseSelectedFieldsSchemaDefaultValueUnion contains all possible
-// properties and values from [string], [float64], [bool],
-// [[]FileUploadResponseSelectedFieldsSchemaDefaultValueMixedItemUnion].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfFloat OfBool OfMixed]
-type FileUploadResponseSelectedFieldsSchemaDefaultValueUnion struct {
-	// This field will be present if the value is a [string] instead of an object.
-	OfString string `json:",inline"`
-	// This field will be present if the value is a [float64] instead of an object.
-	OfFloat float64 `json:",inline"`
-	// This field will be present if the value is a [bool] instead of an object.
-	OfBool bool `json:",inline"`
-	// This field will be present if the value is a
-	// [[]FileUploadResponseSelectedFieldsSchemaDefaultValueMixedItemUnion] instead of
-	// an object.
-	OfMixed []FileUploadResponseSelectedFieldsSchemaDefaultValueMixedItemUnion `json:",inline"`
-	JSON    struct {
-		OfString respjson.Field
-		OfFloat  respjson.Field
-		OfBool   respjson.Field
-		OfMixed  respjson.Field
-		raw      string
-	} `json:"-"`
-}
-
-func (u FileUploadResponseSelectedFieldsSchemaDefaultValueUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u FileUploadResponseSelectedFieldsSchemaDefaultValueUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u FileUploadResponseSelectedFieldsSchemaDefaultValueUnion) AsBool() (v bool) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u FileUploadResponseSelectedFieldsSchemaDefaultValueUnion) AsMixed() (v []FileUploadResponseSelectedFieldsSchemaDefaultValueMixedItemUnion) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u FileUploadResponseSelectedFieldsSchemaDefaultValueUnion) RawJSON() string { return u.JSON.raw }
-
-func (r *FileUploadResponseSelectedFieldsSchemaDefaultValueUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// FileUploadResponseSelectedFieldsSchemaDefaultValueMixedItemUnion contains all
-// possible properties and values from [string], [float64], [bool].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfFloat OfBool]
-type FileUploadResponseSelectedFieldsSchemaDefaultValueMixedItemUnion struct {
-	// This field will be present if the value is a [string] instead of an object.
-	OfString string `json:",inline"`
-	// This field will be present if the value is a [float64] instead of an object.
-	OfFloat float64 `json:",inline"`
-	// This field will be present if the value is a [bool] instead of an object.
-	OfBool bool `json:",inline"`
-	JSON   struct {
-		OfString respjson.Field
-		OfFloat  respjson.Field
-		OfBool   respjson.Field
-		raw      string
-	} `json:"-"`
-}
-
-func (u FileUploadResponseSelectedFieldsSchemaDefaultValueMixedItemUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u FileUploadResponseSelectedFieldsSchemaDefaultValueMixedItemUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u FileUploadResponseSelectedFieldsSchemaDefaultValueMixedItemUnion) AsBool() (v bool) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u FileUploadResponseSelectedFieldsSchemaDefaultValueMixedItemUnion) RawJSON() string {
-	return u.JSON.raw
-}
-
-func (r *FileUploadResponseSelectedFieldsSchemaDefaultValueMixedItemUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// FileUploadResponseSelectedFieldsSchemaMaxValueUnion contains all possible
-// properties and values from [string], [float64].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfFloat]
-type FileUploadResponseSelectedFieldsSchemaMaxValueUnion struct {
-	// This field will be present if the value is a [string] instead of an object.
-	OfString string `json:",inline"`
-	// This field will be present if the value is a [float64] instead of an object.
-	OfFloat float64 `json:",inline"`
-	JSON    struct {
-		OfString respjson.Field
-		OfFloat  respjson.Field
-		raw      string
-	} `json:"-"`
-}
-
-func (u FileUploadResponseSelectedFieldsSchemaMaxValueUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u FileUploadResponseSelectedFieldsSchemaMaxValueUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u FileUploadResponseSelectedFieldsSchemaMaxValueUnion) RawJSON() string { return u.JSON.raw }
-
-func (r *FileUploadResponseSelectedFieldsSchemaMaxValueUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// FileUploadResponseSelectedFieldsSchemaMinValueUnion contains all possible
-// properties and values from [string], [float64].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfFloat]
-type FileUploadResponseSelectedFieldsSchemaMinValueUnion struct {
-	// This field will be present if the value is a [string] instead of an object.
-	OfString string `json:",inline"`
-	// This field will be present if the value is a [float64] instead of an object.
-	OfFloat float64 `json:",inline"`
-	JSON    struct {
-		OfString respjson.Field
-		OfFloat  respjson.Field
-		raw      string
-	} `json:"-"`
-}
-
-func (u FileUploadResponseSelectedFieldsSchemaMinValueUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u FileUploadResponseSelectedFieldsSchemaMinValueUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u FileUploadResponseSelectedFieldsSchemaMinValueUnion) RawJSON() string { return u.JSON.raw }
-
-func (r *FileUploadResponseSelectedFieldsSchemaMinValueUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// FileUploadResponseSelectedFieldsSchemaSelectOptionUnion contains all possible
-// properties and values from [string], [float64], [bool].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfFloat OfBool]
-type FileUploadResponseSelectedFieldsSchemaSelectOptionUnion struct {
-	// This field will be present if the value is a [string] instead of an object.
-	OfString string `json:",inline"`
-	// This field will be present if the value is a [float64] instead of an object.
-	OfFloat float64 `json:",inline"`
-	// This field will be present if the value is a [bool] instead of an object.
-	OfBool bool `json:",inline"`
-	JSON   struct {
-		OfString respjson.Field
-		OfFloat  respjson.Field
-		OfBool   respjson.Field
-		raw      string
-	} `json:"-"`
-}
-
-func (u FileUploadResponseSelectedFieldsSchemaSelectOptionUnion) AsString() (v string) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u FileUploadResponseSelectedFieldsSchemaSelectOptionUnion) AsFloat() (v float64) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u FileUploadResponseSelectedFieldsSchemaSelectOptionUnion) AsBool() (v bool) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u FileUploadResponseSelectedFieldsSchemaSelectOptionUnion) RawJSON() string { return u.JSON.raw }
-
-func (r *FileUploadResponseSelectedFieldsSchemaSelectOptionUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
