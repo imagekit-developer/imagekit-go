@@ -4306,6 +4306,14 @@ type TransformationParam struct {
 	// expression like `ih_div_20_FF00FF`. See
 	// [Border](https://imagekit.io/docs/effects-and-enhancements#border---b).
 	Border param.Opt[string] `json:"border,omitzero"`
+	// Applies a color tint to the image. Accepts color and intensity as optional
+	// parameters.
+	//
+	//   - `co-color` - Color to apply (e.g., `red`, `blue`, `FF0022`). Default is gray
+	//     color.
+	//   - `in-intensity` - Intensity of the color (0-100). Default is 35. See
+	//     [Colorize](https://imagekit.io/docs/effects-and-enhancements#colorize---e-colorize).
+	Colorize param.Opt[string] `json:"colorize,omitzero"`
 	// Indicates whether the output image should retain the original color profile. See
 	// [Color profile](https://imagekit.io/docs/image-optimization#color-profile---cp).
 	ColorProfile param.Opt[bool] `json:"colorProfile,omitzero"`
@@ -4438,12 +4446,14 @@ type TransformationParam struct {
 	// Crop modes for image resizing. See
 	// [Crop modes & focus](https://imagekit.io/docs/image-resize-and-crop#crop-crop-modes--focus).
 	//
-	// Any of "force", "at_max", "at_max_enlarge", "at_least", "maintain_ratio".
+	// Any of "force", "at_max", "at_max_enlarge", "at_least", "maintain_ratio",
+	// "maintain_ratio_no_enlarge".
 	Crop TransformationCrop `json:"crop,omitzero"`
 	// Additional crop modes for image resizing. See
 	// [Crop modes & focus](https://imagekit.io/docs/image-resize-and-crop#crop-crop-modes--focus).
 	//
-	// Any of "pad_resize", "extract", "pad_extract".
+	// Any of "pad_resize", "extract", "pad_extract", "pad_resize_no_enlarge",
+	// "pad_extract_no_shrink".
 	CropMode TransformationCropMode `json:"cropMode,omitzero"`
 	// Specifies the duration (in seconds) for trimming videos, e.g., `5` or `10.5`.
 	// Typically used with startOffset to indicate the length from the start offset.
@@ -4669,11 +4679,12 @@ const (
 type TransformationCrop string
 
 const (
-	TransformationCropForce         TransformationCrop = "force"
-	TransformationCropAtMax         TransformationCrop = "at_max"
-	TransformationCropAtMaxEnlarge  TransformationCrop = "at_max_enlarge"
-	TransformationCropAtLeast       TransformationCrop = "at_least"
-	TransformationCropMaintainRatio TransformationCrop = "maintain_ratio"
+	TransformationCropForce                  TransformationCrop = "force"
+	TransformationCropAtMax                  TransformationCrop = "at_max"
+	TransformationCropAtMaxEnlarge           TransformationCrop = "at_max_enlarge"
+	TransformationCropAtLeast                TransformationCrop = "at_least"
+	TransformationCropMaintainRatio          TransformationCrop = "maintain_ratio"
+	TransformationCropMaintainRatioNoEnlarge TransformationCrop = "maintain_ratio_no_enlarge"
 )
 
 // Additional crop modes for image resizing. See
@@ -4681,9 +4692,11 @@ const (
 type TransformationCropMode string
 
 const (
-	TransformationCropModePadResize  TransformationCropMode = "pad_resize"
-	TransformationCropModeExtract    TransformationCropMode = "extract"
-	TransformationCropModePadExtract TransformationCropMode = "pad_extract"
+	TransformationCropModePadResize          TransformationCropMode = "pad_resize"
+	TransformationCropModeExtract            TransformationCropMode = "extract"
+	TransformationCropModePadExtract         TransformationCropMode = "pad_extract"
+	TransformationCropModePadResizeNoEnlarge TransformationCropMode = "pad_resize_no_enlarge"
+	TransformationCropModePadExtractNoShrink TransformationCropMode = "pad_extract_no_shrink"
 )
 
 // Only one field can be non-zero.
