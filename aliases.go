@@ -831,6 +831,9 @@ const TransformationCropAtLeast = shared.TransformationCropAtLeast
 // Equals "maintain_ratio"
 const TransformationCropMaintainRatio = shared.TransformationCropMaintainRatio
 
+// Equals "maintain_ratio_no_enlarge"
+const TransformationCropMaintainRatioNoEnlarge = shared.TransformationCropMaintainRatioNoEnlarge
+
 // Additional crop modes for image resizing. See
 // [Crop modes & focus](https://imagekit.io/docs/image-resize-and-crop#crop-crop-modes--focus).
 //
@@ -845,6 +848,12 @@ const TransformationCropModeExtract = shared.TransformationCropModeExtract
 
 // Equals "pad_extract"
 const TransformationCropModePadExtract = shared.TransformationCropModePadExtract
+
+// Equals "pad_resize_no_enlarge"
+const TransformationCropModePadResizeNoEnlarge = shared.TransformationCropModePadResizeNoEnlarge
+
+// Equals "pad_extract_no_shrink"
+const TransformationCropModePadExtractNoShrink = shared.TransformationCropModePadExtractNoShrink
 
 // Specifies the duration (in seconds) for trimming videos, e.g., `5` or `10.5`.
 // Typically used with startOffset to indicate the length from the start offset.

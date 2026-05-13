@@ -1,5 +1,42 @@
 # Changelog
 
+## 2.5.0 (2026-05-13)
+
+Full Changelog: [v2.4.0...v2.5.0](https://github.com/imagekit-developer/imagekit-go/compare/v2.4.0...v2.5.0)
+
+### Features
+
+* **api:** add no-enlarge crop modes and colorize transformation ([ad25990](https://github.com/imagekit-developer/imagekit-go/commit/ad259909e99498bfda6beada5eaff2e87ffb2e54))
+* **api:** manual updates ([791dd8c](https://github.com/imagekit-developer/imagekit-go/commit/791dd8c9fa7b8e9ee247918f6aceffc77ad7f8cf))
+* **client:** add compatibility aliases for old type names ([b238a42](https://github.com/imagekit-developer/imagekit-go/commit/b238a423928c3f00584a4894bc1759e21bafb33d))
+* **go:** add default http client with timeout ([f4d5e6b](https://github.com/imagekit-developer/imagekit-go/commit/f4d5e6bc9096d5e51368b2aa8810c22352900643))
+* **helper:** add colorize transformation support and update tests ([53b441a](https://github.com/imagekit-developer/imagekit-go/commit/53b441a512d73384714df827ad202fb678d73a5e))
+* support setting headers via env ([3872a5e](https://github.com/imagekit-developer/imagekit-go/commit/3872a5eb58f1c091b8be08183dd4c972e8a68f75))
+* **tests:** comment update ([4bef04e](https://github.com/imagekit-developer/imagekit-go/commit/4bef04e89c89449faff1e6bf642ccc7158070790))
+
+
+### Bug Fixes
+
+* **go:** avoid panic when http.DefaultTransport is wrapped ([c762867](https://github.com/imagekit-developer/imagekit-go/commit/c7628672829b9037cdae1851a93bb8f1304a9c86))
+
+
+### Chores
+
+* avoid embedding reflect.Type for dead code elimination ([a8ce4c3](https://github.com/imagekit-developer/imagekit-go/commit/a8ce4c343ff55b3f698e96438167f340cddfc4c2))
+* configure new SDK language ([0951290](https://github.com/imagekit-developer/imagekit-go/commit/0951290e27f1568894dd90e717fc49612e24bedd))
+* **internal:** codegen related update ([1622f80](https://github.com/imagekit-developer/imagekit-go/commit/1622f80e1bae58177eae2b260e269e5b1b32de9a))
+* **internal:** codegen related update ([56516d9](https://github.com/imagekit-developer/imagekit-go/commit/56516d9f70279d35c597800d8c580ed18650e6d7))
+* **internal:** codegen related update ([14d3582](https://github.com/imagekit-developer/imagekit-go/commit/14d3582a90625f39b54ffb31000db0e35a849027))
+* **internal:** codegen related update ([904d9f3](https://github.com/imagekit-developer/imagekit-go/commit/904d9f3ebf4291f4142dcd99db48b832761fba7f))
+* **internal:** more robust bootstrap script ([5888120](https://github.com/imagekit-developer/imagekit-go/commit/5888120dc9032b1826cc0b7018f53f34db89666e))
+* **internal:** simplify release-please config ([48c9497](https://github.com/imagekit-developer/imagekit-go/commit/48c949735a94871559549cd63d9dd9bad83f4241))
+* redact api-key headers in debug logs ([add677a](https://github.com/imagekit-developer/imagekit-go/commit/add677afd39e072a7f0ef313f2a0f7d6ceff1f19))
+
+
+### Documentation
+
+* remove example code for verifying webhook signatures ([799e47c](https://github.com/imagekit-developer/imagekit-go/commit/799e47c306c5f681891804c6e3ca738b0b2c053c))
+
 ## 2.4.0 (2026-04-13)
 
 Full Changelog: [v2.3.0...v2.4.0](https://github.com/imagekit-developer/imagekit-go/compare/v2.3.0...v2.4.0)

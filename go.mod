@@ -3,7 +3,7 @@ module github.com/imagekit-developer/imagekit-go/v2
 go 1.22
 
 require (
-	github.com/standard-webhooks/standard-webhooks/libraries v0.0.0-20260309172517-425968d811b9
+	github.com/standard-webhooks/standard-webhooks/libraries v0.0.1
 	github.com/tidwall/gjson v1.18.0
 	github.com/tidwall/sjson v1.2.5
 )

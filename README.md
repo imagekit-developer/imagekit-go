@@ -59,7 +59,7 @@ Or to pin the version:
 <!-- x-release-please-start-version -->
 
 ```sh
-go get -u 'github.com/imagekit-developer/imagekit-go/v2@v2.4.0'
+go get -u 'github.com/imagekit-developer/imagekit-go/v2@v2.5.0'
 ```
 
 <!-- x-release-please-end -->
@@ -759,99 +759,9 @@ These authentication parameters can be used in client-side upload forms to secur
 
 The ImageKit SDK provides utilities to verify webhook signatures for secure event handling. This ensures that webhook requests are actually coming from ImageKit and haven't been tampered with.
 
-### Verifying webhook signatures
-
-```go
-package main
-
-import (
-	"fmt"
-	"io"
-	"log"
-	"net/http"
-	"os"
-
-	"github.com/imagekit-developer/imagekit-go/v2"
-	"github.com/imagekit-developer/imagekit-go/v2/option"
-)
-
-func main() {
-	client := imagekit.NewClient(
-		option.WithPrivateKey("your_private_key"),
-		option.WithWebhookSecret("whsec_..."), // Copy from ImageKit dashboard
-	)
-
-	// Webhook handler with proper request body handling
-	http.HandleFunc("/webhook", func(w http.ResponseWriter, req *http.Request) {
-		// Limit request body size to prevent abuse (64KB should be sufficient for most webhooks)
-		const MaxBodyBytes = int64(65536)
-		req.Body = http.MaxBytesReader(w, req.Body, MaxBodyBytes)
-		
-		// Read the raw webhook payload
-		payload, err := io.ReadAll(req.Body)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error reading request body: %v\n", err)
-			w.WriteHeader(http.StatusServiceUnavailable)
-			return
-		}
-
-		// Verify and unwrap webhook payload
-		event, err := client.Webhooks.Unwrap(payload, req.Header)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Invalid webhook signature or malformed payload: %v\n", err)
-			w.WriteHeader(http.StatusUnauthorized)
-			return
-		}
-
-		fmt.Printf("Verified webhook event: %s\n", event.Type)
-		
-		// Handle different event types with full type safety
-		switch event.Type {
-		case "video.transformation.accepted":
-			videoEvent := event.AsVideoTransformationAcceptedEvent()
-			fmt.Printf("Video transformation accepted: %s\n", videoEvent.Data.Asset.URL)
-			// Debugging: Track transformation requests
-			// handleVideoTransformationAccepted(videoEvent)
-			
-		case "video.transformation.ready":
-			videoEvent := event.AsVideoTransformationReadyEvent()
-			fmt.Printf("Video transformation ready: %s\n", videoEvent.Data.Transformation.Output.URL)
-			// Update your database/CMS to show the transformed video
-			// handleVideoTransformationReady(videoEvent)
-			
-		case "video.transformation.error":
-			videoEvent := event.AsVideoTransformationErrorEvent()
-			fmt.Printf("Video transformation error: %s\n", videoEvent.Data.Transformation.Error.Reason)
-			// Log error and check your origin/URL endpoint settings
-			// handleVideoTransformationError(videoEvent)
-			
-		case "upload.pre-transform.success":
-			uploadEvent := event.AsUploadPreTransformSuccessEvent()
-			fmt.Printf("Pre-transform success: %s\n", uploadEvent.Data.FileID)
-			// File uploaded and pre-transformation completed
-			// handleUploadPreTransformSuccess(uploadEvent)
-			
-		case "upload.post-transform.success":
-			postEvent := event.AsUploadPostTransformSuccessEvent()
-			fmt.Printf("Post-transform success: %s\n", postEvent.Data.Name)
-			// Additional transformation completed
-			// handleUploadPostTransformSuccess(postEvent)
-			
-		// Handle other event types as needed
-		default:
-			fmt.Printf("Unhandled event type: %s\n", event.Type)
-		}
-
-		w.WriteHeader(http.StatusOK)
-	})
-
-	// Start the server
-	fmt.Println("Webhook server listening on :8080")
-	log.Fatal(http.ListenAndServe(":8080", nil))
-}
-```
-
 For detailed information about webhook setup, signature verification, and handling different webhook events, refer to the [ImageKit webhook documentation](https://imagekit.io/docs/webhooks#verify-webhook-signature).
+
+## Advanced Usage
 
 ### Errors
 
