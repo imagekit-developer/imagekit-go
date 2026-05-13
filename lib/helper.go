@@ -403,6 +403,12 @@ func (r *HelperService) buildTransformationStringInternal(transformation []share
 				}
 				return "", false
 			}},
+			{"e-colorize", func() (string, bool) {
+				if value := r.getOptParamValue(currentTransform.Colorize); value != "" {
+					return value, false
+				}
+				return "", false
+			}},
 			{"e-distort", func() (string, bool) {
 				if value := r.getOptParamValue(currentTransform.Distort); value != "" {
 					return value, false
