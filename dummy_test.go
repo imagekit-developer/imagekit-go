@@ -673,6 +673,22 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 				},
 			}},
 		},
+		SolidColorOverlayTransformation: shared.SolidColorOverlayTransformationParam{
+			Alpha:      imagekit.Float(1),
+			Background: imagekit.String("background"),
+			Gradient: shared.SolidColorOverlayTransformationGradientUnionParam{
+				OfDefault: imagekit.Bool(true),
+			},
+			Height: shared.SolidColorOverlayTransformationHeightUnionParam{
+				OfFloat: imagekit.Float(0),
+			},
+			Radius: shared.SolidColorOverlayTransformationRadiusUnionParam{
+				OfMax: constant.ValueOf[constant.Max](),
+			},
+			Width: shared.SolidColorOverlayTransformationWidthUnionParam{
+				OfFloat: imagekit.Float(0),
+			},
+		},
 		SrcOptions: shared.SrcOptionsParam{
 			Src:         "/my-image.jpg",
 			URLEndpoint: "https://ik.imagekit.io/demo",
