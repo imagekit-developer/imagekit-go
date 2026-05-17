@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.6.0 (2026-05-17)
+
+Full Changelog: [v2.5.0...v2.6.0](https://github.com/imagekit-developer/imagekit-go/compare/v2.5.0...v2.6.0)
+
+### Features
+
+* **client:** optimize json encoder for internal types ([33c708e](https://github.com/imagekit-developer/imagekit-go/commit/33c708ed32562ccf0e16a736e77573d4c1b9b204))
+
 ## 2.5.0 (2026-05-13)
 
 Full Changelog: [v2.4.0...v2.5.0](https://github.com/imagekit-developer/imagekit-go/compare/v2.4.0...v2.5.0)
