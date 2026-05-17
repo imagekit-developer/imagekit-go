@@ -68,9 +68,8 @@ type DummyNewParams struct {
 	// enabling responsive image loading with `srcSet` and `sizes`.
 	ResponsiveImageAttributes shared.ResponsiveImageAttributesParam `json:"responsiveImageAttributes,omitzero"`
 	// Saved extension object containing extension configuration.
-	SavedExtensions                 shared.SavedExtensionParam                  `json:"savedExtensions,omitzero"`
-	SolidColorOverlay               shared.SolidColorOverlayParam               `json:"solidColorOverlay,omitzero"`
-	SolidColorOverlayTransformation shared.SolidColorOverlayTransformationParam `json:"solidColorOverlayTransformation,omitzero"`
+	SavedExtensions   shared.SavedExtensionParam    `json:"savedExtensions,omitzero"`
+	SolidColorOverlay shared.SolidColorOverlayParam `json:"solidColorOverlay,omitzero"`
 	// Options for generating ImageKit URLs with transformations. See the
 	// [Transformations guide](https://imagekit.io/docs/transformations).
 	SrcOptions shared.SrcOptionsParam `json:"srcOptions,omitzero"`
