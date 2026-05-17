@@ -590,7 +590,7 @@ type SolidColorOverlayTransformationParam = shared.SolidColorOverlayTransformati
 type SolidColorOverlayTransformationGradientUnionParam = shared.SolidColorOverlayTransformationGradientUnionParam
 
 // This is an alias to an internal type.
-type SolidColorOverlayTransformationGradientBoolean = shared.SolidColorOverlayTransformationGradientBoolean
+type SolidColorOverlayTransformationGradientDefault = shared.SolidColorOverlayTransformationGradientDefault
 
 // Controls the height of the solid color overlay. Accepts a numeric value or an
 // arithmetic expression. Learn about
@@ -785,7 +785,7 @@ type TransformationParam = shared.TransformationParam
 type TransformationAIDropShadowUnionParam = shared.TransformationAIDropShadowUnionParam
 
 // This is an alias to an internal type.
-type TransformationAIDropShadowBoolean = shared.TransformationAIDropShadowBoolean
+type TransformationAIDropShadowDefault = shared.TransformationAIDropShadowDefault
 
 // Specifies the aspect ratio for the output, e.g., "ar-4-3". Typically used with
 // either width or height (but not both). For example: aspectRatio = `4:3`, `4_3`,
@@ -942,7 +942,7 @@ const TransformationFormatOrig = shared.TransformationFormatOrig
 type TransformationGradientUnionParam = shared.TransformationGradientUnionParam
 
 // This is an alias to an internal type.
-type TransformationGradientBoolean = shared.TransformationGradientBoolean
+type TransformationGradientDefault = shared.TransformationGradientDefault
 
 // Specifies the height of the output. If a value between 0 and 1 is provided, it
 // is treated as a percentage (e.g., `0.5` represents 50% of the original height).
@@ -992,7 +992,7 @@ type TransformationRotationUnionParam = shared.TransformationRotationUnionParam
 type TransformationShadowUnionParam = shared.TransformationShadowUnionParam
 
 // This is an alias to an internal type.
-type TransformationShadowBoolean = shared.TransformationShadowBoolean
+type TransformationShadowDefault = shared.TransformationShadowDefault
 
 // Sharpens the input image, highlighting edges and finer details. Pass `true` for
 // default sharpening, or provide a numeric value for custom sharpening. See
@@ -1002,7 +1002,7 @@ type TransformationShadowBoolean = shared.TransformationShadowBoolean
 type TransformationSharpenUnionParam = shared.TransformationSharpenUnionParam
 
 // This is an alias to an internal type.
-type TransformationSharpenBoolean = shared.TransformationSharpenBoolean
+type TransformationSharpenDefault = shared.TransformationSharpenDefault
 
 // Specifies the start offset (in seconds) for trimming videos, e.g., `5` or
 // `10.5`. Arithmetic expressions are also supported. See
@@ -1020,7 +1020,7 @@ type TransformationStartOffsetUnionParam = shared.TransformationStartOffsetUnion
 type TransformationTrimUnionParam = shared.TransformationTrimUnionParam
 
 // This is an alias to an internal type.
-type TransformationTrimBoolean = shared.TransformationTrimBoolean
+type TransformationTrimDefault = shared.TransformationTrimDefault
 
 // Applies Unsharp Masking (USM), an image sharpening technique. Pass `true` for a
 // default unsharp mask, or provide a string for a custom unsharp mask. See
@@ -1030,7 +1030,7 @@ type TransformationTrimBoolean = shared.TransformationTrimBoolean
 type TransformationUnsharpMaskUnionParam = shared.TransformationUnsharpMaskUnionParam
 
 // This is an alias to an internal type.
-type TransformationUnsharpMaskBoolean = shared.TransformationUnsharpMaskBoolean
+type TransformationUnsharpMaskDefault = shared.TransformationUnsharpMaskDefault
 
 // Specifies the video codec, e.g., `h264`, `vp9`, `av1`, or `none`. See
 // [Video codec](https://imagekit.io/docs/video-optimization#video-codec---vc).
