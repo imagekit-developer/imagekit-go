@@ -159,7 +159,7 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 				Transformation: []shared.TransformationParam{{
 					AIChangeBackground: imagekit.String("aiChangeBackground"),
 					AIDropShadow: shared.TransformationAIDropShadowUnionParam{
-						OfDefault: imagekit.Bool(true),
+						OfTransformationAIDropShadowBoolean: imagekit.Bool(true),
 					},
 					AIEdit:                     imagekit.String("aiEdit"),
 					AIRemoveBackground:         true,
@@ -193,7 +193,7 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 					Focus:  imagekit.String("center"),
 					Format: shared.TransformationFormatAuto,
 					Gradient: shared.TransformationGradientUnionParam{
-						OfDefault: imagekit.Bool(true),
+						OfTransformationGradientBoolean: imagekit.Bool(true),
 					},
 					Grayscale: true,
 					Height: shared.TransformationHeightUnionParam{
@@ -280,20 +280,20 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 						OfFloat: imagekit.Float(90),
 					},
 					Shadow: shared.TransformationShadowUnionParam{
-						OfDefault: imagekit.Bool(true),
+						OfTransformationShadowBoolean: imagekit.Bool(true),
 					},
 					Sharpen: shared.TransformationSharpenUnionParam{
-						OfDefault: imagekit.Bool(true),
+						OfTransformationSharpenBoolean: imagekit.Bool(true),
 					},
 					StartOffset: shared.TransformationStartOffsetUnionParam{
 						OfFloat: imagekit.Float(0),
 					},
 					StreamingResolutions: []shared.StreamingResolution{shared.StreamingResolution240},
 					Trim: shared.TransformationTrimUnionParam{
-						OfDefault: imagekit.Bool(true),
+						OfTransformationTrimBoolean: imagekit.Bool(true),
 					},
 					UnsharpMask: shared.TransformationUnsharpMaskUnionParam{
-						OfDefault: imagekit.Bool(true),
+						OfTransformationUnsharpMaskBoolean: imagekit.Bool(true),
 					},
 					VideoCodec: shared.TransformationVideoCodecH264,
 					Width: shared.TransformationWidthUnionParam{
@@ -356,7 +356,7 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 			Transformation: []shared.TransformationParam{{
 				AIChangeBackground: imagekit.String("aiChangeBackground"),
 				AIDropShadow: shared.TransformationAIDropShadowUnionParam{
-					OfDefault: imagekit.Bool(true),
+					OfTransformationAIDropShadowBoolean: imagekit.Bool(true),
 				},
 				AIEdit:                     imagekit.String("aiEdit"),
 				AIRemoveBackground:         true,
@@ -390,7 +390,7 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 				Focus:  imagekit.String("center"),
 				Format: shared.TransformationFormatAuto,
 				Gradient: shared.TransformationGradientUnionParam{
-					OfDefault: imagekit.Bool(true),
+					OfTransformationGradientBoolean: imagekit.Bool(true),
 				},
 				Grayscale: true,
 				Height: shared.TransformationHeightUnionParam{
@@ -477,20 +477,20 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 					OfFloat: imagekit.Float(90),
 				},
 				Shadow: shared.TransformationShadowUnionParam{
-					OfDefault: imagekit.Bool(true),
+					OfTransformationShadowBoolean: imagekit.Bool(true),
 				},
 				Sharpen: shared.TransformationSharpenUnionParam{
-					OfDefault: imagekit.Bool(true),
+					OfTransformationSharpenBoolean: imagekit.Bool(true),
 				},
 				StartOffset: shared.TransformationStartOffsetUnionParam{
 					OfFloat: imagekit.Float(0),
 				},
 				StreamingResolutions: []shared.StreamingResolution{shared.StreamingResolution240},
 				Trim: shared.TransformationTrimUnionParam{
-					OfDefault: imagekit.Bool(true),
+					OfTransformationTrimBoolean: imagekit.Bool(true),
 				},
 				UnsharpMask: shared.TransformationUnsharpMaskUnionParam{
-					OfDefault: imagekit.Bool(true),
+					OfTransformationUnsharpMaskBoolean: imagekit.Bool(true),
 				},
 				VideoCodec: shared.TransformationVideoCodecH264,
 				Width: shared.TransformationWidthUnionParam{
@@ -660,7 +660,7 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 				Alpha:      imagekit.Float(1),
 				Background: imagekit.String("background"),
 				Gradient: shared.SolidColorOverlayTransformationGradientUnionParam{
-					OfDefault: imagekit.Bool(true),
+					OfSolidColorOverlayTransformationGradientBoolean: imagekit.Bool(true),
 				},
 				Height: shared.SolidColorOverlayTransformationHeightUnionParam{
 					OfFloat: imagekit.Float(0),
@@ -677,7 +677,7 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 			Alpha:      imagekit.Float(1),
 			Background: imagekit.String("background"),
 			Gradient: shared.SolidColorOverlayTransformationGradientUnionParam{
-				OfDefault: imagekit.Bool(true),
+				OfSolidColorOverlayTransformationGradientBoolean: imagekit.Bool(true),
 			},
 			Height: shared.SolidColorOverlayTransformationHeightUnionParam{
 				OfFloat: imagekit.Float(0),
@@ -700,7 +700,7 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 			Transformation: []shared.TransformationParam{{
 				AIChangeBackground: imagekit.String("aiChangeBackground"),
 				AIDropShadow: shared.TransformationAIDropShadowUnionParam{
-					OfDefault: imagekit.Bool(true),
+					OfTransformationAIDropShadowBoolean: imagekit.Bool(true),
 				},
 				AIEdit:                     imagekit.String("aiEdit"),
 				AIRemoveBackground:         true,
@@ -734,7 +734,7 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 				Focus:  imagekit.String("center"),
 				Format: shared.TransformationFormatAuto,
 				Gradient: shared.TransformationGradientUnionParam{
-					OfDefault: imagekit.Bool(true),
+					OfTransformationGradientBoolean: imagekit.Bool(true),
 				},
 				Grayscale: true,
 				Height: shared.TransformationHeightUnionParam{
@@ -821,20 +821,20 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 					OfFloat: imagekit.Float(90),
 				},
 				Shadow: shared.TransformationShadowUnionParam{
-					OfDefault: imagekit.Bool(true),
+					OfTransformationShadowBoolean: imagekit.Bool(true),
 				},
 				Sharpen: shared.TransformationSharpenUnionParam{
-					OfDefault: imagekit.Bool(true),
+					OfTransformationSharpenBoolean: imagekit.Bool(true),
 				},
 				StartOffset: shared.TransformationStartOffsetUnionParam{
 					OfFloat: imagekit.Float(0),
 				},
 				StreamingResolutions: []shared.StreamingResolution{shared.StreamingResolution240},
 				Trim: shared.TransformationTrimUnionParam{
-					OfDefault: imagekit.Bool(true),
+					OfTransformationTrimBoolean: imagekit.Bool(true),
 				},
 				UnsharpMask: shared.TransformationUnsharpMaskUnionParam{
-					OfDefault: imagekit.Bool(true),
+					OfTransformationUnsharpMaskBoolean: imagekit.Bool(true),
 				},
 				VideoCodec: shared.TransformationVideoCodecH264,
 				Width: shared.TransformationWidthUnionParam{
@@ -1000,7 +1000,7 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 		Transformation: shared.TransformationParam{
 			AIChangeBackground: imagekit.String("aiChangeBackground"),
 			AIDropShadow: shared.TransformationAIDropShadowUnionParam{
-				OfDefault: imagekit.Bool(true),
+				OfTransformationAIDropShadowBoolean: imagekit.Bool(true),
 			},
 			AIEdit:                     imagekit.String("aiEdit"),
 			AIRemoveBackground:         true,
@@ -1034,7 +1034,7 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 			Focus:  imagekit.String("center"),
 			Format: shared.TransformationFormatAuto,
 			Gradient: shared.TransformationGradientUnionParam{
-				OfDefault: imagekit.Bool(true),
+				OfTransformationGradientBoolean: imagekit.Bool(true),
 			},
 			Grayscale: true,
 			Height: shared.TransformationHeightUnionParam{
@@ -1121,20 +1121,20 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 				OfFloat: imagekit.Float(90),
 			},
 			Shadow: shared.TransformationShadowUnionParam{
-				OfDefault: imagekit.Bool(true),
+				OfTransformationShadowBoolean: imagekit.Bool(true),
 			},
 			Sharpen: shared.TransformationSharpenUnionParam{
-				OfDefault: imagekit.Bool(true),
+				OfTransformationSharpenBoolean: imagekit.Bool(true),
 			},
 			StartOffset: shared.TransformationStartOffsetUnionParam{
 				OfFloat: imagekit.Float(0),
 			},
 			StreamingResolutions: []shared.StreamingResolution{shared.StreamingResolution240},
 			Trim: shared.TransformationTrimUnionParam{
-				OfDefault: imagekit.Bool(true),
+				OfTransformationTrimBoolean: imagekit.Bool(true),
 			},
 			UnsharpMask: shared.TransformationUnsharpMaskUnionParam{
-				OfDefault: imagekit.Bool(true),
+				OfTransformationUnsharpMaskBoolean: imagekit.Bool(true),
 			},
 			VideoCodec: shared.TransformationVideoCodecH264,
 			Width: shared.TransformationWidthUnionParam{
@@ -1191,7 +1191,7 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 			Transformation: []shared.TransformationParam{{
 				AIChangeBackground: imagekit.String("aiChangeBackground"),
 				AIDropShadow: shared.TransformationAIDropShadowUnionParam{
-					OfDefault: imagekit.Bool(true),
+					OfTransformationAIDropShadowBoolean: imagekit.Bool(true),
 				},
 				AIEdit:                     imagekit.String("aiEdit"),
 				AIRemoveBackground:         true,
@@ -1225,7 +1225,7 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 				Focus:  imagekit.String("center"),
 				Format: shared.TransformationFormatAuto,
 				Gradient: shared.TransformationGradientUnionParam{
-					OfDefault: imagekit.Bool(true),
+					OfTransformationGradientBoolean: imagekit.Bool(true),
 				},
 				Grayscale: true,
 				Height: shared.TransformationHeightUnionParam{
@@ -1312,20 +1312,20 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 					OfFloat: imagekit.Float(90),
 				},
 				Shadow: shared.TransformationShadowUnionParam{
-					OfDefault: imagekit.Bool(true),
+					OfTransformationShadowBoolean: imagekit.Bool(true),
 				},
 				Sharpen: shared.TransformationSharpenUnionParam{
-					OfDefault: imagekit.Bool(true),
+					OfTransformationSharpenBoolean: imagekit.Bool(true),
 				},
 				StartOffset: shared.TransformationStartOffsetUnionParam{
 					OfFloat: imagekit.Float(0),
 				},
 				StreamingResolutions: []shared.StreamingResolution{shared.StreamingResolution240},
 				Trim: shared.TransformationTrimUnionParam{
-					OfDefault: imagekit.Bool(true),
+					OfTransformationTrimBoolean: imagekit.Bool(true),
 				},
 				UnsharpMask: shared.TransformationUnsharpMaskUnionParam{
-					OfDefault: imagekit.Bool(true),
+					OfTransformationUnsharpMaskBoolean: imagekit.Bool(true),
 				},
 				VideoCodec: shared.TransformationVideoCodecH264,
 				Width: shared.TransformationWidthUnionParam{

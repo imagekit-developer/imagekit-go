@@ -3710,31 +3710,31 @@ func (r *SolidColorOverlayTransformationParam) UnmarshalJSON(data []byte) error 
 // Use [param.IsOmitted] to confirm if a field is set.
 type SolidColorOverlayTransformationGradientUnionParam struct {
 	// Construct this variant with constant.ValueOf[bool]()
-	OfDefault param.Opt[bool]   `json:",omitzero,inline"`
-	OfString  param.Opt[string] `json:",omitzero,inline"`
+	OfSolidColorOverlayTransformationGradientBoolean param.Opt[bool]   `json:",omitzero,inline"`
+	OfString                                         param.Opt[string] `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u SolidColorOverlayTransformationGradientUnionParam) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfDefault, u.OfString)
+	return param.MarshalUnion(u, u.OfSolidColorOverlayTransformationGradientBoolean, u.OfString)
 }
 func (u *SolidColorOverlayTransformationGradientUnionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *SolidColorOverlayTransformationGradientUnionParam) asAny() any {
-	if !param.IsOmitted(u.OfDefault) {
-		return &u.OfDefault
+	if !param.IsOmitted(u.OfSolidColorOverlayTransformationGradientBoolean) {
+		return &u.OfSolidColorOverlayTransformationGradientBoolean
 	} else if !param.IsOmitted(u.OfString) {
 		return &u.OfString.Value
 	}
 	return nil
 }
 
-type SolidColorOverlayTransformationGradientDefault bool
+type SolidColorOverlayTransformationGradientBoolean bool
 
 const (
-	SolidColorOverlayTransformationGradientDefaultTrue SolidColorOverlayTransformationGradientDefault = true
+	SolidColorOverlayTransformationGradientBooleanTrue SolidColorOverlayTransformationGradientBoolean = true
 )
 
 // Only one field can be non-zero.
@@ -4612,31 +4612,31 @@ func init() {
 // Use [param.IsOmitted] to confirm if a field is set.
 type TransformationAIDropShadowUnionParam struct {
 	// Construct this variant with constant.ValueOf[bool]()
-	OfDefault param.Opt[bool]   `json:",omitzero,inline"`
-	OfString  param.Opt[string] `json:",omitzero,inline"`
+	OfTransformationAIDropShadowBoolean param.Opt[bool]   `json:",omitzero,inline"`
+	OfString                            param.Opt[string] `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u TransformationAIDropShadowUnionParam) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfDefault, u.OfString)
+	return param.MarshalUnion(u, u.OfTransformationAIDropShadowBoolean, u.OfString)
 }
 func (u *TransformationAIDropShadowUnionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *TransformationAIDropShadowUnionParam) asAny() any {
-	if !param.IsOmitted(u.OfDefault) {
-		return &u.OfDefault
+	if !param.IsOmitted(u.OfTransformationAIDropShadowBoolean) {
+		return &u.OfTransformationAIDropShadowBoolean
 	} else if !param.IsOmitted(u.OfString) {
 		return &u.OfString.Value
 	}
 	return nil
 }
 
-type TransformationAIDropShadowDefault bool
+type TransformationAIDropShadowBoolean bool
 
 const (
-	TransformationAIDropShadowDefaultTrue TransformationAIDropShadowDefault = true
+	TransformationAIDropShadowBooleanTrue TransformationAIDropShadowBoolean = true
 )
 
 // Only one field can be non-zero.
@@ -4789,31 +4789,31 @@ const (
 // Use [param.IsOmitted] to confirm if a field is set.
 type TransformationGradientUnionParam struct {
 	// Construct this variant with constant.ValueOf[bool]()
-	OfDefault param.Opt[bool]   `json:",omitzero,inline"`
-	OfString  param.Opt[string] `json:",omitzero,inline"`
+	OfTransformationGradientBoolean param.Opt[bool]   `json:",omitzero,inline"`
+	OfString                        param.Opt[string] `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u TransformationGradientUnionParam) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfDefault, u.OfString)
+	return param.MarshalUnion(u, u.OfTransformationGradientBoolean, u.OfString)
 }
 func (u *TransformationGradientUnionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *TransformationGradientUnionParam) asAny() any {
-	if !param.IsOmitted(u.OfDefault) {
-		return &u.OfDefault
+	if !param.IsOmitted(u.OfTransformationGradientBoolean) {
+		return &u.OfTransformationGradientBoolean
 	} else if !param.IsOmitted(u.OfString) {
 		return &u.OfString.Value
 	}
 	return nil
 }
 
-type TransformationGradientDefault bool
+type TransformationGradientBoolean bool
 
 const (
-	TransformationGradientDefaultTrue TransformationGradientDefault = true
+	TransformationGradientBooleanTrue TransformationGradientBoolean = true
 )
 
 // Only one field can be non-zero.
@@ -4925,31 +4925,31 @@ func (u *TransformationRotationUnionParam) asAny() any {
 // Use [param.IsOmitted] to confirm if a field is set.
 type TransformationShadowUnionParam struct {
 	// Construct this variant with constant.ValueOf[bool]()
-	OfDefault param.Opt[bool]   `json:",omitzero,inline"`
-	OfString  param.Opt[string] `json:",omitzero,inline"`
+	OfTransformationShadowBoolean param.Opt[bool]   `json:",omitzero,inline"`
+	OfString                      param.Opt[string] `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u TransformationShadowUnionParam) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfDefault, u.OfString)
+	return param.MarshalUnion(u, u.OfTransformationShadowBoolean, u.OfString)
 }
 func (u *TransformationShadowUnionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *TransformationShadowUnionParam) asAny() any {
-	if !param.IsOmitted(u.OfDefault) {
-		return &u.OfDefault
+	if !param.IsOmitted(u.OfTransformationShadowBoolean) {
+		return &u.OfTransformationShadowBoolean
 	} else if !param.IsOmitted(u.OfString) {
 		return &u.OfString.Value
 	}
 	return nil
 }
 
-type TransformationShadowDefault bool
+type TransformationShadowBoolean bool
 
 const (
-	TransformationShadowDefaultTrue TransformationShadowDefault = true
+	TransformationShadowBooleanTrue TransformationShadowBoolean = true
 )
 
 // Only one field can be non-zero.
@@ -4957,31 +4957,31 @@ const (
 // Use [param.IsOmitted] to confirm if a field is set.
 type TransformationSharpenUnionParam struct {
 	// Construct this variant with constant.ValueOf[bool]()
-	OfDefault param.Opt[bool]    `json:",omitzero,inline"`
-	OfFloat   param.Opt[float64] `json:",omitzero,inline"`
+	OfTransformationSharpenBoolean param.Opt[bool]    `json:",omitzero,inline"`
+	OfFloat                        param.Opt[float64] `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u TransformationSharpenUnionParam) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfDefault, u.OfFloat)
+	return param.MarshalUnion(u, u.OfTransformationSharpenBoolean, u.OfFloat)
 }
 func (u *TransformationSharpenUnionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *TransformationSharpenUnionParam) asAny() any {
-	if !param.IsOmitted(u.OfDefault) {
-		return &u.OfDefault
+	if !param.IsOmitted(u.OfTransformationSharpenBoolean) {
+		return &u.OfTransformationSharpenBoolean
 	} else if !param.IsOmitted(u.OfFloat) {
 		return &u.OfFloat.Value
 	}
 	return nil
 }
 
-type TransformationSharpenDefault bool
+type TransformationSharpenBoolean bool
 
 const (
-	TransformationSharpenDefaultTrue TransformationSharpenDefault = true
+	TransformationSharpenBooleanTrue TransformationSharpenBoolean = true
 )
 
 // Only one field can be non-zero.
@@ -5014,31 +5014,31 @@ func (u *TransformationStartOffsetUnionParam) asAny() any {
 // Use [param.IsOmitted] to confirm if a field is set.
 type TransformationTrimUnionParam struct {
 	// Construct this variant with constant.ValueOf[bool]()
-	OfDefault param.Opt[bool]    `json:",omitzero,inline"`
-	OfFloat   param.Opt[float64] `json:",omitzero,inline"`
+	OfTransformationTrimBoolean param.Opt[bool]    `json:",omitzero,inline"`
+	OfFloat                     param.Opt[float64] `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u TransformationTrimUnionParam) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfDefault, u.OfFloat)
+	return param.MarshalUnion(u, u.OfTransformationTrimBoolean, u.OfFloat)
 }
 func (u *TransformationTrimUnionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *TransformationTrimUnionParam) asAny() any {
-	if !param.IsOmitted(u.OfDefault) {
-		return &u.OfDefault
+	if !param.IsOmitted(u.OfTransformationTrimBoolean) {
+		return &u.OfTransformationTrimBoolean
 	} else if !param.IsOmitted(u.OfFloat) {
 		return &u.OfFloat.Value
 	}
 	return nil
 }
 
-type TransformationTrimDefault bool
+type TransformationTrimBoolean bool
 
 const (
-	TransformationTrimDefaultTrue TransformationTrimDefault = true
+	TransformationTrimBooleanTrue TransformationTrimBoolean = true
 )
 
 // Only one field can be non-zero.
@@ -5046,31 +5046,31 @@ const (
 // Use [param.IsOmitted] to confirm if a field is set.
 type TransformationUnsharpMaskUnionParam struct {
 	// Construct this variant with constant.ValueOf[bool]()
-	OfDefault param.Opt[bool]   `json:",omitzero,inline"`
-	OfString  param.Opt[string] `json:",omitzero,inline"`
+	OfTransformationUnsharpMaskBoolean param.Opt[bool]   `json:",omitzero,inline"`
+	OfString                           param.Opt[string] `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u TransformationUnsharpMaskUnionParam) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfDefault, u.OfString)
+	return param.MarshalUnion(u, u.OfTransformationUnsharpMaskBoolean, u.OfString)
 }
 func (u *TransformationUnsharpMaskUnionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
 func (u *TransformationUnsharpMaskUnionParam) asAny() any {
-	if !param.IsOmitted(u.OfDefault) {
-		return &u.OfDefault
+	if !param.IsOmitted(u.OfTransformationUnsharpMaskBoolean) {
+		return &u.OfTransformationUnsharpMaskBoolean
 	} else if !param.IsOmitted(u.OfString) {
 		return &u.OfString.Value
 	}
 	return nil
 }
 
-type TransformationUnsharpMaskDefault bool
+type TransformationUnsharpMaskBoolean bool
 
 const (
-	TransformationUnsharpMaskDefaultTrue TransformationUnsharpMaskDefault = true
+	TransformationUnsharpMaskBooleanTrue TransformationUnsharpMaskBoolean = true
 )
 
 // Specifies the video codec, e.g., `h264`, `vp9`, `av1`, or `none`. See
