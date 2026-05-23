@@ -1,5 +1,20 @@
 # Changelog
 
+## 2.6.1 (2026-05-17)
+
+Full Changelog: [v2.6.0...v2.6.1](https://github.com/imagekit-developer/imagekit-go/compare/v2.6.0...v2.6.1)
+
+### Chores
+
+* trigger build ([8baf036](https://github.com/imagekit-developer/imagekit-go/commit/8baf0366542f4f93eac027ceeb40dcc8ad9e7072))
+* trigger build for test ([3193027](https://github.com/imagekit-developer/imagekit-go/commit/3193027e26f7b110e9a7737cbd7e0503e77cdbc9))
+
+
+### Build System
+
+* **dotnet:** adding variant name for build warnings cannot infer union variant name ([bae5e4c](https://github.com/imagekit-developer/imagekit-go/commit/bae5e4c2b65d044d1bfb3816ec73c1bd27e7b008))
+* revert dotnet specific changes ([6611d2c](https://github.com/imagekit-developer/imagekit-go/commit/6611d2c76c1c5e130519c8f6ae3bd1e907b2e92b))
+
 ## 2.6.0 (2026-05-17)
 
 Full Changelog: [v2.5.0...v2.6.0](https://github.com/imagekit-developer/imagekit-go/compare/v2.5.0...v2.6.0)
