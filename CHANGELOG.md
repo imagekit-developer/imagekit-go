@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.6.2](https://github.com/imagekit-developer/imagekit-go/compare/v2.6.1...v2.6.2) (2026-05-25)
+
+
+### Features
+
+* initial stlc build ([a45fc03](https://github.com/imagekit-developer/imagekit-go/commit/a45fc03615fbec7ca77427545ca609020ca0b9ed))
+
+
+### Chores
+
+* pin next release ([f8c2829](https://github.com/imagekit-developer/imagekit-go/commit/f8c2829d751978cf8e0e93ff43c9c2363fd8ae5a))
+
 ## 2.6.1 (2026-05-17)
 
 Full Changelog: [v2.6.0...v2.6.1](https://github.com/imagekit-developer/imagekit-go/compare/v2.6.0...v2.6.1)
