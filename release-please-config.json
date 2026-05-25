@@ -6,7 +6,7 @@
   "include-v-in-tag": true,
   "include-component-in-tag": false,
   "versioning": "prerelease",
-  "prerelease": true,
+  "prerelease": false,
   "bump-minor-pre-major": true,
   "bump-patch-for-minor-pre-major": false,
   "pull-request-header": "Automated Release PR",
@@ -63,6 +63,6 @@
   "extra-files": [
     "internal/version.go",
     "README.md",
-    ".github/workflows/create-releases.yml"
+    ".github/workflows/release-please.yml"
   ]
 }
