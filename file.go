@@ -369,7 +369,8 @@ type Metadata struct {
 	// The video codec used in the video (only for video).
 	VideoCodec string `json:"videoCodec"`
 	// The width of the image or video in pixels.
-	Width int64 `json:"width"`
+	Width       int64          `json:"width"`
+	ExtraFields map[string]any `json:"" api:"extrafields"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AudioCodec      respjson.Field
@@ -408,7 +409,8 @@ type MetadataExif struct {
 	Interoperability MetadataExifInteroperability `json:"interoperability"`
 	Makernote        map[string]any               `json:"makernote"`
 	// Object containing Thumbnail information.
-	Thumbnail MetadataExifThumbnail `json:"thumbnail"`
+	Thumbnail   MetadataExifThumbnail `json:"thumbnail"`
+	ExtraFields map[string]any        `json:"" api:"extrafields"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Exif             respjson.Field
@@ -430,35 +432,45 @@ func (r *MetadataExif) UnmarshalJSON(data []byte) error {
 
 // Object containing Exif details.
 type MetadataExifExif struct {
-	ApertureValue            float64 `json:"ApertureValue"`
-	ColorSpace               int64   `json:"ColorSpace"`
-	CreateDate               string  `json:"CreateDate"`
-	CustomRendered           int64   `json:"CustomRendered"`
-	DateTimeOriginal         string  `json:"DateTimeOriginal"`
-	ExifImageHeight          int64   `json:"ExifImageHeight"`
-	ExifImageWidth           int64   `json:"ExifImageWidth"`
-	ExifVersion              string  `json:"ExifVersion"`
-	ExposureCompensation     float64 `json:"ExposureCompensation"`
-	ExposureMode             int64   `json:"ExposureMode"`
-	ExposureProgram          int64   `json:"ExposureProgram"`
-	ExposureTime             float64 `json:"ExposureTime"`
-	Flash                    int64   `json:"Flash"`
-	FlashpixVersion          string  `json:"FlashpixVersion"`
-	FNumber                  float64 `json:"FNumber"`
-	FocalLength              int64   `json:"FocalLength"`
-	FocalPlaneResolutionUnit int64   `json:"FocalPlaneResolutionUnit"`
-	FocalPlaneXResolution    float64 `json:"FocalPlaneXResolution"`
-	FocalPlaneYResolution    float64 `json:"FocalPlaneYResolution"`
-	InteropOffset            int64   `json:"InteropOffset"`
-	ISO                      int64   `json:"ISO"`
-	MeteringMode             int64   `json:"MeteringMode"`
-	SceneCaptureType         int64   `json:"SceneCaptureType"`
-	ShutterSpeedValue        float64 `json:"ShutterSpeedValue"`
-	SubSecTime               string  `json:"SubSecTime"`
-	WhiteBalance             int64   `json:"WhiteBalance"`
+	ApertureValue            float64        `json:"ApertureValue"`
+	BrightnessValue          float64        `json:"BrightnessValue"`
+	ColorSpace               int64          `json:"ColorSpace"`
+	CreateDate               string         `json:"CreateDate"`
+	CustomRendered           int64          `json:"CustomRendered"`
+	DateTimeOriginal         string         `json:"DateTimeOriginal"`
+	ExifImageHeight          int64          `json:"ExifImageHeight"`
+	ExifImageWidth           int64          `json:"ExifImageWidth"`
+	ExifVersion              string         `json:"ExifVersion"`
+	ExposureCompensation     float64        `json:"ExposureCompensation"`
+	ExposureMode             int64          `json:"ExposureMode"`
+	ExposureProgram          int64          `json:"ExposureProgram"`
+	ExposureTime             float64        `json:"ExposureTime"`
+	Flash                    int64          `json:"Flash"`
+	FlashpixVersion          string         `json:"FlashpixVersion"`
+	FNumber                  float64        `json:"FNumber"`
+	FocalLength              float64        `json:"FocalLength"`
+	FocalLengthIn35mmFormat  int64          `json:"FocalLengthIn35mmFormat"`
+	FocalPlaneResolutionUnit int64          `json:"FocalPlaneResolutionUnit"`
+	FocalPlaneXResolution    float64        `json:"FocalPlaneXResolution"`
+	FocalPlaneYResolution    float64        `json:"FocalPlaneYResolution"`
+	InteropOffset            int64          `json:"InteropOffset"`
+	ISO                      int64          `json:"ISO"`
+	LensModel                string         `json:"LensModel"`
+	LightSource              int64          `json:"LightSource"`
+	MaxApertureValue         float64        `json:"MaxApertureValue"`
+	MeteringMode             int64          `json:"MeteringMode"`
+	SceneCaptureType         int64          `json:"SceneCaptureType"`
+	SceneType                string         `json:"SceneType"`
+	SensingMethod            int64          `json:"SensingMethod"`
+	ShutterSpeedValue        float64        `json:"ShutterSpeedValue"`
+	SubSecTime               string         `json:"SubSecTime"`
+	UserComment              string         `json:"UserComment"`
+	WhiteBalance             int64          `json:"WhiteBalance"`
+	ExtraFields              map[string]any `json:"" api:"extrafields"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ApertureValue            respjson.Field
+		BrightnessValue          respjson.Field
 		ColorSpace               respjson.Field
 		CreateDate               respjson.Field
 		CustomRendered           respjson.Field
@@ -474,15 +486,22 @@ type MetadataExifExif struct {
 		FlashpixVersion          respjson.Field
 		FNumber                  respjson.Field
 		FocalLength              respjson.Field
+		FocalLengthIn35mmFormat  respjson.Field
 		FocalPlaneResolutionUnit respjson.Field
 		FocalPlaneXResolution    respjson.Field
 		FocalPlaneYResolution    respjson.Field
 		InteropOffset            respjson.Field
 		ISO                      respjson.Field
+		LensModel                respjson.Field
+		LightSource              respjson.Field
+		MaxApertureValue         respjson.Field
 		MeteringMode             respjson.Field
 		SceneCaptureType         respjson.Field
+		SceneType                respjson.Field
+		SensingMethod            respjson.Field
 		ShutterSpeedValue        respjson.Field
 		SubSecTime               respjson.Field
+		UserComment              respjson.Field
 		WhiteBalance             respjson.Field
 		ExtraFields              map[string]respjson.Field
 		raw                      string
@@ -497,12 +516,33 @@ func (r *MetadataExifExif) UnmarshalJSON(data []byte) error {
 
 // Object containing GPS information.
 type MetadataExifGps struct {
-	GpsVersionID []int64 `json:"GPSVersionID"`
+	GpsAltitude        float64        `json:"GPSAltitude"`
+	GpsAltitudeRef     int64          `json:"GPSAltitudeRef"`
+	GpsDateStamp       string         `json:"GPSDateStamp"`
+	GpsImgDirection    float64        `json:"GPSImgDirection"`
+	GpsImgDirectionRef string         `json:"GPSImgDirectionRef"`
+	GpsLatitude        []float64      `json:"GPSLatitude"`
+	GpsLatitudeRef     string         `json:"GPSLatitudeRef"`
+	GpsLongitude       []float64      `json:"GPSLongitude"`
+	GpsLongitudeRef    string         `json:"GPSLongitudeRef"`
+	GpsTimeStamp       []float64      `json:"GPSTimeStamp"`
+	GpsVersionID       []int64        `json:"GPSVersionID"`
+	ExtraFields        map[string]any `json:"" api:"extrafields"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		GpsVersionID respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
+		GpsAltitude        respjson.Field
+		GpsAltitudeRef     respjson.Field
+		GpsDateStamp       respjson.Field
+		GpsImgDirection    respjson.Field
+		GpsImgDirectionRef respjson.Field
+		GpsLatitude        respjson.Field
+		GpsLatitudeRef     respjson.Field
+		GpsLongitude       respjson.Field
+		GpsLongitudeRef    respjson.Field
+		GpsTimeStamp       respjson.Field
+		GpsVersionID       respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
 	} `json:"-"`
 }
 
@@ -514,21 +554,28 @@ func (r *MetadataExifGps) UnmarshalJSON(data []byte) error {
 
 // Object containing EXIF image information.
 type MetadataExifImage struct {
-	ExifOffset       int64  `json:"ExifOffset"`
-	GpsInfo          int64  `json:"GPSInfo"`
-	Make             string `json:"Make"`
-	Model            string `json:"Model"`
-	ModifyDate       string `json:"ModifyDate"`
-	Orientation      int64  `json:"Orientation"`
-	ResolutionUnit   int64  `json:"ResolutionUnit"`
-	Software         string `json:"Software"`
-	XResolution      int64  `json:"XResolution"`
-	YCbCrPositioning int64  `json:"YCbCrPositioning"`
-	YResolution      int64  `json:"YResolution"`
+	Artist           string         `json:"Artist"`
+	Copyright        string         `json:"Copyright"`
+	ExifOffset       int64          `json:"ExifOffset"`
+	GpsInfo          int64          `json:"GPSInfo"`
+	ImageDescription string         `json:"ImageDescription"`
+	Make             string         `json:"Make"`
+	Model            string         `json:"Model"`
+	ModifyDate       string         `json:"ModifyDate"`
+	Orientation      int64          `json:"Orientation"`
+	ResolutionUnit   int64          `json:"ResolutionUnit"`
+	Software         string         `json:"Software"`
+	XResolution      float64        `json:"XResolution"`
+	YCbCrPositioning int64          `json:"YCbCrPositioning"`
+	YResolution      float64        `json:"YResolution"`
+	ExtraFields      map[string]any `json:"" api:"extrafields"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Artist           respjson.Field
+		Copyright        respjson.Field
 		ExifOffset       respjson.Field
 		GpsInfo          respjson.Field
+		ImageDescription respjson.Field
 		Make             respjson.Field
 		Model            respjson.Field
 		ModifyDate       respjson.Field
@@ -551,8 +598,9 @@ func (r *MetadataExifImage) UnmarshalJSON(data []byte) error {
 
 // JSON object.
 type MetadataExifInteroperability struct {
-	InteropIndex   string `json:"InteropIndex"`
-	InteropVersion string `json:"InteropVersion"`
+	InteropIndex   string         `json:"InteropIndex"`
+	InteropVersion string         `json:"InteropVersion"`
+	ExtraFields    map[string]any `json:"" api:"extrafields"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		InteropIndex   respjson.Field
@@ -570,12 +618,13 @@ func (r *MetadataExifInteroperability) UnmarshalJSON(data []byte) error {
 
 // Object containing Thumbnail information.
 type MetadataExifThumbnail struct {
-	Compression     int64 `json:"Compression"`
-	ResolutionUnit  int64 `json:"ResolutionUnit"`
-	ThumbnailLength int64 `json:"ThumbnailLength"`
-	ThumbnailOffset int64 `json:"ThumbnailOffset"`
-	XResolution     int64 `json:"XResolution"`
-	YResolution     int64 `json:"YResolution"`
+	Compression     int64          `json:"Compression"`
+	ResolutionUnit  int64          `json:"ResolutionUnit"`
+	ThumbnailLength int64          `json:"ThumbnailLength"`
+	ThumbnailOffset int64          `json:"ThumbnailOffset"`
+	XResolution     float64        `json:"XResolution"`
+	YResolution     float64        `json:"YResolution"`
+	ExtraFields     map[string]any `json:"" api:"extrafields"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Compression     respjson.Field
