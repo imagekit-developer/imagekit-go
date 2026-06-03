@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.6.3](https://github.com/imagekit-developer/imagekit-go/compare/v2.6.2...v2.6.3) (2026-06-03)
+
+
+### Bug Fixes
+
+* metadata response shape ([5be896c](https://github.com/imagekit-developer/imagekit-go/commit/5be896c3c46690861ab8f7beeb4debacfe08fb4f))
+
 ## [2.6.2](https://github.com/imagekit-developer/imagekit-go/compare/v2.6.1...v2.6.2) (2026-05-25)
 
 
