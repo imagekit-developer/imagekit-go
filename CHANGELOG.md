@@ -1,5 +1,18 @@
 # Changelog
 
+## 2.7.0 (2026-06-03)
+
+Full Changelog: [v2.6.2...v2.7.0](https://github.com/imagekit-developer/imagekit-go/compare/v2.6.2...v2.7.0)
+
+### Bug Fixes
+
+* metadata response shape ([5be896c](https://github.com/imagekit-developer/imagekit-go/commit/5be896c3c46690861ab8f7beeb4debacfe08fb4f))
+
+
+### Chores
+
+* pin next release ([68a6171](https://github.com/imagekit-developer/imagekit-go/commit/68a61719bba21e4d4297c1d049bcbe222836e176))
+
 ## [2.6.2](https://github.com/imagekit-developer/imagekit-go/compare/v2.6.1...v2.6.2) (2026-05-25)
 
 
