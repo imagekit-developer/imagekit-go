@@ -37,6 +37,7 @@ func TestAccountOriginNewWithOptionalParams(t *testing.T) {
 				BaseURLForCanonicalHeader: imagekit.String("https://cdn.example.com"),
 				IncludeCanonicalHeader:    imagekit.Bool(false),
 				Prefix:                    imagekit.String("images"),
+				UseIamRole:                imagekit.Bool(true),
 			},
 		},
 	})
@@ -76,6 +77,7 @@ func TestAccountOriginUpdateWithOptionalParams(t *testing.T) {
 					BaseURLForCanonicalHeader: imagekit.String("https://cdn.example.com"),
 					IncludeCanonicalHeader:    imagekit.Bool(false),
 					Prefix:                    imagekit.String("images"),
+					UseIamRole:                imagekit.Bool(true),
 				},
 			},
 		},

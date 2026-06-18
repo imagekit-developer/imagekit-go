@@ -399,6 +399,16 @@ func (u OriginRequestUnionParam) GetPrefix() *string {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
+func (u OriginRequestUnionParam) GetUseIamRole() *bool {
+	if vt := u.OfS3; vt != nil && vt.UseIamRole.Valid() {
+		return &vt.UseIamRole.Value
+	} else if vt := u.OfCloudinaryBackup; vt != nil && vt.UseIamRole.Valid() {
+		return &vt.UseIamRole.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
 func (u OriginRequestUnionParam) GetBaseURL() *string {
 	if vt := u.OfWebFolder; vt != nil {
 		return (*string)(&vt.BaseURL)
@@ -424,13 +434,13 @@ func init() {
 
 // The properties AccessKey, Bucket, Name, SecretKey, Type are required.
 type OriginRequestS3Param struct {
-	// Access key for the bucket.
+	// Access key for the bucket. When `useIAMRole` is `true`, send an empty string.
 	AccessKey string `json:"accessKey" api:"required"`
 	// S3 bucket name.
 	Bucket string `json:"bucket" api:"required"`
 	// Display name of the origin.
 	Name string `json:"name" api:"required"`
-	// Secret key for the bucket.
+	// Secret key for the bucket. When `useIAMRole` is `true`, send an empty string.
 	SecretKey string `json:"secretKey" api:"required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader param.Opt[string] `json:"baseUrlForCanonicalHeader,omitzero" format:"uri"`
@@ -438,6 +448,9 @@ type OriginRequestS3Param struct {
 	IncludeCanonicalHeader param.Opt[bool] `json:"includeCanonicalHeader,omitzero"`
 	// Path prefix inside the bucket.
 	Prefix param.Opt[string] `json:"prefix,omitzero"`
+	// Use IAM role for authentication instead of access/secret keys. When set to
+	// `true`, send an empty string for both `accessKey` and `secretKey`.
+	UseIamRole param.Opt[bool] `json:"useIAMRole,omitzero"`
 	// This field can be elided, and will marshal its zero value as "S3".
 	Type constant.S3 `json:"type" default:"S3"`
 	paramObj
@@ -486,13 +499,13 @@ func (r *OriginRequestS3CompatibleParam) UnmarshalJSON(data []byte) error {
 
 // The properties AccessKey, Bucket, Name, SecretKey, Type are required.
 type OriginRequestCloudinaryBackupParam struct {
-	// Access key for the bucket.
+	// Access key for the bucket. When `useIAMRole` is `true`, send an empty string.
 	AccessKey string `json:"accessKey" api:"required"`
 	// S3 bucket name.
 	Bucket string `json:"bucket" api:"required"`
 	// Display name of the origin.
 	Name string `json:"name" api:"required"`
-	// Secret key for the bucket.
+	// Secret key for the bucket. When `useIAMRole` is `true`, send an empty string.
 	SecretKey string `json:"secretKey" api:"required"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader param.Opt[string] `json:"baseUrlForCanonicalHeader,omitzero" format:"uri"`
@@ -500,6 +513,9 @@ type OriginRequestCloudinaryBackupParam struct {
 	IncludeCanonicalHeader param.Opt[bool] `json:"includeCanonicalHeader,omitzero"`
 	// Path prefix inside the bucket.
 	Prefix param.Opt[string] `json:"prefix,omitzero"`
+	// Use IAM role for authentication instead of access/secret keys. When set to
+	// `true`, send an empty string for both `accessKey` and `secretKey`.
+	UseIamRole param.Opt[bool] `json:"useIAMRole,omitzero"`
 	// This field can be elided, and will marshal its zero value as
 	// "CLOUDINARY_BACKUP".
 	Type constant.CloudinaryBackup `json:"type" default:"CLOUDINARY_BACKUP"`
@@ -661,6 +677,7 @@ type OriginResponseUnion struct {
 	// "GCS", "AZURE_BLOB", "AKENEO_PIM".
 	Type                      string `json:"type"`
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader"`
+	UseIamRole                bool   `json:"useIAMRole"`
 	// This field is from variant [OriginResponseS3Compatible].
 	Endpoint string `json:"endpoint"`
 	// This field is from variant [OriginResponseS3Compatible].
@@ -682,6 +699,7 @@ type OriginResponseUnion struct {
 		Prefix                    respjson.Field
 		Type                      respjson.Field
 		BaseURLForCanonicalHeader respjson.Field
+		UseIamRole                respjson.Field
 		Endpoint                  respjson.Field
 		S3ForcePathStyle          respjson.Field
 		BaseURL                   respjson.Field
@@ -806,6 +824,9 @@ type OriginResponseS3 struct {
 	Type   constant.S3 `json:"type" default:"S3"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
+	// Whether the origin authenticates using an IAM role instead of access/secret
+	// keys.
+	UseIamRole bool `json:"useIAMRole"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                        respjson.Field
@@ -815,6 +836,7 @@ type OriginResponseS3 struct {
 		Prefix                    respjson.Field
 		Type                      respjson.Field
 		BaseURLForCanonicalHeader respjson.Field
+		UseIamRole                respjson.Field
 		ExtraFields               map[string]respjson.Field
 		raw                       string
 	} `json:"-"`
@@ -882,6 +904,9 @@ type OriginResponseCloudinaryBackup struct {
 	Type   constant.CloudinaryBackup `json:"type" default:"CLOUDINARY_BACKUP"`
 	// URL used in the Canonical header (if enabled).
 	BaseURLForCanonicalHeader string `json:"baseUrlForCanonicalHeader" format:"uri"`
+	// Whether the origin authenticates using an IAM role instead of access/secret
+	// keys.
+	UseIamRole bool `json:"useIAMRole"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                        respjson.Field
@@ -891,6 +916,7 @@ type OriginResponseCloudinaryBackup struct {
 		Prefix                    respjson.Field
 		Type                      respjson.Field
 		BaseURLForCanonicalHeader respjson.Field
+		UseIamRole                respjson.Field
 		ExtraFields               map[string]respjson.Field
 		raw                       string
 	} `json:"-"`
