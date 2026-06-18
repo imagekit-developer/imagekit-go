@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.8.0](https://github.com/imagekit-developer/imagekit-go/compare/v2.7.0...v2.8.0) (2026-06-18)
+
+
+### Features
+
+* **origins:** add useIAMRole for IAM role authentication ([34f8f15](https://github.com/imagekit-developer/imagekit-go/commit/34f8f15be0b63893d7bd6f2fb6f2f8ce748ce66c))
+
+
+### Documentation
+
+* update default value in description for intensity in colorize transformation ([85e9647](https://github.com/imagekit-developer/imagekit-go/commit/85e9647dd18471d842d7b3b279bb506c76f10006))
+
 ## 2.7.0 (2026-06-03)
 
 Full Changelog: [v2.6.2...v2.7.0](https://github.com/imagekit-developer/imagekit-go/compare/v2.6.2...v2.7.0)
