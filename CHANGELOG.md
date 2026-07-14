@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.9.0](https://github.com/imagekit-developer/imagekit-go/compare/v2.8.0...v2.9.0) (2026-07-14)
+
+
+### Features
+
+* **api:** add usage analytics breakdown endpoint ([1234da9](https://github.com/imagekit-developer/imagekit-go/commit/1234da9a7a71e7480f2c6fae56c86ec4882bcb08))
+
 ## [2.8.0](https://github.com/imagekit-developer/imagekit-go/compare/v2.7.0...v2.8.0) (2026-06-18)
 
 
