@@ -191,6 +191,17 @@ Methods:
 
 - <code title="get /v1/accounts/usage">client.Accounts.Usage.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#AccountUsageService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2">imagekit</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#AccountUsageGetParams">AccountUsageGetParams</a>) (\*<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2">imagekit</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#AccountUsageGetResponse">AccountUsageGetResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
+## UsageAnalytics
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2">imagekit</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#RequestBandwidthEntry">RequestBandwidthEntry</a>
+- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2">imagekit</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#UsageAnalyticsResponse">UsageAnalyticsResponse</a>
+
+Methods:
+
+- <code title="get /v1/accounts/usage-analytics">client.Accounts.UsageAnalytics.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#AccountUsageAnalyticsService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2">imagekit</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#AccountUsageAnalyticsGetParams">AccountUsageAnalyticsGetParams</a>) (\*<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2">imagekit</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#UsageAnalyticsResponse">UsageAnalyticsResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
 ## Origins
 
 Params Types:
