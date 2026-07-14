@@ -13,10 +13,11 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewAccountService] method instead.
 type AccountService struct {
-	Options      []option.RequestOption
-	Usage        AccountUsageService
-	Origins      AccountOriginService
-	URLEndpoints AccountURLEndpointService
+	Options        []option.RequestOption
+	Usage          AccountUsageService
+	UsageAnalytics AccountUsageAnalyticsService
+	Origins        AccountOriginService
+	URLEndpoints   AccountURLEndpointService
 }
 
 // NewAccountService generates a new service that applies the given options to each
@@ -26,6 +27,7 @@ func NewAccountService(opts ...option.RequestOption) (r AccountService) {
 	r = AccountService{}
 	r.Options = opts
 	r.Usage = NewAccountUsageService(opts...)
+	r.UsageAnalytics = NewAccountUsageAnalyticsService(opts...)
 	r.Origins = NewAccountOriginService(opts...)
 	r.URLEndpoints = NewAccountURLEndpointService(opts...)
 	return
