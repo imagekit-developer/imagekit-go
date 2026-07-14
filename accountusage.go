@@ -39,6 +39,12 @@ func NewAccountUsageService(opts ...option.RequestOption) (r AccountUsageService
 // includes data from the start date while excluding data from the end date. In
 // other words, the data covers the period starting from the specified start date
 // up to, but not including, the end date.
+//
+// For an agency account, the returned usage is aggregated across the agency and
+// all of its child accounts that are billed to it.
+//
+// The response is cached for 6 hours per account, date range and requested
+// metrics.
 func (r *AccountUsageService) Get(ctx context.Context, query AccountUsageGetParams, opts ...option.RequestOption) (res *AccountUsageGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/accounts/usage"
