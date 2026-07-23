@@ -415,13 +415,7 @@ func (r *CustomMetadataFieldNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The property Type is required.
 type CustomMetadataFieldNewParamsSchema struct {
-	// Type of the custom metadata field.
-	//
-	// Any of "Text", "Textarea", "Number", "Date", "Boolean", "SingleSelect",
-	// "MultiSelect".
-	Type string `json:"type,omitzero" api:"required"`
 	// Sets this custom metadata field as required. Setting custom metadata fields on
 	// an asset will throw error if the value for all required fields are not present
 	// in upload or update asset API request body.
@@ -447,6 +441,11 @@ type CustomMetadataFieldNewParamsSchema struct {
 	// An array of allowed values. This property is only required if `type` property is
 	// set to `SingleSelect` or `MultiSelect`.
 	SelectOptions []CustomMetadataFieldNewParamsSchemaSelectOptionUnion `json:"selectOptions,omitzero"`
+	// Type of the custom metadata field.
+	//
+	// Any of "Text", "Textarea", "Number", "Date", "Boolean", "SingleSelect",
+	// "MultiSelect".
+	Type string `json:"type,omitzero"`
 	paramObj
 }
 

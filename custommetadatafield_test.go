@@ -31,7 +31,6 @@ func TestCustomMetadataFieldNewWithOptionalParams(t *testing.T) {
 		Label: "price",
 		Name:  "price",
 		Schema: imagekit.CustomMetadataFieldNewParamsSchema{
-			Type: "Number",
 			DefaultValue: imagekit.CustomMetadataFieldNewParamsSchemaDefaultValueUnion{
 				OfMixed: []imagekit.CustomMetadataFieldNewParamsSchemaDefaultValueMixedItemUnion{{
 					OfBool: imagekit.Bool(true),
@@ -63,6 +62,7 @@ func TestCustomMetadataFieldNewWithOptionalParams(t *testing.T) {
 			}, {
 				OfBool: imagekit.Bool(true),
 			}},
+			Type: "Number",
 		},
 	})
 	if err != nil {
