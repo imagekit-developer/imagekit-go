@@ -376,6 +376,14 @@ type GetImageAttributesOptionsParam = shared.GetImageAttributesOptionsParam
 // This is an alias to an internal type.
 type ImageOverlayParam = shared.ImageOverlayParam
 
+// A named transformation is an alias for an actual transformation string, allowing
+// you to apply and later update complex transformations without changing your
+// image or video URLs. Learn more about
+// [named transformations](https://imagekit.io/docs/transformations#named-transformations).
+//
+// This is an alias to an internal type.
+type NamedTransformation = shared.NamedTransformation
+
 // Specifies an overlay to be applied on the parent image or video. ImageKit
 // supports overlays including images, text, videos, subtitles, and solid colors.
 // See
