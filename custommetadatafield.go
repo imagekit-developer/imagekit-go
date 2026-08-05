@@ -49,7 +49,8 @@ func (r *CustomMetadataFieldService) New(ctx context.Context, body CustomMetadat
 	return res, err
 }
 
-// This API updates the label or schema of an existing custom metadata field.
+// This API updates the label, description, or schema of an existing custom
+// metadata field.
 func (r *CustomMetadataFieldService) Update(ctx context.Context, id string, body CustomMetadataFieldUpdateParams, opts ...option.RequestOption) (res *CustomMetadataField, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -102,12 +103,17 @@ type CustomMetadataField struct {
 	Name string `json:"name" api:"required"`
 	// An object that describes the rules for the custom metadata field value.
 	Schema CustomMetadataFieldSchema `json:"schema" api:"required"`
+	// Optional description of the custom metadata field. Only present when a
+	// description has been set. Shown as a hint to the users while setting the field's
+	// value on an asset in the media library UI.
+	Description string `json:"description"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
 		Label       respjson.Field
 		Name        respjson.Field
 		Schema      respjson.Field
+		Description respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -404,6 +410,10 @@ type CustomMetadataFieldNewParams struct {
 	// (including deleted) custom metadata fields.
 	Name   string                             `json:"name" api:"required"`
 	Schema CustomMetadataFieldNewParamsSchema `json:"schema,omitzero" api:"required"`
+	// Optional description for the custom metadata field. Can be up to 500 characters.
+	// This is shown as a hint to the users while setting the field's value on an asset
+	// in the media library UI.
+	Description param.Opt[string] `json:"description,omitzero"`
 	paramObj
 }
 
@@ -602,6 +612,11 @@ func (u *CustomMetadataFieldNewParamsSchemaSelectOptionUnion) asAny() any {
 }
 
 type CustomMetadataFieldUpdateParams struct {
+	// Optional description for the custom metadata field. Can be up to 500 characters.
+	// Send an empty string to clear an existing description. This is shown as a hint
+	// to the users while setting the field's value on an asset in the media library
+	// UI.
+	Description param.Opt[string] `json:"description,omitzero"`
 	// Human readable name of the custom metadata field. This should be unique across
 	// all non deleted custom metadata fields. This name is displayed as form field
 	// label to the users while setting field value on an asset in the media library
