@@ -60,7 +60,7 @@ func TestNamedTransformationUpdateWithOptionalParams(t *testing.T) {
 		"id",
 		imagekit.NamedTransformationUpdateParams{
 			Enabled:        imagekit.Bool(true),
-			Name:           imagekit.String("small_thumbnail_v2"),
+			Name:           imagekit.String("small_thumbnail"),
 			Transformation: imagekit.String("w-200,h-200,fo-center,cm-resize"),
 		},
 	)
