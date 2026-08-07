@@ -43,6 +43,9 @@ func NewNamedTransformationService(opts ...option.RequestOption) (r NamedTransfo
 //
 // Learn more about
 // [named transformations](https://imagekit.io/docs/transformations#named-transformations).
+//
+// **Note:** You can create up to 250 named transformations per account. Once this
+// limit is reached, the request fails with a `400` error.
 func (r *NamedTransformationService) New(ctx context.Context, body NamedTransformationNewParams, opts ...option.RequestOption) (res *shared.NamedTransformation, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "v1/named-transformations"
@@ -53,6 +56,17 @@ func (r *NamedTransformationService) New(ctx context.Context, body NamedTransfor
 // Updates the named transformation identified by `id` and returns the updated
 // object. Only the fields present in the request body are updated; omitted fields
 // are left unchanged.
+//
+// **Note:**
+//
+//   - If you rename this named transformation, or set `enabled` to `false`, and
+//     another _enabled_ named transformation, or your account's upload
+//     pre-transformation/post-transformation settings, reference it (via the
+//     `n-<name>` token), the request fails with a `409` error whose `message`
+//     describes what it is referenced by. A reference from a named transformation
+//     that is itself disabled does not block this request. Remove or disable those
+//     references first, then retry. This is a best-effort check and cannot detect
+//     references baked into your own application code or previously generated URLs.
 func (r *NamedTransformationService) Update(ctx context.Context, id string, body NamedTransformationUpdateParams, opts ...option.RequestOption) (res *shared.NamedTransformation, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -77,13 +91,14 @@ func (r *NamedTransformationService) List(ctx context.Context, opts ...option.Re
 //
 // **Note:**
 //
-//   - If another named transformation, or your account's upload
+//   - If another _enabled_ named transformation, or your account's upload
 //     pre-transformation/post-transformation settings, reference this named
 //     transformation (via the `n-<name>` token), the request fails with a `409`
-//     error whose `message` describes what it is referenced by. Remove those
-//     references first, then retry the deletion. This is a best-effort check and
-//     cannot detect references baked into your own application code or previously
-//     generated URLs.
+//     error whose `message` describes what it is referenced by. A reference from a
+//     named transformation that is itself disabled does not block this request.
+//     Remove or disable those references first, then retry the deletion. This is a
+//     best-effort check and cannot detect references baked into your own application
+//     code or previously generated URLs.
 func (r *NamedTransformationService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *shared.NamedTransformation, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -110,18 +125,21 @@ func (r *NamedTransformationService) Get(ctx context.Context, id string, opts ..
 type NamedTransformationNewParams struct {
 	// Name of the named transformation. This is the alias used to refer to the
 	// transformation string in image and video URLs, for example `tr:n-<name>`. Can
-	// only contain alphanumeric characters, `_` and `-`, and must be unique for your
-	// account (case-insensitive).
+	// only contain alphanumeric characters or `_` (hyphens are not allowed), and must
+	// be unique for your account. Name matching is case-sensitive, so
+	// `Small_Thumbnail` and `small_thumbnail` are treated as different names.
 	Name string `json:"name" api:"required"`
-	// The transformation string this name refers to. It must start with `tr:` followed
-	// by one or more transformation parameters, for example
-	// `tr:w-150,h-150,fo-center,cm-resize`. Learn more about the
+	// The transformation this name refers to, expressed as one or more comma-separated
+	// transformation parameters, for example `w-150,h-150,fo-center,cm-resize`. You do
+	// not need to prefix this with `tr:` — it is added automatically. If you do
+	// include it, it must appear in lowercase at the start of the string, or the
+	// request is rejected. Learn more about the
 	// [transformation syntax](https://imagekit.io/docs/transformations).
 	Transformation string `json:"transformation" api:"required"`
-	// Whether this named transformation is disabled. Set to `true` to temporarily
+	// Whether this named transformation is enabled. Set to `false` to temporarily
 	// disable it without deleting it — requests using a disabled named transformation
 	// fail at delivery time.
-	Disabled param.Opt[bool] `json:"disabled,omitzero"`
+	Enabled param.Opt[bool] `json:"enabled,omitzero"`
 	paramObj
 }
 
@@ -134,13 +152,18 @@ func (r *NamedTransformationNewParams) UnmarshalJSON(data []byte) error {
 }
 
 type NamedTransformationUpdateParams struct {
-	// Whether this named transformation is disabled.
-	Disabled param.Opt[bool] `json:"disabled,omitzero"`
+	// Whether this named transformation is enabled. If omitted, the existing value is
+	// left unchanged.
+	Enabled param.Opt[bool] `json:"enabled,omitzero"`
 	// Updated name of the named transformation. Can only contain alphanumeric
-	// characters, `_` and `-`, and must be unique for your account (case-insensitive).
+	// characters and `_`, and must be unique for your account. Name matching is
+	// case-sensitive, so `Small_Thumbnail` and `small_thumbnail` are treated as
+	// different names.
 	Name param.Opt[string] `json:"name,omitzero"`
-	// Updated transformation string. It must start with `tr:` followed by one or more
-	// transformation parameters.
+	// Updated transformation, expressed as one or more comma-separated transformation
+	// parameters. You do not need to prefix this with `tr:` — it is added
+	// automatically. If you do include it, it must appear in lowercase at the start of
+	// the string, or the request is rejected.
 	Transformation param.Opt[string] `json:"transformation,omitzero"`
 	paramObj
 }
