@@ -13,7 +13,6 @@ import (
 	"github.com/imagekit-developer/imagekit-go/v2/internal/requestconfig"
 	"github.com/imagekit-developer/imagekit-go/v2/option"
 	"github.com/imagekit-developer/imagekit-go/v2/packages/param"
-	"github.com/imagekit-developer/imagekit-go/v2/packages/respjson"
 	"github.com/imagekit-developer/imagekit-go/v2/shared"
 )
 
@@ -84,15 +83,16 @@ func (r *NamedTransformationService) List(ctx context.Context, opts ...option.Re
 // referenced (via the `n-<name>` token) by an upload pre-transformation or
 // post-transformation setting. This check is best-effort and can't detect
 // references in your own application code or in previously generated URLs.
-func (r *NamedTransformationService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *NamedTransformationDeleteResponse, err error) {
+func (r *NamedTransformationService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return nil, err
+		return err
 	}
 	path := fmt.Sprintf("v1/named-transformations/%s", id)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return res, err
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
+	return err
 }
 
 // Retrieves the named transformation identified by `id`.
@@ -105,20 +105,6 @@ func (r *NamedTransformationService) Get(ctx context.Context, id string, opts ..
 	path := fmt.Sprintf("v1/named-transformations/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
-}
-
-type NamedTransformationDeleteResponse struct {
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r NamedTransformationDeleteResponse) RawJSON() string { return r.JSON.raw }
-func (r *NamedTransformationDeleteResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
 }
 
 type NamedTransformationNewParams struct {

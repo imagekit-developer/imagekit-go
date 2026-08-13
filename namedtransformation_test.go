@@ -111,7 +111,7 @@ func TestNamedTransformationDelete(t *testing.T) {
 		option.WithPrivateKey("My Private Key"),
 		option.WithPassword("My Password"),
 	)
-	_, err := client.NamedTransformations.Delete(context.TODO(), "6bZ9x2ZUx")
+	err := client.NamedTransformations.Delete(context.TODO(), "6bZ9x2ZUx")
 	if err != nil {
 		var apierr *imagekit.Error
 		if errors.As(err, &apierr) {
