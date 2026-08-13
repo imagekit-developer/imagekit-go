@@ -13,6 +13,7 @@ import (
 	"github.com/imagekit-developer/imagekit-go/v2/internal/requestconfig"
 	"github.com/imagekit-developer/imagekit-go/v2/option"
 	"github.com/imagekit-developer/imagekit-go/v2/packages/param"
+	"github.com/imagekit-developer/imagekit-go/v2/packages/respjson"
 	"github.com/imagekit-developer/imagekit-go/v2/shared"
 )
 
@@ -77,14 +78,13 @@ func (r *NamedTransformationService) List(ctx context.Context, opts ...option.Re
 	return res, err
 }
 
-// Permanently deletes the named transformation identified by `id` and returns the
-// deleted object.
+// Permanently deletes the named transformation identified by `id`.
 //
 // Deletion fails with a `409` error if the named transformation is still
 // referenced (via the `n-<name>` token) by an upload pre-transformation or
 // post-transformation setting. This check is best-effort and can't detect
 // references in your own application code or in previously generated URLs.
-func (r *NamedTransformationService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *shared.NamedTransformation, err error) {
+func (r *NamedTransformationService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *NamedTransformationDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -107,21 +107,34 @@ func (r *NamedTransformationService) Get(ctx context.Context, id string, opts ..
 	return res, err
 }
 
+type NamedTransformationDeleteResponse struct {
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r NamedTransformationDeleteResponse) RawJSON() string { return r.JSON.raw }
+func (r *NamedTransformationDeleteResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type NamedTransformationNewParams struct {
 	// Alias for the transformation string, used in URLs as `tr:n-<name>`. Must contain
 	// only alphanumeric characters or `_` (no hyphens), and be unique for your
 	// account. Name matching is case-sensitive.
 	Name string `json:"name" api:"required"`
 	// The transformation string this name refers to, for example
-	// `w-150,h-150,fo-center,cm-resize`. The `tr:` prefix is optional — it's added
-	// automatically if missing, and validated if present. The string must be a valid
-	// ImageKit transformation and cannot itself reference another named transformation
-	// (no nesting). Learn more about the
+	// `w-150,h-150,fo-center,cm-resize`. The `tr:` prefix is optional; if present, it
+	// is validated. The string must be a valid ImageKit transformation and cannot
+	// itself reference another named transformation (no nesting). Learn more about the
 	// [transformation syntax](https://imagekit.io/docs/transformations).
 	Transformation string `json:"transformation" api:"required"`
-	// Whether the named transformation is enabled. Set to `false` to disable it
-	// without deleting it; requests using a disabled named transformation fail at
-	// delivery time.
+	// Whether the named transformation is currently enabled. When this is set to
+	// `false`, requests using such disabled named transformations fail at delivery
+	// time.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
 	paramObj
 }
@@ -143,10 +156,9 @@ type NamedTransformationUpdateParams struct {
 	// account. Name matching is case-sensitive.
 	Name param.Opt[string] `json:"name,omitzero"`
 	// The transformation string this name refers to, for example
-	// `w-150,h-150,fo-center,cm-resize`. The `tr:` prefix is optional — it's added
-	// automatically if missing, and validated if present. The string must be a valid
-	// ImageKit transformation and cannot itself reference another named transformation
-	// (no nesting). Learn more about the
+	// `w-150,h-150,fo-center,cm-resize`. The `tr:` prefix is optional; if present, it
+	// is validated. The string must be a valid ImageKit transformation and cannot
+	// itself reference another named transformation (no nesting). Learn more about the
 	// [transformation syntax](https://imagekit.io/docs/transformations).
 	Transformation param.Opt[string] `json:"transformation,omitzero"`
 	paramObj

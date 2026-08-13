@@ -57,9 +57,9 @@ func TestNamedTransformationUpdateWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.NamedTransformations.Update(
 		context.TODO(),
-		"id",
+		"6bZ9x2ZUx",
 		imagekit.NamedTransformationUpdateParams{
-			Enabled:        imagekit.Bool(true),
+			Enabled:        imagekit.Bool(false),
 			Name:           imagekit.String("small_thumbnail"),
 			Transformation: imagekit.String("w-200,h-200,fo-center,cm-resize"),
 		},
@@ -111,7 +111,7 @@ func TestNamedTransformationDelete(t *testing.T) {
 		option.WithPrivateKey("My Private Key"),
 		option.WithPassword("My Password"),
 	)
-	_, err := client.NamedTransformations.Delete(context.TODO(), "id")
+	_, err := client.NamedTransformations.Delete(context.TODO(), "6bZ9x2ZUx")
 	if err != nil {
 		var apierr *imagekit.Error
 		if errors.As(err, &apierr) {
@@ -135,7 +135,7 @@ func TestNamedTransformationGet(t *testing.T) {
 		option.WithPrivateKey("My Private Key"),
 		option.WithPassword("My Password"),
 	)
-	_, err := client.NamedTransformations.Get(context.TODO(), "id")
+	_, err := client.NamedTransformations.Get(context.TODO(), "6bZ9x2ZUx")
 	if err != nil {
 		var apierr *imagekit.Error
 		if errors.As(err, &apierr) {

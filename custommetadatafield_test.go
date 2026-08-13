@@ -64,6 +64,7 @@ func TestCustomMetadataFieldNewWithOptionalParams(t *testing.T) {
 				OfBool: imagekit.Bool(true),
 			}},
 		},
+		Description: imagekit.String("description"),
 	})
 	if err != nil {
 		var apierr *imagekit.Error
@@ -92,7 +93,8 @@ func TestCustomMetadataFieldUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		imagekit.CustomMetadataFieldUpdateParams{
-			Label: imagekit.String("price"),
+			Description: imagekit.String("description"),
+			Label:       imagekit.String("price"),
 			Schema: imagekit.CustomMetadataFieldUpdateParamsSchema{
 				DefaultValue: imagekit.CustomMetadataFieldUpdateParamsSchemaDefaultValueUnion{
 					OfMixed: []imagekit.CustomMetadataFieldUpdateParamsSchemaDefaultValueMixedItemUnion{{
