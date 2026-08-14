@@ -29,7 +29,7 @@ func TestNamedTransformationNewWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.NamedTransformations.New(context.TODO(), imagekit.NamedTransformationNewParams{
 		Name:           "small_thumbnail",
-		Transformation: "w-150,h-150,fo-center,cm-resize",
+		Transformation: "w-150,h-150,fo-center,cm-pad_resize",
 		Enabled:        imagekit.Bool(true),
 	})
 	if err != nil {
@@ -61,7 +61,7 @@ func TestNamedTransformationUpdateWithOptionalParams(t *testing.T) {
 		imagekit.NamedTransformationUpdateParams{
 			Enabled:        imagekit.Bool(false),
 			Name:           imagekit.String("small_thumbnail"),
-			Transformation: imagekit.String("w-200,h-200,fo-center,cm-resize"),
+			Transformation: imagekit.String("w-200,h-200,fo-center,cm-pad_resize"),
 		},
 	)
 	if err != nil {
