@@ -2774,19 +2774,19 @@ func (r ImageOverlayParam) MarshalJSON() (data []byte, err error) {
 // [named transformations](https://imagekit.io/docs/transformations#named-transformations).
 type NamedTransformation struct {
 	// Unique identifier for a named transformation.
-	ID string `json:"id"`
+	ID string `json:"id" api:"required"`
 	// ISO 8601 timestamp of when the named transformation was created.
-	CreatedAt time.Time `json:"createdAt" format:"date-time"`
+	CreatedAt time.Time `json:"createdAt" api:"required" format:"date-time"`
 	// Whether the named transformation is currently enabled. When set to `false`,
 	// requests using this named transformation fail at delivery time.
-	Enabled bool `json:"enabled"`
+	Enabled bool `json:"enabled" api:"required"`
 	// Alias for the transformation string, used in URLs as `tr:n-<name>`. This is
 	// case-sensitive, contains only alphanumeric characters or `_` (underscore), and
 	// is unique across all named transformations for your account.
-	Name string `json:"name"`
+	Name string `json:"name" api:"required"`
 	// The transformation string this named transformation refers to. Learn more about
 	// the [transformation string syntax](https://imagekit.io/docs/transformations).
-	Transformation string `json:"transformation"`
+	Transformation string `json:"transformation" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID             respjson.Field
