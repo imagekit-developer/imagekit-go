@@ -2,7 +2,7 @@
 
 <!-- x-release-please-start-version -->
 
-<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2"><img src="https://pkg.go.dev/badge/github.com/imagekit-developer/imagekit-go.svg" alt="Go Reference"></a>
+<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2"><img src="https://pkg.go.dev/badge/github.com/imagekit-developer/imagekit-go/v2.svg" alt="Go Reference"></a>
 
 <!-- x-release-please-end -->
 
