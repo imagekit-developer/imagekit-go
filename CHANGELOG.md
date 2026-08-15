@@ -1,5 +1,20 @@
 # Changelog
 
+## [2.10.0](https://github.com/imagekit-developer/imagekit-go/compare/v2.9.0...v2.10.0) (2026-08-15)
+
+
+### Features
+
+* add description field in custom metadata field api ([93eda73](https://github.com/imagekit-developer/imagekit-go/commit/93eda7331457cff9ff2bd7e881454082ef1d05b2))
+* **api:** Named Transformations ([1eb79b9](https://github.com/imagekit-developer/imagekit-go/commit/1eb79b934ffc9f58fdbbd3fc5d88280c29d66d81))
+
+
+### Chores
+
+* change default branch name ([2de9ed0](https://github.com/imagekit-developer/imagekit-go/commit/2de9ed02664d46f53d432a3f6f1983e6961906a5))
+* move to one repo structure ([266358d](https://github.com/imagekit-developer/imagekit-go/commit/266358dc9e6d1d4aa9d9d76d99e7ec6f1a9f4399))
+* pin next release ([7394624](https://github.com/imagekit-developer/imagekit-go/commit/7394624cd4188d641f45fa1348631f19acb95b91))
+
 ## [2.9.0](https://github.com/imagekit-developer/imagekit-go/compare/v2.8.0...v2.9.0) (2026-07-14)
 
 
