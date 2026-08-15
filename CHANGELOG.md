@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.10.1](https://github.com/imagekit-developer/imagekit-go/compare/v2.10.0...v2.10.1) (2026-08-15)
+
+
+### Documentation
+
+* restore generated pkg.go.dev badge URL ([c9cbc48](https://github.com/imagekit-developer/imagekit-go/commit/c9cbc4850e3126bf32f758cfb60bb2d0f4ce0c78))
+
 ## [2.10.0](https://github.com/imagekit-developer/imagekit-go/compare/v2.9.0...v2.10.0) (2026-08-15)
 
 
