@@ -4492,6 +4492,13 @@ type TransformationParam struct {
 	// Any of "pad_resize", "extract", "pad_extract", "pad_resize_no_enlarge",
 	// "pad_extract_no_shrink".
 	CropMode TransformationCropMode `json:"cropMode,omitzero"`
+	// Sets the output image density in dots per inch (DPI). Accepts an integer from 1
+	// to 1200 or an arithmetic expression using the `idn` variable, such as
+	// `idn_mul_2`. For raster images, this updates density metadata without changing
+	// dimensions. For vector images, it controls the DPI used during rasterization.
+	// Cannot be used inside layers. See
+	// [Density](https://imagekit.io/docs/image-optimization#density---dn).
+	Density TransformationDensityUnionParam `json:"density,omitzero"`
 	// Specifies the duration (in seconds) for trimming videos, e.g., `5` or `10.5`.
 	// Typically used with startOffset to indicate the length from the start offset.
 	// Arithmetic expressions are supported. See
@@ -4735,6 +4742,31 @@ const (
 	TransformationCropModePadResizeNoEnlarge TransformationCropMode = "pad_resize_no_enlarge"
 	TransformationCropModePadExtractNoShrink TransformationCropMode = "pad_extract_no_shrink"
 )
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type TransformationDensityUnionParam struct {
+	OfInt    param.Opt[int64]  `json:",omitzero,inline"`
+	OfString param.Opt[string] `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u TransformationDensityUnionParam) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfInt, u.OfString)
+}
+func (u *TransformationDensityUnionParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *TransformationDensityUnionParam) asAny() any {
+	if !param.IsOmitted(u.OfInt) {
+		return &u.OfInt.Value
+	} else if !param.IsOmitted(u.OfString) {
+		return &u.OfString.Value
+	}
+	return nil
+}
 
 // Only one field can be non-zero.
 //
