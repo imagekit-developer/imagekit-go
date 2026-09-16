@@ -1,5 +1,22 @@
 # Changelog
 
+## [2.11.0](https://github.com/imagekit-developer/imagekit-go/compare/v2.10.0...v2.11.0) (2026-09-16)
+
+
+### Features
+
+* serialize density as dn in SDK URL builders ([97372e8](https://github.com/imagekit-developer/imagekit-go/commit/97372e802a051dc73a5d967286f3f02f564928ad))
+
+
+### Chores
+
+* pin next release ([0602669](https://github.com/imagekit-developer/imagekit-go/commit/0602669d9fe821cc5590f1885cb45f1def2fbb36))
+
+
+### Documentation
+
+* restore generated pkg.go.dev badge URL ([c9cbc48](https://github.com/imagekit-developer/imagekit-go/commit/c9cbc4850e3126bf32f758cfb60bb2d0f4ce0c78))
+
 ## [2.10.0](https://github.com/imagekit-developer/imagekit-go/compare/v2.9.0...v2.10.0) (2026-08-15)
 
 
