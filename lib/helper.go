@@ -297,6 +297,15 @@ func (r *HelperService) buildTransformationStringInternal(transformation []share
 			}},
 			{"md", func() string { return r.getOptParamValue(currentTransform.Metadata) }},
 			{"cp", func() string { return r.getOptParamValue(currentTransform.ColorProfile) }},
+			{"dn", func() string {
+				if !param.IsOmitted(currentTransform.Density.OfInt) {
+					return fmt.Sprintf("%d", currentTransform.Density.OfInt.Value)
+				}
+				if !param.IsOmitted(currentTransform.Density.OfString) {
+					return currentTransform.Density.OfString.Value
+				}
+				return ""
+			}},
 			{"vc", func() string { return r.getEnumValue(string(currentTransform.VideoCodec)) }},
 			{"ac", func() string { return r.getEnumValue(string(currentTransform.AudioCodec)) }},
 			{"so", func() string {
