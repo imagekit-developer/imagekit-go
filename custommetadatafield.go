@@ -107,6 +107,9 @@ type CustomMetadataField struct {
 	// description has been set. Shown as a hint to the users while setting the field's
 	// value on an asset in the media library UI.
 	Description string `json:"description"`
+	// Present and set to `true` when the field is reserved. Omitted for regular
+	// fields. Reserved fields cannot be deleted.
+	Reserved bool `json:"reserved"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -114,6 +117,7 @@ type CustomMetadataField struct {
 		Name        respjson.Field
 		Schema      respjson.Field
 		Description respjson.Field
+		Reserved    respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`

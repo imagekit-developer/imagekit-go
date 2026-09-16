@@ -279,6 +279,9 @@ func WithPrivateKey(value string) RequestOption {
 func WithPassword(value string) RequestOption {
 	return requestconfig.PreRequestOptionFunc(func(r *requestconfig.RequestConfig) error {
 		r.Password = value
+		if r.Request == nil {
+			return nil
+		}
 		return r.Apply(WithHeader("authorization", fmt.Sprintf("Basic %s", base64.StdEncoding.EncodeToString([]byte(r.PrivateKey+":"+r.Password)))))
 	})
 }
