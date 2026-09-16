@@ -181,8 +181,11 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 					Crop:            shared.TransformationCropForce,
 					CropMode:        shared.TransformationCropModePadResize,
 					DefaultImage:    imagekit.String("defaultImage"),
-					Distort:         imagekit.String("distort"),
-					Dpr:             imagekit.Float(2),
+					Density: shared.TransformationDensityUnionParam{
+						OfInt: imagekit.Int(300),
+					},
+					Distort: imagekit.String("distort"),
+					Dpr:     imagekit.Float(2),
 					Duration: shared.TransformationDurationUnionParam{
 						OfFloat: imagekit.Float(0),
 					},
@@ -378,8 +381,11 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 				Crop:            shared.TransformationCropForce,
 				CropMode:        shared.TransformationCropModePadResize,
 				DefaultImage:    imagekit.String("defaultImage"),
-				Distort:         imagekit.String("distort"),
-				Dpr:             imagekit.Float(2),
+				Density: shared.TransformationDensityUnionParam{
+					OfInt: imagekit.Int(300),
+				},
+				Distort: imagekit.String("distort"),
+				Dpr:     imagekit.Float(2),
 				Duration: shared.TransformationDurationUnionParam{
 					OfFloat: imagekit.Float(0),
 				},
@@ -722,8 +728,11 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 				Crop:            shared.TransformationCropForce,
 				CropMode:        shared.TransformationCropModePadResize,
 				DefaultImage:    imagekit.String("defaultImage"),
-				Distort:         imagekit.String("distort"),
-				Dpr:             imagekit.Float(2),
+				Density: shared.TransformationDensityUnionParam{
+					OfInt: imagekit.Int(300),
+				},
+				Distort: imagekit.String("distort"),
+				Dpr:     imagekit.Float(2),
 				Duration: shared.TransformationDurationUnionParam{
 					OfFloat: imagekit.Float(0),
 				},
@@ -1022,8 +1031,11 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 			Crop:            shared.TransformationCropForce,
 			CropMode:        shared.TransformationCropModePadResize,
 			DefaultImage:    imagekit.String("defaultImage"),
-			Distort:         imagekit.String("distort"),
-			Dpr:             imagekit.Float(2),
+			Density: shared.TransformationDensityUnionParam{
+				OfInt: imagekit.Int(300),
+			},
+			Distort: imagekit.String("distort"),
+			Dpr:     imagekit.Float(2),
 			Duration: shared.TransformationDurationUnionParam{
 				OfFloat: imagekit.Float(0),
 			},
@@ -1213,8 +1225,11 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 				Crop:            shared.TransformationCropForce,
 				CropMode:        shared.TransformationCropModePadResize,
 				DefaultImage:    imagekit.String("defaultImage"),
-				Distort:         imagekit.String("distort"),
-				Dpr:             imagekit.Float(2),
+				Density: shared.TransformationDensityUnionParam{
+					OfInt: imagekit.Int(300),
+				},
+				Distort: imagekit.String("distort"),
+				Dpr:     imagekit.Float(2),
 				Duration: shared.TransformationDurationUnionParam{
 					OfFloat: imagekit.Float(0),
 				},

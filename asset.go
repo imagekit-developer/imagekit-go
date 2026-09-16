@@ -203,7 +203,8 @@ type AssetListParams struct {
 	//
 	// Any of "ASC_NAME", "DESC_NAME", "ASC_CREATED", "DESC_CREATED", "ASC_UPDATED",
 	// "DESC_UPDATED", "ASC_HEIGHT", "DESC_HEIGHT", "ASC_WIDTH", "DESC_WIDTH",
-	// "ASC_SIZE", "DESC_SIZE", "ASC_RELEVANCE", "DESC_RELEVANCE".
+	// "ASC_SIZE", "DESC_SIZE", "ASC_RELEVANCE", "DESC_RELEVANCE", "ASC_DURATION",
+	// "DESC_DURATION", "ASC_ORIGINAL_CREATION_DATE", "DESC_ORIGINAL_CREATION_DATE".
 	Sort AssetListParamsSort `query:"sort,omitzero" json:"-"`
 	// Filter results by asset type.
 	//
@@ -243,20 +244,24 @@ const (
 type AssetListParamsSort string
 
 const (
-	AssetListParamsSortAscName       AssetListParamsSort = "ASC_NAME"
-	AssetListParamsSortDescName      AssetListParamsSort = "DESC_NAME"
-	AssetListParamsSortAscCreated    AssetListParamsSort = "ASC_CREATED"
-	AssetListParamsSortDescCreated   AssetListParamsSort = "DESC_CREATED"
-	AssetListParamsSortAscUpdated    AssetListParamsSort = "ASC_UPDATED"
-	AssetListParamsSortDescUpdated   AssetListParamsSort = "DESC_UPDATED"
-	AssetListParamsSortAscHeight     AssetListParamsSort = "ASC_HEIGHT"
-	AssetListParamsSortDescHeight    AssetListParamsSort = "DESC_HEIGHT"
-	AssetListParamsSortAscWidth      AssetListParamsSort = "ASC_WIDTH"
-	AssetListParamsSortDescWidth     AssetListParamsSort = "DESC_WIDTH"
-	AssetListParamsSortAscSize       AssetListParamsSort = "ASC_SIZE"
-	AssetListParamsSortDescSize      AssetListParamsSort = "DESC_SIZE"
-	AssetListParamsSortAscRelevance  AssetListParamsSort = "ASC_RELEVANCE"
-	AssetListParamsSortDescRelevance AssetListParamsSort = "DESC_RELEVANCE"
+	AssetListParamsSortAscName                  AssetListParamsSort = "ASC_NAME"
+	AssetListParamsSortDescName                 AssetListParamsSort = "DESC_NAME"
+	AssetListParamsSortAscCreated               AssetListParamsSort = "ASC_CREATED"
+	AssetListParamsSortDescCreated              AssetListParamsSort = "DESC_CREATED"
+	AssetListParamsSortAscUpdated               AssetListParamsSort = "ASC_UPDATED"
+	AssetListParamsSortDescUpdated              AssetListParamsSort = "DESC_UPDATED"
+	AssetListParamsSortAscHeight                AssetListParamsSort = "ASC_HEIGHT"
+	AssetListParamsSortDescHeight               AssetListParamsSort = "DESC_HEIGHT"
+	AssetListParamsSortAscWidth                 AssetListParamsSort = "ASC_WIDTH"
+	AssetListParamsSortDescWidth                AssetListParamsSort = "DESC_WIDTH"
+	AssetListParamsSortAscSize                  AssetListParamsSort = "ASC_SIZE"
+	AssetListParamsSortDescSize                 AssetListParamsSort = "DESC_SIZE"
+	AssetListParamsSortAscRelevance             AssetListParamsSort = "ASC_RELEVANCE"
+	AssetListParamsSortDescRelevance            AssetListParamsSort = "DESC_RELEVANCE"
+	AssetListParamsSortAscDuration              AssetListParamsSort = "ASC_DURATION"
+	AssetListParamsSortDescDuration             AssetListParamsSort = "DESC_DURATION"
+	AssetListParamsSortAscOriginalCreationDate  AssetListParamsSort = "ASC_ORIGINAL_CREATION_DATE"
+	AssetListParamsSortDescOriginalCreationDate AssetListParamsSort = "DESC_ORIGINAL_CREATION_DATE"
 )
 
 // Filter results by asset type.
