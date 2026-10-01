@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.11.1](https://github.com/imagekit-developer/imagekit-go/compare/v2.11.0...v2.11.1) (2026-10-01)
+
+
+### Documentation
+
+* describe reserved original creation date field ([40c33e3](https://github.com/imagekit-developer/imagekit-go/commit/40c33e315442690424808cf8c020fde716fae366))
+
 ## [2.11.0](https://github.com/imagekit-developer/imagekit-go/compare/v2.10.0...v2.11.0) (2026-09-16)
 
 
