@@ -318,7 +318,11 @@ type BetaV2FileUploadParams struct {
 	// about the webhook payload structure.
 	WebhookURL param.Opt[string] `json:"webhookUrl,omitzero" format:"uri"`
 	// JSON key-value pairs to associate with the asset. Create the custom metadata
-	// fields before setting these values.
+	// fields before setting these values. To preserve the original creation date of an
+	// asset migrated from another system, set the reserved
+	// `_internal_original_created_datetime` key to an ISO 8601 date string. This key
+	// is available once the original creation date setting is enabled in the media
+	// library settings.
 	CustomMetadata map[string]any `json:"customMetadata,omitzero"`
 	// Array of extensions to be applied to the asset. Each extension can be configured
 	// with specific parameters based on the extension type.
