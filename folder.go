@@ -46,11 +46,12 @@ func (r *FolderService) New(ctx context.Context, body FolderNewParams, opts ...o
 
 // This will delete a folder and all its contents permanently. The API returns an
 // empty response.
-func (r *FolderService) Delete(ctx context.Context, body FolderDeleteParams, opts ...option.RequestOption) (res *FolderDeleteResponse, err error) {
+func (r *FolderService) Delete(ctx context.Context, body FolderDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := "v1/folder"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
-	return res, err
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, nil, opts...)
+	return err
 }
 
 // This will copy one folder into another. The selected folder, its nested folders,
@@ -97,20 +98,6 @@ type FolderNewResponse struct {
 // Returns the unmodified JSON received from the API
 func (r FolderNewResponse) RawJSON() string { return r.JSON.raw }
 func (r *FolderNewResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type FolderDeleteResponse struct {
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r FolderDeleteResponse) RawJSON() string { return r.JSON.raw }
-func (r *FolderDeleteResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
