@@ -180,7 +180,7 @@ func TestCustomMetadataFieldDelete(t *testing.T) {
 		option.WithPrivateKey("My Private Key"),
 		option.WithPassword("My Password"),
 	)
-	_, err := client.CustomMetadataFields.Delete(context.TODO(), "id")
+	err := client.CustomMetadataFields.Delete(context.TODO(), "id")
 	if err != nil {
 		var apierr *imagekit.Error
 		if errors.As(err, &apierr) {
