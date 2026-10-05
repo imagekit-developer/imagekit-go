@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.11.1](https://github.com/imagekit-developer/imagekit-go/compare/v2.11.0...v2.11.1) (2026-10-05)
+
+
+### Bug Fixes
+
+* don't parse empty 204 responses for copy, move and delete methods ([b48933f](https://github.com/imagekit-developer/imagekit-go/commit/b48933f54ee60e6d256f183b5af3183937fd6efc))
+
+
+### Documentation
+
+* describe reserved original creation date field ([40c33e3](https://github.com/imagekit-developer/imagekit-go/commit/40c33e315442690424808cf8c020fde716fae366))
+
 ## [2.11.0](https://github.com/imagekit-developer/imagekit-go/compare/v2.10.0...v2.11.0) (2026-09-16)
 
 
