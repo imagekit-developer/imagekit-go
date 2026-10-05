@@ -18,6 +18,7 @@ type AccountService struct {
 	UsageAnalytics AccountUsageAnalyticsService
 	Origins        AccountOriginService
 	URLEndpoints   AccountURLEndpointService
+	Webhooks       AccountWebhookService
 }
 
 // NewAccountService generates a new service that applies the given options to each
@@ -30,5 +31,6 @@ func NewAccountService(opts ...option.RequestOption) (r AccountService) {
 	r.UsageAnalytics = NewAccountUsageAnalyticsService(opts...)
 	r.Origins = NewAccountOriginService(opts...)
 	r.URLEndpoints = NewAccountURLEndpointService(opts...)
+	r.Webhooks = NewAccountWebhookService(opts...)
 	return
 }

@@ -13,7 +13,7 @@ import (
 	"github.com/imagekit-developer/imagekit-go/v2/option"
 )
 
-func TestFileVersionList(t *testing.T) {
+func TestAccountWebhookNewWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -27,7 +27,11 @@ func TestFileVersionList(t *testing.T) {
 		option.WithPrivateKey("My Private Key"),
 		option.WithPassword("My Password"),
 	)
-	_, err := client.Files.Versions.List(context.TODO(), "fileId")
+	_, err := client.Accounts.Webhooks.New(context.TODO(), imagekit.AccountWebhookNewParams{
+		Endpoint: "https://example.com/imagekit/webhooks",
+		Events:   []imagekit.WebhookEventType{imagekit.WebhookEventTypeVideoTransformationReady, imagekit.WebhookEventTypeFileCreated},
+		Enabled:  imagekit.Bool(true),
+	})
 	if err != nil {
 		var apierr *imagekit.Error
 		if errors.As(err, &apierr) {
@@ -37,7 +41,7 @@ func TestFileVersionList(t *testing.T) {
 	}
 }
 
-func TestFileVersionDelete(t *testing.T) {
+func TestAccountWebhookUpdateWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -51,11 +55,13 @@ func TestFileVersionDelete(t *testing.T) {
 		option.WithPrivateKey("My Private Key"),
 		option.WithPassword("My Password"),
 	)
-	err := client.Files.Versions.Delete(
+	_, err := client.Accounts.Webhooks.Update(
 		context.TODO(),
-		"versionId",
-		imagekit.FileVersionDeleteParams{
-			FileID: "fileId",
+		"65f1c2a9e4b0a1b2c3d4e5f6",
+		imagekit.AccountWebhookUpdateParams{
+			Enabled:  imagekit.Bool(false),
+			Endpoint: imagekit.String("https://example.com/imagekit/webhooks"),
+			Events:   []imagekit.WebhookEventType{imagekit.WebhookEventTypeVideoTransformationReady, imagekit.WebhookEventTypeVideoTransformationError},
 		},
 	)
 	if err != nil {
@@ -67,7 +73,7 @@ func TestFileVersionDelete(t *testing.T) {
 	}
 }
 
-func TestFileVersionGet(t *testing.T) {
+func TestAccountWebhookList(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -81,13 +87,7 @@ func TestFileVersionGet(t *testing.T) {
 		option.WithPrivateKey("My Private Key"),
 		option.WithPassword("My Password"),
 	)
-	_, err := client.Files.Versions.Get(
-		context.TODO(),
-		"versionId",
-		imagekit.FileVersionGetParams{
-			FileID: "fileId",
-		},
-	)
+	_, err := client.Accounts.Webhooks.List(context.TODO())
 	if err != nil {
 		var apierr *imagekit.Error
 		if errors.As(err, &apierr) {
@@ -97,7 +97,7 @@ func TestFileVersionGet(t *testing.T) {
 	}
 }
 
-func TestFileVersionRestore(t *testing.T) {
+func TestAccountWebhookDelete(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -111,13 +111,31 @@ func TestFileVersionRestore(t *testing.T) {
 		option.WithPrivateKey("My Private Key"),
 		option.WithPassword("My Password"),
 	)
-	_, err := client.Files.Versions.Restore(
-		context.TODO(),
-		"versionId",
-		imagekit.FileVersionRestoreParams{
-			FileID: "fileId",
-		},
+	err := client.Accounts.Webhooks.Delete(context.TODO(), "65f1c2a9e4b0a1b2c3d4e5f6")
+	if err != nil {
+		var apierr *imagekit.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestAccountWebhookGet(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := imagekit.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithPrivateKey("My Private Key"),
+		option.WithPassword("My Password"),
 	)
+	_, err := client.Accounts.Webhooks.Get(context.TODO(), "65f1c2a9e4b0a1b2c3d4e5f6")
 	if err != nil {
 		var apierr *imagekit.Error
 		if errors.As(err, &apierr) {
