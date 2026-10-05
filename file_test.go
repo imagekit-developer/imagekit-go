@@ -137,7 +137,7 @@ func TestFileCopyWithOptionalParams(t *testing.T) {
 		option.WithPrivateKey("My Private Key"),
 		option.WithPassword("My Password"),
 	)
-	_, err := client.Files.Copy(context.TODO(), imagekit.FileCopyParams{
+	err := client.Files.Copy(context.TODO(), imagekit.FileCopyParams{
 		DestinationPath:     "/folder/to/copy/into/",
 		SourceFilePath:      "/path/to/file.jpg",
 		IncludeFileVersions: imagekit.Bool(false),
@@ -189,7 +189,7 @@ func TestFileMove(t *testing.T) {
 		option.WithPrivateKey("My Private Key"),
 		option.WithPassword("My Password"),
 	)
-	_, err := client.Files.Move(context.TODO(), imagekit.FileMoveParams{
+	err := client.Files.Move(context.TODO(), imagekit.FileMoveParams{
 		DestinationPath: "/folder/to/move/into/",
 		SourceFilePath:  "/path/to/file.jpg",
 	})

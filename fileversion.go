@@ -9,10 +9,8 @@ import (
 	"net/http"
 	"slices"
 
-	"github.com/imagekit-developer/imagekit-go/v2/internal/apijson"
 	"github.com/imagekit-developer/imagekit-go/v2/internal/requestconfig"
 	"github.com/imagekit-developer/imagekit-go/v2/option"
-	"github.com/imagekit-developer/imagekit-go/v2/packages/respjson"
 )
 
 // FileVersionService contains methods and other services that help with
@@ -50,19 +48,20 @@ func (r *FileVersionService) List(ctx context.Context, fileID string, opts ...op
 // empty response.
 //
 // Note: If you want to delete all versions of a file, use the delete file API.
-func (r *FileVersionService) Delete(ctx context.Context, versionID string, body FileVersionDeleteParams, opts ...option.RequestOption) (res *FileVersionDeleteResponse, err error) {
+func (r *FileVersionService) Delete(ctx context.Context, versionID string, body FileVersionDeleteParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if body.FileID == "" {
 		err = errors.New("missing required fileId parameter")
-		return nil, err
+		return err
 	}
 	if versionID == "" {
 		err = errors.New("missing required versionId parameter")
-		return nil, err
+		return err
 	}
 	path := fmt.Sprintf("v1/files/%s/versions/%s", body.FileID, versionID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return res, err
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
+	return err
 }
 
 // This API returns an object with details or attributes of a file version.
@@ -95,20 +94,6 @@ func (r *FileVersionService) Restore(ctx context.Context, versionID string, body
 	path := fmt.Sprintf("v1/files/%s/versions/%s/restore", body.FileID, versionID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, nil, &res, opts...)
 	return res, err
-}
-
-type FileVersionDeleteResponse struct {
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r FileVersionDeleteResponse) RawJSON() string { return r.JSON.raw }
-func (r *FileVersionDeleteResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
 }
 
 type FileVersionDeleteParams struct {
