@@ -254,6 +254,95 @@ func (r *FileVersionDeleteEventData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Triggered when a folder is created.
+type FolderCreateEvent struct {
+	// Timestamp of when the event occurred in ISO8601 format.
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
+	Data      Folder    `json:"data" api:"required"`
+	// Type of the webhook event.
+	Type constant.FolderCreated `json:"type" default:"folder.created"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CreatedAt   respjson.Field
+		Data        respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+	BaseWebhookEvent
+}
+
+// Returns the unmodified JSON received from the API
+func (r FolderCreateEvent) RawJSON() string { return r.JSON.raw }
+func (r *FolderCreateEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Triggered when a folder is deleted.
+type FolderDeleteEvent struct {
+	// Timestamp of when the event occurred in ISO8601 format.
+	CreatedAt time.Time             `json:"created_at" api:"required" format:"date-time"`
+	Data      FolderDeleteEventData `json:"data" api:"required"`
+	// Type of the webhook event.
+	Type constant.FolderDeleted `json:"type" default:"folder.deleted"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CreatedAt   respjson.Field
+		Data        respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+	BaseWebhookEvent
+}
+
+// Returns the unmodified JSON received from the API
+func (r FolderDeleteEvent) RawJSON() string { return r.JSON.raw }
+func (r *FolderDeleteEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type FolderDeleteEventData struct {
+	// The unique identifier of the deleted folder.
+	ID string `json:"id" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r FolderDeleteEventData) RawJSON() string { return r.JSON.raw }
+func (r *FolderDeleteEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Triggered when a folder is updated.
+type FolderUpdateEvent struct {
+	// Timestamp of when the event occurred in ISO8601 format.
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
+	Data      Folder    `json:"data" api:"required"`
+	// Type of the webhook event.
+	Type constant.FolderUpdated `json:"type" default:"folder.updated"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CreatedAt   respjson.Field
+		Data        respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+	BaseWebhookEvent
+}
+
+// Returns the unmodified JSON received from the API
+func (r FolderUpdateEvent) RawJSON() string { return r.JSON.raw }
+func (r *FolderUpdateEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // Triggered when a post-transformation fails. The original file remains available,
 // but the requested transformation could not be generated.
 type UploadPostTransformErrorEvent struct {
@@ -1389,7 +1478,8 @@ func (r *VideoTransformationReadyEventTimings) UnmarshalJSON(data []byte) error 
 // [VideoTransformationErrorEvent], [UploadPreTransformSuccessEvent],
 // [UploadPreTransformErrorEvent], [UploadPostTransformSuccessEvent],
 // [UploadPostTransformErrorEvent], [FileCreateEvent], [FileUpdateEvent],
-// [FileDeleteEvent], [FileVersionCreateEvent], [FileVersionDeleteEvent].
+// [FileDeleteEvent], [FileVersionCreateEvent], [FileVersionDeleteEvent],
+// [FolderCreateEvent], [FolderUpdateEvent], [FolderDeleteEvent].
 //
 // Use the [UnsafeUnwrapWebhookEventUnion.AsAny] method to switch on the variant.
 //
@@ -1400,16 +1490,19 @@ type UnsafeUnwrapWebhookEventUnion struct {
 	// [UploadPreTransformSuccessEvent], [UploadPreTransformErrorEvent],
 	// [UploadPostTransformSuccessEvent], [UploadPostTransformErrorEvent],
 	// [FileCreateEvent], [FileUpdateEvent], [FileDeleteEvent],
-	// [FileVersionCreateEvent], [FileVersionDeleteEvent].
+	// [FileVersionCreateEvent], [FileVersionDeleteEvent], [FolderCreateEvent],
+	// [FolderUpdateEvent], [FolderDeleteEvent].
 	ID string `json:"id"`
-	// Any of nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil.
+	// Any of nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil,
+	// nil.
 	Type      string    `json:"type"`
 	CreatedAt time.Time `json:"created_at"`
 	// This field is a union of [VideoTransformationAcceptedEventData],
 	// [VideoTransformationReadyEventData], [VideoTransformationErrorEventData],
 	// [UploadPreTransformSuccessEventData], [UploadPreTransformErrorEventData],
 	// [UploadPostTransformSuccessEventData], [UploadPostTransformErrorEventData],
-	// [File], [FileDeleteEventData], [FileVersionDeleteEventData]
+	// [File], [FileDeleteEventData], [FileVersionDeleteEventData], [Folder],
+	// [FolderDeleteEventData]
 	Data UnsafeUnwrapWebhookEventUnionData `json:"data"`
 	// This field is a union of [VideoTransformationAcceptedEventRequest],
 	// [VideoTransformationReadyEventRequest], [VideoTransformationErrorEventRequest],
@@ -1489,6 +1582,21 @@ func (u UnsafeUnwrapWebhookEventUnion) AsFileVersionDeleteEvent() (v FileVersion
 	return
 }
 
+func (u UnsafeUnwrapWebhookEventUnion) AsFolderCreateEvent() (v FolderCreateEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsFolderUpdateEvent() (v FolderUpdateEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsFolderDeleteEvent() (v FolderDeleteEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
 // Returns the unmodified JSON received from the API
 func (u UnsafeUnwrapWebhookEventUnion) RawJSON() string { return u.JSON.raw }
 
@@ -1517,10 +1625,9 @@ type UnsafeUnwrapWebhookEventUnionData struct {
 	AudioCodec        string                                          `json:"audioCodec"`
 	BitRate           int64                                           `json:"bitRate"`
 	CustomCoordinates string                                          `json:"customCoordinates"`
-	// This field is from variant [UploadPreTransformSuccessEventData].
-	CustomMetadata shared.CustomMetadata `json:"customMetadata"`
-	Description    string                `json:"description"`
-	Duration       int64                 `json:"duration"`
+	CustomMetadata    any                                             `json:"customMetadata"`
+	Description       string                                          `json:"description"`
+	Duration          int64                                           `json:"duration"`
 	// This field is from variant [UploadPreTransformSuccessEventData].
 	EmbeddedMetadata shared.EmbeddedMetadata `json:"embeddedMetadata"`
 	// This field is from variant [UploadPreTransformSuccessEventData].
@@ -1546,21 +1653,24 @@ type UnsafeUnwrapWebhookEventUnionData struct {
 	VideoCodec  string             `json:"videoCodec"`
 	Width       float64            `json:"width"`
 	Path        string             `json:"path"`
-	// This field is from variant [File].
-	CreatedAt time.Time `json:"createdAt"`
+	CreatedAt   time.Time          `json:"createdAt"`
 	// This field is from variant [File].
 	HasAlpha bool `json:"hasAlpha"`
 	// This field is from variant [File].
 	Mime string `json:"mime"`
 	// This field is from variant [File].
-	Thumbnail string `json:"thumbnail"`
-	// This field is from variant [File].
-	Type FileType `json:"type"`
-	// This field is from variant [File].
+	Thumbnail string    `json:"thumbnail"`
+	Type      string    `json:"type"`
 	UpdatedAt time.Time `json:"updatedAt"`
 	// This field is from variant [FileVersionDeleteEventData].
 	VersionID string `json:"versionId"`
-	JSON      struct {
+	// This field is from variant [Folder].
+	FolderID string `json:"folderId"`
+	// This field is from variant [Folder].
+	FolderPath string `json:"folderPath"`
+	// This field is from variant [FolderDeleteEventData].
+	ID   string `json:"id"`
+	JSON struct {
 		Asset                respjson.Field
 		Transformation       respjson.Field
 		AITags               respjson.Field
@@ -1596,6 +1706,9 @@ type UnsafeUnwrapWebhookEventUnionData struct {
 		Type                 respjson.Field
 		UpdatedAt            respjson.Field
 		VersionID            respjson.Field
+		FolderID             respjson.Field
+		FolderPath           respjson.Field
+		ID                   respjson.Field
 		raw                  string
 	} `json:"-"`
 }
@@ -1765,7 +1878,8 @@ func (r *UnsafeUnwrapWebhookEventUnionRequestTransformation) UnmarshalJSON(data 
 // [VideoTransformationErrorEvent], [UploadPreTransformSuccessEvent],
 // [UploadPreTransformErrorEvent], [UploadPostTransformSuccessEvent],
 // [UploadPostTransformErrorEvent], [FileCreateEvent], [FileUpdateEvent],
-// [FileDeleteEvent], [FileVersionCreateEvent], [FileVersionDeleteEvent].
+// [FileDeleteEvent], [FileVersionCreateEvent], [FileVersionDeleteEvent],
+// [FolderCreateEvent], [FolderUpdateEvent], [FolderDeleteEvent].
 //
 // Use the [UnwrapWebhookEventUnion.AsAny] method to switch on the variant.
 //
@@ -1776,16 +1890,19 @@ type UnwrapWebhookEventUnion struct {
 	// [UploadPreTransformSuccessEvent], [UploadPreTransformErrorEvent],
 	// [UploadPostTransformSuccessEvent], [UploadPostTransformErrorEvent],
 	// [FileCreateEvent], [FileUpdateEvent], [FileDeleteEvent],
-	// [FileVersionCreateEvent], [FileVersionDeleteEvent].
+	// [FileVersionCreateEvent], [FileVersionDeleteEvent], [FolderCreateEvent],
+	// [FolderUpdateEvent], [FolderDeleteEvent].
 	ID string `json:"id"`
-	// Any of nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil.
+	// Any of nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil,
+	// nil.
 	Type      string    `json:"type"`
 	CreatedAt time.Time `json:"created_at"`
 	// This field is a union of [VideoTransformationAcceptedEventData],
 	// [VideoTransformationReadyEventData], [VideoTransformationErrorEventData],
 	// [UploadPreTransformSuccessEventData], [UploadPreTransformErrorEventData],
 	// [UploadPostTransformSuccessEventData], [UploadPostTransformErrorEventData],
-	// [File], [FileDeleteEventData], [FileVersionDeleteEventData]
+	// [File], [FileDeleteEventData], [FileVersionDeleteEventData], [Folder],
+	// [FolderDeleteEventData]
 	Data UnwrapWebhookEventUnionData `json:"data"`
 	// This field is a union of [VideoTransformationAcceptedEventRequest],
 	// [VideoTransformationReadyEventRequest], [VideoTransformationErrorEventRequest],
@@ -1865,6 +1982,21 @@ func (u UnwrapWebhookEventUnion) AsFileVersionDeleteEvent() (v FileVersionDelete
 	return
 }
 
+func (u UnwrapWebhookEventUnion) AsFolderCreateEvent() (v FolderCreateEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnwrapWebhookEventUnion) AsFolderUpdateEvent() (v FolderUpdateEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnwrapWebhookEventUnion) AsFolderDeleteEvent() (v FolderDeleteEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
 // Returns the unmodified JSON received from the API
 func (u UnwrapWebhookEventUnion) RawJSON() string { return u.JSON.raw }
 
@@ -1893,10 +2025,9 @@ type UnwrapWebhookEventUnionData struct {
 	AudioCodec        string                                    `json:"audioCodec"`
 	BitRate           int64                                     `json:"bitRate"`
 	CustomCoordinates string                                    `json:"customCoordinates"`
-	// This field is from variant [UploadPreTransformSuccessEventData].
-	CustomMetadata shared.CustomMetadata `json:"customMetadata"`
-	Description    string                `json:"description"`
-	Duration       int64                 `json:"duration"`
+	CustomMetadata    any                                       `json:"customMetadata"`
+	Description       string                                    `json:"description"`
+	Duration          int64                                     `json:"duration"`
 	// This field is from variant [UploadPreTransformSuccessEventData].
 	EmbeddedMetadata shared.EmbeddedMetadata `json:"embeddedMetadata"`
 	// This field is from variant [UploadPreTransformSuccessEventData].
@@ -1922,21 +2053,24 @@ type UnwrapWebhookEventUnionData struct {
 	VideoCodec  string             `json:"videoCodec"`
 	Width       float64            `json:"width"`
 	Path        string             `json:"path"`
-	// This field is from variant [File].
-	CreatedAt time.Time `json:"createdAt"`
+	CreatedAt   time.Time          `json:"createdAt"`
 	// This field is from variant [File].
 	HasAlpha bool `json:"hasAlpha"`
 	// This field is from variant [File].
 	Mime string `json:"mime"`
 	// This field is from variant [File].
-	Thumbnail string `json:"thumbnail"`
-	// This field is from variant [File].
-	Type FileType `json:"type"`
-	// This field is from variant [File].
+	Thumbnail string    `json:"thumbnail"`
+	Type      string    `json:"type"`
 	UpdatedAt time.Time `json:"updatedAt"`
 	// This field is from variant [FileVersionDeleteEventData].
 	VersionID string `json:"versionId"`
-	JSON      struct {
+	// This field is from variant [Folder].
+	FolderID string `json:"folderId"`
+	// This field is from variant [Folder].
+	FolderPath string `json:"folderPath"`
+	// This field is from variant [FolderDeleteEventData].
+	ID   string `json:"id"`
+	JSON struct {
 		Asset                respjson.Field
 		Transformation       respjson.Field
 		AITags               respjson.Field
@@ -1972,6 +2106,9 @@ type UnwrapWebhookEventUnionData struct {
 		Type                 respjson.Field
 		UpdatedAt            respjson.Field
 		VersionID            respjson.Field
+		FolderID             respjson.Field
+		FolderPath           respjson.Field
+		ID                   respjson.Field
 		raw                  string
 	} `json:"-"`
 }
