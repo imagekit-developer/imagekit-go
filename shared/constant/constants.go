@@ -32,6 +32,9 @@ type FileVersionDeleted string          // Always "file-version.deleted"
 type FileCreated string                 // Always "file.created"
 type FileDeleted string                 // Always "file.deleted"
 type FileUpdated string                 // Always "file.updated"
+type FolderCreated string               // Always "folder.created"
+type FolderDeleted string               // Always "folder.deleted"
+type FolderUpdated string               // Always "folder.updated"
 type Gcs string                         // Always "GCS"
 type GifToVideo string                  // Always "gif-to-video"
 type Image string                       // Always "image"
@@ -74,6 +77,9 @@ func (c FileVersionDeleted) Default() FileVersionDeleted { return "file-version.
 func (c FileCreated) Default() FileCreated               { return "file.created" }
 func (c FileDeleted) Default() FileDeleted               { return "file.deleted" }
 func (c FileUpdated) Default() FileUpdated               { return "file.updated" }
+func (c FolderCreated) Default() FolderCreated           { return "folder.created" }
+func (c FolderDeleted) Default() FolderDeleted           { return "folder.deleted" }
+func (c FolderUpdated) Default() FolderUpdated           { return "folder.updated" }
 func (c Gcs) Default() Gcs                               { return "GCS" }
 func (c GifToVideo) Default() GifToVideo                 { return "gif-to-video" }
 func (c Image) Default() Image                           { return "image" }
@@ -130,6 +136,9 @@ func (c FileVersionDeleted) MarshalJSON() ([]byte, error)          { return mars
 func (c FileCreated) MarshalJSON() ([]byte, error)                 { return marshalString(c) }
 func (c FileDeleted) MarshalJSON() ([]byte, error)                 { return marshalString(c) }
 func (c FileUpdated) MarshalJSON() ([]byte, error)                 { return marshalString(c) }
+func (c FolderCreated) MarshalJSON() ([]byte, error)               { return marshalString(c) }
+func (c FolderDeleted) MarshalJSON() ([]byte, error)               { return marshalString(c) }
+func (c FolderUpdated) MarshalJSON() ([]byte, error)               { return marshalString(c) }
 func (c Gcs) MarshalJSON() ([]byte, error)                         { return marshalString(c) }
 func (c GifToVideo) MarshalJSON() ([]byte, error)                  { return marshalString(c) }
 func (c Image) MarshalJSON() ([]byte, error)                       { return marshalString(c) }
