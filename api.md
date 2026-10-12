@@ -265,6 +265,9 @@ Response Types:
 - <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2">imagekit</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#FileUpdateEvent">FileUpdateEvent</a>
 - <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2">imagekit</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#FileVersionCreateEvent">FileVersionCreateEvent</a>
 - <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2">imagekit</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#FileVersionDeleteEvent">FileVersionDeleteEvent</a>
+- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2">imagekit</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#FolderCreateEvent">FolderCreateEvent</a>
+- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2">imagekit</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#FolderDeleteEvent">FolderDeleteEvent</a>
+- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2">imagekit</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#FolderUpdateEvent">FolderUpdateEvent</a>
 - <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2">imagekit</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#UploadPostTransformErrorEvent">UploadPostTransformErrorEvent</a>
 - <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2">imagekit</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#UploadPostTransformSuccessEvent">UploadPostTransformSuccessEvent</a>
 - <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2">imagekit</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#UploadPreTransformErrorEvent">UploadPreTransformErrorEvent</a>
