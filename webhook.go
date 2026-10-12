@@ -303,11 +303,11 @@ func (r *FolderDeleteEvent) UnmarshalJSON(data []byte) error {
 }
 
 type FolderDeleteEventData struct {
-	// The unique identifier of the deleted folder.
-	ID string `json:"id" api:"required"`
+	// The unique `folderId` of the deleted folder.
+	FolderID string `json:"folderId" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
+		FolderID    respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -1665,12 +1665,11 @@ type UnsafeUnwrapWebhookEventUnionData struct {
 	// This field is from variant [FileVersionDeleteEventData].
 	VersionID string `json:"versionId"`
 	// This field is from variant [Folder].
-	FolderID string `json:"folderId"`
+	CreatedBy FolderCreatedBy `json:"createdBy"`
+	FolderID  string          `json:"folderId"`
 	// This field is from variant [Folder].
 	FolderPath string `json:"folderPath"`
-	// This field is from variant [FolderDeleteEventData].
-	ID   string `json:"id"`
-	JSON struct {
+	JSON       struct {
 		Asset                respjson.Field
 		Transformation       respjson.Field
 		AITags               respjson.Field
@@ -1706,9 +1705,9 @@ type UnsafeUnwrapWebhookEventUnionData struct {
 		Type                 respjson.Field
 		UpdatedAt            respjson.Field
 		VersionID            respjson.Field
+		CreatedBy            respjson.Field
 		FolderID             respjson.Field
 		FolderPath           respjson.Field
-		ID                   respjson.Field
 		raw                  string
 	} `json:"-"`
 }
@@ -2065,12 +2064,11 @@ type UnwrapWebhookEventUnionData struct {
 	// This field is from variant [FileVersionDeleteEventData].
 	VersionID string `json:"versionId"`
 	// This field is from variant [Folder].
-	FolderID string `json:"folderId"`
+	CreatedBy FolderCreatedBy `json:"createdBy"`
+	FolderID  string          `json:"folderId"`
 	// This field is from variant [Folder].
 	FolderPath string `json:"folderPath"`
-	// This field is from variant [FolderDeleteEventData].
-	ID   string `json:"id"`
-	JSON struct {
+	JSON       struct {
 		Asset                respjson.Field
 		Transformation       respjson.Field
 		AITags               respjson.Field
@@ -2106,9 +2104,9 @@ type UnwrapWebhookEventUnionData struct {
 		Type                 respjson.Field
 		UpdatedAt            respjson.Field
 		VersionID            respjson.Field
+		CreatedBy            respjson.Field
 		FolderID             respjson.Field
 		FolderPath           respjson.Field
-		ID                   respjson.Field
 		raw                  string
 	} `json:"-"`
 }
