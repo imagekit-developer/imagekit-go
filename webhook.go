@@ -254,7 +254,9 @@ func (r *FileVersionDeleteEventData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Triggered when a folder is created.
+// Triggered when a folder is created, whether explicitly, by copying or moving a
+// folder, or implicitly when an upload creates missing parent folders. Copying or
+// moving a folder tree sends one event per folder in the tree.
 type FolderCreateEvent struct {
 	// Timestamp of when the event occurred in ISO8601 format.
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
@@ -278,7 +280,10 @@ func (r *FolderCreateEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Triggered when a folder is deleted.
+// Triggered when a folder is deleted. Deleting a folder tree sends one event per
+// folder in the tree; the files inside it send `file.deleted` events and their
+// versions send `file-version.deleted` events. Moving a folder sends this event
+// for the old `folderId` and `folder.created` for the new one.
 type FolderDeleteEvent struct {
 	// Timestamp of when the event occurred in ISO8601 format.
 	CreatedAt time.Time             `json:"created_at" api:"required" format:"date-time"`
@@ -319,7 +324,9 @@ func (r *FolderDeleteEventData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Triggered when a folder is updated.
+// Triggered when a folder is updated, for example when its custom metadata changes
+// or it is renamed. Renaming a folder sends one event per folder in the tree, each
+// with its new `folderPath`.
 type FolderUpdateEvent struct {
 	// Timestamp of when the event occurred in ISO8601 format.
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
