@@ -1632,9 +1632,10 @@ type UnsafeUnwrapWebhookEventUnionData struct {
 	AudioCodec        string                                          `json:"audioCodec"`
 	BitRate           int64                                           `json:"bitRate"`
 	CustomCoordinates string                                          `json:"customCoordinates"`
-	CustomMetadata    any                                             `json:"customMetadata"`
-	Description       string                                          `json:"description"`
-	Duration          int64                                           `json:"duration"`
+	// This field is from variant [UploadPreTransformSuccessEventData].
+	CustomMetadata shared.CustomMetadata `json:"customMetadata"`
+	Description    string                `json:"description"`
+	Duration       int64                 `json:"duration"`
 	// This field is from variant [UploadPreTransformSuccessEventData].
 	EmbeddedMetadata shared.EmbeddedMetadata `json:"embeddedMetadata"`
 	// This field is from variant [UploadPreTransformSuccessEventData].
@@ -2031,9 +2032,10 @@ type UnwrapWebhookEventUnionData struct {
 	AudioCodec        string                                    `json:"audioCodec"`
 	BitRate           int64                                     `json:"bitRate"`
 	CustomCoordinates string                                    `json:"customCoordinates"`
-	CustomMetadata    any                                       `json:"customMetadata"`
-	Description       string                                    `json:"description"`
-	Duration          int64                                     `json:"duration"`
+	// This field is from variant [UploadPreTransformSuccessEventData].
+	CustomMetadata shared.CustomMetadata `json:"customMetadata"`
+	Description    string                `json:"description"`
+	Duration       int64                 `json:"duration"`
 	// This field is from variant [UploadPreTransformSuccessEventData].
 	EmbeddedMetadata shared.EmbeddedMetadata `json:"embeddedMetadata"`
 	// This field is from variant [UploadPreTransformSuccessEventData].

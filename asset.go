@@ -65,7 +65,8 @@ type AssetListResponseUnion struct {
 	CreatedAt time.Time `json:"createdAt"`
 	// This field is from variant [File].
 	CustomCoordinates string `json:"customCoordinates"`
-	CustomMetadata    any    `json:"customMetadata"`
+	// This field is from variant [File].
+	CustomMetadata shared.CustomMetadata `json:"customMetadata"`
 	// This field is from variant [File].
 	Description string `json:"description"`
 	// This field is from variant [File].
