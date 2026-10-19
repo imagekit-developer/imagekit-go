@@ -297,6 +297,9 @@ type Folder struct {
 	// Date and time when the folder was created. The date and time is in ISO8601
 	// format.
 	CreatedAt time.Time `json:"createdAt" format:"date-time"`
+	// Details of the user who created the folder. Present only when this information
+	// is available. The `name` is the name of the user at the time of folder creation.
+	CreatedBy FolderCreatedBy `json:"createdBy"`
 	// An object with custom metadata for the folder. Returns empty object if no custom
 	// metadata is set.
 	CustomMetadata map[string]any `json:"customMetadata"`
@@ -319,6 +322,7 @@ type Folder struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CreatedAt      respjson.Field
+		CreatedBy      respjson.Field
 		CustomMetadata respjson.Field
 		FolderID       respjson.Field
 		FolderPath     respjson.Field
@@ -333,6 +337,28 @@ type Folder struct {
 // Returns the unmodified JSON received from the API
 func (r Folder) RawJSON() string { return r.JSON.raw }
 func (r *Folder) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Details of the user who created the folder. Present only when this information
+// is available. The `name` is the name of the user at the time of folder creation.
+type FolderCreatedBy struct {
+	// Email of the user who created the folder.
+	Email string `json:"email"`
+	// Name of the user who created the folder.
+	Name string `json:"name"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Email       respjson.Field
+		Name        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r FolderCreatedBy) RawJSON() string { return r.JSON.raw }
+func (r *FolderCreatedBy) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
