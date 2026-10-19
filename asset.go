@@ -109,6 +109,8 @@ type AssetListResponseUnion struct {
 	// This field is from variant [File].
 	Width float64 `json:"width"`
 	// This field is from variant [Folder].
+	CreatedBy FolderCreatedBy `json:"createdBy"`
+	// This field is from variant [Folder].
 	FolderID string `json:"folderId"`
 	// This field is from variant [Folder].
 	FolderPath string `json:"folderPath"`
@@ -141,6 +143,7 @@ type AssetListResponseUnion struct {
 		VersionInfo          respjson.Field
 		VideoCodec           respjson.Field
 		Width                respjson.Field
+		CreatedBy            respjson.Field
 		FolderID             respjson.Field
 		FolderPath           respjson.Field
 		raw                  string
