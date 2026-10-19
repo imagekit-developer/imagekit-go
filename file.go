@@ -300,7 +300,7 @@ type Folder struct {
 	CreatedBy FolderCreatedBy `json:"createdBy"`
 	// An object with custom metadata for the folder. Returns empty object if no custom
 	// metadata is set.
-	CustomMetadata map[string]any `json:"customMetadata"`
+	CustomMetadata shared.CustomMetadata `json:"customMetadata"`
 	// Unique identifier of the asset.
 	FolderID string `json:"folderId"`
 	// Path of the folder. This is the path you would use in the URL to access the
