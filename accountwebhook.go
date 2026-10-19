@@ -163,6 +163,9 @@ const (
 	WebhookEventTypeFileDeleted                 WebhookEventType = "file.deleted"
 	WebhookEventTypeFileVersionCreated          WebhookEventType = "file-version.created"
 	WebhookEventTypeFileVersionDeleted          WebhookEventType = "file-version.deleted"
+	WebhookEventTypeFolderCreated               WebhookEventType = "folder.created"
+	WebhookEventTypeFolderUpdated               WebhookEventType = "folder.updated"
+	WebhookEventTypeFolderDeleted               WebhookEventType = "folder.deleted"
 )
 
 type AccountWebhookNewParams struct {
