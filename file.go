@@ -87,11 +87,12 @@ func (r *FileService) Delete(ctx context.Context, fileID string, opts ...option.
 // Note: If any file at the destination has the same name as the source file, then
 // the source file and its versions (if `includeFileVersions` is set to true) will
 // be appended to the destination file version history.
-func (r *FileService) Copy(ctx context.Context, body FileCopyParams, opts ...option.RequestOption) (res *FileCopyResponse, err error) {
+func (r *FileService) Copy(ctx context.Context, body FileCopyParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := "v1/files/copy"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return res, err
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
+	return err
 }
 
 // This API returns an object with details or attributes about the current version
@@ -111,11 +112,12 @@ func (r *FileService) Get(ctx context.Context, fileID string, opts ...option.Req
 //
 // Note: If any file at the destination has the same name as the source file, then
 // the source file and its versions will be appended to the destination file.
-func (r *FileService) Move(ctx context.Context, body FileMoveParams, opts ...option.RequestOption) (res *FileMoveResponse, err error) {
+func (r *FileService) Move(ctx context.Context, body FileMoveParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	path := "v1/files/move"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return res, err
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
+	return err
 }
 
 // You can rename an already existing file in the media library using rename file
@@ -819,34 +821,6 @@ type FileUpdateResponseExtensionStatus struct {
 // Returns the unmodified JSON received from the API
 func (r FileUpdateResponseExtensionStatus) RawJSON() string { return r.JSON.raw }
 func (r *FileUpdateResponseExtensionStatus) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type FileCopyResponse struct {
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r FileCopyResponse) RawJSON() string { return r.JSON.raw }
-func (r *FileCopyResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type FileMoveResponse struct {
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r FileMoveResponse) RawJSON() string { return r.JSON.raw }
-func (r *FileMoveResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
