@@ -51,7 +51,7 @@ func TestFileVersionDelete(t *testing.T) {
 		option.WithPrivateKey("My Private Key"),
 		option.WithPassword("My Password"),
 	)
-	_, err := client.Files.Versions.Delete(
+	err := client.Files.Versions.Delete(
 		context.TODO(),
 		"versionId",
 		imagekit.FileVersionDeleteParams{

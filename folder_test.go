@@ -54,7 +54,7 @@ func TestFolderDelete(t *testing.T) {
 		option.WithPrivateKey("My Private Key"),
 		option.WithPassword("My Password"),
 	)
-	_, err := client.Folders.Delete(context.TODO(), imagekit.FolderDeleteParams{
+	err := client.Folders.Delete(context.TODO(), imagekit.FolderDeleteParams{
 		FolderPath: "/folder/to/delete/",
 	})
 	if err != nil {

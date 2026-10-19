@@ -79,15 +79,16 @@ func (r *CustomMetadataFieldService) List(ctx context.Context, query CustomMetad
 
 // This API deletes a custom metadata field. Even after deleting a custom metadata
 // field, you cannot create any new custom metadata field with the same name.
-func (r *CustomMetadataFieldService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *CustomMetadataFieldDeleteResponse, err error) {
+func (r *CustomMetadataFieldService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return nil, err
+		return err
 	}
 	path := fmt.Sprintf("v1/customMetadataFields/%s", id)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return res, err
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
+	return err
 }
 
 // Object containing details of a custom metadata field.
@@ -400,20 +401,6 @@ func (u CustomMetadataFieldSchemaSelectOptionUnion) AsBool() (v bool) {
 func (u CustomMetadataFieldSchemaSelectOptionUnion) RawJSON() string { return u.JSON.raw }
 
 func (r *CustomMetadataFieldSchemaSelectOptionUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type CustomMetadataFieldDeleteResponse struct {
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r CustomMetadataFieldDeleteResponse) RawJSON() string { return r.JSON.raw }
-func (r *CustomMetadataFieldDeleteResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
