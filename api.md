@@ -241,6 +241,25 @@ Methods:
 - <code title="delete /v1/accounts/url-endpoints/{id}">client.Accounts.URLEndpoints.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#AccountURLEndpointService.Delete">Delete</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
 - <code title="get /v1/accounts/url-endpoints/{id}">client.Accounts.URLEndpoints.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#AccountURLEndpointService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2">imagekit</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#URLEndpointResponse">URLEndpointResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
+## Webhooks
+
+Params Types:
+
+- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2">imagekit</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#WebhookEventType">WebhookEventType</a>
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2">imagekit</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#Webhook">Webhook</a>
+- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2">imagekit</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#WebhookEventType">WebhookEventType</a>
+
+Methods:
+
+- <code title="post /v1/accounts/webhooks">client.Accounts.Webhooks.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#AccountWebhookService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2">imagekit</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#AccountWebhookNewParams">AccountWebhookNewParams</a>) (\*<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2">imagekit</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#Webhook">Webhook</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="patch /v1/accounts/webhooks/{id}">client.Accounts.Webhooks.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#AccountWebhookService.Update">Update</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2">imagekit</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#AccountWebhookUpdateParams">AccountWebhookUpdateParams</a>) (\*<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2">imagekit</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#Webhook">Webhook</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /v1/accounts/webhooks">client.Accounts.Webhooks.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#AccountWebhookService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>) (\*[]<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2">imagekit</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#Webhook">Webhook</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="delete /v1/accounts/webhooks/{id}">client.Accounts.Webhooks.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#AccountWebhookService.Delete">Delete</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
+- <code title="get /v1/accounts/webhooks/{id}">client.Accounts.Webhooks.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#AccountWebhookService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2">imagekit</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#Webhook">Webhook</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
 # Beta
 
 ## V2
