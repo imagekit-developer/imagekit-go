@@ -1591,21 +1591,21 @@ func (u UnsafeUnwrapWebhookEventUnion) AsAny() anyUnsafeUnwrapWebhookEvent {
 	case "upload.post-transform.error":
 		return u.AsUploadPostTransformError()
 	case "file.created":
-		return u.AsFileCreated()
+		return u.AsFileCreate()
 	case "file.updated":
-		return u.AsFileUpdated()
+		return u.AsFileUpdate()
 	case "file.deleted":
-		return u.AsFileDeleted()
+		return u.AsFileDelete()
 	case "file-version.created":
-		return u.AsFileVersionCreated()
+		return u.AsFileVersionCreate()
 	case "file-version.deleted":
-		return u.AsFileVersionDeleted()
+		return u.AsFileVersionDelete()
 	case "folder.created":
-		return u.AsFolderCreated()
+		return u.AsFolderCreate()
 	case "folder.updated":
-		return u.AsFolderUpdated()
+		return u.AsFolderUpdate()
 	case "folder.deleted":
-		return u.AsFolderDeleted()
+		return u.AsFolderDelete()
 	}
 	return nil
 }
@@ -1645,42 +1645,42 @@ func (u UnsafeUnwrapWebhookEventUnion) AsUploadPostTransformError() (v UploadPos
 	return
 }
 
-func (u UnsafeUnwrapWebhookEventUnion) AsFileCreated() (v FileCreateEvent) {
+func (u UnsafeUnwrapWebhookEventUnion) AsFileCreate() (v FileCreateEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u UnsafeUnwrapWebhookEventUnion) AsFileUpdated() (v FileUpdateEvent) {
+func (u UnsafeUnwrapWebhookEventUnion) AsFileUpdate() (v FileUpdateEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u UnsafeUnwrapWebhookEventUnion) AsFileDeleted() (v FileDeleteEvent) {
+func (u UnsafeUnwrapWebhookEventUnion) AsFileDelete() (v FileDeleteEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u UnsafeUnwrapWebhookEventUnion) AsFileVersionCreated() (v FileVersionCreateEvent) {
+func (u UnsafeUnwrapWebhookEventUnion) AsFileVersionCreate() (v FileVersionCreateEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u UnsafeUnwrapWebhookEventUnion) AsFileVersionDeleted() (v FileVersionDeleteEvent) {
+func (u UnsafeUnwrapWebhookEventUnion) AsFileVersionDelete() (v FileVersionDeleteEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u UnsafeUnwrapWebhookEventUnion) AsFolderCreated() (v FolderCreateEvent) {
+func (u UnsafeUnwrapWebhookEventUnion) AsFolderCreate() (v FolderCreateEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u UnsafeUnwrapWebhookEventUnion) AsFolderUpdated() (v FolderUpdateEvent) {
+func (u UnsafeUnwrapWebhookEventUnion) AsFolderUpdate() (v FolderUpdateEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u UnsafeUnwrapWebhookEventUnion) AsFolderDeleted() (v FolderDeleteEvent) {
+func (u UnsafeUnwrapWebhookEventUnion) AsFolderDelete() (v FolderDeleteEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -2075,21 +2075,21 @@ func (u UnwrapWebhookEventUnion) AsAny() anyUnwrapWebhookEvent {
 	case "upload.post-transform.error":
 		return u.AsUploadPostTransformError()
 	case "file.created":
-		return u.AsFileCreated()
+		return u.AsFileCreate()
 	case "file.updated":
-		return u.AsFileUpdated()
+		return u.AsFileUpdate()
 	case "file.deleted":
-		return u.AsFileDeleted()
+		return u.AsFileDelete()
 	case "file-version.created":
-		return u.AsFileVersionCreated()
+		return u.AsFileVersionCreate()
 	case "file-version.deleted":
-		return u.AsFileVersionDeleted()
+		return u.AsFileVersionDelete()
 	case "folder.created":
-		return u.AsFolderCreated()
+		return u.AsFolderCreate()
 	case "folder.updated":
-		return u.AsFolderUpdated()
+		return u.AsFolderUpdate()
 	case "folder.deleted":
-		return u.AsFolderDeleted()
+		return u.AsFolderDelete()
 	}
 	return nil
 }
@@ -2129,42 +2129,42 @@ func (u UnwrapWebhookEventUnion) AsUploadPostTransformError() (v UploadPostTrans
 	return
 }
 
-func (u UnwrapWebhookEventUnion) AsFileCreated() (v FileCreateEvent) {
+func (u UnwrapWebhookEventUnion) AsFileCreate() (v FileCreateEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u UnwrapWebhookEventUnion) AsFileUpdated() (v FileUpdateEvent) {
+func (u UnwrapWebhookEventUnion) AsFileUpdate() (v FileUpdateEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u UnwrapWebhookEventUnion) AsFileDeleted() (v FileDeleteEvent) {
+func (u UnwrapWebhookEventUnion) AsFileDelete() (v FileDeleteEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u UnwrapWebhookEventUnion) AsFileVersionCreated() (v FileVersionCreateEvent) {
+func (u UnwrapWebhookEventUnion) AsFileVersionCreate() (v FileVersionCreateEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u UnwrapWebhookEventUnion) AsFileVersionDeleted() (v FileVersionDeleteEvent) {
+func (u UnwrapWebhookEventUnion) AsFileVersionDelete() (v FileVersionDeleteEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u UnwrapWebhookEventUnion) AsFolderCreated() (v FolderCreateEvent) {
+func (u UnwrapWebhookEventUnion) AsFolderCreate() (v FolderCreateEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u UnwrapWebhookEventUnion) AsFolderUpdated() (v FolderUpdateEvent) {
+func (u UnwrapWebhookEventUnion) AsFolderUpdate() (v FolderUpdateEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u UnwrapWebhookEventUnion) AsFolderDeleted() (v FolderDeleteEvent) {
+func (u UnwrapWebhookEventUnion) AsFolderDelete() (v FolderDeleteEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
