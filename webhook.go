@@ -75,12 +75,9 @@ func (r *WebhookService) Unwrap(payload []byte, headers http.Header, opts ...opt
 type BaseWebhookEvent struct {
 	// Unique identifier for the event.
 	ID string `json:"id" api:"required"`
-	// The type of webhook event.
-	Type string `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
-		Type        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -1497,10 +1494,7 @@ type UnsafeUnwrapWebhookEventUnion struct {
 	// [FileCreateEvent], [FileUpdateEvent], [FileDeleteEvent],
 	// [FileVersionCreateEvent], [FileVersionDeleteEvent], [FolderCreateEvent],
 	// [FolderUpdateEvent], [FolderDeleteEvent].
-	ID string `json:"id"`
-	// Any of nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil,
-	// nil.
-	Type      string    `json:"type"`
+	ID        string    `json:"id"`
 	CreatedAt time.Time `json:"created_at"`
 	// This field is a union of [VideoTransformationAcceptedEventData],
 	// [VideoTransformationReadyEventData], [VideoTransformationErrorEventData],
@@ -1514,90 +1508,177 @@ type UnsafeUnwrapWebhookEventUnion struct {
 	// [UploadPreTransformSuccessEventRequest], [UploadPreTransformErrorEventRequest],
 	// [UploadPostTransformSuccessEventRequest], [UploadPostTransformErrorEventRequest]
 	Request UnsafeUnwrapWebhookEventUnionRequest `json:"request"`
+	// Any of "video.transformation.accepted", "video.transformation.ready",
+	// "video.transformation.error", "upload.pre-transform.success",
+	// "upload.pre-transform.error", "upload.post-transform.success",
+	// "upload.post-transform.error", "file.created", "file.updated", "file.deleted",
+	// "file-version.created", "file-version.deleted", "folder.created",
+	// "folder.updated", "folder.deleted".
+	Type string `json:"type"`
 	// This field is from variant [VideoTransformationReadyEvent].
 	Timings VideoTransformationReadyEventTimings `json:"timings"`
 	JSON    struct {
 		ID        respjson.Field
-		Type      respjson.Field
 		CreatedAt respjson.Field
 		Data      respjson.Field
 		Request   respjson.Field
+		Type      respjson.Field
 		Timings   respjson.Field
 		raw       string
 	} `json:"-"`
 }
 
-func (u UnsafeUnwrapWebhookEventUnion) AsVideoTransformationAcceptedEvent() (v VideoTransformationAcceptedEvent) {
+// anyUnsafeUnwrapWebhookEvent is implemented by each variant of
+// [UnsafeUnwrapWebhookEventUnion] to add type safety for the return type of
+// [UnsafeUnwrapWebhookEventUnion.AsAny]
+type anyUnsafeUnwrapWebhookEvent interface {
+	implUnsafeUnwrapWebhookEventUnion()
+}
+
+func (VideoTransformationAcceptedEvent) implUnsafeUnwrapWebhookEventUnion() {}
+func (VideoTransformationReadyEvent) implUnsafeUnwrapWebhookEventUnion()    {}
+func (VideoTransformationErrorEvent) implUnsafeUnwrapWebhookEventUnion()    {}
+func (UploadPreTransformSuccessEvent) implUnsafeUnwrapWebhookEventUnion()   {}
+func (UploadPreTransformErrorEvent) implUnsafeUnwrapWebhookEventUnion()     {}
+func (UploadPostTransformSuccessEvent) implUnsafeUnwrapWebhookEventUnion()  {}
+func (UploadPostTransformErrorEvent) implUnsafeUnwrapWebhookEventUnion()    {}
+func (FileCreateEvent) implUnsafeUnwrapWebhookEventUnion()                  {}
+func (FileUpdateEvent) implUnsafeUnwrapWebhookEventUnion()                  {}
+func (FileDeleteEvent) implUnsafeUnwrapWebhookEventUnion()                  {}
+func (FileVersionCreateEvent) implUnsafeUnwrapWebhookEventUnion()           {}
+func (FileVersionDeleteEvent) implUnsafeUnwrapWebhookEventUnion()           {}
+func (FolderCreateEvent) implUnsafeUnwrapWebhookEventUnion()                {}
+func (FolderUpdateEvent) implUnsafeUnwrapWebhookEventUnion()                {}
+func (FolderDeleteEvent) implUnsafeUnwrapWebhookEventUnion()                {}
+
+// Use the following switch statement to find the correct variant
+//
+//	switch variant := UnsafeUnwrapWebhookEventUnion.AsAny().(type) {
+//	case imagekit.VideoTransformationAcceptedEvent:
+//	case imagekit.VideoTransformationReadyEvent:
+//	case imagekit.VideoTransformationErrorEvent:
+//	case imagekit.UploadPreTransformSuccessEvent:
+//	case imagekit.UploadPreTransformErrorEvent:
+//	case imagekit.UploadPostTransformSuccessEvent:
+//	case imagekit.UploadPostTransformErrorEvent:
+//	case imagekit.FileCreateEvent:
+//	case imagekit.FileUpdateEvent:
+//	case imagekit.FileDeleteEvent:
+//	case imagekit.FileVersionCreateEvent:
+//	case imagekit.FileVersionDeleteEvent:
+//	case imagekit.FolderCreateEvent:
+//	case imagekit.FolderUpdateEvent:
+//	case imagekit.FolderDeleteEvent:
+//	default:
+//	  fmt.Errorf("no variant present")
+//	}
+func (u UnsafeUnwrapWebhookEventUnion) AsAny() anyUnsafeUnwrapWebhookEvent {
+	switch u.Type {
+	case "video.transformation.accepted":
+		return u.AsVideoTransformationAccepted()
+	case "video.transformation.ready":
+		return u.AsVideoTransformationReady()
+	case "video.transformation.error":
+		return u.AsVideoTransformationError()
+	case "upload.pre-transform.success":
+		return u.AsUploadPreTransformSuccess()
+	case "upload.pre-transform.error":
+		return u.AsUploadPreTransformError()
+	case "upload.post-transform.success":
+		return u.AsUploadPostTransformSuccess()
+	case "upload.post-transform.error":
+		return u.AsUploadPostTransformError()
+	case "file.created":
+		return u.AsFileCreated()
+	case "file.updated":
+		return u.AsFileUpdated()
+	case "file.deleted":
+		return u.AsFileDeleted()
+	case "file-version.created":
+		return u.AsFileVersionCreated()
+	case "file-version.deleted":
+		return u.AsFileVersionDeleted()
+	case "folder.created":
+		return u.AsFolderCreated()
+	case "folder.updated":
+		return u.AsFolderUpdated()
+	case "folder.deleted":
+		return u.AsFolderDeleted()
+	}
+	return nil
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsVideoTransformationAccepted() (v VideoTransformationAcceptedEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u UnsafeUnwrapWebhookEventUnion) AsVideoTransformationReadyEvent() (v VideoTransformationReadyEvent) {
+func (u UnsafeUnwrapWebhookEventUnion) AsVideoTransformationReady() (v VideoTransformationReadyEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u UnsafeUnwrapWebhookEventUnion) AsVideoTransformationErrorEvent() (v VideoTransformationErrorEvent) {
+func (u UnsafeUnwrapWebhookEventUnion) AsVideoTransformationError() (v VideoTransformationErrorEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u UnsafeUnwrapWebhookEventUnion) AsUploadPreTransformSuccessEvent() (v UploadPreTransformSuccessEvent) {
+func (u UnsafeUnwrapWebhookEventUnion) AsUploadPreTransformSuccess() (v UploadPreTransformSuccessEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u UnsafeUnwrapWebhookEventUnion) AsUploadPreTransformErrorEvent() (v UploadPreTransformErrorEvent) {
+func (u UnsafeUnwrapWebhookEventUnion) AsUploadPreTransformError() (v UploadPreTransformErrorEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u UnsafeUnwrapWebhookEventUnion) AsUploadPostTransformSuccessEvent() (v UploadPostTransformSuccessEvent) {
+func (u UnsafeUnwrapWebhookEventUnion) AsUploadPostTransformSuccess() (v UploadPostTransformSuccessEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u UnsafeUnwrapWebhookEventUnion) AsUploadPostTransformErrorEvent() (v UploadPostTransformErrorEvent) {
+func (u UnsafeUnwrapWebhookEventUnion) AsUploadPostTransformError() (v UploadPostTransformErrorEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u UnsafeUnwrapWebhookEventUnion) AsFileCreateEvent() (v FileCreateEvent) {
+func (u UnsafeUnwrapWebhookEventUnion) AsFileCreated() (v FileCreateEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u UnsafeUnwrapWebhookEventUnion) AsFileUpdateEvent() (v FileUpdateEvent) {
+func (u UnsafeUnwrapWebhookEventUnion) AsFileUpdated() (v FileUpdateEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u UnsafeUnwrapWebhookEventUnion) AsFileDeleteEvent() (v FileDeleteEvent) {
+func (u UnsafeUnwrapWebhookEventUnion) AsFileDeleted() (v FileDeleteEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u UnsafeUnwrapWebhookEventUnion) AsFileVersionCreateEvent() (v FileVersionCreateEvent) {
+func (u UnsafeUnwrapWebhookEventUnion) AsFileVersionCreated() (v FileVersionCreateEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u UnsafeUnwrapWebhookEventUnion) AsFileVersionDeleteEvent() (v FileVersionDeleteEvent) {
+func (u UnsafeUnwrapWebhookEventUnion) AsFileVersionDeleted() (v FileVersionDeleteEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u UnsafeUnwrapWebhookEventUnion) AsFolderCreateEvent() (v FolderCreateEvent) {
+func (u UnsafeUnwrapWebhookEventUnion) AsFolderCreated() (v FolderCreateEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u UnsafeUnwrapWebhookEventUnion) AsFolderUpdateEvent() (v FolderUpdateEvent) {
+func (u UnsafeUnwrapWebhookEventUnion) AsFolderUpdated() (v FolderUpdateEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u UnsafeUnwrapWebhookEventUnion) AsFolderDeleteEvent() (v FolderDeleteEvent) {
+func (u UnsafeUnwrapWebhookEventUnion) AsFolderDeleted() (v FolderDeleteEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -1897,10 +1978,7 @@ type UnwrapWebhookEventUnion struct {
 	// [FileCreateEvent], [FileUpdateEvent], [FileDeleteEvent],
 	// [FileVersionCreateEvent], [FileVersionDeleteEvent], [FolderCreateEvent],
 	// [FolderUpdateEvent], [FolderDeleteEvent].
-	ID string `json:"id"`
-	// Any of nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil,
-	// nil.
-	Type      string    `json:"type"`
+	ID        string    `json:"id"`
 	CreatedAt time.Time `json:"created_at"`
 	// This field is a union of [VideoTransformationAcceptedEventData],
 	// [VideoTransformationReadyEventData], [VideoTransformationErrorEventData],
@@ -1914,90 +1992,177 @@ type UnwrapWebhookEventUnion struct {
 	// [UploadPreTransformSuccessEventRequest], [UploadPreTransformErrorEventRequest],
 	// [UploadPostTransformSuccessEventRequest], [UploadPostTransformErrorEventRequest]
 	Request UnwrapWebhookEventUnionRequest `json:"request"`
+	// Any of "video.transformation.accepted", "video.transformation.ready",
+	// "video.transformation.error", "upload.pre-transform.success",
+	// "upload.pre-transform.error", "upload.post-transform.success",
+	// "upload.post-transform.error", "file.created", "file.updated", "file.deleted",
+	// "file-version.created", "file-version.deleted", "folder.created",
+	// "folder.updated", "folder.deleted".
+	Type string `json:"type"`
 	// This field is from variant [VideoTransformationReadyEvent].
 	Timings VideoTransformationReadyEventTimings `json:"timings"`
 	JSON    struct {
 		ID        respjson.Field
-		Type      respjson.Field
 		CreatedAt respjson.Field
 		Data      respjson.Field
 		Request   respjson.Field
+		Type      respjson.Field
 		Timings   respjson.Field
 		raw       string
 	} `json:"-"`
 }
 
-func (u UnwrapWebhookEventUnion) AsVideoTransformationAcceptedEvent() (v VideoTransformationAcceptedEvent) {
+// anyUnwrapWebhookEvent is implemented by each variant of
+// [UnwrapWebhookEventUnion] to add type safety for the return type of
+// [UnwrapWebhookEventUnion.AsAny]
+type anyUnwrapWebhookEvent interface {
+	implUnwrapWebhookEventUnion()
+}
+
+func (VideoTransformationAcceptedEvent) implUnwrapWebhookEventUnion() {}
+func (VideoTransformationReadyEvent) implUnwrapWebhookEventUnion()    {}
+func (VideoTransformationErrorEvent) implUnwrapWebhookEventUnion()    {}
+func (UploadPreTransformSuccessEvent) implUnwrapWebhookEventUnion()   {}
+func (UploadPreTransformErrorEvent) implUnwrapWebhookEventUnion()     {}
+func (UploadPostTransformSuccessEvent) implUnwrapWebhookEventUnion()  {}
+func (UploadPostTransformErrorEvent) implUnwrapWebhookEventUnion()    {}
+func (FileCreateEvent) implUnwrapWebhookEventUnion()                  {}
+func (FileUpdateEvent) implUnwrapWebhookEventUnion()                  {}
+func (FileDeleteEvent) implUnwrapWebhookEventUnion()                  {}
+func (FileVersionCreateEvent) implUnwrapWebhookEventUnion()           {}
+func (FileVersionDeleteEvent) implUnwrapWebhookEventUnion()           {}
+func (FolderCreateEvent) implUnwrapWebhookEventUnion()                {}
+func (FolderUpdateEvent) implUnwrapWebhookEventUnion()                {}
+func (FolderDeleteEvent) implUnwrapWebhookEventUnion()                {}
+
+// Use the following switch statement to find the correct variant
+//
+//	switch variant := UnwrapWebhookEventUnion.AsAny().(type) {
+//	case imagekit.VideoTransformationAcceptedEvent:
+//	case imagekit.VideoTransformationReadyEvent:
+//	case imagekit.VideoTransformationErrorEvent:
+//	case imagekit.UploadPreTransformSuccessEvent:
+//	case imagekit.UploadPreTransformErrorEvent:
+//	case imagekit.UploadPostTransformSuccessEvent:
+//	case imagekit.UploadPostTransformErrorEvent:
+//	case imagekit.FileCreateEvent:
+//	case imagekit.FileUpdateEvent:
+//	case imagekit.FileDeleteEvent:
+//	case imagekit.FileVersionCreateEvent:
+//	case imagekit.FileVersionDeleteEvent:
+//	case imagekit.FolderCreateEvent:
+//	case imagekit.FolderUpdateEvent:
+//	case imagekit.FolderDeleteEvent:
+//	default:
+//	  fmt.Errorf("no variant present")
+//	}
+func (u UnwrapWebhookEventUnion) AsAny() anyUnwrapWebhookEvent {
+	switch u.Type {
+	case "video.transformation.accepted":
+		return u.AsVideoTransformationAccepted()
+	case "video.transformation.ready":
+		return u.AsVideoTransformationReady()
+	case "video.transformation.error":
+		return u.AsVideoTransformationError()
+	case "upload.pre-transform.success":
+		return u.AsUploadPreTransformSuccess()
+	case "upload.pre-transform.error":
+		return u.AsUploadPreTransformError()
+	case "upload.post-transform.success":
+		return u.AsUploadPostTransformSuccess()
+	case "upload.post-transform.error":
+		return u.AsUploadPostTransformError()
+	case "file.created":
+		return u.AsFileCreated()
+	case "file.updated":
+		return u.AsFileUpdated()
+	case "file.deleted":
+		return u.AsFileDeleted()
+	case "file-version.created":
+		return u.AsFileVersionCreated()
+	case "file-version.deleted":
+		return u.AsFileVersionDeleted()
+	case "folder.created":
+		return u.AsFolderCreated()
+	case "folder.updated":
+		return u.AsFolderUpdated()
+	case "folder.deleted":
+		return u.AsFolderDeleted()
+	}
+	return nil
+}
+
+func (u UnwrapWebhookEventUnion) AsVideoTransformationAccepted() (v VideoTransformationAcceptedEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u UnwrapWebhookEventUnion) AsVideoTransformationReadyEvent() (v VideoTransformationReadyEvent) {
+func (u UnwrapWebhookEventUnion) AsVideoTransformationReady() (v VideoTransformationReadyEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u UnwrapWebhookEventUnion) AsVideoTransformationErrorEvent() (v VideoTransformationErrorEvent) {
+func (u UnwrapWebhookEventUnion) AsVideoTransformationError() (v VideoTransformationErrorEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u UnwrapWebhookEventUnion) AsUploadPreTransformSuccessEvent() (v UploadPreTransformSuccessEvent) {
+func (u UnwrapWebhookEventUnion) AsUploadPreTransformSuccess() (v UploadPreTransformSuccessEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u UnwrapWebhookEventUnion) AsUploadPreTransformErrorEvent() (v UploadPreTransformErrorEvent) {
+func (u UnwrapWebhookEventUnion) AsUploadPreTransformError() (v UploadPreTransformErrorEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u UnwrapWebhookEventUnion) AsUploadPostTransformSuccessEvent() (v UploadPostTransformSuccessEvent) {
+func (u UnwrapWebhookEventUnion) AsUploadPostTransformSuccess() (v UploadPostTransformSuccessEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u UnwrapWebhookEventUnion) AsUploadPostTransformErrorEvent() (v UploadPostTransformErrorEvent) {
+func (u UnwrapWebhookEventUnion) AsUploadPostTransformError() (v UploadPostTransformErrorEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u UnwrapWebhookEventUnion) AsFileCreateEvent() (v FileCreateEvent) {
+func (u UnwrapWebhookEventUnion) AsFileCreated() (v FileCreateEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u UnwrapWebhookEventUnion) AsFileUpdateEvent() (v FileUpdateEvent) {
+func (u UnwrapWebhookEventUnion) AsFileUpdated() (v FileUpdateEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u UnwrapWebhookEventUnion) AsFileDeleteEvent() (v FileDeleteEvent) {
+func (u UnwrapWebhookEventUnion) AsFileDeleted() (v FileDeleteEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u UnwrapWebhookEventUnion) AsFileVersionCreateEvent() (v FileVersionCreateEvent) {
+func (u UnwrapWebhookEventUnion) AsFileVersionCreated() (v FileVersionCreateEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u UnwrapWebhookEventUnion) AsFileVersionDeleteEvent() (v FileVersionDeleteEvent) {
+func (u UnwrapWebhookEventUnion) AsFileVersionDeleted() (v FileVersionDeleteEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u UnwrapWebhookEventUnion) AsFolderCreateEvent() (v FolderCreateEvent) {
+func (u UnwrapWebhookEventUnion) AsFolderCreated() (v FolderCreateEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u UnwrapWebhookEventUnion) AsFolderUpdateEvent() (v FolderUpdateEvent) {
+func (u UnwrapWebhookEventUnion) AsFolderUpdated() (v FolderUpdateEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u UnwrapWebhookEventUnion) AsFolderDeleteEvent() (v FolderDeleteEvent) {
+func (u UnwrapWebhookEventUnion) AsFolderDeleted() (v FolderDeleteEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
