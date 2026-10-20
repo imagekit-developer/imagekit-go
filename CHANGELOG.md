@@ -1,5 +1,28 @@
 # Changelog
 
+## [2.12.0](https://github.com/imagekit-developer/imagekit-go/compare/v2.11.0...v2.12.0) (2026-10-19)
+
+
+### Features
+
+* webhook crud api ([d2f8b48](https://github.com/imagekit-developer/imagekit-go/commit/d2f8b488db4e15af0647a2edf0b2e8f7b64a0804))
+
+
+### Bug Fixes
+
+* don't parse empty 204 responses for copy, move and delete methods ([b48933f](https://github.com/imagekit-developer/imagekit-go/commit/b48933f54ee60e6d256f183b5af3183937fd6efc))
+* **openapi:** reference shared CustomMetadata schema from FolderDetail ([cb49c11](https://github.com/imagekit-developer/imagekit-go/commit/cb49c11377bf492d3926853ba6505d482e96c44e))
+
+
+### Chores
+
+* pin next release ([723d768](https://github.com/imagekit-developer/imagekit-go/commit/723d76884c2573b1a719082ef19e4100da7e285c))
+
+
+### Documentation
+
+* describe reserved original creation date field ([40c33e3](https://github.com/imagekit-developer/imagekit-go/commit/40c33e315442690424808cf8c020fde716fae366))
+
 ## [2.11.0](https://github.com/imagekit-developer/imagekit-go/compare/v2.10.0...v2.11.0) (2026-09-16)
 
 
