@@ -136,6 +136,17 @@ Methods:
 
 - <code title="get /v1/files">client.Assets.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#AssetService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2">imagekit</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#AssetListParams">AssetListParams</a>) (\*[]<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2">imagekit</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#AssetListResponseUnion">AssetListResponseUnion</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
+# Tags
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2">imagekit</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#Tag">Tag</a>
+- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2">imagekit</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#TagListResponse">TagListResponse</a>
+
+Methods:
+
+- <code title="get /v1/tags">client.Tags.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#TagService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2">imagekit</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#TagListParams">TagListParams</a>) (\*<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2">imagekit</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#TagListResponse">TagListResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
 # Cache
 
 ## Invalidation
