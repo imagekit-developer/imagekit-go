@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.13.0](https://github.com/imagekit-developer/imagekit-go/compare/v2.12.0...v2.13.0) (2026-10-30)
+
+
+### Features
+
+* **api:** add accounts.contract.get() for contract consumption ([9560f82](https://github.com/imagekit-developer/imagekit-go/commit/9560f82ee36b3bb97a11b1c8538a90c8a1c1e4db))
+* **api:** add useImprovedLayerSpec to the Cloudinary URL rewriter ([9560f82](https://github.com/imagekit-developer/imagekit-go/commit/9560f82ee36b3bb97a11b1c8538a90c8a1c1e4db))
+
 ## [2.12.0](https://github.com/imagekit-developer/imagekit-go/compare/v2.11.0...v2.12.0) (2026-10-19)
 
 
