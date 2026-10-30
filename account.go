@@ -16,6 +16,7 @@ type AccountService struct {
 	Options        []option.RequestOption
 	Usage          AccountUsageService
 	UsageAnalytics AccountUsageAnalyticsService
+	Contract       AccountContractService
 	Origins        AccountOriginService
 	URLEndpoints   AccountURLEndpointService
 	Webhooks       AccountWebhookService
@@ -29,6 +30,7 @@ func NewAccountService(opts ...option.RequestOption) (r AccountService) {
 	r.Options = opts
 	r.Usage = NewAccountUsageService(opts...)
 	r.UsageAnalytics = NewAccountUsageAnalyticsService(opts...)
+	r.Contract = NewAccountContractService(opts...)
 	r.Origins = NewAccountOriginService(opts...)
 	r.URLEndpoints = NewAccountURLEndpointService(opts...)
 	r.Webhooks = NewAccountWebhookService(opts...)

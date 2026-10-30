@@ -205,6 +205,17 @@ Methods:
 
 - <code title="get /v1/accounts/usage-analytics">client.Accounts.UsageAnalytics.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#AccountUsageAnalyticsService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2">imagekit</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#AccountUsageAnalyticsGetParams">AccountUsageAnalyticsGetParams</a>) (\*<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2">imagekit</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#UsageAnalyticsResponse">UsageAnalyticsResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
+## Contract
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2">imagekit</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#ContractUnits">ContractUnits</a>
+- <a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2">imagekit</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#AccountContractGetResponse">AccountContractGetResponse</a>
+
+Methods:
+
+- <code title="get /v1/accounts/contract">client.Accounts.Contract.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#AccountContractService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>) (\*<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2">imagekit</a>.<a href="https://pkg.go.dev/github.com/imagekit-developer/imagekit-go/v2#AccountContractGetResponse">AccountContractGetResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
 ## Origins
 
 Params Types:
