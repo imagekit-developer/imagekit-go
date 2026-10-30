@@ -59,8 +59,9 @@ func (r *TagService) List(ctx context.Context, query TagListParams, opts ...opti
 // A tag in use in your media library, aggregated case-insensitively across the
 // assets that carry it.
 type Tag struct {
-	// The number of assets carrying the tag, counted across both tag sources and all
-	// file types regardless of the request's filters.
+	// The number of assets carrying the tag, counted across both tag sources
+	// (user-generated tags and AI-generated tags) and all file types regardless of the
+	// request's filters.
 	AssetCount int64 `json:"assetCount" api:"required"`
 	// The tag as it was spelled when it was last applied to any asset. Use it for
 	// display.
