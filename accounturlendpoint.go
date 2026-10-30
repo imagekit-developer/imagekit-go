@@ -161,6 +161,14 @@ func (u URLEndpointRequestURLRewriterUnionParam) GetPreserveAssetDeliveryTypes()
 }
 
 // Returns a pointer to the underlying variant's property, if present.
+func (u URLEndpointRequestURLRewriterUnionParam) GetUseImprovedLayerSpec() *bool {
+	if vt := u.OfCloudinary; vt != nil && vt.UseImprovedLayerSpec.Valid() {
+		return &vt.UseImprovedLayerSpec.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
 func (u URLEndpointRequestURLRewriterUnionParam) GetType() *string {
 	if vt := u.OfCloudinary; vt != nil {
 		return (*string)(&vt.Type)
@@ -185,6 +193,10 @@ func init() {
 type URLEndpointRequestURLRewriterCloudinaryParam struct {
 	// Whether to preserve `<asset_type>/<delivery_type>` in the rewritten URL.
 	PreserveAssetDeliveryTypes param.Opt[bool] `json:"preserveAssetDeliveryTypes,omitzero"`
+	// Whether to always rewrite Cloudinary layers to the improved ImageKit layer
+	// specification (`l-image`, `l-text`, ..., `l-end`). When `false` or omitted, the
+	// improved specification is used only for transformations that require it.
+	UseImprovedLayerSpec param.Opt[bool] `json:"useImprovedLayerSpec,omitzero"`
 	// This field can be elided, and will marshal its zero value as "CLOUDINARY".
 	Type constant.Cloudinary `json:"type" default:"CLOUDINARY"`
 	paramObj
@@ -288,9 +300,12 @@ type URLEndpointResponseURLRewriterUnion struct {
 	PreserveAssetDeliveryTypes bool `json:"preserveAssetDeliveryTypes"`
 	// Any of "CLOUDINARY", "IMGIX", "AKAMAI".
 	Type string `json:"type"`
-	JSON struct {
+	// This field is from variant [URLEndpointResponseURLRewriterCloudinary].
+	UseImprovedLayerSpec bool `json:"useImprovedLayerSpec"`
+	JSON                 struct {
 		PreserveAssetDeliveryTypes respjson.Field
 		Type                       respjson.Field
+		UseImprovedLayerSpec       respjson.Field
 		raw                        string
 	} `json:"-"`
 }
@@ -353,10 +368,15 @@ type URLEndpointResponseURLRewriterCloudinary struct {
 	// Whether to preserve `<asset_type>/<delivery_type>` in the rewritten URL.
 	PreserveAssetDeliveryTypes bool                `json:"preserveAssetDeliveryTypes" api:"required"`
 	Type                       constant.Cloudinary `json:"type" default:"CLOUDINARY"`
+	// Whether to always rewrite Cloudinary layers to the improved ImageKit layer
+	// specification (`l-image`, `l-text`, ..., `l-end`). When `false` or omitted, the
+	// improved specification is used only for transformations that require it.
+	UseImprovedLayerSpec bool `json:"useImprovedLayerSpec"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		PreserveAssetDeliveryTypes respjson.Field
 		Type                       respjson.Field
+		UseImprovedLayerSpec       respjson.Field
 		ExtraFields                map[string]respjson.Field
 		raw                        string
 	} `json:"-"`

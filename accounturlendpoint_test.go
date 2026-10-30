@@ -35,6 +35,7 @@ func TestAccountURLEndpointNewWithOptionalParams(t *testing.T) {
 			URLRewriter: imagekit.URLEndpointRequestURLRewriterUnionParam{
 				OfCloudinary: &imagekit.URLEndpointRequestURLRewriterCloudinaryParam{
 					PreserveAssetDeliveryTypes: imagekit.Bool(true),
+					UseImprovedLayerSpec:       imagekit.Bool(true),
 				},
 			},
 		},
@@ -73,6 +74,7 @@ func TestAccountURLEndpointUpdateWithOptionalParams(t *testing.T) {
 				URLRewriter: imagekit.URLEndpointRequestURLRewriterUnionParam{
 					OfCloudinary: &imagekit.URLEndpointRequestURLRewriterCloudinaryParam{
 						PreserveAssetDeliveryTypes: imagekit.Bool(true),
+						UseImprovedLayerSpec:       imagekit.Bool(true),
 					},
 				},
 			},
