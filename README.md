@@ -32,6 +32,7 @@ For additional details, refer to the [ImageKit REST API documentation](https://i
 - [Authentication parameters for client-side uploads](#authentication-parameters-for-client-side-uploads)
 - [Webhook verification](#webhook-verification)
 - [Advanced Usage](#advanced-usage)
+  - [Pagination](#pagination)
   - [Errors](#errors)
   - [Timeouts](#timeouts)
   - [File uploads](#file-uploads)
@@ -762,6 +763,25 @@ The ImageKit SDK provides utilities to verify webhook signatures for secure even
 For detailed information about webhook setup, signature verification, and handling different webhook events, refer to the [ImageKit webhook documentation](https://imagekit.io/docs/webhooks#verify-webhook-signature).
 
 ## Advanced Usage
+
+### Pagination
+
+The `Tags.List` method is paginated. You can use `Tags.ListAutoPaging()` to iterate through items across all pages:
+
+```go
+iter := client.Tags.ListAutoPaging(context.TODO(), imagekit.TagListParams{})
+// Automatically fetches more pages as needed.
+for iter.Next() {
+	tag := iter.Current()
+	fmt.Printf("%+v\n", tag)
+}
+if err := iter.Err(); err != nil {
+	panic(err.Error())
+}
+```
+
+Or you can use `Tags.List()` to fetch a single page and receive a standard response object
+with additional helper methods like `.GetNextPage()`, e.g.:
 
 ```go
 page, err := client.Tags.List(context.TODO(), imagekit.TagListParams{})
