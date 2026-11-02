@@ -24,6 +24,7 @@ type Client struct {
 	SavedExtensions      SavedExtensionService
 	NamedTransformations NamedTransformationService
 	Assets               AssetService
+	Tags                 TagService
 	Cache                CacheService
 	Folders              FolderService
 	Accounts             AccountService
@@ -76,6 +77,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.SavedExtensions = NewSavedExtensionService(opts...)
 	r.NamedTransformations = NewNamedTransformationService(opts...)
 	r.Assets = NewAssetService(opts...)
+	r.Tags = NewTagService(opts...)
 	r.Cache = NewCacheService(opts...)
 	r.Folders = NewFolderService(opts...)
 	r.Accounts = NewAccountService(opts...)

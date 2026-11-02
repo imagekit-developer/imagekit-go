@@ -288,8 +288,33 @@ This library provides some conveniences for working with paginated list endpoint
 
 You can use `.ListAutoPaging()` methods to iterate through items across all pages:
 
+```go
+iter := client.Tags.ListAutoPaging(context.TODO(), imagekit.TagListParams{})
+// Automatically fetches more pages as needed.
+for iter.Next() {
+	tag := iter.Current()
+	fmt.Printf("%+v\n", tag)
+}
+if err := iter.Err(); err != nil {
+	panic(err.Error())
+}
+```
+
 Or you can use simple `.List()` methods to fetch a single page and receive a standard response object
 with additional helper methods like `.GetNextPage()`, e.g.:
+
+```go
+page, err := client.Tags.List(context.TODO(), imagekit.TagListParams{})
+for page != nil {
+	for _, tag := range page.Tags {
+		fmt.Printf("%+v\n", tag)
+	}
+	page, err = page.GetNextPage()
+}
+if err != nil {
+	panic(err.Error())
+}
+```
 
 ### Errors
 
