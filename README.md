@@ -763,6 +763,19 @@ For detailed information about webhook setup, signature verification, and handli
 
 ## Advanced Usage
 
+```go
+page, err := client.Tags.List(context.TODO(), imagekit.TagListParams{})
+for page != nil {
+	for _, tag := range page.Tags {
+		fmt.Printf("%+v\n", tag)
+	}
+	page, err = page.GetNextPage()
+}
+if err != nil {
+	panic(err.Error())
+}
+```
+
 ### Errors
 
 When the API returns a non-success status code, we return an error with type
