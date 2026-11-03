@@ -348,6 +348,514 @@ func (r *FolderUpdateEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Triggered when a new asynchronous image transformation request is accepted for
+// processing. This event confirms that ImageKit has received and queued your
+// transformation request. Use this for debugging and tracking transformation
+// lifecycle.
+type ImageAsyncTransformationAcceptedEvent struct {
+	// Timestamp when the event was created in ISO8601 format.
+	CreatedAt time.Time                                 `json:"created_at" api:"required" format:"date-time"`
+	Data      ImageAsyncTransformationAcceptedEventData `json:"data" api:"required"`
+	// Information about the original request that triggered the image transformation.
+	Request ImageAsyncTransformationAcceptedEventRequest `json:"request" api:"required"`
+	Type    constant.ImageAsyncTransformationAccepted    `json:"type" default:"image.async-transformation.accepted"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CreatedAt   respjson.Field
+		Data        respjson.Field
+		Request     respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+	BaseWebhookEvent
+}
+
+// Returns the unmodified JSON received from the API
+func (r ImageAsyncTransformationAcceptedEvent) RawJSON() string { return r.JSON.raw }
+func (r *ImageAsyncTransformationAcceptedEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ImageAsyncTransformationAcceptedEventData struct {
+	// Information about the source image asset being transformed.
+	Asset ImageAsyncTransformationAcceptedEventDataAsset `json:"asset" api:"required"`
+	// Base information about an image transformation request.
+	Transformation ImageAsyncTransformationAcceptedEventDataTransformation `json:"transformation" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Asset          respjson.Field
+		Transformation respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ImageAsyncTransformationAcceptedEventData) RawJSON() string { return r.JSON.raw }
+func (r *ImageAsyncTransformationAcceptedEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Information about the source image asset being transformed.
+type ImageAsyncTransformationAcceptedEventDataAsset struct {
+	// URL of the source image, without the transformation.
+	URL string `json:"url" api:"required" format:"uri"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		URL         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ImageAsyncTransformationAcceptedEventDataAsset) RawJSON() string { return r.JSON.raw }
+func (r *ImageAsyncTransformationAcceptedEventDataAsset) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Base information about an image transformation request.
+type ImageAsyncTransformationAcceptedEventDataTransformation struct {
+	// Type of transformation. Always `image-transformation`.
+	//
+	// Any of "image-transformation".
+	Type string `json:"type" api:"required"`
+	// Options of the requested transformation.
+	Options ImageAsyncTransformationAcceptedEventDataTransformationOptions `json:"options"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type        respjson.Field
+		Options     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ImageAsyncTransformationAcceptedEventDataTransformation) RawJSON() string { return r.JSON.raw }
+func (r *ImageAsyncTransformationAcceptedEventDataTransformation) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Options of the requested transformation.
+type ImageAsyncTransformationAcceptedEventDataTransformationOptions struct {
+	// The transformation string from the request URL, for example `e-removedotbg`. Not
+	// present if the URL has no transformation.
+	Transformation string `json:"transformation"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Transformation respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ImageAsyncTransformationAcceptedEventDataTransformationOptions) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *ImageAsyncTransformationAcceptedEventDataTransformationOptions) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Information about the original request that triggered the image transformation.
+type ImageAsyncTransformationAcceptedEventRequest struct {
+	// Full URL of the transformation request that was submitted.
+	URL string `json:"url" api:"required" format:"uri"`
+	// Unique identifier for the originating transformation request.
+	XRequestID string `json:"x_request_id" api:"required"`
+	// User-Agent header from the original request that triggered the transformation.
+	UserAgent string `json:"user_agent"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		URL         respjson.Field
+		XRequestID  respjson.Field
+		UserAgent   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ImageAsyncTransformationAcceptedEventRequest) RawJSON() string { return r.JSON.raw }
+func (r *ImageAsyncTransformationAcceptedEventRequest) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Triggered when an asynchronous image transformation fails. Listen to this
+// webhook to log error reasons and debug issues. Check your origin and URL
+// endpoint settings if the reason is related to download failure. For other
+// errors, contact ImageKit support.
+type ImageAsyncTransformationErrorEvent struct {
+	// Timestamp when the event was created in ISO8601 format.
+	CreatedAt time.Time                              `json:"created_at" api:"required" format:"date-time"`
+	Data      ImageAsyncTransformationErrorEventData `json:"data" api:"required"`
+	// Information about the original request that triggered the image transformation.
+	Request ImageAsyncTransformationErrorEventRequest `json:"request" api:"required"`
+	Type    constant.ImageAsyncTransformationError    `json:"type" default:"image.async-transformation.error"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CreatedAt   respjson.Field
+		Data        respjson.Field
+		Request     respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+	BaseWebhookEvent
+}
+
+// Returns the unmodified JSON received from the API
+func (r ImageAsyncTransformationErrorEvent) RawJSON() string { return r.JSON.raw }
+func (r *ImageAsyncTransformationErrorEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ImageAsyncTransformationErrorEventData struct {
+	// Information about the source image asset being transformed.
+	Asset          ImageAsyncTransformationErrorEventDataAsset          `json:"asset" api:"required"`
+	Transformation ImageAsyncTransformationErrorEventDataTransformation `json:"transformation" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Asset          respjson.Field
+		Transformation respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ImageAsyncTransformationErrorEventData) RawJSON() string { return r.JSON.raw }
+func (r *ImageAsyncTransformationErrorEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Information about the source image asset being transformed.
+type ImageAsyncTransformationErrorEventDataAsset struct {
+	// URL of the source image, without the transformation.
+	URL string `json:"url" api:"required" format:"uri"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		URL         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ImageAsyncTransformationErrorEventDataAsset) RawJSON() string { return r.JSON.raw }
+func (r *ImageAsyncTransformationErrorEventDataAsset) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ImageAsyncTransformationErrorEventDataTransformation struct {
+	// Type of transformation. Always `image-transformation`.
+	//
+	// Any of "image-transformation".
+	Type string `json:"type" api:"required"`
+	// Details about the transformation error.
+	Error ImageAsyncTransformationErrorEventDataTransformationError `json:"error"`
+	// Options of the requested transformation.
+	Options ImageAsyncTransformationErrorEventDataTransformationOptions `json:"options"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type        respjson.Field
+		Error       respjson.Field
+		Options     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ImageAsyncTransformationErrorEventDataTransformation) RawJSON() string { return r.JSON.raw }
+func (r *ImageAsyncTransformationErrorEventDataTransformation) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Details about the transformation error.
+type ImageAsyncTransformationErrorEventDataTransformationError struct {
+	// Specific reason for the transformation failure:
+	//
+	// - `download_failed`: Could not download the source image
+	// - `invalid_transformation`: The requested transformation is invalid
+	// - `limit_exceeded`: The source image or transformation exceeds a limit
+	// - `internal_server_error`: Unexpected server error
+	//
+	// Any of "download_failed", "invalid_transformation", "limit_exceeded",
+	// "internal_server_error".
+	Reason string `json:"reason" api:"required"`
+	// A description of the error, when available.
+	Message string `json:"message"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Reason      respjson.Field
+		Message     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ImageAsyncTransformationErrorEventDataTransformationError) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *ImageAsyncTransformationErrorEventDataTransformationError) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Options of the requested transformation.
+type ImageAsyncTransformationErrorEventDataTransformationOptions struct {
+	// The transformation string from the request URL, for example `e-removedotbg`. Not
+	// present if the URL has no transformation.
+	Transformation string `json:"transformation"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Transformation respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ImageAsyncTransformationErrorEventDataTransformationOptions) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *ImageAsyncTransformationErrorEventDataTransformationOptions) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Information about the original request that triggered the image transformation.
+type ImageAsyncTransformationErrorEventRequest struct {
+	// Full URL of the transformation request that was submitted.
+	URL string `json:"url" api:"required" format:"uri"`
+	// Unique identifier for the originating transformation request.
+	XRequestID string `json:"x_request_id" api:"required"`
+	// User-Agent header from the original request that triggered the transformation.
+	UserAgent string `json:"user_agent"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		URL         respjson.Field
+		XRequestID  respjson.Field
+		UserAgent   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ImageAsyncTransformationErrorEventRequest) RawJSON() string { return r.JSON.raw }
+func (r *ImageAsyncTransformationErrorEventRequest) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Triggered when an asynchronous image transformation is finished and the
+// transformed image is ready to be served. Listen to this webhook and update any
+// flags in your database or CMS so your application can start displaying the
+// transformed image to users.
+type ImageAsyncTransformationReadyEvent struct {
+	// Timestamp when the event was created in ISO8601 format.
+	CreatedAt time.Time                              `json:"created_at" api:"required" format:"date-time"`
+	Data      ImageAsyncTransformationReadyEventData `json:"data" api:"required"`
+	// Information about the original request that triggered the image transformation.
+	Request ImageAsyncTransformationReadyEventRequest `json:"request" api:"required"`
+	Type    constant.ImageAsyncTransformationReady    `json:"type" default:"image.async-transformation.ready"`
+	// Performance metrics for the transformation process.
+	Timings ImageAsyncTransformationReadyEventTimings `json:"timings"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CreatedAt   respjson.Field
+		Data        respjson.Field
+		Request     respjson.Field
+		Type        respjson.Field
+		Timings     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+	BaseWebhookEvent
+}
+
+// Returns the unmodified JSON received from the API
+func (r ImageAsyncTransformationReadyEvent) RawJSON() string { return r.JSON.raw }
+func (r *ImageAsyncTransformationReadyEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ImageAsyncTransformationReadyEventData struct {
+	// Information about the source image asset being transformed.
+	Asset          ImageAsyncTransformationReadyEventDataAsset          `json:"asset" api:"required"`
+	Transformation ImageAsyncTransformationReadyEventDataTransformation `json:"transformation" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Asset          respjson.Field
+		Transformation respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ImageAsyncTransformationReadyEventData) RawJSON() string { return r.JSON.raw }
+func (r *ImageAsyncTransformationReadyEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Information about the source image asset being transformed.
+type ImageAsyncTransformationReadyEventDataAsset struct {
+	// URL of the source image, without the transformation.
+	URL string `json:"url" api:"required" format:"uri"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		URL         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ImageAsyncTransformationReadyEventDataAsset) RawJSON() string { return r.JSON.raw }
+func (r *ImageAsyncTransformationReadyEventDataAsset) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ImageAsyncTransformationReadyEventDataTransformation struct {
+	// Type of transformation. Always `image-transformation`.
+	//
+	// Any of "image-transformation".
+	Type string `json:"type" api:"required"`
+	// Options of the requested transformation.
+	Options ImageAsyncTransformationReadyEventDataTransformationOptions `json:"options"`
+	// Information about the transformed output image.
+	Output ImageAsyncTransformationReadyEventDataTransformationOutput `json:"output"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type        respjson.Field
+		Options     respjson.Field
+		Output      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ImageAsyncTransformationReadyEventDataTransformation) RawJSON() string { return r.JSON.raw }
+func (r *ImageAsyncTransformationReadyEventDataTransformation) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Options of the requested transformation.
+type ImageAsyncTransformationReadyEventDataTransformationOptions struct {
+	// The transformation string from the request URL, for example `e-removedotbg`. Not
+	// present if the URL has no transformation.
+	Transformation string `json:"transformation"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Transformation respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ImageAsyncTransformationReadyEventDataTransformationOptions) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *ImageAsyncTransformationReadyEventDataTransformationOptions) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Information about the transformed output image.
+type ImageAsyncTransformationReadyEventDataTransformationOutput struct {
+	// URL to access the transformed image.
+	URL string `json:"url" api:"required" format:"uri"`
+	// Metadata of the output image.
+	ImageMetadata ImageAsyncTransformationReadyEventDataTransformationOutputImageMetadata `json:"image_metadata"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		URL           respjson.Field
+		ImageMetadata respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ImageAsyncTransformationReadyEventDataTransformationOutput) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *ImageAsyncTransformationReadyEventDataTransformationOutput) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Metadata of the output image.
+type ImageAsyncTransformationReadyEventDataTransformationOutputImageMetadata struct {
+	// Size of the output image in bytes.
+	Size int64 `json:"size" api:"required"`
+	// Format of the output image, for example `webp` or `png`.
+	Format string `json:"format"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Size        respjson.Field
+		Format      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ImageAsyncTransformationReadyEventDataTransformationOutputImageMetadata) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *ImageAsyncTransformationReadyEventDataTransformationOutputImageMetadata) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Information about the original request that triggered the image transformation.
+type ImageAsyncTransformationReadyEventRequest struct {
+	// Full URL of the transformation request that was submitted.
+	URL string `json:"url" api:"required" format:"uri"`
+	// Unique identifier for the originating transformation request.
+	XRequestID string `json:"x_request_id" api:"required"`
+	// User-Agent header from the original request that triggered the transformation.
+	UserAgent string `json:"user_agent"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		URL         respjson.Field
+		XRequestID  respjson.Field
+		UserAgent   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ImageAsyncTransformationReadyEventRequest) RawJSON() string { return r.JSON.raw }
+func (r *ImageAsyncTransformationReadyEventRequest) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Performance metrics for the transformation process.
+type ImageAsyncTransformationReadyEventTimings struct {
+	// Time spent processing the transformation, in milliseconds.
+	ProcessingDuration int64 `json:"processing_duration"`
+	// Time the request waited in the queue before processing started, in milliseconds.
+	QueueDuration int64 `json:"queue_duration"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ProcessingDuration respjson.Field
+		QueueDuration      respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ImageAsyncTransformationReadyEventTimings) RawJSON() string { return r.JSON.raw }
+func (r *ImageAsyncTransformationReadyEventTimings) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // Triggered when a post-transformation fails. The original file remains available,
 // but the requested transformation could not be generated.
 type UploadPostTransformErrorEvent struct {
@@ -1480,11 +1988,13 @@ func (r *VideoTransformationReadyEventTimings) UnmarshalJSON(data []byte) error 
 
 // UnsafeUnwrapWebhookEventUnion contains all possible properties and values from
 // [VideoTransformationAcceptedEvent], [VideoTransformationReadyEvent],
-// [VideoTransformationErrorEvent], [UploadPreTransformSuccessEvent],
-// [UploadPreTransformErrorEvent], [UploadPostTransformSuccessEvent],
-// [UploadPostTransformErrorEvent], [FileCreateEvent], [FileUpdateEvent],
-// [FileDeleteEvent], [FileVersionCreateEvent], [FileVersionDeleteEvent],
-// [FolderCreateEvent], [FolderUpdateEvent], [FolderDeleteEvent].
+// [VideoTransformationErrorEvent], [ImageAsyncTransformationAcceptedEvent],
+// [ImageAsyncTransformationReadyEvent], [ImageAsyncTransformationErrorEvent],
+// [UploadPreTransformSuccessEvent], [UploadPreTransformErrorEvent],
+// [UploadPostTransformSuccessEvent], [UploadPostTransformErrorEvent],
+// [FileCreateEvent], [FileUpdateEvent], [FileDeleteEvent],
+// [FileVersionCreateEvent], [FileVersionDeleteEvent], [FolderCreateEvent],
+// [FolderUpdateEvent], [FolderDeleteEvent].
 //
 // Use the [UnsafeUnwrapWebhookEventUnion.AsAny] method to switch on the variant.
 //
@@ -1492,30 +2002,37 @@ func (r *VideoTransformationReadyEventTimings) UnmarshalJSON(data []byte) error 
 type UnsafeUnwrapWebhookEventUnion struct {
 	// This field is from variant [VideoTransformationAcceptedEvent],
 	// [VideoTransformationReadyEvent], [VideoTransformationErrorEvent],
-	// [UploadPreTransformSuccessEvent], [UploadPreTransformErrorEvent],
-	// [UploadPostTransformSuccessEvent], [UploadPostTransformErrorEvent],
-	// [FileCreateEvent], [FileUpdateEvent], [FileDeleteEvent],
-	// [FileVersionCreateEvent], [FileVersionDeleteEvent], [FolderCreateEvent],
-	// [FolderUpdateEvent], [FolderDeleteEvent].
+	// [ImageAsyncTransformationAcceptedEvent], [ImageAsyncTransformationReadyEvent],
+	// [ImageAsyncTransformationErrorEvent], [UploadPreTransformSuccessEvent],
+	// [UploadPreTransformErrorEvent], [UploadPostTransformSuccessEvent],
+	// [UploadPostTransformErrorEvent], [FileCreateEvent], [FileUpdateEvent],
+	// [FileDeleteEvent], [FileVersionCreateEvent], [FileVersionDeleteEvent],
+	// [FolderCreateEvent], [FolderUpdateEvent], [FolderDeleteEvent].
 	ID string `json:"id"`
 	// Any of nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil,
-	// nil.
+	// nil, nil, nil, nil.
 	Type      string    `json:"type"`
 	CreatedAt time.Time `json:"created_at"`
 	// This field is a union of [VideoTransformationAcceptedEventData],
 	// [VideoTransformationReadyEventData], [VideoTransformationErrorEventData],
-	// [UploadPreTransformSuccessEventData], [UploadPreTransformErrorEventData],
-	// [UploadPostTransformSuccessEventData], [UploadPostTransformErrorEventData],
-	// [File], [FileDeleteEventData], [FileVersionDeleteEventData], [Folder],
-	// [FolderDeleteEventData]
+	// [ImageAsyncTransformationAcceptedEventData],
+	// [ImageAsyncTransformationReadyEventData],
+	// [ImageAsyncTransformationErrorEventData], [UploadPreTransformSuccessEventData],
+	// [UploadPreTransformErrorEventData], [UploadPostTransformSuccessEventData],
+	// [UploadPostTransformErrorEventData], [File], [FileDeleteEventData],
+	// [FileVersionDeleteEventData], [Folder], [FolderDeleteEventData]
 	Data UnsafeUnwrapWebhookEventUnionData `json:"data"`
 	// This field is a union of [VideoTransformationAcceptedEventRequest],
 	// [VideoTransformationReadyEventRequest], [VideoTransformationErrorEventRequest],
+	// [ImageAsyncTransformationAcceptedEventRequest],
+	// [ImageAsyncTransformationReadyEventRequest],
+	// [ImageAsyncTransformationErrorEventRequest],
 	// [UploadPreTransformSuccessEventRequest], [UploadPreTransformErrorEventRequest],
 	// [UploadPostTransformSuccessEventRequest], [UploadPostTransformErrorEventRequest]
 	Request UnsafeUnwrapWebhookEventUnionRequest `json:"request"`
-	// This field is from variant [VideoTransformationReadyEvent].
-	Timings VideoTransformationReadyEventTimings `json:"timings"`
+	// This field is a union of [VideoTransformationReadyEventTimings],
+	// [ImageAsyncTransformationReadyEventTimings]
+	Timings UnsafeUnwrapWebhookEventUnionTimings `json:"timings"`
 	JSON    struct {
 		ID        respjson.Field
 		Type      respjson.Field
@@ -1538,6 +2055,21 @@ func (u UnsafeUnwrapWebhookEventUnion) AsVideoTransformationReadyEvent() (v Vide
 }
 
 func (u UnsafeUnwrapWebhookEventUnion) AsVideoTransformationErrorEvent() (v VideoTransformationErrorEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsImageAsyncTransformationAcceptedEvent() (v ImageAsyncTransformationAcceptedEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsImageAsyncTransformationReadyEvent() (v ImageAsyncTransformationReadyEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnsafeUnwrapWebhookEventUnion) AsImageAsyncTransformationErrorEvent() (v ImageAsyncTransformationErrorEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -1618,11 +2150,17 @@ func (r *UnsafeUnwrapWebhookEventUnion) UnmarshalJSON(data []byte) error {
 type UnsafeUnwrapWebhookEventUnionData struct {
 	// This field is a union of [VideoTransformationAcceptedEventDataAsset],
 	// [VideoTransformationReadyEventDataAsset],
-	// [VideoTransformationErrorEventDataAsset]
+	// [VideoTransformationErrorEventDataAsset],
+	// [ImageAsyncTransformationAcceptedEventDataAsset],
+	// [ImageAsyncTransformationReadyEventDataAsset],
+	// [ImageAsyncTransformationErrorEventDataAsset]
 	Asset UnsafeUnwrapWebhookEventUnionDataAsset `json:"asset"`
 	// This field is a union of [VideoTransformationAcceptedEventDataTransformation],
 	// [VideoTransformationReadyEventDataTransformation],
 	// [VideoTransformationErrorEventDataTransformation],
+	// [ImageAsyncTransformationAcceptedEventDataTransformation],
+	// [ImageAsyncTransformationReadyEventDataTransformation],
+	// [ImageAsyncTransformationErrorEventDataTransformation],
 	// [UploadPreTransformErrorEventDataTransformation],
 	// [UploadPostTransformErrorEventDataTransformation]
 	Transformation    UnsafeUnwrapWebhookEventUnionDataTransformation `json:"transformation"`
@@ -1751,11 +2289,17 @@ type UnsafeUnwrapWebhookEventUnionDataTransformation struct {
 	// This field is a union of
 	// [VideoTransformationAcceptedEventDataTransformationOptions],
 	// [VideoTransformationReadyEventDataTransformationOptions],
-	// [VideoTransformationErrorEventDataTransformationOptions]
+	// [VideoTransformationErrorEventDataTransformationOptions],
+	// [ImageAsyncTransformationAcceptedEventDataTransformationOptions],
+	// [ImageAsyncTransformationReadyEventDataTransformationOptions],
+	// [ImageAsyncTransformationErrorEventDataTransformationOptions]
 	Options UnsafeUnwrapWebhookEventUnionDataTransformationOptions `json:"options"`
-	// This field is from variant [VideoTransformationReadyEventDataTransformation].
-	Output VideoTransformationReadyEventDataTransformationOutput `json:"output"`
+	// This field is a union of
+	// [VideoTransformationReadyEventDataTransformationOutput],
+	// [ImageAsyncTransformationReadyEventDataTransformationOutput]
+	Output UnsafeUnwrapWebhookEventUnionDataTransformationOutput `json:"output"`
 	// This field is a union of [VideoTransformationErrorEventDataTransformationError],
+	// [ImageAsyncTransformationErrorEventDataTransformationError],
 	// [UploadPreTransformErrorEventDataTransformationError],
 	// [UploadPostTransformErrorEventDataTransformationError]
 	Error UnsafeUnwrapWebhookEventUnionDataTransformationError `json:"error"`
@@ -1787,6 +2331,7 @@ type UnsafeUnwrapWebhookEventUnionDataTransformationOptions struct {
 	StreamProtocol string   `json:"stream_protocol"`
 	Variants       []string `json:"variants"`
 	VideoCodec     string   `json:"video_codec"`
+	Transformation string   `json:"transformation"`
 	JSON           struct {
 		AudioCodec     respjson.Field
 		AutoRotate     respjson.Field
@@ -1795,11 +2340,39 @@ type UnsafeUnwrapWebhookEventUnionDataTransformationOptions struct {
 		StreamProtocol respjson.Field
 		Variants       respjson.Field
 		VideoCodec     respjson.Field
+		Transformation respjson.Field
 		raw            string
 	} `json:"-"`
 }
 
 func (r *UnsafeUnwrapWebhookEventUnionDataTransformationOptions) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// UnsafeUnwrapWebhookEventUnionDataTransformationOutput is an implicit subunion of
+// [UnsafeUnwrapWebhookEventUnion].
+// UnsafeUnwrapWebhookEventUnionDataTransformationOutput provides convenient access
+// to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [UnsafeUnwrapWebhookEventUnion].
+type UnsafeUnwrapWebhookEventUnionDataTransformationOutput struct {
+	URL string `json:"url"`
+	// This field is from variant
+	// [VideoTransformationReadyEventDataTransformationOutput].
+	VideoMetadata VideoTransformationReadyEventDataTransformationOutputVideoMetadata `json:"video_metadata"`
+	// This field is from variant
+	// [ImageAsyncTransformationReadyEventDataTransformationOutput].
+	ImageMetadata ImageAsyncTransformationReadyEventDataTransformationOutputImageMetadata `json:"image_metadata"`
+	JSON          struct {
+		URL           respjson.Field
+		VideoMetadata respjson.Field
+		ImageMetadata respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+func (r *UnsafeUnwrapWebhookEventUnionDataTransformationOutput) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1812,9 +2385,13 @@ func (r *UnsafeUnwrapWebhookEventUnionDataTransformationOptions) UnmarshalJSON(d
 // [UnsafeUnwrapWebhookEventUnion].
 type UnsafeUnwrapWebhookEventUnionDataTransformationError struct {
 	Reason string `json:"reason"`
-	JSON   struct {
-		Reason respjson.Field
-		raw    string
+	// This field is from variant
+	// [ImageAsyncTransformationErrorEventDataTransformationError].
+	Message string `json:"message"`
+	JSON    struct {
+		Reason  respjson.Field
+		Message respjson.Field
+		raw     string
 	} `json:"-"`
 }
 
@@ -1878,13 +2455,43 @@ func (r *UnsafeUnwrapWebhookEventUnionRequestTransformation) UnmarshalJSON(data 
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// UnsafeUnwrapWebhookEventUnionTimings is an implicit subunion of
+// [UnsafeUnwrapWebhookEventUnion]. UnsafeUnwrapWebhookEventUnionTimings provides
+// convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [UnsafeUnwrapWebhookEventUnion].
+type UnsafeUnwrapWebhookEventUnionTimings struct {
+	// This field is from variant [VideoTransformationReadyEventTimings].
+	DownloadDuration int64 `json:"download_duration"`
+	// This field is from variant [VideoTransformationReadyEventTimings].
+	EncodingDuration int64 `json:"encoding_duration"`
+	// This field is from variant [ImageAsyncTransformationReadyEventTimings].
+	ProcessingDuration int64 `json:"processing_duration"`
+	// This field is from variant [ImageAsyncTransformationReadyEventTimings].
+	QueueDuration int64 `json:"queue_duration"`
+	JSON          struct {
+		DownloadDuration   respjson.Field
+		EncodingDuration   respjson.Field
+		ProcessingDuration respjson.Field
+		QueueDuration      respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+func (r *UnsafeUnwrapWebhookEventUnionTimings) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // UnwrapWebhookEventUnion contains all possible properties and values from
 // [VideoTransformationAcceptedEvent], [VideoTransformationReadyEvent],
-// [VideoTransformationErrorEvent], [UploadPreTransformSuccessEvent],
-// [UploadPreTransformErrorEvent], [UploadPostTransformSuccessEvent],
-// [UploadPostTransformErrorEvent], [FileCreateEvent], [FileUpdateEvent],
-// [FileDeleteEvent], [FileVersionCreateEvent], [FileVersionDeleteEvent],
-// [FolderCreateEvent], [FolderUpdateEvent], [FolderDeleteEvent].
+// [VideoTransformationErrorEvent], [ImageAsyncTransformationAcceptedEvent],
+// [ImageAsyncTransformationReadyEvent], [ImageAsyncTransformationErrorEvent],
+// [UploadPreTransformSuccessEvent], [UploadPreTransformErrorEvent],
+// [UploadPostTransformSuccessEvent], [UploadPostTransformErrorEvent],
+// [FileCreateEvent], [FileUpdateEvent], [FileDeleteEvent],
+// [FileVersionCreateEvent], [FileVersionDeleteEvent], [FolderCreateEvent],
+// [FolderUpdateEvent], [FolderDeleteEvent].
 //
 // Use the [UnwrapWebhookEventUnion.AsAny] method to switch on the variant.
 //
@@ -1892,30 +2499,37 @@ func (r *UnsafeUnwrapWebhookEventUnionRequestTransformation) UnmarshalJSON(data 
 type UnwrapWebhookEventUnion struct {
 	// This field is from variant [VideoTransformationAcceptedEvent],
 	// [VideoTransformationReadyEvent], [VideoTransformationErrorEvent],
-	// [UploadPreTransformSuccessEvent], [UploadPreTransformErrorEvent],
-	// [UploadPostTransformSuccessEvent], [UploadPostTransformErrorEvent],
-	// [FileCreateEvent], [FileUpdateEvent], [FileDeleteEvent],
-	// [FileVersionCreateEvent], [FileVersionDeleteEvent], [FolderCreateEvent],
-	// [FolderUpdateEvent], [FolderDeleteEvent].
+	// [ImageAsyncTransformationAcceptedEvent], [ImageAsyncTransformationReadyEvent],
+	// [ImageAsyncTransformationErrorEvent], [UploadPreTransformSuccessEvent],
+	// [UploadPreTransformErrorEvent], [UploadPostTransformSuccessEvent],
+	// [UploadPostTransformErrorEvent], [FileCreateEvent], [FileUpdateEvent],
+	// [FileDeleteEvent], [FileVersionCreateEvent], [FileVersionDeleteEvent],
+	// [FolderCreateEvent], [FolderUpdateEvent], [FolderDeleteEvent].
 	ID string `json:"id"`
 	// Any of nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil,
-	// nil.
+	// nil, nil, nil, nil.
 	Type      string    `json:"type"`
 	CreatedAt time.Time `json:"created_at"`
 	// This field is a union of [VideoTransformationAcceptedEventData],
 	// [VideoTransformationReadyEventData], [VideoTransformationErrorEventData],
-	// [UploadPreTransformSuccessEventData], [UploadPreTransformErrorEventData],
-	// [UploadPostTransformSuccessEventData], [UploadPostTransformErrorEventData],
-	// [File], [FileDeleteEventData], [FileVersionDeleteEventData], [Folder],
-	// [FolderDeleteEventData]
+	// [ImageAsyncTransformationAcceptedEventData],
+	// [ImageAsyncTransformationReadyEventData],
+	// [ImageAsyncTransformationErrorEventData], [UploadPreTransformSuccessEventData],
+	// [UploadPreTransformErrorEventData], [UploadPostTransformSuccessEventData],
+	// [UploadPostTransformErrorEventData], [File], [FileDeleteEventData],
+	// [FileVersionDeleteEventData], [Folder], [FolderDeleteEventData]
 	Data UnwrapWebhookEventUnionData `json:"data"`
 	// This field is a union of [VideoTransformationAcceptedEventRequest],
 	// [VideoTransformationReadyEventRequest], [VideoTransformationErrorEventRequest],
+	// [ImageAsyncTransformationAcceptedEventRequest],
+	// [ImageAsyncTransformationReadyEventRequest],
+	// [ImageAsyncTransformationErrorEventRequest],
 	// [UploadPreTransformSuccessEventRequest], [UploadPreTransformErrorEventRequest],
 	// [UploadPostTransformSuccessEventRequest], [UploadPostTransformErrorEventRequest]
 	Request UnwrapWebhookEventUnionRequest `json:"request"`
-	// This field is from variant [VideoTransformationReadyEvent].
-	Timings VideoTransformationReadyEventTimings `json:"timings"`
+	// This field is a union of [VideoTransformationReadyEventTimings],
+	// [ImageAsyncTransformationReadyEventTimings]
+	Timings UnwrapWebhookEventUnionTimings `json:"timings"`
 	JSON    struct {
 		ID        respjson.Field
 		Type      respjson.Field
@@ -1938,6 +2552,21 @@ func (u UnwrapWebhookEventUnion) AsVideoTransformationReadyEvent() (v VideoTrans
 }
 
 func (u UnwrapWebhookEventUnion) AsVideoTransformationErrorEvent() (v VideoTransformationErrorEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnwrapWebhookEventUnion) AsImageAsyncTransformationAcceptedEvent() (v ImageAsyncTransformationAcceptedEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnwrapWebhookEventUnion) AsImageAsyncTransformationReadyEvent() (v ImageAsyncTransformationReadyEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnwrapWebhookEventUnion) AsImageAsyncTransformationErrorEvent() (v ImageAsyncTransformationErrorEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -2018,11 +2647,17 @@ func (r *UnwrapWebhookEventUnion) UnmarshalJSON(data []byte) error {
 type UnwrapWebhookEventUnionData struct {
 	// This field is a union of [VideoTransformationAcceptedEventDataAsset],
 	// [VideoTransformationReadyEventDataAsset],
-	// [VideoTransformationErrorEventDataAsset]
+	// [VideoTransformationErrorEventDataAsset],
+	// [ImageAsyncTransformationAcceptedEventDataAsset],
+	// [ImageAsyncTransformationReadyEventDataAsset],
+	// [ImageAsyncTransformationErrorEventDataAsset]
 	Asset UnwrapWebhookEventUnionDataAsset `json:"asset"`
 	// This field is a union of [VideoTransformationAcceptedEventDataTransformation],
 	// [VideoTransformationReadyEventDataTransformation],
 	// [VideoTransformationErrorEventDataTransformation],
+	// [ImageAsyncTransformationAcceptedEventDataTransformation],
+	// [ImageAsyncTransformationReadyEventDataTransformation],
+	// [ImageAsyncTransformationErrorEventDataTransformation],
 	// [UploadPreTransformErrorEventDataTransformation],
 	// [UploadPostTransformErrorEventDataTransformation]
 	Transformation    UnwrapWebhookEventUnionDataTransformation `json:"transformation"`
@@ -2151,11 +2786,17 @@ type UnwrapWebhookEventUnionDataTransformation struct {
 	// This field is a union of
 	// [VideoTransformationAcceptedEventDataTransformationOptions],
 	// [VideoTransformationReadyEventDataTransformationOptions],
-	// [VideoTransformationErrorEventDataTransformationOptions]
+	// [VideoTransformationErrorEventDataTransformationOptions],
+	// [ImageAsyncTransformationAcceptedEventDataTransformationOptions],
+	// [ImageAsyncTransformationReadyEventDataTransformationOptions],
+	// [ImageAsyncTransformationErrorEventDataTransformationOptions]
 	Options UnwrapWebhookEventUnionDataTransformationOptions `json:"options"`
-	// This field is from variant [VideoTransformationReadyEventDataTransformation].
-	Output VideoTransformationReadyEventDataTransformationOutput `json:"output"`
+	// This field is a union of
+	// [VideoTransformationReadyEventDataTransformationOutput],
+	// [ImageAsyncTransformationReadyEventDataTransformationOutput]
+	Output UnwrapWebhookEventUnionDataTransformationOutput `json:"output"`
 	// This field is a union of [VideoTransformationErrorEventDataTransformationError],
+	// [ImageAsyncTransformationErrorEventDataTransformationError],
 	// [UploadPreTransformErrorEventDataTransformationError],
 	// [UploadPostTransformErrorEventDataTransformationError]
 	Error UnwrapWebhookEventUnionDataTransformationError `json:"error"`
@@ -2186,6 +2827,7 @@ type UnwrapWebhookEventUnionDataTransformationOptions struct {
 	StreamProtocol string   `json:"stream_protocol"`
 	Variants       []string `json:"variants"`
 	VideoCodec     string   `json:"video_codec"`
+	Transformation string   `json:"transformation"`
 	JSON           struct {
 		AudioCodec     respjson.Field
 		AutoRotate     respjson.Field
@@ -2194,11 +2836,38 @@ type UnwrapWebhookEventUnionDataTransformationOptions struct {
 		StreamProtocol respjson.Field
 		Variants       respjson.Field
 		VideoCodec     respjson.Field
+		Transformation respjson.Field
 		raw            string
 	} `json:"-"`
 }
 
 func (r *UnwrapWebhookEventUnionDataTransformationOptions) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// UnwrapWebhookEventUnionDataTransformationOutput is an implicit subunion of
+// [UnwrapWebhookEventUnion]. UnwrapWebhookEventUnionDataTransformationOutput
+// provides convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [UnwrapWebhookEventUnion].
+type UnwrapWebhookEventUnionDataTransformationOutput struct {
+	URL string `json:"url"`
+	// This field is from variant
+	// [VideoTransformationReadyEventDataTransformationOutput].
+	VideoMetadata VideoTransformationReadyEventDataTransformationOutputVideoMetadata `json:"video_metadata"`
+	// This field is from variant
+	// [ImageAsyncTransformationReadyEventDataTransformationOutput].
+	ImageMetadata ImageAsyncTransformationReadyEventDataTransformationOutputImageMetadata `json:"image_metadata"`
+	JSON          struct {
+		URL           respjson.Field
+		VideoMetadata respjson.Field
+		ImageMetadata respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+func (r *UnwrapWebhookEventUnionDataTransformationOutput) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -2210,9 +2879,13 @@ func (r *UnwrapWebhookEventUnionDataTransformationOptions) UnmarshalJSON(data []
 // [UnwrapWebhookEventUnion].
 type UnwrapWebhookEventUnionDataTransformationError struct {
 	Reason string `json:"reason"`
-	JSON   struct {
-		Reason respjson.Field
-		raw    string
+	// This field is from variant
+	// [ImageAsyncTransformationErrorEventDataTransformationError].
+	Message string `json:"message"`
+	JSON    struct {
+		Reason  respjson.Field
+		Message respjson.Field
+		raw     string
 	} `json:"-"`
 }
 
@@ -2272,5 +2945,33 @@ type UnwrapWebhookEventUnionRequestTransformation struct {
 }
 
 func (r *UnwrapWebhookEventUnionRequestTransformation) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// UnwrapWebhookEventUnionTimings is an implicit subunion of
+// [UnwrapWebhookEventUnion]. UnwrapWebhookEventUnionTimings provides convenient
+// access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [UnwrapWebhookEventUnion].
+type UnwrapWebhookEventUnionTimings struct {
+	// This field is from variant [VideoTransformationReadyEventTimings].
+	DownloadDuration int64 `json:"download_duration"`
+	// This field is from variant [VideoTransformationReadyEventTimings].
+	EncodingDuration int64 `json:"encoding_duration"`
+	// This field is from variant [ImageAsyncTransformationReadyEventTimings].
+	ProcessingDuration int64 `json:"processing_duration"`
+	// This field is from variant [ImageAsyncTransformationReadyEventTimings].
+	QueueDuration int64 `json:"queue_duration"`
+	JSON          struct {
+		DownloadDuration   respjson.Field
+		EncodingDuration   respjson.Field
+		ProcessingDuration respjson.Field
+		QueueDuration      respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+func (r *UnwrapWebhookEventUnionTimings) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }

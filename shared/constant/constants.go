@@ -18,50 +18,53 @@ func ValueOf[T Constant[T]]() T {
 	return t.Default()
 }
 
-type Abs string                         // Always "abs"
-type AIAutoDescription string           // Always "ai-auto-description"
-type AITasks string                     // Always "ai-tasks"
-type Akamai string                      // Always "AKAMAI"
-type AkeneoPim string                   // Always "AKENEO_PIM"
-type All string                         // Always "all"
-type AzureBlob string                   // Always "AZURE_BLOB"
-type Cloudinary string                  // Always "CLOUDINARY"
-type CloudinaryBackup string            // Always "CLOUDINARY_BACKUP"
-type FileVersionCreated string          // Always "file-version.created"
-type FileVersionDeleted string          // Always "file-version.deleted"
-type FileCreated string                 // Always "file.created"
-type FileDeleted string                 // Always "file.deleted"
-type FileUpdated string                 // Always "file.updated"
-type FolderCreated string               // Always "folder.created"
-type FolderDeleted string               // Always "folder.deleted"
-type FolderUpdated string               // Always "folder.updated"
-type Gcs string                         // Always "GCS"
-type GifToVideo string                  // Always "gif-to-video"
-type Image string                       // Always "image"
-type Imgix string                       // Always "IMGIX"
-type Max string                         // Always "max"
-type RemoveBg string                    // Always "remove-bg"
-type S3 string                          // Always "S3"
-type S3Compatible string                // Always "S3_COMPATIBLE"
-type SavedExtension string              // Always "saved-extension"
-type SelectMetadata string              // Always "select_metadata"
-type SelectTags string                  // Always "select_tags"
-type SolidColor string                  // Always "solidColor"
-type Subtitle string                    // Always "subtitle"
-type Text string                        // Always "text"
-type Thumbnail string                   // Always "thumbnail"
-type Transformation string              // Always "transformation"
-type UploadPostTransformError string    // Always "upload.post-transform.error"
-type UploadPostTransformSuccess string  // Always "upload.post-transform.success"
-type UploadPreTransformError string     // Always "upload.pre-transform.error"
-type UploadPreTransformSuccess string   // Always "upload.pre-transform.success"
-type Video string                       // Always "video"
-type VideoTransformationAccepted string // Always "video.transformation.accepted"
-type VideoTransformationError string    // Always "video.transformation.error"
-type VideoTransformationReady string    // Always "video.transformation.ready"
-type WebFolder string                   // Always "WEB_FOLDER"
-type WebProxy string                    // Always "WEB_PROXY"
-type YesNo string                       // Always "yes_no"
+type Abs string                              // Always "abs"
+type AIAutoDescription string                // Always "ai-auto-description"
+type AITasks string                          // Always "ai-tasks"
+type Akamai string                           // Always "AKAMAI"
+type AkeneoPim string                        // Always "AKENEO_PIM"
+type All string                              // Always "all"
+type AzureBlob string                        // Always "AZURE_BLOB"
+type Cloudinary string                       // Always "CLOUDINARY"
+type CloudinaryBackup string                 // Always "CLOUDINARY_BACKUP"
+type FileVersionCreated string               // Always "file-version.created"
+type FileVersionDeleted string               // Always "file-version.deleted"
+type FileCreated string                      // Always "file.created"
+type FileDeleted string                      // Always "file.deleted"
+type FileUpdated string                      // Always "file.updated"
+type FolderCreated string                    // Always "folder.created"
+type FolderDeleted string                    // Always "folder.deleted"
+type FolderUpdated string                    // Always "folder.updated"
+type Gcs string                              // Always "GCS"
+type GifToVideo string                       // Always "gif-to-video"
+type Image string                            // Always "image"
+type ImageAsyncTransformationAccepted string // Always "image.async-transformation.accepted"
+type ImageAsyncTransformationError string    // Always "image.async-transformation.error"
+type ImageAsyncTransformationReady string    // Always "image.async-transformation.ready"
+type Imgix string                            // Always "IMGIX"
+type Max string                              // Always "max"
+type RemoveBg string                         // Always "remove-bg"
+type S3 string                               // Always "S3"
+type S3Compatible string                     // Always "S3_COMPATIBLE"
+type SavedExtension string                   // Always "saved-extension"
+type SelectMetadata string                   // Always "select_metadata"
+type SelectTags string                       // Always "select_tags"
+type SolidColor string                       // Always "solidColor"
+type Subtitle string                         // Always "subtitle"
+type Text string                             // Always "text"
+type Thumbnail string                        // Always "thumbnail"
+type Transformation string                   // Always "transformation"
+type UploadPostTransformError string         // Always "upload.post-transform.error"
+type UploadPostTransformSuccess string       // Always "upload.post-transform.success"
+type UploadPreTransformError string          // Always "upload.pre-transform.error"
+type UploadPreTransformSuccess string        // Always "upload.pre-transform.success"
+type Video string                            // Always "video"
+type VideoTransformationAccepted string      // Always "video.transformation.accepted"
+type VideoTransformationError string         // Always "video.transformation.error"
+type VideoTransformationReady string         // Always "video.transformation.ready"
+type WebFolder string                        // Always "WEB_FOLDER"
+type WebProxy string                         // Always "WEB_PROXY"
+type YesNo string                            // Always "yes_no"
 
 func (c Abs) Default() Abs                               { return "abs" }
 func (c AIAutoDescription) Default() AIAutoDescription   { return "ai-auto-description" }
@@ -83,19 +86,28 @@ func (c FolderUpdated) Default() FolderUpdated           { return "folder.update
 func (c Gcs) Default() Gcs                               { return "GCS" }
 func (c GifToVideo) Default() GifToVideo                 { return "gif-to-video" }
 func (c Image) Default() Image                           { return "image" }
-func (c Imgix) Default() Imgix                           { return "IMGIX" }
-func (c Max) Default() Max                               { return "max" }
-func (c RemoveBg) Default() RemoveBg                     { return "remove-bg" }
-func (c S3) Default() S3                                 { return "S3" }
-func (c S3Compatible) Default() S3Compatible             { return "S3_COMPATIBLE" }
-func (c SavedExtension) Default() SavedExtension         { return "saved-extension" }
-func (c SelectMetadata) Default() SelectMetadata         { return "select_metadata" }
-func (c SelectTags) Default() SelectTags                 { return "select_tags" }
-func (c SolidColor) Default() SolidColor                 { return "solidColor" }
-func (c Subtitle) Default() Subtitle                     { return "subtitle" }
-func (c Text) Default() Text                             { return "text" }
-func (c Thumbnail) Default() Thumbnail                   { return "thumbnail" }
-func (c Transformation) Default() Transformation         { return "transformation" }
+func (c ImageAsyncTransformationAccepted) Default() ImageAsyncTransformationAccepted {
+	return "image.async-transformation.accepted"
+}
+func (c ImageAsyncTransformationError) Default() ImageAsyncTransformationError {
+	return "image.async-transformation.error"
+}
+func (c ImageAsyncTransformationReady) Default() ImageAsyncTransformationReady {
+	return "image.async-transformation.ready"
+}
+func (c Imgix) Default() Imgix                   { return "IMGIX" }
+func (c Max) Default() Max                       { return "max" }
+func (c RemoveBg) Default() RemoveBg             { return "remove-bg" }
+func (c S3) Default() S3                         { return "S3" }
+func (c S3Compatible) Default() S3Compatible     { return "S3_COMPATIBLE" }
+func (c SavedExtension) Default() SavedExtension { return "saved-extension" }
+func (c SelectMetadata) Default() SelectMetadata { return "select_metadata" }
+func (c SelectTags) Default() SelectTags         { return "select_tags" }
+func (c SolidColor) Default() SolidColor         { return "solidColor" }
+func (c Subtitle) Default() Subtitle             { return "subtitle" }
+func (c Text) Default() Text                     { return "text" }
+func (c Thumbnail) Default() Thumbnail           { return "thumbnail" }
+func (c Transformation) Default() Transformation { return "transformation" }
 func (c UploadPostTransformError) Default() UploadPostTransformError {
 	return "upload.post-transform.error"
 }
@@ -122,50 +134,53 @@ func (c WebFolder) Default() WebFolder { return "WEB_FOLDER" }
 func (c WebProxy) Default() WebProxy   { return "WEB_PROXY" }
 func (c YesNo) Default() YesNo         { return "yes_no" }
 
-func (c Abs) MarshalJSON() ([]byte, error)                         { return marshalString(c) }
-func (c AIAutoDescription) MarshalJSON() ([]byte, error)           { return marshalString(c) }
-func (c AITasks) MarshalJSON() ([]byte, error)                     { return marshalString(c) }
-func (c Akamai) MarshalJSON() ([]byte, error)                      { return marshalString(c) }
-func (c AkeneoPim) MarshalJSON() ([]byte, error)                   { return marshalString(c) }
-func (c All) MarshalJSON() ([]byte, error)                         { return marshalString(c) }
-func (c AzureBlob) MarshalJSON() ([]byte, error)                   { return marshalString(c) }
-func (c Cloudinary) MarshalJSON() ([]byte, error)                  { return marshalString(c) }
-func (c CloudinaryBackup) MarshalJSON() ([]byte, error)            { return marshalString(c) }
-func (c FileVersionCreated) MarshalJSON() ([]byte, error)          { return marshalString(c) }
-func (c FileVersionDeleted) MarshalJSON() ([]byte, error)          { return marshalString(c) }
-func (c FileCreated) MarshalJSON() ([]byte, error)                 { return marshalString(c) }
-func (c FileDeleted) MarshalJSON() ([]byte, error)                 { return marshalString(c) }
-func (c FileUpdated) MarshalJSON() ([]byte, error)                 { return marshalString(c) }
-func (c FolderCreated) MarshalJSON() ([]byte, error)               { return marshalString(c) }
-func (c FolderDeleted) MarshalJSON() ([]byte, error)               { return marshalString(c) }
-func (c FolderUpdated) MarshalJSON() ([]byte, error)               { return marshalString(c) }
-func (c Gcs) MarshalJSON() ([]byte, error)                         { return marshalString(c) }
-func (c GifToVideo) MarshalJSON() ([]byte, error)                  { return marshalString(c) }
-func (c Image) MarshalJSON() ([]byte, error)                       { return marshalString(c) }
-func (c Imgix) MarshalJSON() ([]byte, error)                       { return marshalString(c) }
-func (c Max) MarshalJSON() ([]byte, error)                         { return marshalString(c) }
-func (c RemoveBg) MarshalJSON() ([]byte, error)                    { return marshalString(c) }
-func (c S3) MarshalJSON() ([]byte, error)                          { return marshalString(c) }
-func (c S3Compatible) MarshalJSON() ([]byte, error)                { return marshalString(c) }
-func (c SavedExtension) MarshalJSON() ([]byte, error)              { return marshalString(c) }
-func (c SelectMetadata) MarshalJSON() ([]byte, error)              { return marshalString(c) }
-func (c SelectTags) MarshalJSON() ([]byte, error)                  { return marshalString(c) }
-func (c SolidColor) MarshalJSON() ([]byte, error)                  { return marshalString(c) }
-func (c Subtitle) MarshalJSON() ([]byte, error)                    { return marshalString(c) }
-func (c Text) MarshalJSON() ([]byte, error)                        { return marshalString(c) }
-func (c Thumbnail) MarshalJSON() ([]byte, error)                   { return marshalString(c) }
-func (c Transformation) MarshalJSON() ([]byte, error)              { return marshalString(c) }
-func (c UploadPostTransformError) MarshalJSON() ([]byte, error)    { return marshalString(c) }
-func (c UploadPostTransformSuccess) MarshalJSON() ([]byte, error)  { return marshalString(c) }
-func (c UploadPreTransformError) MarshalJSON() ([]byte, error)     { return marshalString(c) }
-func (c UploadPreTransformSuccess) MarshalJSON() ([]byte, error)   { return marshalString(c) }
-func (c Video) MarshalJSON() ([]byte, error)                       { return marshalString(c) }
-func (c VideoTransformationAccepted) MarshalJSON() ([]byte, error) { return marshalString(c) }
-func (c VideoTransformationError) MarshalJSON() ([]byte, error)    { return marshalString(c) }
-func (c VideoTransformationReady) MarshalJSON() ([]byte, error)    { return marshalString(c) }
-func (c WebFolder) MarshalJSON() ([]byte, error)                   { return marshalString(c) }
-func (c WebProxy) MarshalJSON() ([]byte, error)                    { return marshalString(c) }
-func (c YesNo) MarshalJSON() ([]byte, error)                       { return marshalString(c) }
+func (c Abs) MarshalJSON() ([]byte, error)                              { return marshalString(c) }
+func (c AIAutoDescription) MarshalJSON() ([]byte, error)                { return marshalString(c) }
+func (c AITasks) MarshalJSON() ([]byte, error)                          { return marshalString(c) }
+func (c Akamai) MarshalJSON() ([]byte, error)                           { return marshalString(c) }
+func (c AkeneoPim) MarshalJSON() ([]byte, error)                        { return marshalString(c) }
+func (c All) MarshalJSON() ([]byte, error)                              { return marshalString(c) }
+func (c AzureBlob) MarshalJSON() ([]byte, error)                        { return marshalString(c) }
+func (c Cloudinary) MarshalJSON() ([]byte, error)                       { return marshalString(c) }
+func (c CloudinaryBackup) MarshalJSON() ([]byte, error)                 { return marshalString(c) }
+func (c FileVersionCreated) MarshalJSON() ([]byte, error)               { return marshalString(c) }
+func (c FileVersionDeleted) MarshalJSON() ([]byte, error)               { return marshalString(c) }
+func (c FileCreated) MarshalJSON() ([]byte, error)                      { return marshalString(c) }
+func (c FileDeleted) MarshalJSON() ([]byte, error)                      { return marshalString(c) }
+func (c FileUpdated) MarshalJSON() ([]byte, error)                      { return marshalString(c) }
+func (c FolderCreated) MarshalJSON() ([]byte, error)                    { return marshalString(c) }
+func (c FolderDeleted) MarshalJSON() ([]byte, error)                    { return marshalString(c) }
+func (c FolderUpdated) MarshalJSON() ([]byte, error)                    { return marshalString(c) }
+func (c Gcs) MarshalJSON() ([]byte, error)                              { return marshalString(c) }
+func (c GifToVideo) MarshalJSON() ([]byte, error)                       { return marshalString(c) }
+func (c Image) MarshalJSON() ([]byte, error)                            { return marshalString(c) }
+func (c ImageAsyncTransformationAccepted) MarshalJSON() ([]byte, error) { return marshalString(c) }
+func (c ImageAsyncTransformationError) MarshalJSON() ([]byte, error)    { return marshalString(c) }
+func (c ImageAsyncTransformationReady) MarshalJSON() ([]byte, error)    { return marshalString(c) }
+func (c Imgix) MarshalJSON() ([]byte, error)                            { return marshalString(c) }
+func (c Max) MarshalJSON() ([]byte, error)                              { return marshalString(c) }
+func (c RemoveBg) MarshalJSON() ([]byte, error)                         { return marshalString(c) }
+func (c S3) MarshalJSON() ([]byte, error)                               { return marshalString(c) }
+func (c S3Compatible) MarshalJSON() ([]byte, error)                     { return marshalString(c) }
+func (c SavedExtension) MarshalJSON() ([]byte, error)                   { return marshalString(c) }
+func (c SelectMetadata) MarshalJSON() ([]byte, error)                   { return marshalString(c) }
+func (c SelectTags) MarshalJSON() ([]byte, error)                       { return marshalString(c) }
+func (c SolidColor) MarshalJSON() ([]byte, error)                       { return marshalString(c) }
+func (c Subtitle) MarshalJSON() ([]byte, error)                         { return marshalString(c) }
+func (c Text) MarshalJSON() ([]byte, error)                             { return marshalString(c) }
+func (c Thumbnail) MarshalJSON() ([]byte, error)                        { return marshalString(c) }
+func (c Transformation) MarshalJSON() ([]byte, error)                   { return marshalString(c) }
+func (c UploadPostTransformError) MarshalJSON() ([]byte, error)         { return marshalString(c) }
+func (c UploadPostTransformSuccess) MarshalJSON() ([]byte, error)       { return marshalString(c) }
+func (c UploadPreTransformError) MarshalJSON() ([]byte, error)          { return marshalString(c) }
+func (c UploadPreTransformSuccess) MarshalJSON() ([]byte, error)        { return marshalString(c) }
+func (c Video) MarshalJSON() ([]byte, error)                            { return marshalString(c) }
+func (c VideoTransformationAccepted) MarshalJSON() ([]byte, error)      { return marshalString(c) }
+func (c VideoTransformationError) MarshalJSON() ([]byte, error)         { return marshalString(c) }
+func (c VideoTransformationReady) MarshalJSON() ([]byte, error)         { return marshalString(c) }
+func (c WebFolder) MarshalJSON() ([]byte, error)                        { return marshalString(c) }
+func (c WebProxy) MarshalJSON() ([]byte, error)                         { return marshalString(c) }
+func (c YesNo) MarshalJSON() ([]byte, error)                            { return marshalString(c) }
 
 type constant[T any] interface {
 	Constant[T]
