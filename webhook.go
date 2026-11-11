@@ -308,9 +308,13 @@ func (r *FolderDeleteEvent) UnmarshalJSON(data []byte) error {
 type FolderDeleteEventData struct {
 	// The unique `folderId` of the deleted folder.
 	FolderID string `json:"folderId" api:"required"`
+	// Path of the deleted folder. For a moved folder, this is its path before the
+	// move.
+	FolderPath string `json:"folderPath"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		FolderID    respjson.Field
+		FolderPath  respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -324,18 +328,22 @@ func (r *FolderDeleteEventData) UnmarshalJSON(data []byte) error {
 
 // Triggered when a folder is updated, for example when its custom metadata changes
 // or it is renamed. Renaming a folder sends one event per folder in the tree, each
-// with its new `folderPath`.
+// with its new `folderPath` in `data` and its old `folderPath` in `previous`.
 type FolderUpdateEvent struct {
 	// Timestamp of when the event occurred in ISO8601 format.
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	Data      Folder    `json:"data" api:"required"`
 	// Type of the webhook event.
 	Type constant.FolderUpdated `json:"type" default:"folder.updated"`
+	// Values the folder had before this update. Present only when the folder was
+	// renamed or its parent folder was renamed.
+	Previous FolderUpdateEventPrevious `json:"previous"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		CreatedAt   respjson.Field
 		Data        respjson.Field
 		Type        respjson.Field
+		Previous    respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -345,6 +353,25 @@ type FolderUpdateEvent struct {
 // Returns the unmodified JSON received from the API
 func (r FolderUpdateEvent) RawJSON() string { return r.JSON.raw }
 func (r *FolderUpdateEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Values the folder had before this update. Present only when the folder was
+// renamed or its parent folder was renamed.
+type FolderUpdateEventPrevious struct {
+	// Path of the folder before it was renamed.
+	FolderPath string `json:"folderPath"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		FolderPath  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r FolderUpdateEventPrevious) RawJSON() string { return r.JSON.raw }
+func (r *FolderUpdateEventPrevious) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1516,13 +1543,16 @@ type UnsafeUnwrapWebhookEventUnion struct {
 	Request UnsafeUnwrapWebhookEventUnionRequest `json:"request"`
 	// This field is from variant [VideoTransformationReadyEvent].
 	Timings VideoTransformationReadyEventTimings `json:"timings"`
-	JSON    struct {
+	// This field is from variant [FolderUpdateEvent].
+	Previous FolderUpdateEventPrevious `json:"previous"`
+	JSON     struct {
 		ID        respjson.Field
 		Type      respjson.Field
 		CreatedAt respjson.Field
 		Data      respjson.Field
 		Request   respjson.Field
 		Timings   respjson.Field
+		Previous  respjson.Field
 		raw       string
 	} `json:"-"`
 }
@@ -1671,10 +1701,9 @@ type UnsafeUnwrapWebhookEventUnionData struct {
 	// This field is from variant [FileVersionDeleteEventData].
 	VersionID string `json:"versionId"`
 	// This field is from variant [Folder].
-	CreatedBy FolderCreatedBy `json:"createdBy"`
-	FolderID  string          `json:"folderId"`
-	// This field is from variant [Folder].
-	FolderPath string `json:"folderPath"`
+	CreatedBy  FolderCreatedBy `json:"createdBy"`
+	FolderID   string          `json:"folderId"`
+	FolderPath string          `json:"folderPath"`
 	JSON       struct {
 		Asset                respjson.Field
 		Transformation       respjson.Field
@@ -1916,13 +1945,16 @@ type UnwrapWebhookEventUnion struct {
 	Request UnwrapWebhookEventUnionRequest `json:"request"`
 	// This field is from variant [VideoTransformationReadyEvent].
 	Timings VideoTransformationReadyEventTimings `json:"timings"`
-	JSON    struct {
+	// This field is from variant [FolderUpdateEvent].
+	Previous FolderUpdateEventPrevious `json:"previous"`
+	JSON     struct {
 		ID        respjson.Field
 		Type      respjson.Field
 		CreatedAt respjson.Field
 		Data      respjson.Field
 		Request   respjson.Field
 		Timings   respjson.Field
+		Previous  respjson.Field
 		raw       string
 	} `json:"-"`
 }
@@ -2071,10 +2103,9 @@ type UnwrapWebhookEventUnionData struct {
 	// This field is from variant [FileVersionDeleteEventData].
 	VersionID string `json:"versionId"`
 	// This field is from variant [Folder].
-	CreatedBy FolderCreatedBy `json:"createdBy"`
-	FolderID  string          `json:"folderId"`
-	// This field is from variant [Folder].
-	FolderPath string `json:"folderPath"`
+	CreatedBy  FolderCreatedBy `json:"createdBy"`
+	FolderID   string          `json:"folderId"`
+	FolderPath string          `json:"folderPath"`
 	JSON       struct {
 		Asset                respjson.Field
 		Transformation       respjson.Field
