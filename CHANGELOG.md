@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.13.0](https://github.com/imagekit-developer/imagekit-go/compare/v2.12.0...v2.13.0) (2026-11-02)
+
+
+### Features
+
+* add GET /v1/tags to list media library tags ([067404e](https://github.com/imagekit-developer/imagekit-go/commit/067404e5f5cbc74db43bb2bb6db1fdefb6a5063d))
+* **api:** add accounts.contract.get() for contract consumption ([9560f82](https://github.com/imagekit-developer/imagekit-go/commit/9560f82ee36b3bb97a11b1c8538a90c8a1c1e4db))
+* **api:** add useImprovedLayerSpec to the Cloudinary URL rewriter ([9560f82](https://github.com/imagekit-developer/imagekit-go/commit/9560f82ee36b3bb97a11b1c8538a90c8a1c1e4db))
+
+
+### Documentation
+
+* add pagination example ([a46d403](https://github.com/imagekit-developer/imagekit-go/commit/a46d403c5825a141931012793d00ea58b781bf9f))
+
 ## [2.12.0](https://github.com/imagekit-developer/imagekit-go/compare/v2.11.0...v2.12.0) (2026-10-19)
 
 
