@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.14.0](https://github.com/imagekit-developer/imagekit-go/compare/v2.13.0...v2.14.0) (2026-11-16)
+
+
+### Features
+
+* **transformation:** add saturation and encode negative numbers with the N prefix in URL generation ([f1a30f5](https://github.com/imagekit-developer/imagekit-go/commit/f1a30f5a313a17dcc7243e3ac4498d03b1671559))
+* **webhooks:** add folder paths to folder.deleted and folder.updated events ([bff2493](https://github.com/imagekit-developer/imagekit-go/commit/bff2493ef78104e1dba52b1ffc9bf8b9e295f7cb))
+
 ## [2.13.0](https://github.com/imagekit-developer/imagekit-go/compare/v2.12.0...v2.13.0) (2026-11-02)
 
 
