@@ -282,6 +282,7 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 					Rotation: shared.TransformationRotationUnionParam{
 						OfFloat: imagekit.Float(90),
 					},
+					Saturation: imagekit.Int(-100),
 					Shadow: shared.TransformationShadowUnionParam{
 						OfTransformationShadowBoolean: imagekit.Bool(true),
 					},
@@ -482,6 +483,7 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 				Rotation: shared.TransformationRotationUnionParam{
 					OfFloat: imagekit.Float(90),
 				},
+				Saturation: imagekit.Int(-100),
 				Shadow: shared.TransformationShadowUnionParam{
 					OfTransformationShadowBoolean: imagekit.Bool(true),
 				},
@@ -829,6 +831,7 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 				Rotation: shared.TransformationRotationUnionParam{
 					OfFloat: imagekit.Float(90),
 				},
+				Saturation: imagekit.Int(-100),
 				Shadow: shared.TransformationShadowUnionParam{
 					OfTransformationShadowBoolean: imagekit.Bool(true),
 				},
@@ -1132,6 +1135,7 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 			Rotation: shared.TransformationRotationUnionParam{
 				OfFloat: imagekit.Float(90),
 			},
+			Saturation: imagekit.Int(-100),
 			Shadow: shared.TransformationShadowUnionParam{
 				OfTransformationShadowBoolean: imagekit.Bool(true),
 			},
@@ -1326,6 +1330,7 @@ func TestDummyNewWithOptionalParams(t *testing.T) {
 				Rotation: shared.TransformationRotationUnionParam{
 					OfFloat: imagekit.Float(90),
 				},
+				Saturation: imagekit.Int(-100),
 				Shadow: shared.TransformationShadowUnionParam{
 					OfTransformationShadowBoolean: imagekit.Bool(true),
 				},
