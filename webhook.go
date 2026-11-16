@@ -363,7 +363,7 @@ func (r *FolderUpdateEvent) UnmarshalJSON(data []byte) error {
 // the folder's path before the rename.
 type FolderUpdateEventPrevious struct {
 	// Path of the folder before it was renamed.
-	FolderPath string `json:"folderPath"`
+	FolderPath string `json:"folderPath" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		FolderPath  respjson.Field
