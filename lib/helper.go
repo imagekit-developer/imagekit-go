@@ -271,8 +271,12 @@ func (r *HelperService) buildTransformationStringInternal(transformation []share
 				return ""
 			}},
 			{"dpr", func() string { return r.getOptParamValue(currentTransform.Dpr) }},
-			{"x", func() string { return r.getUnionParamValue(currentTransform.X.OfFloat, currentTransform.X.OfString) }},
-			{"y", func() string { return r.getUnionParamValue(currentTransform.Y.OfFloat, currentTransform.Y.OfString) }},
+			{"x", func() string {
+				return r.getSignedUnionParamValue(currentTransform.X.OfFloat, currentTransform.X.OfString)
+			}},
+			{"y", func() string {
+				return r.getSignedUnionParamValue(currentTransform.Y.OfFloat, currentTransform.Y.OfString)
+			}},
 			{"xc", func() string {
 				return r.getUnionParamValue(currentTransform.XCenter.OfFloat, currentTransform.XCenter.OfString)
 			}},
@@ -282,7 +286,7 @@ func (r *HelperService) buildTransformationStringInternal(transformation []share
 			{"o", func() string { return r.getOptParamValue(currentTransform.Opacity) }},
 			{"z", func() string { return r.getOptParamValue(currentTransform.Zoom) }},
 			{"rt", func() string {
-				return r.getUnionParamValue(currentTransform.Rotation.OfFloat, currentTransform.Rotation.OfString)
+				return r.getSignedUnionParamValue(currentTransform.Rotation.OfFloat, currentTransform.Rotation.OfString)
 			}},
 			{"bl", func() string { return r.getOptParamValue(currentTransform.Blur) }},
 			{"n", func() string { return r.getOptParamValue(currentTransform.Named) }},
@@ -418,6 +422,12 @@ func (r *HelperService) buildTransformationStringInternal(transformation []share
 				}
 				return "", false
 			}},
+			{"e-saturation", func() (string, bool) {
+				if param.IsOmitted(currentTransform.Saturation) {
+					return "", false
+				}
+				return formatSignedNumber(float64(currentTransform.Saturation.Value)), false
+			}},
 			{"e-distort", func() (string, bool) {
 				if value := r.getOptParamValue(currentTransform.Distort); value != "" {
 					return value, false
@@ -491,6 +501,23 @@ func (r *HelperService) getUnionParamValue(floatOpt param.Opt[float64], stringOp
 		return stringOpt.Value
 	}
 	return ""
+}
+
+// getSignedUnionParamValue is getUnionParamValue for parameters that accept negative numbers.
+func (r *HelperService) getSignedUnionParamValue(floatOpt param.Opt[float64], stringOpt param.Opt[string]) string {
+	if !param.IsOmitted(floatOpt) {
+		return formatSignedNumber(floatOpt.Value)
+	}
+	return r.getUnionParamValue(floatOpt, stringOpt)
+}
+
+// formatSignedNumber encodes a negative number with the N prefix, because "-" separates
+// a key from its value in the URL. For example, -40 becomes "N40".
+func formatSignedNumber(value float64) string {
+	if value < 0 {
+		return fmt.Sprintf("N%g", -value)
+	}
+	return fmt.Sprintf("%g", value)
 }
 
 func (r *HelperService) getEnumValue(value string) string {
@@ -622,25 +649,25 @@ func (r *HelperService) processOverlay(overlay shared.OverlayUnionParam) string 
 		// Position
 		position := baseOverlay.Position
 		if !param.IsOmitted(position.X.OfFloat) {
-			entries = append(entries, fmt.Sprintf("lx-%g", position.X.OfFloat.Value))
+			entries = append(entries, "lx-"+formatSignedNumber(position.X.OfFloat.Value))
 		} else if !param.IsOmitted(position.X.OfString) {
 			entries = append(entries, fmt.Sprintf("lx-%s", position.X.OfString.Value))
 		}
 
 		if !param.IsOmitted(position.Y.OfFloat) {
-			entries = append(entries, fmt.Sprintf("ly-%g", position.Y.OfFloat.Value))
+			entries = append(entries, "ly-"+formatSignedNumber(position.Y.OfFloat.Value))
 		} else if !param.IsOmitted(position.Y.OfString) {
 			entries = append(entries, fmt.Sprintf("ly-%s", position.Y.OfString.Value))
 		}
 
 		if !param.IsOmitted(position.XCenter.OfFloat) {
-			entries = append(entries, fmt.Sprintf("lxc-%g", position.XCenter.OfFloat.Value))
+			entries = append(entries, "lxc-"+formatSignedNumber(position.XCenter.OfFloat.Value))
 		} else if !param.IsOmitted(position.XCenter.OfString) {
 			entries = append(entries, fmt.Sprintf("lxc-%s", position.XCenter.OfString.Value))
 		}
 
 		if !param.IsOmitted(position.YCenter.OfFloat) {
-			entries = append(entries, fmt.Sprintf("lyc-%g", position.YCenter.OfFloat.Value))
+			entries = append(entries, "lyc-"+formatSignedNumber(position.YCenter.OfFloat.Value))
 		} else if !param.IsOmitted(position.YCenter.OfString) {
 			entries = append(entries, fmt.Sprintf("lyc-%s", position.YCenter.OfString.Value))
 		}
@@ -770,7 +797,7 @@ func (r *HelperService) buildTextOverlayTransformation(transformations []shared.
 
 		// Rotation
 		if !param.IsOmitted(trans.Rotation.OfFloat) {
-			entries = append(entries, fmt.Sprintf("rt%s%g", transformKeyValueDelimiter, trans.Rotation.OfFloat.Value))
+			entries = append(entries, "rt"+transformKeyValueDelimiter+formatSignedNumber(trans.Rotation.OfFloat.Value))
 		} else if !param.IsOmitted(trans.Rotation.OfString) {
 			entries = append(entries, fmt.Sprintf("rt%s%s", transformKeyValueDelimiter, trans.Rotation.OfString.Value))
 		}
