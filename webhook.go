@@ -329,16 +329,17 @@ func (r *FolderDeleteEventData) UnmarshalJSON(data []byte) error {
 }
 
 // Triggered when a folder is updated, for example when its custom metadata changes
-// or it is renamed. Renaming a folder sends one event per folder in the tree, each
-// with its new `folderPath` in `data` and its old `folderPath` in `previous`.
+// or it is renamed. Renaming a folder sends one event per folder in the tree. In
+// each of these events, `data.folderPath` is the folder's new path and
+// `previous.folderPath` is its path before the rename.
 type FolderUpdateEvent struct {
 	// Timestamp of when the event occurred in ISO8601 format.
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	Data      Folder    `json:"data" api:"required"`
 	// Type of the webhook event.
 	Type constant.FolderUpdated `json:"type" default:"folder.updated"`
-	// Values the folder had before this update. Present only when the folder was
-	// renamed or its parent folder was renamed.
+	// Present only when the folder or one of its parent folders was renamed. Contains
+	// the folder's path before the rename.
 	Previous FolderUpdateEventPrevious `json:"previous"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -358,8 +359,8 @@ func (r *FolderUpdateEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Values the folder had before this update. Present only when the folder was
-// renamed or its parent folder was renamed.
+// Present only when the folder or one of its parent folders was renamed. Contains
+// the folder's path before the rename.
 type FolderUpdateEventPrevious struct {
 	// Path of the folder before it was renamed.
 	FolderPath string `json:"folderPath"`

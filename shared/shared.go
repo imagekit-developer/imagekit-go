@@ -4422,6 +4422,12 @@ type TransformationParam struct {
 	// Pass any transformation not directly supported by the SDK. This transformation
 	// string is appended to the URL as provided.
 	Raw param.Opt[string] `json:"raw,omitzero"`
+	// Adjusts the color saturation of the image. Accepts an integer from -100 to 100.
+	// Negative values desaturate (`-100` is fully gray), positive values increase
+	// saturation, and `0` leaves the image unchanged. Supported inside image overlays.
+	// Not supported for animated images. See
+	// [Saturation](https://imagekit.io/docs/effects-and-enhancements#saturation---e-saturation).
+	Saturation param.Opt[int64] `json:"saturation,omitzero"`
 	// Accepts a numeric value that determines how much to zoom in or out of the
 	// cropped area. It should be used in conjunction with fo-face or fo-<object_name>.
 	// See [Zoom](https://imagekit.io/docs/image-resize-and-crop#zoom---z).
